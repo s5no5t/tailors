@@ -6,9 +6,9 @@ namespace Tweed.Web.Pages;
 
 public class CreateModel : PageModel
 {
-    private readonly TweedQueries _tweedQueries;
+    private readonly ITweedQueries _tweedQueries;
 
-    public CreateModel(TweedQueries tweedQueries)
+    public CreateModel(ITweedQueries tweedQueries)
     {
         _tweedQueries = tweedQueries;
     }

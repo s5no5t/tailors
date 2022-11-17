@@ -10,11 +10,11 @@ namespace Tweed.Web.Test;
 
 public class CreateModelTest
 {
-    private readonly Mock<TweedQueries> _tweedQueriesMock;
+    private readonly Mock<ITweedQueries> _tweedQueriesMock;
 
     public CreateModelTest()
     {
-        _tweedQueriesMock = new Mock<TweedQueries>();
+        _tweedQueriesMock = new Mock<ITweedQueries>();
     }
 
     [Fact]

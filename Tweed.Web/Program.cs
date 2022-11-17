@@ -1,9 +1,30 @@
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
+using Tweed.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+var store = new DocumentStore
+{
+    Urls = new[] { "http://localhost:8080" },
+    Database = "Tweed"
+};
+store.Initialize();
+
+builder.Services.AddSingleton<IDocumentStore>(store);
+
+builder.Services.AddScoped<IAsyncDocumentSession>(serviceProvider => serviceProvider
+    .GetService<IDocumentStore>()
+    ?.OpenAsyncSession() ?? throw new InvalidOperationException());
+
+builder.Services.AddScoped<ITweedQueries, TweedQueries>();
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment()) Setup.EnsureDatabaseExists(store);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

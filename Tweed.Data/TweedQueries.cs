@@ -1,9 +1,23 @@
-﻿namespace Tweed.Data;
+﻿using Raven.Client.Documents.Session;
 
-public class TweedQueries
+namespace Tweed.Data;
+
+public interface ITweedQueries
 {
-    public virtual async Task SaveTweed(Models.Tweed tweed)
+    Task SaveTweed(Models.Tweed tweed);
+}
+
+public sealed class TweedQueries : ITweedQueries
+{
+    private readonly IAsyncDocumentSession _session;
+
+    public TweedQueries(IAsyncDocumentSession session)
     {
-        throw new NotImplementedException();
+        _session = session;
+    }
+
+    public async Task SaveTweed(Models.Tweed tweed)
+    {
+        await _session.StoreAsync(tweed);
     }
 }
