@@ -1,14 +1,16 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Tweed.Web.Pages;
 
 public class CreateModel : PageModel
 {
-    public void OnGet()
-    {
-    }
+    [BindProperty] public Models.Tweed? Tweed { get; set; }
 
-    public void OnPost()
+    public async Task<IActionResult> OnPostAsync()
     {
+        if (!ModelState.IsValid) return Page();
+
+        return RedirectToPage("./index");
     }
 }
