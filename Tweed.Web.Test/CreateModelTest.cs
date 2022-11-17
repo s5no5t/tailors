@@ -29,7 +29,10 @@ public class CreateModelTest
     [Fact]
     public async Task OnPostAsync_ValidModel_ReturnsRedirectToPageResult()
     {
-        var createModel = new CreateModel(_tweedQueriesMock.Object);
+        var createModel = new CreateModel(_tweedQueriesMock.Object)
+        {
+            Tweed = new Data.Models.Tweed()
+        };
         var result = await createModel.OnPostAsync();
         Assert.IsType<RedirectToPageResult>(result);
     }
