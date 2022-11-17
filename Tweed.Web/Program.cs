@@ -1,5 +1,3 @@
-using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
 using Tweed.Data;
 using Tweed.Web;
 
@@ -8,30 +6,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-var store = new DocumentStore
-{
-    Urls = new[] { "http://localhost:8080" },
-    Database = "Tweed"
-};
-store.Initialize();
+var ravenDbStore = new RavenDbStore();
+builder.Services.AddSingleton(ravenDbStore);
 
-builder.Services.AddSingleton<IDocumentStore>(store);
-
-builder.Services.AddScoped<IAsyncDocumentSession>(serviceProvider => serviceProvider
-    .GetService<IDocumentStore>()
-    ?.OpenAsyncSession() ?? throw new InvalidOperationException());
+builder.Services.AddScoped(serviceProvider => serviceProvider
+    .GetService<RavenDbStore>()
+    ?.OpenSession() ?? throw new InvalidOperationException());
 
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) Setup.EnsureDatabaseExists(store);
+if (app.Environment.IsDevelopment()) ravenDbStore.EnsureDatabaseExists();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-}
+if (!app.Environment.IsDevelopment()) app.UseExceptionHandler("/Error");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
