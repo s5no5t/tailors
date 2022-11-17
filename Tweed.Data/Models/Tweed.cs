@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tweed.Web.Models;
+namespace Tweed.Data.Models;
 
 public class Tweed
 {

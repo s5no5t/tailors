@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Web", "Tweed.Web\Twee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Web.Test", "Tweed.Web.Test\Tweed.Web.Test.csproj", "{C07E8FBB-1A17-47FB-82C1-A9653A244B08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data", "Tweed.Data\Tweed.Data.csproj", "{6604811C-10A5-494A-AA1A-B0E98CD3EECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{C07E8FBB-1A17-47FB-82C1-A9653A244B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C07E8FBB-1A17-47FB-82C1-A9653A244B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C07E8FBB-1A17-47FB-82C1-A9653A244B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6604811C-10A5-494A-AA1A-B0E98CD3EECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6604811C-10A5-494A-AA1A-B0E98CD3EECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6604811C-10A5-494A-AA1A-B0E98CD3EECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6604811C-10A5-494A-AA1A-B0E98CD3EECF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

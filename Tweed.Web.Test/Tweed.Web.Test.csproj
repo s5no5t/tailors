@@ -22,6 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Tweed.Data\Tweed.Data.csproj" />
       <ProjectReference Include="..\Tweed.Web\Tweed.Web.csproj" />
     </ItemGroup>
 
