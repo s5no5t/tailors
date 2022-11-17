@@ -1,6 +1,7 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tweed.Data;
+using Tweed.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,5 +43,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.UseMiddleware<SaveChangesMiddleware>();
 
 app.Run();
