@@ -4,6 +4,7 @@ using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Exceptions;
 using Raven.Client.Exceptions.Database;
+using Raven.Client.NodaTime;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 
@@ -21,6 +22,7 @@ public class RavenDbStore
             Urls = new[] { "http://localhost:8080" },
             Database = "Tweed"
         };
+        _store.ConfigureForNodaTime();
         _store.Initialize();
     }
 

@@ -1,4 +1,5 @@
 ﻿using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 
 namespace Tweed.Data;
@@ -25,6 +26,6 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<IEnumerable<Models.Tweed>> GetLatestTweeds()
     {
-        return await _session.Query<Models.Tweed>().ToListAsync();
+        return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).ToListAsync();
     }
 }
