@@ -1,4 +1,5 @@
-﻿using Raven.Client.Documents;
+﻿using NodaTime;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 
@@ -6,7 +7,7 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task SaveTweed(Models.Tweed tweed);
+    Task CreateTweed(Models.Tweed tweed);
     Task<IEnumerable<Models.Tweed>> GetLatestTweeds();
 }
 
@@ -19,8 +20,10 @@ public sealed class TweedQueries : ITweedQueries
         _session = session;
     }
 
-    public async Task SaveTweed(Models.Tweed tweed)
+    public async Task CreateTweed(Models.Tweed tweed)
     {
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        tweed.CreatedAt = now;
         await _session.StoreAsync(tweed);
     }
 

@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Moq;
 using NodaTime;
+using Raven.Client.Documents.Session;
 using Xunit;
 
 namespace Tweed.Data.Test;
@@ -8,13 +10,28 @@ namespace Tweed.Data.Test;
 public class TweedQueriesTest
 {
     [Fact]
-    public async Task SaveTweed_SavesTweed()
+    public async Task CreateTweed_UpdatesCreatedAt()
     {
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.Session;
 
         var queries = new TweedQueries(session);
-        await queries.SaveTweed(new Models.Tweed());
+        var tweed = new Models.Tweed();
+        await queries.CreateTweed(tweed);
+
+        Assert.NotNull(tweed.CreatedAt);
+    }
+
+    [Fact]
+    public async Task CreateTweed_SavesTweed()
+    {
+        var session = new Mock<IAsyncDocumentSession>();
+
+        var queries = new TweedQueries(session.Object);
+        var tweed = new Models.Tweed();
+        await queries.CreateTweed(tweed);
+
+        session.Verify(s => s.StoreAsync(tweed, default));
     }
 
     [Fact]
@@ -41,14 +58,14 @@ public class TweedQueriesTest
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.Session;
 
-        var old = new LocalDateTime(2022, 11, 18, 15, 20);
-        Models.Tweed oldTweed = new()
+        var older = new ZonedDateTime(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+        Models.Tweed olderTweed = new()
         {
-            Content = "old tweed",
-            CreatedAt = old
+            Content = "older tweed",
+            CreatedAt = older
         };
-        await session.StoreAsync(oldTweed);
-        var recent = old.PlusDays(1);
+        await session.StoreAsync(olderTweed);
+        var recent = older.PlusHours(1);
         Models.Tweed recentTweed = new()
         {
             Content = "recent tweed",
@@ -60,6 +77,6 @@ public class TweedQueriesTest
         var queries = new TweedQueries(session);
         var tweeds = (await queries.GetLatestTweeds()).ToList();
         Assert.Equal(tweeds[0], recentTweed);
-        Assert.Equal(tweeds[1], oldTweed);
+        Assert.Equal(tweeds[1], olderTweed);
     }
 }

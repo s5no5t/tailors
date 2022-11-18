@@ -19,7 +19,7 @@ public class CreateModel : PageModel
     {
         if (!ModelState.IsValid || Tweed is null) return Page();
 
-        await _tweedQueries.SaveTweed(Tweed);
+        await _tweedQueries.CreateTweed(Tweed);
 
         return RedirectToPage("./index");
     }
