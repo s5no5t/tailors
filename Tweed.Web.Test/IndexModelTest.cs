@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Moq;
 using Tweed.Web.Pages;
 using Xunit;
 
@@ -10,8 +8,7 @@ public class IndexModelTest
     [Fact]
     public void OnGet()
     {
-        var loggerMock = new Mock<ILogger<IndexModel>>();
-        var indexModel = new IndexModel(loggerMock.Object);
+        var indexModel = new IndexModel();
         indexModel.OnGet();
     }
 }
