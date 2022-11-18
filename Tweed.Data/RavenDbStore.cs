@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
@@ -8,6 +9,7 @@ using Raven.Client.ServerWide.Operations;
 
 namespace Tweed.Data;
 
+[ExcludeFromCodeCoverage]
 public class RavenDbStore
 {
     private readonly DocumentStore _store;
