@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Tweed.Data.Test;
+using Moq;
+using Raven.Client.Documents.Session;
 using Xunit;
 
 namespace Tweed.Web.Test;
@@ -16,32 +15,20 @@ public class SaveChangesMiddlewareTest
     [Fact]
     public async Task InvokeAsync()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.Session;
-
-        Data.Models.Tweed tweed = new()
-        {
-            Content = "test"
-        };
-        await session.StoreAsync(tweed);
+        var sessionMock = new Mock<IAsyncDocumentSession>();
 
         using var host = await new HostBuilder()
             .ConfigureWebHost(webBuilder =>
             {
                 webBuilder
                     .UseTestServer()
-                    .ConfigureServices(services =>
-                    {
-                        services.AddSingleton(ravenDb);
-                        services.AddSingleton(session);
-                    })
+                    .ConfigureServices(services => { services.AddSingleton(sessionMock.Object); })
                     .Configure(app => { app.UseMiddleware<SaveChangesMiddleware>(); });
             })
             .StartAsync();
 
         await host.GetTestClient().GetAsync("/");
 
-        var data = await session.Query<Data.Models.Tweed>().Where(t => t.Content == "test").FirstAsync();
-        Assert.NotNull(data);
+        sessionMock.Verify(s => s.SaveChangesAsync(default));
     }
 }
