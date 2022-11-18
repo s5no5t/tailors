@@ -21,6 +21,13 @@ public class TweedQueriesTest
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.Session;
 
+        Models.Tweed tweed = new()
+        {
+            Content = "test"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+
         var queries = new TweedQueries(session);
         var tweeds = await queries.GetLatestTweeds();
         Assert.NotEmpty(tweeds);
