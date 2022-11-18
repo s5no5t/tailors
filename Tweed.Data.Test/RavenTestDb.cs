@@ -14,4 +14,9 @@ public class RavenTestDb : RavenTestDriver
     }
 
     public IAsyncDocumentSession Session => _store.OpenAsyncSession();
+
+    protected override void PreInitialize(IDocumentStore documentStore)
+    {
+        documentStore.Conventions.ThrowIfQueryPageSizeIsNotSet = true;
+    }
 }

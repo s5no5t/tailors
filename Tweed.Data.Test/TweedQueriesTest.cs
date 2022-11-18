@@ -9,6 +9,9 @@ namespace Tweed.Data.Test;
 
 public class TweedQueriesTest
 {
+    private static readonly ZonedDateTime FixedZonedDateTime =
+        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+
     [Fact]
     public async Task CreateTweed_UpdatesCreatedAt()
     {
@@ -58,14 +61,13 @@ public class TweedQueriesTest
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.Session;
 
-        var older = new ZonedDateTime(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
         Models.Tweed olderTweed = new()
         {
             Content = "older tweed",
-            CreatedAt = older
+            CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(olderTweed);
-        var recent = older.PlusHours(1);
+        var recent = FixedZonedDateTime.PlusHours(1);
         Models.Tweed recentTweed = new()
         {
             Content = "recent tweed",
@@ -76,7 +78,31 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session);
         var tweeds = (await queries.GetLatestTweeds()).ToList();
-        Assert.Equal(tweeds[0], recentTweed);
-        Assert.Equal(tweeds[1], olderTweed);
+        Assert.Equal(recentTweed, tweeds[0]);
+        Assert.Equal(olderTweed, tweeds[1]);
+    }
+
+    [Fact]
+    public async Task GetLatestTweeds_ShouldReturn20Tweeds()
+    {
+        using var ravenDb = new RavenTestDb();
+        using var session = ravenDb.Session;
+
+        var dateTime = FixedZonedDateTime;
+        for (var i = 0; i < 25; i++)
+        {
+            Models.Tweed tweed = new()
+            {
+                Content = "test",
+                CreatedAt = dateTime
+            };
+            await session.StoreAsync(tweed);
+        }
+
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        var tweeds = (await queries.GetLatestTweeds()).ToList();
+        Assert.Equal(20, tweeds.Count);
     }
 }

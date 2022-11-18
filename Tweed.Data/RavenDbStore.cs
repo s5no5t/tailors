@@ -20,7 +20,11 @@ public class RavenDbStore
         _store = new DocumentStore
         {
             Urls = new[] { "http://localhost:8080" },
-            Database = "Tweed"
+            Database = "Tweed",
+            Conventions =
+            {
+                ThrowIfQueryPageSizeIsNotSet = true
+            }
         };
         _store.ConfigureForNodaTime();
         _store.Initialize();

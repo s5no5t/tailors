@@ -29,6 +29,6 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<IEnumerable<Models.Tweed>> GetLatestTweeds()
     {
-        return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).ToListAsync();
+        return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();
     }
 }
