@@ -5,11 +5,15 @@
     ViewData["Title"] = "Home page";
 }
 
-<ul>
-    @foreach (var tweed in Model.Tweeds)
-    {
-        <li>@tweed.Content</li>
-    }
-</ul>
+@foreach (var tweed in Model.Tweeds)
+{
+    <div class="card mt-2">
+        <div class="card-body">
+            <div class="card-text">
+                @tweed.Content
+            </div>
+        </div>
+    </div>
+}
 
 <a class="btn btn-primary" asp-page="/create">Create</a>
