@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Raven.Identity;
 using Tweed.Data;
 using Tweed.Web;
 
@@ -13,6 +15,12 @@ builder.Services.AddScoped(serviceProvider => serviceProvider
     .GetService<RavenDbStore>()
     ?.OpenSession() ?? throw new InvalidOperationException());
 
+var identityBuilder = builder.Services
+    .AddDefaultIdentity<AppUser>()
+    .AddRavenDbIdentityStores<AppUser>();
+
+identityBuilder.AddDefaultUI();
+
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 
 var app = builder.Build();
@@ -24,9 +32,9 @@ if (!app.Environment.IsDevelopment()) app.UseExceptionHandler("/Error");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
