@@ -5,6 +5,7 @@ using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
 using Tweed.Web;
+using Tweed.Web.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ identityBuilder.AddDefaultUI();
 
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 
+builder.Services.AddRazorPages()
+    .AddMvcOptions(o => o.Filters.Add<RavenSaveChangesAsyncFilter>());
+
 var app = builder.Build();
 
 app.Lifetime.ApplicationStarted.Register(() =>
@@ -44,7 +48,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
-app.UseMiddleware<SaveChangesMiddleware>();
 
 app.Run();
