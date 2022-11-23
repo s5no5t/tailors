@@ -4,19 +4,6 @@
 @{
     ViewData["Title"] = "Home page";
 }
-@inject SignInManager<AppUser> SignInManager
-
-@if (SignInManager.IsSignedIn(User))
-{
-    <p>Hi, @User.Identity?.Name. You're currently signed in. 😎</p>
-    <p>
-        Your user is saved in Raven. <a href="http://live-test.ravendb.net/studio/index.html#databases/documents?collection=AppUsers&database=Raven.Identity.Sample.RazorPages">View it</a>.
-    </p>
-}
-else
-{
-    <p>You're not signed in. Click <a target="_blank" href="/identity/account/register">register</a> or <a href="/identity/account/login">login</a> to try out Raven.Identity.</p>
-}
 
 @foreach (var tweed in Model.Tweeds)
 {
