@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using Raven.Client.Documents;
+using Raven.Client.NodaTime;
+using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
 using Tweed.Web;
@@ -8,12 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-var ravenDbStore = new RavenDbStore();
-builder.Services.AddSingleton(ravenDbStore);
-
-builder.Services.AddScoped(serviceProvider => serviceProvider
-    .GetService<RavenDbStore>()
-    ?.OpenSession() ?? throw new InvalidOperationException());
+builder.Services.AddRavenDbDocStore(options =>
+{
+    options.BeforeInitializeDocStore = store => { store.ConfigureForNodaTime(); };
+});
+builder.Services.AddRavenDbAsyncSession();
 
 var identityBuilder = builder.Services
     .AddDefaultIdentity<AppUser>()
@@ -25,7 +27,11 @@ builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) ravenDbStore.EnsureDatabaseExists();
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var documentStore = app.Services.GetRequiredService<IDocumentStore>();
+    documentStore.EnsureDatabaseExists();
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) app.UseExceptionHandler("/Error");
