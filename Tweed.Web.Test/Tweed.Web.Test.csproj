@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.11" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
         <PackageReference Include="Moq" Version="4.18.2" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -23,9 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tweed.Data.Test\Tweed.Data.Test.csproj" />
-      <ProjectReference Include="..\Tweed.Data\Tweed.Data.csproj" />
-      <ProjectReference Include="..\Tweed.Web\Tweed.Web.csproj" />
+        <ProjectReference Include="..\Tweed.Data.Test\Tweed.Data.Test.csproj" />
+        <ProjectReference Include="..\Tweed.Data\Tweed.Data.csproj" />
+        <ProjectReference Include="..\Tweed.Web\Tweed.Web.csproj" />
     </ItemGroup>
 
 </Project>

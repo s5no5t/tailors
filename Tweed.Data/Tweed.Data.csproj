@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="NodaTime" Version="3.1.5" />
-      <PackageReference Include="RavenDB.Client" Version="5.4.4" />
-      <PackageReference Include="RavenDB.Client.NodaTime" Version="5.3.102" />
+        <PackageReference Include="NodaTime" Version="3.1.5"/>
+        <PackageReference Include="RavenDB.Client" Version="5.4.4"/>
+        <PackageReference Include="RavenDB.Client.NodaTime" Version="5.3.102"/>
     </ItemGroup>
 
 </Project>
