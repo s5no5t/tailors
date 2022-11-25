@@ -7,7 +7,7 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task CreateTweed(Models.Tweed tweed);
+    Task CreateTweed(Models.Tweed tweed, string? authorId = null);
     Task<IEnumerable<Models.Tweed>> GetLatestTweeds();
 }
 
@@ -20,15 +20,16 @@ public sealed class TweedQueries : ITweedQueries
         _session = session;
     }
 
-    public async Task CreateTweed(Models.Tweed tweed)
-    {
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        tweed.CreatedAt = now;
-        await _session.StoreAsync(tweed);
-    }
-
     public async Task<IEnumerable<Models.Tweed>> GetLatestTweeds()
     {
         return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();
+    }
+
+    public async Task CreateTweed(Models.Tweed tweed, string? authorId)
+    {
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        tweed.CreatedAt = now;
+        tweed.AuthorId = authorId;
+        await _session.StoreAsync(tweed);
     }
 }

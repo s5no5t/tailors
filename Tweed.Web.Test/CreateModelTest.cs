@@ -45,6 +45,6 @@ public class CreateModelTest
         createModel.Tweed = tweed;
         await createModel.OnPostAsync();
 
-        _tweedQueriesMock.Verify(t => t.CreateTweed(tweed));
+        _tweedQueriesMock.Verify(t => t.CreateTweed(tweed, null));
     }
 }

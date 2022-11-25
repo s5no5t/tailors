@@ -20,9 +20,22 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session);
         var tweed = new Models.Tweed();
-        await queries.CreateTweed(tweed);
+        await queries.CreateTweed(tweed, "123");
 
         Assert.NotNull(tweed.CreatedAt);
+    }
+
+    [Fact]
+    public async Task CreateTweed_UpdatesAuthorId()
+    {
+        using var ravenDb = new RavenTestDb();
+        using var session = ravenDb.Session;
+
+        var queries = new TweedQueries(session);
+        var tweed = new Models.Tweed();
+        await queries.CreateTweed(tweed, "123");
+
+        Assert.NotNull(tweed.AuthorId);
     }
 
     [Fact]
@@ -32,7 +45,7 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session.Object);
         var tweed = new Models.Tweed();
-        await queries.CreateTweed(tweed);
+        await queries.CreateTweed(tweed, "123");
 
         session.Verify(s => s.StoreAsync(tweed, default));
     }
