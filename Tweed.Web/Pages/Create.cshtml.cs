@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,14 +17,18 @@ public class CreateModel : PageModel
         _userManager = userManager;
     }
 
-    [BindProperty] public Data.Models.Tweed? Tweed { get; set; }
+    [BindProperty] [Required] [StringLength(280)] public string Content { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid || Tweed is null) return Page();
+        if (!ModelState.IsValid) return Page();
 
-        var user = _userManager.GetUserId(User);
-        await _tweedQueries.CreateTweed(Tweed, user);
+        var userId = _userManager.GetUserId(User);
+        var tweed = new Data.Models.Tweed()
+        {
+            Content = Content,
+        };
+        await _tweedQueries.CreateTweed(tweed, userId);
 
         return RedirectToPage("./index");
     }

@@ -32,10 +32,7 @@ public class CreateModelTest
     [Fact]
     public async Task OnPostAsync_ValidModel_ReturnsRedirectToPageResult()
     {
-        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object)
-        {
-            Tweed = new Data.Models.Tweed()
-        };
+        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object);
         var result = await createModel.OnPostAsync();
         Assert.IsType<RedirectToPageResult>(result);
     }
@@ -50,7 +47,6 @@ public class CreateModelTest
             PageContext = PageModelTestHelper.BuildPageContext(principal)
         };
         var tweed = new Data.Models.Tweed();
-        createModel.Tweed = tweed;
         await createModel.OnPostAsync();
 
         _tweedQueriesMock.Verify(t => t.CreateTweed(tweed, "123"));
