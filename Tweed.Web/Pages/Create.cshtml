@@ -7,7 +7,9 @@
 <h1>Create</h1>
 
 <form method="post">
-    Content: <input asp-for="Tweed!.Content"/>
-    <span asp-validation-for="Tweed!.Content"></span>
-    <input type="submit"/>
+    <div class="mb-3">
+        <label for="content" class="form-label">Content</label>
+        <input type="text" class="form-control" id="content" value="@Model.Tweed?.Content" name="Tweed.Content" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
