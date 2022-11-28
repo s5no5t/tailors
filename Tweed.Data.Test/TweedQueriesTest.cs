@@ -58,7 +58,7 @@ public class TweedQueriesTest
 
         Models.Tweed tweed = new()
         {
-            Content = "test"
+            Text = "test"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -76,14 +76,14 @@ public class TweedQueriesTest
 
         Models.Tweed olderTweed = new()
         {
-            Content = "older tweed",
+            Text = "older tweed",
             CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
         Models.Tweed recentTweed = new()
         {
-            Content = "recent tweed",
+            Text = "recent tweed",
             CreatedAt = recent
         };
         await session.StoreAsync(recentTweed);
@@ -106,7 +106,7 @@ public class TweedQueriesTest
         {
             Models.Tweed tweed = new()
             {
-                Content = "test",
+                Text = "test",
                 CreatedAt = dateTime
             };
             await session.StoreAsync(tweed);

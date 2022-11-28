@@ -17,7 +17,7 @@ public class CreateModel : PageModel
         _userManager = userManager;
     }
 
-    [BindProperty] [Required] [StringLength(280)] public string Content { get; set; }
+    [BindProperty] [Required] [StringLength(280)] public string Text { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -26,7 +26,7 @@ public class CreateModel : PageModel
         var userId = _userManager.GetUserId(User);
         var tweed = new Data.Models.Tweed()
         {
-            Content = Content,
+            Text = Text,
         };
         await _tweedQueries.CreateTweed(tweed, userId);
 
