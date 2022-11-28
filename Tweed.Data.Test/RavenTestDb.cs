@@ -13,7 +13,10 @@ public class RavenTestDb : RavenTestDriver
         _store = GetDocumentStore();
     }
 
-    public IAsyncDocumentSession OpenAsyncSession => _store.OpenAsyncSession();
+    public IAsyncDocumentSession OpenAsyncSession()
+    {
+        return _store.OpenAsyncSession();
+    }
 
     protected override void PreInitialize(IDocumentStore documentStore)
     {

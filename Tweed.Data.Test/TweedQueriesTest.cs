@@ -59,7 +59,7 @@ public class TweedQueriesTest
     public async Task GetLatestTweeds_ShouldReturnTweeds()
     {
         using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession;
+        using var session = ravenDb.OpenAsyncSession();
 
         Models.Tweed tweed = new()
         {
@@ -77,7 +77,7 @@ public class TweedQueriesTest
     public async Task GetLatestTweeds_ShouldReturnOrderedTweeds()
     {
         using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession;
+        using var session = ravenDb.OpenAsyncSession();
 
         Models.Tweed olderTweed = new()
         {
@@ -104,7 +104,7 @@ public class TweedQueriesTest
     public async Task GetLatestTweeds_ShouldReturn20Tweeds()
     {
         using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession;
+        using var session = ravenDb.OpenAsyncSession();
 
         var dateTime = FixedZonedDateTime;
         for (var i = 0; i < 25; i++)
