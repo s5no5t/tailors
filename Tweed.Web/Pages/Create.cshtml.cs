@@ -17,14 +17,14 @@ public class CreateModel : PageModel
         _userManager = userManager;
     }
 
-    [BindProperty] [Required] [StringLength(280)] public string Text { get; set; }
+    [BindProperty] [Required] [StringLength(280)] public string? Text { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid) return Page();
 
         var userId = _userManager.GetUserId(User);
-        var tweed = new Data.Models.Tweed()
+        var tweed = new Data.Models.Tweed
         {
             Text = Text,
         };
