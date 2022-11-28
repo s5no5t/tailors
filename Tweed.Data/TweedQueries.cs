@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Raven.Client.Documents;
+﻿using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 
@@ -7,7 +6,7 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task CreateTweed(Models.Tweed tweed, string? authorId = null);
+    Task StoreTweed(Models.Tweed tweed);
     Task<IEnumerable<Models.Tweed>> GetLatestTweeds();
 }
 
@@ -25,11 +24,13 @@ public sealed class TweedQueries : ITweedQueries
         return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();
     }
 
-    public async Task CreateTweed(Models.Tweed tweed, string? authorId)
+    public async Task StoreTweed(Models.Tweed tweed)
     {
-        Debug.Assert(tweed.CreatedAt != null);
+        if (tweed.CreatedAt is null)
+            throw new ArgumentException("tweed.CreatedAt must not be null");
+        if (tweed.AuthorId is null)
+            throw new ArgumentException("tweed.AuthorId must not be null");
 
-        tweed.AuthorId = authorId;
         await _session.StoreAsync(tweed);
     }
 }

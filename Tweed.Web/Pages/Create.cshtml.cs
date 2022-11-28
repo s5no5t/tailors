@@ -32,9 +32,10 @@ public class CreateModel : PageModel
         var tweed = new Data.Models.Tweed
         {
             Text = Text,
-            CreatedAt = now
+            CreatedAt = now,
+            AuthorId = userId
         };
-        await _tweedQueries.CreateTweed(tweed, userId);
+        await _tweedQueries.StoreTweed(tweed);
 
         return RedirectToPage("./index");
     }

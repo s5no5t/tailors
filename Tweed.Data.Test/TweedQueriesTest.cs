@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -13,23 +14,23 @@ public class TweedQueriesTest
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     [Fact]
-    public async Task CreateTweed_UpdatesAuthorId()
+    public async Task StoreTweed_SavesTweed()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.Session;
+        var session = new Mock<IAsyncDocumentSession>();
 
-        var queries = new TweedQueries(session);
+        var queries = new TweedQueries(session.Object);
         var tweed = new Models.Tweed
         {
-            CreatedAt = FixedZonedDateTime
+            CreatedAt = FixedZonedDateTime,
+            AuthorId = "123"
         };
-        await queries.CreateTweed(tweed, "123");
+        await queries.StoreTweed(tweed);
 
-        Assert.NotNull(tweed.AuthorId);
+        session.Verify(s => s.StoreAsync(tweed, default));
     }
 
     [Fact]
-    public async Task CreateTweed_SavesTweed()
+    public async Task StoreTweed_ValidatesAuthorId()
     {
         var session = new Mock<IAsyncDocumentSession>();
 
@@ -38,9 +39,20 @@ public class TweedQueriesTest
         {
             CreatedAt = FixedZonedDateTime
         };
-        await queries.CreateTweed(tweed, "123");
+        await Assert.ThrowsAsync<ArgumentException>(async () => await queries.StoreTweed(tweed));
+    }
 
-        session.Verify(s => s.StoreAsync(tweed, default));
+    [Fact]
+    public async Task StoreTweed_ValidatesCreatedAt()
+    {
+        var session = new Mock<IAsyncDocumentSession>();
+
+        var queries = new TweedQueries(session.Object);
+        var tweed = new Models.Tweed
+        {
+            AuthorId = "123"
+        };
+        await Assert.ThrowsAsync<ArgumentException>(async () => await queries.StoreTweed(tweed));
     }
 
     [Fact]

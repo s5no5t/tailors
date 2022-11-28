@@ -48,6 +48,6 @@ public class CreateModelTest
         };
         await createModel.OnPostAsync();
 
-        _tweedQueriesMock.Verify(t => t.CreateTweed(It.IsAny<Data.Models.Tweed>(), "123"));
+        _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Models.Tweed>()));
     }
 }
