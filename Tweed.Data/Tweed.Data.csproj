@@ -10,6 +10,7 @@
       <PackageReference Include="NodaTime" Version="3.1.5" />
       <PackageReference Include="RavenDB.Client" Version="5.4.4" />
       <PackageReference Include="RavenDB.Client.NodaTime" Version="5.3.102" />
+      <PackageReference Include="RavenDB.Identity" Version="8.0.7" />
     </ItemGroup>
 
 </Project>
