@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,6 +20,13 @@ public class CreateModelTest
     {
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
+    }
+
+    [Fact]
+    public void CreateModel_RequiresAuthorization()
+    {
+        var authorizeAttributeValue = Attribute.GetCustomAttribute(typeof(CreateModel), typeof(AuthorizeAttribute));
+        Assert.NotNull(authorizeAttributeValue);
     }
 
     [Fact]
