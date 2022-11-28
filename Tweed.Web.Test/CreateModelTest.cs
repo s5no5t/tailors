@@ -46,9 +46,8 @@ public class CreateModelTest
         {
             PageContext = PageModelTestHelper.BuildPageContext(principal)
         };
-        var tweed = new Data.Models.Tweed();
         await createModel.OnPostAsync();
 
-        _tweedQueriesMock.Verify(t => t.CreateTweed(tweed, "123"));
+        _tweedQueriesMock.Verify(t => t.CreateTweed(It.IsAny<Data.Models.Tweed>(), "123"));
     }
 }
