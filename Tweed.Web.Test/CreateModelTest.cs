@@ -45,7 +45,6 @@ public class CreateModelTest
         Assert.IsType<PageResult>(result);
     }
 
-
     [Fact]
     public async Task OnPostAsync_ValidModel_ReturnsRedirectToPageResult()
     {
