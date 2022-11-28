@@ -8,13 +8,13 @@
 @foreach (var tweed in Model.Tweeds)
 {
     <div class="card mt-2">
+        <div class="card-header">
+            @tweed.AuthorId
+        </div>
         <div class="card-body">
             <div class="card-text">
                 @tweed.Text
             </div>
-        </div>
-        <div class="card-footer small">
-            <small class="text-muted">@tweed.AuthorId</small>
         </div>
         <div class="card-footer small">
             <small class="text-muted">@tweed.CreatedAt</small>
