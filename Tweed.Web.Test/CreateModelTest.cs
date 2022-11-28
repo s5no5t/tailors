@@ -21,13 +21,30 @@ public class CreateModelTest
     }
 
     [Fact]
-    public async Task OnPostAsync_InvalidModel_ReturnsPageResult()
+    public async Task OnPostAsync_WhenTextIsNull_ReturnsPageResult()
     {
         var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object);
-        createModel.ModelState.AddModelError("someKey", "errorMessage");
+
+        createModel.Validate();
         var result = await createModel.OnPostAsync();
+
         Assert.IsType<PageResult>(result);
     }
+
+    [Fact]
+    public async Task OnPostAsync_WhenTextIsLongerThan280Chars_ReturnsPageResult()
+    {
+        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object)
+        {
+            Text = new string('a', 281)
+        };
+
+        createModel.Validate();
+        var result = await createModel.OnPostAsync();
+
+        Assert.IsType<PageResult>(result);
+    }
+
 
     [Fact]
     public async Task OnPostAsync_ValidModel_ReturnsRedirectToPageResult()
