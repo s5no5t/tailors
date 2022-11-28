@@ -4,7 +4,7 @@ using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
-using Tweed.Web;
+using Tweed.Data.Models;
 using Tweed.Web.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +35,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 {
     var documentStore = app.Services.GetRequiredService<IDocumentStore>();
     documentStore.EnsureDatabaseExists();
+    documentStore.EnsureIndexesExist();
 });
 
 // Configure the HTTP request pipeline.

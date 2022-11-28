@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using Tweed.Data;
+using Tweed.Data.Models;
 using Tweed.Web.Pages;
 using Xunit;
 
