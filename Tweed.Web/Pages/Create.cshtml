@@ -1,4 +1,5 @@
 @page
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 @model CreateModel
 @{
     ViewData["Title"] = "Create";
@@ -9,7 +10,17 @@
 <form method="post">
     <div class="mb-3">
         <label for="text" class="form-label">Content</label>
-        <input type="text" class="form-control" id="text" value="@Model.Text" name="Text" required>
+        @if (Model.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
+        {
+            <input type="text" class="form-control is-invalid" id="text" value="@Model.Text" name="Text" aria-describedby="validationTextFeedback">
+            <div id="validationTextFeedback" class="invalid-feedback">
+                Please enter a text.
+            </div>
+        }
+        else
+        {
+            <input type="text" class="form-control" id="text" value="@Model.Text" name="Text">
+        }
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
