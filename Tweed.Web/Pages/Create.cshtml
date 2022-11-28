@@ -9,7 +9,7 @@
 
 <form method="post">
     <div class="mb-3">
-        <label for="text" class="form-label">Content</label>
+        <label for="text" class="form-label">Text</label>
         @if (Model.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
         {
             <input type="text" class="form-control is-invalid" id="text" value="@Model.Text" name="Text" aria-describedby="validationTextFeedback">
