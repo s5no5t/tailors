@@ -13,26 +13,16 @@ public class TweedQueriesTest
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     [Fact]
-    public async Task CreateTweed_UpdatesCreatedAt()
-    {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.Session;
-
-        var queries = new TweedQueries(session);
-        var tweed = new Models.Tweed();
-        await queries.CreateTweed(tweed, "123");
-
-        Assert.NotNull(tweed.CreatedAt);
-    }
-
-    [Fact]
     public async Task CreateTweed_UpdatesAuthorId()
     {
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.Session;
 
         var queries = new TweedQueries(session);
-        var tweed = new Models.Tweed();
+        var tweed = new Models.Tweed
+        {
+            CreatedAt = FixedZonedDateTime
+        };
         await queries.CreateTweed(tweed, "123");
 
         Assert.NotNull(tweed.AuthorId);
@@ -44,7 +34,10 @@ public class TweedQueriesTest
         var session = new Mock<IAsyncDocumentSession>();
 
         var queries = new TweedQueries(session.Object);
-        var tweed = new Models.Tweed();
+        var tweed = new Models.Tweed
+        {
+            CreatedAt = FixedZonedDateTime
+        };
         await queries.CreateTweed(tweed, "123");
 
         session.Verify(s => s.StoreAsync(tweed, default));

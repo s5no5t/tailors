@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NodaTime;
 using Tweed.Data;
 
 namespace Tweed.Web.Pages;
@@ -17,16 +18,21 @@ public class CreateModel : PageModel
         _userManager = userManager;
     }
 
-    [BindProperty] [Required] [StringLength(280)] public string? Text { get; set; }
+    [BindProperty]
+    [Required]
+    [StringLength(280)]
+    public string? Text { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid) return Page();
 
         var userId = _userManager.GetUserId(User);
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
         var tweed = new Data.Models.Tweed
         {
             Text = Text,
+            CreatedAt = now
         };
         await _tweedQueries.CreateTweed(tweed, userId);
 

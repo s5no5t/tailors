@@ -1,4 +1,4 @@
-﻿using NodaTime;
+﻿using System.Diagnostics;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
@@ -27,8 +27,8 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task CreateTweed(Models.Tweed tweed, string? authorId)
     {
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        tweed.CreatedAt = now;
+        Debug.Assert(tweed.CreatedAt != null);
+
         tweed.AuthorId = authorId;
         await _session.StoreAsync(tweed);
     }
