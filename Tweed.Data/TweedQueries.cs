@@ -8,6 +8,7 @@ public interface ITweedQueries
 {
     Task StoreTweed(Entities.Tweed tweed);
     Task<IEnumerable<Entities.Tweed>> GetLatestTweeds();
+    Task<Entities.Tweed?> GetById(string id);
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -23,6 +24,11 @@ public sealed class TweedQueries : ITweedQueries
     {
         return await _session.Query<Entities.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20)
             .ToListAsync();
+    }
+
+    public Task<Entities.Tweed?> GetById(string id)
+    {
+        return _session.LoadAsync<Entities.Tweed>(id)!;
     }
 
     public async Task StoreTweed(Entities.Tweed tweed)
