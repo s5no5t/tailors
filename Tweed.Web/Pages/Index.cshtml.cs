@@ -23,15 +23,16 @@ public class IndexModel : PageModel
     {
         var latestTweeds = await _tweedQueries.GetLatestTweeds();
 
-        var tweeds = await Task.WhenAll(latestTweeds.Select(async l => new Tweed
+        var tweeds = latestTweeds.Select(l => new Tweed
         {
             Id = l.Id,
             Text = l.Text, CreatedAt = l.CreatedAt,
-            Author = l.AuthorId != null
-                ? (await _userManager.FindByIdAsync(l.AuthorId)).UserName
-                : null,
+            AuthorId = l.AuthorId,
             Likes = l.Likes
-        }));
+        }).ToList();
+
+        foreach (var tweed in tweeds)
+            tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
 
         Tweeds.AddRange(tweeds);
     }
@@ -46,6 +47,7 @@ public class IndexModel : PageModel
 
     public class Tweed
     {
+        public string? AuthorId { get; set; }
         public string? Author { get; set; }
         public string? Text { get; set; }
         public ZonedDateTime? CreatedAt { get; set; }
