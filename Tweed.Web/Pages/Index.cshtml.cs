@@ -29,7 +29,8 @@ public class IndexModel : PageModel
             Text = l.Text, CreatedAt = l.CreatedAt,
             Author = l.AuthorId != null
                 ? (await _userManager.FindByIdAsync(l.AuthorId)).UserName
-                : null
+                : null,
+            Likes = l.Likes
         }));
 
         Tweeds.AddRange(tweeds);
@@ -49,5 +50,6 @@ public class IndexModel : PageModel
         public string? Text { get; set; }
         public ZonedDateTime? CreatedAt { get; set; }
         public string Id { get; set; }
+        public int? Likes { get; set; }
     }
 }
