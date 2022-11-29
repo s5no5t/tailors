@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Pages;
@@ -69,13 +70,15 @@ public class CreateModelTest
     public async Task OnPostAsync_SavesTweed()
     {
         var principal = PageModelTestHelper.BuildPrincipal();
-        _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("123");
+        _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("user1");
         var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object)
         {
-            PageContext = PageModelTestHelper.BuildPageContext(principal)
+            PageContext = PageModelTestHelper.BuildPageContext(principal),
+            Text = "text"
         };
         await createModel.OnPostAsync();
 
-        _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Entities.Tweed>()));
+        _tweedQueriesMock.Verify(t =>
+            t.StoreTweed("text", "user1", It.IsAny<ZonedDateTime>()));
     }
 }

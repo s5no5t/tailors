@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,42 +27,9 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var session = new Mock<IAsyncDocumentSession>();
 
         var queries = new TweedQueries(session.Object);
-        var tweed = new Entities.Tweed
-        {
-            CreatedAt = FixedZonedDateTime,
-            AuthorId = "123"
-        };
-        await queries.StoreTweed(tweed);
+        await queries.StoreTweed("text", "user1", FixedZonedDateTime);
 
-        session.Verify(s => s.StoreAsync(tweed, default));
-    }
-
-    [Fact]
-    public async Task StoreTweed_ValidatesAuthorId()
-    {
-        var session = new Mock<IAsyncDocumentSession>();
-
-        var queries = new TweedQueries(session.Object);
-        var tweed = new Entities.Tweed
-        {
-            CreatedAt = FixedZonedDateTime
-        };
-
-        await Assert.ThrowsAsync<ArgumentException>(async () => await queries.StoreTweed(tweed));
-    }
-
-    [Fact]
-    public async Task StoreTweed_ValidatesCreatedAt()
-    {
-        var session = new Mock<IAsyncDocumentSession>();
-
-        var queries = new TweedQueries(session.Object);
-        var tweed = new Entities.Tweed
-        {
-            AuthorId = "123"
-        };
-
-        await Assert.ThrowsAsync<ArgumentException>(async () => await queries.StoreTweed(tweed));
+        session.Verify(s => s.StoreAsync(It.IsAny<Entities.Tweed>(), default));
     }
 
     [Fact]

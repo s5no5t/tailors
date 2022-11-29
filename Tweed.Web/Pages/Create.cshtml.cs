@@ -32,13 +32,7 @@ public class CreateModel : PageModel
 
         var userId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        var tweed = new Data.Entities.Tweed
-        {
-            Text = Text,
-            CreatedAt = now,
-            AuthorId = userId
-        };
-        await _tweedQueries.StoreTweed(tweed);
+        await _tweedQueries.StoreTweed(Text!, userId, now);
 
         return RedirectToPage("./index");
     }

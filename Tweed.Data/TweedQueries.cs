@@ -8,7 +8,7 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task StoreTweed(Entities.Tweed tweed);
+    Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
     Task<IEnumerable<Entities.Tweed>> GetLatestTweeds();
     Task<Entities.Tweed?> GetById(string id);
     Task AddLike(string id, string userId, ZonedDateTime likedAt);
@@ -46,13 +46,14 @@ public sealed class TweedQueries : ITweedQueries
         });
     }
 
-    public async Task StoreTweed(Entities.Tweed tweed)
+    public async Task StoreTweed(string text, string authorId, ZonedDateTime createdAt)
     {
-        if (tweed.CreatedAt is null)
-            throw new ArgumentException("tweed.CreatedAt must not be null");
-        if (tweed.AuthorId is null)
-            throw new ArgumentException("tweed.AuthorId must not be null");
-
+        var tweed = new Entities.Tweed
+        {
+            CreatedAt = createdAt,
+            AuthorId = authorId,
+            Text = text
+        };
         await _session.StoreAsync(tweed);
     }
 }
