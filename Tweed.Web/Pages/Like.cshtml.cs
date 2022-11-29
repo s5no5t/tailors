@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 
@@ -28,7 +29,8 @@ public class LikeModel : PageModel
             return BadRequest();
 
         var userId = _userManager.GetUserId(User);
-        await _tweedQueries.AddLike(Id!, userId);
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        await _tweedQueries.AddLike(Id!, userId, now);
 
         return RedirectToPage("./index");
     }

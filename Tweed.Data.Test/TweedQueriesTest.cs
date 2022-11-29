@@ -184,7 +184,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.AddLike(tweed.Id, "user1");
+        await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
 
         Assert.Equal(1, tweed.LikedBy.Count);
     }
@@ -211,7 +211,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.AddLike(tweed.Id, "user1");
+        await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
 
         Assert.Equal(1, tweed.LikedBy.Count);
     }

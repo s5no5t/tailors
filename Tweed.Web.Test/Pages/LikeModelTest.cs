@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Pages;
@@ -33,7 +34,7 @@ public class LikeModelTest
             Id = "123"
         };
         await likeModel.OnPostAsync();
-        tweedQueriesMock.Verify(t => t.AddLike("123", "user1"));
+        tweedQueriesMock.Verify(t => t.AddLike("123", "user1", It.IsAny<ZonedDateTime>()));
     }
 
     [Fact]

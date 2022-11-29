@@ -14,4 +14,5 @@ public class Tweed
 public class LikedBy
 {
     public string? UserId { get; set; }
+    public ZonedDateTime? LikedAt { get; set; }
 }

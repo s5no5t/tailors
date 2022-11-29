@@ -1,4 +1,5 @@
-﻿using Raven.Client.Documents;
+﻿using NodaTime;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Entities;
@@ -10,7 +11,7 @@ public interface ITweedQueries
     Task StoreTweed(Entities.Tweed tweed);
     Task<IEnumerable<Entities.Tweed>> GetLatestTweeds();
     Task<Entities.Tweed?> GetById(string id);
-    Task AddLike(string id, string userId);
+    Task AddLike(string id, string userId, ZonedDateTime likedAt);
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -33,14 +34,15 @@ public sealed class TweedQueries : ITweedQueries
         return _session.LoadAsync<Entities.Tweed>(id)!;
     }
 
-    public async Task AddLike(string id, string userId)
+    public async Task AddLike(string id, string userId, ZonedDateTime likedAt)
     {
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
         if (tweed.LikedBy.Any(l => l.UserId == userId))
             return;
         tweed.LikedBy.Add(new LikedBy
         {
-            UserId = userId
+            UserId = userId,
+            LikedAt = likedAt
         });
     }
 
