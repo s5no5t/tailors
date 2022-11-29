@@ -26,7 +26,8 @@ internal static class PageModelTestHelper
             User = user
         };
         var modelState = new ModelStateDictionary();
-        var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+        var actionContext = new ActionContext(httpContext, new RouteData(),
+            new PageActionDescriptor(), modelState);
 
         var pageContext = new PageContext(actionContext);
         return pageContext;

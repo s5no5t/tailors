@@ -19,7 +19,8 @@ public static class RavenExtensions
         {
             try
             {
-                store.Maintenance.Server.Send(new CreateDatabaseOperation(new DatabaseRecord(store.Database)));
+                store.Maintenance.Server.Send(
+                    new CreateDatabaseOperation(new DatabaseRecord(store.Database)));
             }
             catch (ConcurrencyException)
             {

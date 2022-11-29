@@ -26,7 +26,8 @@ public class CreateModelTest
     [Fact]
     public void CreateModel_RequiresAuthorization()
     {
-        var authorizeAttributeValue = Attribute.GetCustomAttribute(typeof(CreateModel), typeof(AuthorizeAttribute));
+        var authorizeAttributeValue =
+            Attribute.GetCustomAttribute(typeof(CreateModel), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 

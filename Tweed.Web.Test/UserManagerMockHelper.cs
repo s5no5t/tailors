@@ -14,13 +14,15 @@ internal static class UserManagerMockHelper
     internal static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
     {
         var store = new Mock<IUserStore<TUser>>();
-        var mgr = new Mock<UserManager<TUser>>(store.Object, null, null, null, null, null, null, null, null);
+        var mgr = new Mock<UserManager<TUser>>(store.Object, null, null, null, null, null, null,
+            null, null);
         mgr.Object.UserValidators.Add(new UserValidator<TUser>());
         mgr.Object.PasswordValidators.Add(new PasswordValidator<TUser>());
         return mgr;
     }
 
-    internal static Mock<RoleManager<TRole>> MockRoleManager<TRole>(IRoleStore<TRole>? store = null) where TRole : class
+    internal static Mock<RoleManager<TRole>> MockRoleManager<TRole>(IRoleStore<TRole>? store = null)
+        where TRole : class
     {
         store = store ?? new Mock<IRoleStore<TRole>>().Object;
         var roles = new List<IRoleValidator<TRole>>();
@@ -29,7 +31,8 @@ internal static class UserManagerMockHelper
             new IdentityErrorDescriber(), null);
     }
 
-    internal static UserManager<TUser> TestUserManager<TUser>(IUserStore<TUser>? store = null) where TUser : class
+    internal static UserManager<TUser> TestUserManager<TUser>(IUserStore<TUser>? store = null)
+        where TUser : class
     {
         store = store ?? new Mock<IUserStore<TUser>>().Object;
         var options = new Mock<IOptions<IdentityOptions>>();
@@ -50,7 +53,8 @@ internal static class UserManagerMockHelper
         return userManager;
     }
 
-    internal static RoleManager<TRole> TestRoleManager<TRole>(IRoleStore<TRole>? store = null) where TRole : class
+    internal static RoleManager<TRole> TestRoleManager<TRole>(IRoleStore<TRole>? store = null)
+        where TRole : class
     {
         store = store ?? new Mock<IRoleStore<TRole>>().Object;
         var roles = new List<IRoleValidator<TRole>>();

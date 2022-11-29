@@ -13,7 +13,8 @@ public static class ViewModelValidator
         var validationResults = new List<ValidationResult>();
         Validator.TryValidateObject(viewModel, validationContext, validationResults, true);
         foreach (var validationResult in validationResults)
-            viewModel.ModelState.AddModelError(validationResult.MemberNames.FirstOrDefault() ?? string.Empty,
+            viewModel.ModelState.AddModelError(
+                validationResult.MemberNames.FirstOrDefault() ?? string.Empty,
                 validationResult.ErrorMessage!);
     }
 }
