@@ -8,10 +8,17 @@ using Xunit;
 
 namespace Tweed.Data.Test;
 
-public class TweedQueriesTest
+public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+
+    private readonly RavenTestDbFixture _ravenDb;
+
+    public TweedQueriesTest(RavenTestDbFixture ravenDb)
+    {
+        _ravenDb = ravenDb;
+    }
 
     [Fact]
     public async Task StoreTweed_SavesTweed()
@@ -39,7 +46,7 @@ public class TweedQueriesTest
         {
             CreatedAt = FixedZonedDateTime
         };
-        
+
         await Assert.ThrowsAsync<ArgumentException>(async () => await queries.StoreTweed(tweed));
     }
 
@@ -53,15 +60,15 @@ public class TweedQueriesTest
         {
             AuthorId = "123"
         };
-        
+
         await Assert.ThrowsAsync<ArgumentException>(async () => await queries.StoreTweed(tweed));
     }
 
     [Fact]
     public async Task GetLatestTweeds_ShouldReturnTweeds()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession();
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
 
         Entities.Tweed tweed = new()
         {
@@ -72,15 +79,15 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session);
         var tweeds = await queries.GetLatestTweeds();
-        
+
         Assert.NotEmpty(tweeds);
     }
 
     [Fact]
     public async Task GetLatestTweeds_ShouldReturnOrderedTweeds()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession();
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
 
         Entities.Tweed olderTweed = new()
         {
@@ -99,7 +106,7 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session);
         var tweeds = (await queries.GetLatestTweeds()).ToList();
-        
+
         Assert.Equal(recentTweed, tweeds[0]);
         Assert.Equal(olderTweed, tweeds[1]);
     }
@@ -107,8 +114,8 @@ public class TweedQueriesTest
     [Fact]
     public async Task GetLatestTweeds_ShouldReturn20Tweeds()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession();
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
 
         for (var i = 0; i < 25; i++)
         {
@@ -124,15 +131,15 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session);
         var tweeds = (await queries.GetLatestTweeds()).ToList();
-        
+
         Assert.Equal(20, tweeds.Count);
     }
 
     [Fact]
     public async Task GetById_ShouldReturnTweed()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession();
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
 
         Entities.Tweed tweed = new()
         {
@@ -144,19 +151,19 @@ public class TweedQueriesTest
 
         var queries = new TweedQueries(session);
         var tweed2 = await queries.GetById(tweed.Id);
-        
+
         Assert.Equal(tweed.Id, tweed2?.Id);
     }
 
     [Fact]
     public async Task GetById_WithInvalidId_ShouldReturnNull()
     {
-        using var ravenDb = new RavenTestDb();
-        using var session = ravenDb.OpenAsyncSession();
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
 
         var queries = new TweedQueries(session);
         var tweed = await queries.GetById("invalid");
-        
+
         Assert.Null(tweed);
     }
 }
