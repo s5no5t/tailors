@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Tweed.Web.Test;
+namespace Tweed.Web.Test.Helper;
 
 public static class ViewModelValidator
 {

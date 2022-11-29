@@ -4,9 +4,10 @@ using Moq;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Pages;
+using Tweed.Web.Test.Helper;
 using Xunit;
 
-namespace Tweed.Web.Test;
+namespace Tweed.Web.Test.Pages;
 
 public class IndexModelTest
 {

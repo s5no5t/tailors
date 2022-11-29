@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace Tweed.Web.Test;
+namespace Tweed.Web.Test.Helper;
 
 internal static class UserManagerMockHelper
 {
@@ -65,7 +65,7 @@ internal static class UserManagerMockHelper
             null);
     }
 
-    internal static ILookupNormalizer MockLookupNormalizer()
+    private static ILookupNormalizer MockLookupNormalizer()
     {
         var normalizerFunc = new Func<string, string>(i =>
         {
