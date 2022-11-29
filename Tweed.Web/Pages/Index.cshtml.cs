@@ -37,14 +37,6 @@ public class IndexModel : PageModel
         Tweeds.AddRange(tweeds);
     }
 
-    private string GetLinkId(string ravenDbId)
-    {
-        var splits = ravenDbId.Split('/');
-        if (splits.Length != 2)
-            throw new ArgumentException("Can't parse ID");
-        return splits[1];
-    }
-
     public class Tweed
     {
         public string? AuthorId { get; set; }
