@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NodaTime;
 using Tweed.Data;
-using Tweed.Data.Models;
+using Tweed.Data.Entities;
 
 namespace Tweed.Web.Pages;
 
@@ -32,7 +32,7 @@ public class CreateModel : PageModel
 
         var userId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        var tweed = new Data.Models.Tweed
+        var tweed = new Data.Entities.Tweed
         {
             Text = Text,
             CreatedAt = now,

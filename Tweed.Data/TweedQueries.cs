@@ -6,8 +6,8 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task StoreTweed(Models.Tweed tweed);
-    Task<IEnumerable<Models.Tweed>> GetLatestTweeds();
+    Task StoreTweed(Entities.Tweed tweed);
+    Task<IEnumerable<Entities.Tweed>> GetLatestTweeds();
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -19,12 +19,12 @@ public sealed class TweedQueries : ITweedQueries
         _session = session;
     }
 
-    public async Task<IEnumerable<Models.Tweed>> GetLatestTweeds()
+    public async Task<IEnumerable<Entities.Tweed>> GetLatestTweeds()
     {
-        return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();
+        return await _session.Query<Entities.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();
     }
 
-    public async Task StoreTweed(Models.Tweed tweed)
+    public async Task StoreTweed(Entities.Tweed tweed)
     {
         if (tweed.CreatedAt is null)
             throw new ArgumentException("tweed.CreatedAt must not be null");

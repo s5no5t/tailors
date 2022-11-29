@@ -1,6 +1,6 @@
 using NodaTime;
 
-namespace Tweed.Data.Models;
+namespace Tweed.Data.Entities;
 
 public class Tweed
 {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using Tweed.Data;
-using Tweed.Data.Models;
+using Tweed.Data.Entities;
 using Tweed.Web.Pages;
 using Xunit;
 
@@ -74,6 +74,6 @@ public class CreateModelTest
         };
         await createModel.OnPostAsync();
 
-        _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Models.Tweed>()));
+        _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Entities.Tweed>()));
     }
 }

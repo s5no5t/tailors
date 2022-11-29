@@ -4,7 +4,7 @@ using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
-using Tweed.Data.Models;
+using Tweed.Data.Entities;
 using Tweed.Web.Filters;
 
 var builder = WebApplication.CreateBuilder(args);

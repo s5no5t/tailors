@@ -19,7 +19,7 @@ public class TweedQueriesTest
         var session = new Mock<IAsyncDocumentSession>();
 
         var queries = new TweedQueries(session.Object);
-        var tweed = new Models.Tweed
+        var tweed = new Entities.Tweed
         {
             CreatedAt = FixedZonedDateTime,
             AuthorId = "123"
@@ -35,7 +35,7 @@ public class TweedQueriesTest
         var session = new Mock<IAsyncDocumentSession>();
 
         var queries = new TweedQueries(session.Object);
-        var tweed = new Models.Tweed
+        var tweed = new Entities.Tweed
         {
             CreatedAt = FixedZonedDateTime
         };
@@ -48,7 +48,7 @@ public class TweedQueriesTest
         var session = new Mock<IAsyncDocumentSession>();
 
         var queries = new TweedQueries(session.Object);
-        var tweed = new Models.Tweed
+        var tweed = new Entities.Tweed
         {
             AuthorId = "123"
         };
@@ -61,7 +61,7 @@ public class TweedQueriesTest
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.OpenAsyncSession();
 
-        Models.Tweed tweed = new()
+        Entities.Tweed tweed = new()
         {
             Text = "test"
         };
@@ -79,14 +79,14 @@ public class TweedQueriesTest
         using var ravenDb = new RavenTestDb();
         using var session = ravenDb.OpenAsyncSession();
 
-        Models.Tweed olderTweed = new()
+        Entities.Tweed olderTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Models.Tweed recentTweed = new()
+        Entities.Tweed recentTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent
@@ -109,7 +109,7 @@ public class TweedQueriesTest
         var dateTime = FixedZonedDateTime;
         for (var i = 0; i < 25; i++)
         {
-            Models.Tweed tweed = new()
+            Entities.Tweed tweed = new()
             {
                 Text = "test",
                 CreatedAt = dateTime

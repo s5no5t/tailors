@@ -1,6 +1,6 @@
 using Raven.Identity;
 
-namespace Tweed.Data.Models;
+namespace Tweed.Data.Entities;
 
 public class AppUser : IdentityUser
 {

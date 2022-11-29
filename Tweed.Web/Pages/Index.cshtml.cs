@@ -12,7 +12,7 @@ public class IndexModel : PageModel
         _tweedQueries = tweedQueries;
     }
 
-    public List<Data.Models.Tweed> Tweeds { get; } = new();
+    public List<Data.Entities.Tweed> Tweeds { get; } = new();
 
     public async Task OnGetAsync()
     {
