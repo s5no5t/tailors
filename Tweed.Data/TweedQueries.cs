@@ -1,6 +1,7 @@
 ﻿using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
+using Tweed.Data.Entities;
 
 namespace Tweed.Data;
 
@@ -9,7 +10,7 @@ public interface ITweedQueries
     Task StoreTweed(Entities.Tweed tweed);
     Task<IEnumerable<Entities.Tweed>> GetLatestTweeds();
     Task<Entities.Tweed?> GetById(string id);
-    Task AddLike(string id);
+    Task AddLike(string id, string userId);
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -32,10 +33,15 @@ public sealed class TweedQueries : ITweedQueries
         return _session.LoadAsync<Entities.Tweed>(id)!;
     }
 
-    public async Task AddLike(string id)
+    public async Task AddLike(string id, string userId)
     {
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
-        tweed.Likes++;
+        if (tweed.LikedBy.Any(l => l.UserId == userId))
+            return;
+        tweed.LikedBy.Add(new LikedBy
+        {
+            UserId = userId
+        });
     }
 
     public async Task StoreTweed(Entities.Tweed tweed)

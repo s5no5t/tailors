@@ -28,7 +28,7 @@ public class IndexModel : PageModel
             Id = l.Id,
             Text = l.Text, CreatedAt = l.CreatedAt,
             AuthorId = l.AuthorId,
-            Likes = l.Likes
+            Likes = l.LikedBy.Count
         }).ToList();
 
         foreach (var tweed in tweeds)

@@ -25,12 +25,15 @@ public class LikeModelTest
     public async Task OnPost_ShouldIncreaseLikes()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
+        var principal = PageModelTestHelper.BuildPrincipal();
+        _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("user1");
         var likeModel = new LikeModel(tweedQueriesMock.Object, _userManagerMock.Object)
         {
+            PageContext = PageModelTestHelper.BuildPageContext(principal),
             Id = "123"
         };
         await likeModel.OnPostAsync();
-        tweedQueriesMock.Verify(t => t.AddLike("123"));
+        tweedQueriesMock.Verify(t => t.AddLike("123", "user1"));
     }
 
     [Fact]

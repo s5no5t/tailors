@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NodaTime;
 using Raven.Client.Documents.Session;
+using Tweed.Data.Entities;
 using Xunit;
 
 namespace Tweed.Data.Test;
@@ -182,8 +184,35 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.AddLike(tweed.Id);
+        await queries.AddLike(tweed.Id, "user1");
 
-        Assert.Equal(1, tweed.Likes);
+        Assert.Equal(1, tweed.LikedBy.Count);
+    }
+
+    [Fact]
+    public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            LikedBy = new List<LikedBy>
+            {
+                new()
+                {
+                    UserId = "user1"
+                }
+            }
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        await queries.AddLike(tweed.Id, "user1");
+
+        Assert.Equal(1, tweed.LikedBy.Count);
     }
 }

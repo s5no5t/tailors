@@ -12,10 +12,12 @@ namespace Tweed.Web.Pages;
 public class LikeModel : PageModel
 {
     private readonly ITweedQueries _tweedQueries;
+    private readonly UserManager<AppUser> _userManager;
 
     public LikeModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
     {
         _tweedQueries = tweedQueries;
+        _userManager = userManager;
     }
 
     [FromQuery] [Required] public string? Id { get; set; }
@@ -25,7 +27,8 @@ public class LikeModel : PageModel
         if (!ModelState.IsValid)
             return BadRequest();
 
-        await _tweedQueries.AddLike(Id!);
+        var userId = _userManager.GetUserId(User);
+        await _tweedQueries.AddLike(Id!, userId);
 
         return RedirectToPage("./index");
     }
