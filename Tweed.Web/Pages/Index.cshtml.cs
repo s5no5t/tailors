@@ -25,7 +25,7 @@ public class IndexModel : PageModel
 
         var tweeds = await Task.WhenAll(latestTweeds.Select(async l => new Tweed
         {
-            NumericId = l.Id,
+            Id = l.Id,
             Text = l.Text, CreatedAt = l.CreatedAt,
             Author = l.AuthorId != null
                 ? (await _userManager.FindByIdAsync(l.AuthorId)).UserName
@@ -48,6 +48,6 @@ public class IndexModel : PageModel
         public string? Author { get; set; }
         public string? Text { get; set; }
         public ZonedDateTime? CreatedAt { get; set; }
-        public string NumericId { get; set; }
+        public string Id { get; set; }
     }
 }
