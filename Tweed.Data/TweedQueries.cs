@@ -9,6 +9,7 @@ public interface ITweedQueries
     Task StoreTweed(Entities.Tweed tweed);
     Task<IEnumerable<Entities.Tweed>> GetLatestTweeds();
     Task<Entities.Tweed?> GetById(string id);
+    Task AddLike(string id);
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -29,6 +30,12 @@ public sealed class TweedQueries : ITweedQueries
     public Task<Entities.Tweed?> GetById(string id)
     {
         return _session.LoadAsync<Entities.Tweed>(id)!;
+    }
+
+    public async Task AddLike(string id)
+    {
+        var tweed = await _session.LoadAsync<Entities.Tweed>(id);
+        tweed.Likes++;
     }
 
     public async Task StoreTweed(Entities.Tweed tweed)

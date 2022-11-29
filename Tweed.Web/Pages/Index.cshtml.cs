@@ -25,6 +25,7 @@ public class IndexModel : PageModel
 
         var tweeds = await Task.WhenAll(latestTweeds.Select(async l => new Tweed
         {
+            NumericId = l.Id,
             Text = l.Text, CreatedAt = l.CreatedAt,
             Author = l.AuthorId != null
                 ? (await _userManager.FindByIdAsync(l.AuthorId)).UserName
@@ -34,10 +35,19 @@ public class IndexModel : PageModel
         Tweeds.AddRange(tweeds);
     }
 
+    private string GetLinkId(string ravenDbId)
+    {
+        var splits = ravenDbId.Split('/');
+        if (splits.Length != 2)
+            throw new ArgumentException("Can't parse ID");
+        return splits[1];
+    }
+
     public class Tweed
     {
         public string? Author { get; set; }
         public string? Text { get; set; }
         public ZonedDateTime? CreatedAt { get; set; }
+        public string NumericId { get; set; }
     }
 }

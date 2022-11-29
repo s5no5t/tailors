@@ -8,4 +8,5 @@ public class Tweed
     public string? Text { get; init; }
     public ZonedDateTime? CreatedAt { get; init; }
     public string? AuthorId { get; set; }
+    public int Likes { get; set; }
 }

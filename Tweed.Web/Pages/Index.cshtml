@@ -18,7 +18,11 @@
         </div>
         <div class="card-footer small">
             <small class="text-muted">@tweed.CreatedAt</small>
-            <i class="bi bi-balloon-heart" style="font-size: 1.5em"></i>
+            <form method="post">
+                <button asp-page="/like" asp-route-id="@tweed.NumericId">
+                    <i class="bi bi-balloon-heart" style="font-size: 1.5em"></i>
+                </button>
+            </form>
         </div>
     </div>
 }

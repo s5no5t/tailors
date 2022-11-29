@@ -166,4 +166,24 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Null(tweed);
     }
+
+    [Fact]
+    public async Task AddLike_ShouldIncreaseLikes()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        await queries.AddLike(tweed.Id);
+
+        Assert.Equal(1, tweed.Likes);
+    }
 }
