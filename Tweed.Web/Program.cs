@@ -6,6 +6,7 @@ using Raven.Identity;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Filters;
+using Tweed.Web.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ var identityBuilder = builder.Services
 identityBuilder.AddDefaultUI();
 
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
+builder.Services.AddScoped<INotificationManager, NotificationManager>();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages()
     .AddMvcOptions(o => o.Filters.Add<RavenSaveChangesAsyncFilter>());

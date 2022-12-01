@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 
-namespace Tweed.Web.Test.Helper;
+namespace Tweed.Web.Test.TestHelper;
 
 internal static class PageModelTestHelper
 {

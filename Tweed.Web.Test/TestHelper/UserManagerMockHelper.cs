@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace Tweed.Web.Test.Helper;
+namespace Tweed.Web.Test.TestHelper;
 
 internal static class UserManagerMockHelper
 {

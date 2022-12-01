@@ -4,7 +4,7 @@ using Moq;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Pages;
-using Tweed.Web.Test.Helper;
+using Tweed.Web.Test.TestHelper;
 using Xunit;
 
 namespace Tweed.Web.Test.Pages;
