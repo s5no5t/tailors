@@ -181,4 +181,76 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Equal(1, tweed.LikedBy.Count);
     }
+
+    [Fact]
+    public async Task GetTweedsForUser_ShouldReturnTweeds()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            AuthorId = "user1"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        var tweeds = await queries.GetTweedsForUser("user1");
+
+        Assert.NotEmpty(tweeds);
+    }
+    
+    [Fact]
+    public async Task GetTweedsForUser_ShouldReturnOrderedTweeds()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed olderTweed = new()
+        {
+            Text = "older tweed",
+            CreatedAt = FixedZonedDateTime
+        };
+        await session.StoreAsync(olderTweed);
+        var recent = FixedZonedDateTime.PlusHours(1);
+        Entities.Tweed recentTweed = new()
+        {
+            Text = "recent tweed",
+            CreatedAt = recent
+        };
+        await session.StoreAsync(recentTweed);
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
+
+        Assert.Equal(recentTweed, tweeds[0]);
+        Assert.Equal(olderTweed, tweeds[1]);
+    }
+
+    [Fact]
+    public async Task GetTweedsForUser_ShouldReturn20Tweeds()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        for (var i = 0; i < 25; i++)
+        {
+            Entities.Tweed tweed = new()
+            {
+                Text = "test",
+                CreatedAt = FixedZonedDateTime
+            };
+            await session.StoreAsync(tweed);
+        }
+
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
+
+        Assert.Equal(20, tweeds.Count);
+    }
 }
