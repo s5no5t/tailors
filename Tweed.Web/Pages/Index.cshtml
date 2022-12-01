@@ -1,11 +1,15 @@
 ﻿@page
+@using Tweed.Data.Entities
 @model IndexPageModel
+@inject SignInManager<AppUser> SignInManager
 
 @{
     ViewData["Title"] = "Home page";
 }
 
 <partial name="_NotificationPartial"/>
+
+<h1>All Tweeds</h1>
 
 @foreach (var tweed in Model.Tweeds)
 {
