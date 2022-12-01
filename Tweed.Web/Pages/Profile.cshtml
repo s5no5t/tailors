@@ -9,23 +9,5 @@
 
 @foreach (var tweed in Model.Tweeds)
 {
-    <div class="card mt-2">
-        <div class="card-header">
-            <a asp-page="/profile" asp-route-user-id="@tweed.AuthorId">@tweed.Author</a>
-        </div>
-        <div class="card-body">
-            <div class="card-text">
-                @tweed.Text
-            </div>
-        </div>
-        <div class="card-footer small">
-            <small class="text-muted">@tweed.CreatedAt</small>
-            <small class="text-muted">Likes: @tweed.Likes</small>
-            <form method="post">
-                <button asp-page="/like" asp-route-id="@tweed.Id">
-                    <i class="bi bi-balloon-heart" style="font-size: 1.5em"></i>
-                </button>
-            </form>
-        </div>
-    </div>
+    <partial name="Shared/_Tweed" model="tweed"/>
 }

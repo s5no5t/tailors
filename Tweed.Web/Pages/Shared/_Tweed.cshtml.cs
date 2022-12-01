@@ -1,6 +1,6 @@
 using NodaTime;
 
-namespace Tweed.Web.Pages;
+namespace Tweed.Web.Pages.Shared;
 
 public class TweedViewModel
 {
