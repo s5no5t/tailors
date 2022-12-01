@@ -9,11 +9,11 @@ using Xunit;
 
 namespace Tweed.Web.Test.Pages;
 
-public class IndexModelTest
+public class IndexPageModelTest
 {
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
-    public IndexModelTest()
+    public IndexPageModelTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
     }

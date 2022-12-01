@@ -15,13 +15,13 @@ using Xunit;
 
 namespace Tweed.Web.Test.Pages;
 
-public class CreateModelTest
+public class CreatePageModelTest
 {
     private readonly Mock<INotificationManager> _notificationManagerMock;
     private readonly Mock<ITweedQueries> _tweedQueriesMock;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
-    public CreateModelTest()
+    public CreatePageModelTest()
     {
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
@@ -68,9 +68,9 @@ public class CreateModelTest
     {
         var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
-        
+
         var result = await createModel.OnPostAsync();
-        
+
         Assert.IsType<RedirectToPageResult>(result);
     }
 
@@ -85,7 +85,7 @@ public class CreateModelTest
             PageContext = PageModelTestHelper.BuildPageContext(principal),
             Text = "text"
         };
-        
+
         await createModel.OnPostAsync();
 
         _tweedQueriesMock.Verify(t =>

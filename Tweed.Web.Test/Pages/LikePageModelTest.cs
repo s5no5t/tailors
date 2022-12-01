@@ -13,11 +13,11 @@ using Xunit;
 
 namespace Tweed.Web.Test.Pages;
 
-public class LikeModelTest
+public class LikePageModelTest
 {
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
-    public LikeModelTest()
+    public LikePageModelTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
     }
