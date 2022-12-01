@@ -211,14 +211,16 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Entities.Tweed olderTweed = new()
         {
             Text = "older tweed",
-            CreatedAt = FixedZonedDateTime
+            CreatedAt = FixedZonedDateTime,
+            AuthorId = "user1"
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
         Entities.Tweed recentTweed = new()
         {
             Text = "recent tweed",
-            CreatedAt = recent
+            CreatedAt = recent,
+            AuthorId = "user1"
         };
         await session.StoreAsync(recentTweed);
         await session.SaveChangesAsync();
@@ -241,7 +243,8 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             Entities.Tweed tweed = new()
             {
                 Text = "test",
-                CreatedAt = FixedZonedDateTime
+                CreatedAt = FixedZonedDateTime,
+                AuthorId = "user1"
             };
             await session.StoreAsync(tweed);
         }
@@ -252,5 +255,27 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
 
         Assert.Equal(20, tweeds.Count);
+    }
+    
+    [Fact]
+    public async Task GetTweedsForUser_ShouldNotReturnTweedsFromOtherUsers()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            AuthorId = "user2"
+        };
+        await session.StoreAsync(tweed);
+
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
+
+        Assert.Empty(tweeds);
     }
 }
