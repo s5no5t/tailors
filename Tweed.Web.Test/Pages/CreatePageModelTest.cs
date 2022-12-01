@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -77,12 +78,10 @@ public class CreatePageModelTest
     [Fact]
     public async Task OnPostAsync_SavesTweed()
     {
-        var principal = PageModelTestHelper.BuildPrincipal();
-        _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("user1");
+        _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
         var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object)
         {
-            PageContext = PageModelTestHelper.BuildPageContext(principal),
             Text = "text"
         };
 

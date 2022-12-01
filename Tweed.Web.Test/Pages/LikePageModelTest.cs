@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,11 +27,9 @@ public class LikePageModelTest
     public async Task OnPost_ShouldIncreaseLikes()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var principal = PageModelTestHelper.BuildPrincipal();
-        _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("user1");
+        _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
         var likeModel = new LikePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
         {
-            PageContext = PageModelTestHelper.BuildPageContext(principal),
             Id = "123"
         };
         await likeModel.OnPostAsync();
