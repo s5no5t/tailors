@@ -32,14 +32,14 @@ public class CreateModelTest
     public void CreateModel_RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(CreateModel), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(CreatePageModel), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 
     [Fact]
     public async Task OnPostAsync_WhenTextIsNull_ReturnsPageResult()
     {
-        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object,
+        var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
 
         createModel.Validate();
@@ -51,7 +51,7 @@ public class CreateModelTest
     [Fact]
     public async Task OnPostAsync_WhenTextIsLongerThan280Chars_ReturnsPageResult()
     {
-        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object,
+        var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object)
         {
             Text = new string('a', 281)
@@ -66,7 +66,7 @@ public class CreateModelTest
     [Fact]
     public async Task OnPostAsync_ValidModel_ReturnsRedirectToPageResult()
     {
-        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object,
+        var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
         
         var result = await createModel.OnPostAsync();
@@ -79,7 +79,7 @@ public class CreateModelTest
     {
         var principal = PageModelTestHelper.BuildPrincipal();
         _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("user1");
-        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object,
+        var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object)
         {
             PageContext = PageModelTestHelper.BuildPageContext(principal),
@@ -95,7 +95,7 @@ public class CreateModelTest
     [Fact]
     public async Task OnPostAsync_ValidModel_SetsSuccessMessage()
     {
-        var createModel = new CreateModel(_tweedQueriesMock.Object, _userManagerMock.Object,
+        var createModel = new CreatePageModel(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
 
         await createModel.OnPostAsync();

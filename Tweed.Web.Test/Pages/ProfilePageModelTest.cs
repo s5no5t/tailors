@@ -11,7 +11,7 @@ public class ProfileModelTest
     public void CreateModel_RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(ProfileModel), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(ProfilePageModel), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 }

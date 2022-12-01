@@ -22,7 +22,7 @@ public class IndexModelTest
     public async Task OnGet_ShouldLoadTweeds()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var indexModel = new IndexModel(tweedQueriesMock.Object, _userManagerMock.Object);
+        var indexModel = new IndexPageModel(tweedQueriesMock.Object, _userManagerMock.Object);
         await indexModel.OnGetAsync();
         tweedQueriesMock.Verify(t => t.GetLatestTweeds());
     }

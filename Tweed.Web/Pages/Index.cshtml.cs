@@ -6,24 +6,24 @@ using Tweed.Data.Entities;
 
 namespace Tweed.Web.Pages;
 
-public class IndexModel : PageModel
+public class IndexPageModel : PageModel
 {
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
 
-    public IndexModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
+    public IndexPageModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
     }
 
-    public List<Tweed> Tweeds { get; } = new();
+    public List<TweedViewModel> Tweeds { get; } = new();
 
     public async Task OnGetAsync()
     {
         var latestTweeds = await _tweedQueries.GetLatestTweeds();
 
-        var tweeds = latestTweeds.Select(l => new Tweed
+        var tweeds = latestTweeds.Select(l => new TweedViewModel
         {
             Id = l.Id,
             Text = l.Text, CreatedAt = l.CreatedAt,
@@ -37,7 +37,7 @@ public class IndexModel : PageModel
         Tweeds.AddRange(tweeds);
     }
 
-    public class Tweed
+    public class TweedViewModel
     {
         public string? AuthorId { get; set; }
         public string? Author { get; set; }

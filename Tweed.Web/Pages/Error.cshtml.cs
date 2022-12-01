@@ -6,11 +6,11 @@ namespace Tweed.Web.Pages;
 
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 [IgnoreAntiforgeryToken]
-public class ErrorModel : PageModel
+public class ErrorPageModel : PageModel
 {
-    private readonly ILogger<ErrorModel> _logger;
+    private readonly ILogger<ErrorPageModel> _logger;
 
-    public ErrorModel(ILogger<ErrorModel> logger)
+    public ErrorPageModel(ILogger<ErrorPageModel> logger)
     {
         _logger = logger;
     }

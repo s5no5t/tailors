@@ -10,12 +10,12 @@ using Tweed.Data.Entities;
 namespace Tweed.Web.Pages;
 
 [Authorize]
-public class LikeModel : PageModel
+public class LikePageModel : PageModel
 {
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
 
-    public LikeModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
+    public LikePageModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;

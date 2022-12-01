@@ -28,7 +28,7 @@ public class LikeModelTest
         var tweedQueriesMock = new Mock<ITweedQueries>();
         var principal = PageModelTestHelper.BuildPrincipal();
         _userManagerMock.Setup(u => u.GetUserId(principal)).Returns("user1");
-        var likeModel = new LikeModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        var likeModel = new LikePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
         {
             PageContext = PageModelTestHelper.BuildPageContext(principal),
             Id = "123"
@@ -41,7 +41,7 @@ public class LikeModelTest
     public void LikeModel_RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(LikeModel), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(LikePageModel), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 
@@ -49,7 +49,7 @@ public class LikeModelTest
     public async Task OnPostAsync_WhenIdIsNull_ReturnsBadRequest()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var createModel = new LikeModel(tweedQueriesMock.Object, _userManagerMock.Object);
+        var createModel = new LikePageModel(tweedQueriesMock.Object, _userManagerMock.Object);
 
         createModel.Validate();
         var result = await createModel.OnPostAsync();

@@ -11,13 +11,13 @@ using Tweed.Web.Helper;
 namespace Tweed.Web.Pages;
 
 [Authorize]
-public class CreateModel : PageModel
+public class CreatePageModel : PageModel
 {
     private readonly INotificationManager _notificationManager;
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
 
-    public CreateModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+    public CreatePageModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
         INotificationManager notificationManager)
     {
         _tweedQueries = tweedQueries;
