@@ -18,8 +18,23 @@ public class ProfilePageModel : PageModel
         _userManager = userManager;
     }
 
+    public List<TweedViewModel> Tweeds { get; } = new();
+
     public async Task OnGetAsync()
     {
-        var tweeds = _tweedQueries.GetTweedsForUser("user1");
+        var userTweeds = await _tweedQueries.GetTweedsForUser("user1");
+
+        var tweeds = userTweeds.Select(l => new TweedViewModel
+        {
+            Id = l.Id,
+            Text = l.Text, CreatedAt = l.CreatedAt,
+            AuthorId = l.AuthorId,
+            Likes = l.LikedBy.Count
+        }).ToList();
+
+        foreach (var tweed in tweeds)
+            tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
+
+        Tweeds.AddRange(tweeds);
     }
 }

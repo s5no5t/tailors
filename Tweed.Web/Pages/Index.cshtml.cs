@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 
@@ -35,15 +34,5 @@ public class IndexPageModel : PageModel
             tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
 
         Tweeds.AddRange(tweeds);
-    }
-
-    public class TweedViewModel
-    {
-        public string? AuthorId { get; set; }
-        public string? Author { get; set; }
-        public string? Text { get; set; }
-        public ZonedDateTime? CreatedAt { get; set; }
-        public string? Id { get; set; }
-        public int? Likes { get; set; }
     }
 }
