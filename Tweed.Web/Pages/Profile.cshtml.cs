@@ -23,7 +23,8 @@ public class ProfilePageModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var userTweeds = await _tweedQueries.GetTweedsForUser("user1");
+        var userId = _userManager.GetUserId(User);
+        var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
 
         var tweeds = userTweeds.Select(l => new TweedViewModel
         {

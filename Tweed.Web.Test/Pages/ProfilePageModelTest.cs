@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -31,11 +32,14 @@ public class ProfilePageModelTest
     [Fact]
     public async Task OnGet_ShouldLoadTweeds()
     {
+        _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
+
         var tweedQueriesMock = new Mock<ITweedQueries>();
         var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object);
 
         await indexModel.OnGetAsync();
 
+        _userManagerMock.Verify(u => u.GetUserId(It.IsAny<ClaimsPrincipal>()));
         tweedQueriesMock.Verify(t => t.GetTweedsForUser("user1"));
     }
 }
