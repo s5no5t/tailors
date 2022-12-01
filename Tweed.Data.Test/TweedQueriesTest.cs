@@ -179,7 +179,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var queries = new TweedQueries(session);
         await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
 
-        Assert.Equal(1, tweed.LikedBy.Count);
+        Assert.Single(tweed.LikedBy);
     }
 
     [Fact]
