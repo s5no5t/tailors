@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Tweed.Data;
 using Tweed.Data.Entities;
@@ -20,11 +21,18 @@ public class ProfilePageModel : PageModel
     }
 
     public List<TweedViewModel> Tweeds { get; } = new();
+    [FromQuery(Name = "user-id")] public string? UserId { get; set; }
 
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
-        var userId = _userManager.GetUserId(User);
-        var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
+        if (UserId == null)
+            return NotFound();
+
+        var user = await _userManager.FindByIdAsync(UserId);
+        if (user == null)
+            return NotFound();
+
+        var userTweeds = await _tweedQueries.GetTweedsForUser(UserId);
 
         var tweeds = userTweeds.Select(l => new TweedViewModel
         {
@@ -38,5 +46,7 @@ public class ProfilePageModel : PageModel
             tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
 
         Tweeds.AddRange(tweeds);
+
+        return Page();
     }
 }

@@ -1,8 +1,8 @@
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Data;
 using Tweed.Data.Entities;
@@ -32,14 +32,45 @@ public class ProfilePageModelTest
     [Fact]
     public async Task OnGet_ShouldLoadTweeds()
     {
-        _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
-
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object);
+        var appUser = new AppUser();
+        _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync(appUser);
+        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        {
+            UserId = "user1"
+        };
 
         await indexModel.OnGetAsync();
 
-        _userManagerMock.Verify(u => u.GetUserId(It.IsAny<ClaimsPrincipal>()));
         tweedQueriesMock.Verify(t => t.GetTweedsForUser("user1"));
+    }
+
+    [Fact]
+    public async Task OnGet_ShouldReturnNotFound_WhenUserIdIsNull()
+    {
+        var tweedQueriesMock = new Mock<ITweedQueries>();
+        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        {
+            UserId = null
+        };
+
+        var result = await indexModel.OnGetAsync();
+
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task OnGet_ShouldReturnNotFound_WhenUserIdDoesntExist()
+    {
+        var tweedQueriesMock = new Mock<ITweedQueries>();
+        _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync((AppUser)null!);
+        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        {
+            UserId = "user1"
+        };
+
+        var result = await indexModel.OnGetAsync();
+
+        Assert.IsType<NotFoundResult>(result);
     }
 }
