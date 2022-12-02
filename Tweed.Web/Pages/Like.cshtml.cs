@@ -32,6 +32,10 @@ public class LikePageModel : PageModel
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
         await _tweedQueries.AddLike(Id!, userId, now);
 
-        return RedirectToPage("./index");
+        var referer = Request.Headers.Referer.ToString();
+        if (referer == string.Empty)
+            return new NoContentResult();
+
+        return Redirect(referer);
     }
 }
