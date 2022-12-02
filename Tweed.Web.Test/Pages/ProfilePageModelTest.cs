@@ -73,4 +73,23 @@ public class ProfilePageModelTest
 
         Assert.IsType<NotFoundResult>(result);
     }
+
+    [Fact]
+    public async Task OnGet_ShouldLoadUserName()
+    {
+        var tweedQueriesMock = new Mock<ITweedQueries>();
+        var appUser = new AppUser
+        {
+            UserName = "User 1"
+        };
+        _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync(appUser);
+        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        {
+            UserId = "user1"
+        };
+
+        await indexModel.OnGetAsync();
+
+        Assert.Equal("User 1", indexModel.UserName);
+    }
 }

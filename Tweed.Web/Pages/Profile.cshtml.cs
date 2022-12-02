@@ -22,6 +22,7 @@ public class ProfilePageModel : PageModel
 
     public List<TweedViewModel> Tweeds { get; } = new();
     [FromQuery(Name = "user-id")] public string? UserId { get; set; }
+    public string? UserName { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -31,6 +32,8 @@ public class ProfilePageModel : PageModel
         var user = await _userManager.FindByIdAsync(UserId);
         if (user == null)
             return NotFound();
+
+        UserName = user.UserName;
 
         var userTweeds = await _tweedQueries.GetTweedsForUser(UserId);
 
