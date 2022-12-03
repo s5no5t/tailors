@@ -10,4 +10,5 @@ public class TweedViewModel
     public ZonedDateTime? CreatedAt { get; set; }
     public string? Id { get; set; }
     public int? Likes { get; set; }
+    public bool LikedByCurrentUser { get; set; }
 }

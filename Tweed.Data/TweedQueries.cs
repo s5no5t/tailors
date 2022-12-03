@@ -13,6 +13,7 @@ public interface ITweedQueries
     Task<Entities.Tweed?> GetById(string id);
     Task AddLike(string id, string userId, ZonedDateTime likedAt);
     Task<IEnumerable<Entities.Tweed>> GetTweedsForUser(string userId);
+    Task RemoveLike(string id, string userId);
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -47,6 +48,12 @@ public sealed class TweedQueries : ITweedQueries
         });
     }
 
+    public async Task RemoveLike(string id, string userId)
+    {
+        var tweed = await _session.LoadAsync<Entities.Tweed>(id);
+        tweed.LikedBy.RemoveAll(lb => lb.UserId == userId);
+    }
+
     public async Task<IEnumerable<Entities.Tweed>> GetTweedsForUser(string userId)
     {
         return await _session.Query<Entities.Tweed>()
@@ -54,7 +61,6 @@ public sealed class TweedQueries : ITweedQueries
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
             .ToListAsync();
-
     }
 
     public async Task StoreTweed(string text, string authorId, ZonedDateTime createdAt)

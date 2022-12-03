@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Pages;
@@ -16,13 +15,13 @@ using Xunit;
 
 namespace Tweed.Web.Test.Pages;
 
-public class LikePageModelTest
+public class UnlikePageModelTest
 {
     private readonly HeaderDictionary _headers;
     private readonly PageContext _pageContext;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
-    public LikePageModelTest()
+    public UnlikePageModelTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
 
@@ -36,26 +35,26 @@ public class LikePageModelTest
     }
 
     [Fact]
-    public async Task OnPost_ShouldIncreaseLikes()
+    public async Task OnPost_ShouldDecreaseLikes()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
-        var likeModel = new LikePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        var unlikePageModel = new UnlikePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
         {
             Id = "123",
             PageContext = _pageContext
         };
 
-        await likeModel.OnPostAsync();
+        await unlikePageModel.OnPostAsync();
 
-        tweedQueriesMock.Verify(t => t.AddLike("123", "user1", It.IsAny<ZonedDateTime>()));
+        tweedQueriesMock.Verify(t => t.RemoveLike("123", "user1"));
     }
 
     [Fact]
     public void LikeModel_RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(LikePageModel), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(UnlikePageModel), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 
@@ -63,10 +62,10 @@ public class LikePageModelTest
     public async Task OnPostAsync_WhenIdIsNull_ReturnsBadRequest()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var likeModel = new LikePageModel(tweedQueriesMock.Object, _userManagerMock.Object);
+        var unlikePageModel = new UnlikePageModel(tweedQueriesMock.Object, _userManagerMock.Object);
 
-        likeModel.Validate();
-        var result = await likeModel.OnPostAsync();
+        unlikePageModel.Validate();
+        var result = await unlikePageModel.OnPostAsync();
 
         Assert.IsType<BadRequestResult>(result);
     }
@@ -75,13 +74,13 @@ public class LikePageModelTest
     public async Task OnPostAsync_ShouldReturnRedirect()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var likeModel = new LikePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
+        var unlikePageModel = new UnlikePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
         {
             PageContext = _pageContext
         };
         _headers.Append("Referer", "https://example.com");
 
-        var result = await likeModel.OnPostAsync();
+        var result = await unlikePageModel.OnPostAsync();
 
         Assert.IsType<RedirectResult>(result);
     }

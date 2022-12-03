@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Tweed.Data;
 using Tweed.Data.Entities;
@@ -6,6 +7,7 @@ using Tweed.Web.Pages.Shared;
 
 namespace Tweed.Web.Pages;
 
+[Authorize]
 public class IndexPageModel : PageModel
 {
     private readonly ITweedQueries _tweedQueries;
@@ -23,12 +25,14 @@ public class IndexPageModel : PageModel
     {
         var latestTweeds = await _tweedQueries.GetLatestTweeds();
 
-        var tweeds = latestTweeds.Select(l => new TweedViewModel
+        var currentUserId = _userManager.GetUserId(User);
+        var tweeds = latestTweeds.Select(t => new TweedViewModel
         {
-            Id = l.Id,
-            Text = l.Text, CreatedAt = l.CreatedAt,
-            AuthorId = l.AuthorId,
-            Likes = l.LikedBy.Count
+            Id = t.Id,
+            Text = t.Text, CreatedAt = t.CreatedAt,
+            AuthorId = t.AuthorId,
+            Likes = t.LikedBy.Count,
+            LikedByCurrentUser = t.LikedBy.Any(lb => lb.UserId == currentUserId)
         }).ToList();
 
         foreach (var tweed in tweeds)

@@ -37,12 +37,14 @@ public class ProfilePageModel : PageModel
 
         var userTweeds = await _tweedQueries.GetTweedsForUser(UserId);
 
-        var tweeds = userTweeds.Select(l => new TweedViewModel
+        var currentUserId = _userManager.GetUserId(User);
+        var tweeds = userTweeds.Select(t => new TweedViewModel
         {
-            Id = l.Id,
-            Text = l.Text, CreatedAt = l.CreatedAt,
-            AuthorId = l.AuthorId,
-            Likes = l.LikedBy.Count
+            Id = t.Id,
+            Text = t.Text, CreatedAt = t.CreatedAt,
+            AuthorId = t.AuthorId,
+            Likes = t.LikedBy.Count,
+            LikedByCurrentUser = t.LikedBy.Any(lb => lb.UserId == currentUserId)
         }).ToList();
 
         foreach (var tweed in tweeds)

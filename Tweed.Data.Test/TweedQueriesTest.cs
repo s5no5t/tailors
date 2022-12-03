@@ -156,6 +156,48 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
+    public async Task RemoveLike_ShouldDecreaseLikes()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            LikedBy = new List<LikedBy> { new() { UserId = "user1" } }
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        await queries.RemoveLike(tweed.Id, "user1");
+
+        Assert.Empty(tweed.LikedBy);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            LikedBy = new List<LikedBy>()
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+
+        var queries = new TweedQueries(session);
+        await queries.RemoveLike(tweed.Id, "user1");
+
+        Assert.Empty(tweed.LikedBy);
+    }
+
+    [Fact]
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
         using var store = _ravenDb.CreateDocumentStore();
@@ -256,7 +298,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Equal(20, tweeds.Count);
     }
-    
+
     [Fact]
     public async Task GetTweedsForUser_ShouldNotReturnTweedsFromOtherUsers()
     {
