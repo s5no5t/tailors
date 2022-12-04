@@ -1,8 +1,8 @@
-using Tweed.Web.ViewModels.Shared;
+using Tweed.Web.Views.Shared;
 
-namespace Tweed.Web.ViewModels;
+namespace Tweed.Web.Views.Profile;
 
-public class ProfileIndexViewModel
+public class IndexViewModel
 {
     public string? UserName { get; set; }
 

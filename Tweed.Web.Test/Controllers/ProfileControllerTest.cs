@@ -8,7 +8,7 @@ using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Controllers;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.ViewModels;
+using Tweed.Web.Views.Profile;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;
@@ -70,8 +70,8 @@ public class ProfileControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<ProfileIndexViewModel>(resultAsView.Model);
-        var viewModel = (ProfileIndexViewModel)resultAsView.Model!;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
         Assert.Equal("User 1", viewModel.UserName);
     }
 }

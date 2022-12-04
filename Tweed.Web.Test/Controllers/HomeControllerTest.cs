@@ -11,7 +11,7 @@ using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Controllers;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.ViewModels;
+using Tweed.Web.Views.Home;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;
@@ -70,8 +70,8 @@ public class HomeControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<HomeIndexViewModel>(resultAsView.Model);
-        var viewModel = (HomeIndexViewModel)resultAsView.Model!;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
         Assert.True(viewModel.Tweeds[0].LikedByCurrentUser);
     }
 }

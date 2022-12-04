@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tweed.Data;
 using Tweed.Data.Entities;
-using Tweed.Web.ViewModels;
-using Tweed.Web.ViewModels.Shared;
+using Tweed.Web.Views.Profile;
+using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Controllers;
 
@@ -41,7 +41,7 @@ public class ProfileController : Controller
         foreach (var tweed in tweeds)
             tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
 
-        var viewModel = new ProfileIndexViewModel
+        var viewModel = new IndexViewModel
         {
             UserName = user.UserName,
             Tweeds = tweeds
