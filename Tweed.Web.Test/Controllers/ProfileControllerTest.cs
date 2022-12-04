@@ -70,8 +70,8 @@ public class ProfileControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<ProfileViewModel>(resultAsView.Model);
-        var viewModel = (ProfileViewModel)resultAsView.Model!;
+        Assert.IsType<ProfileIndexViewModel>(resultAsView.Model);
+        var viewModel = (ProfileIndexViewModel)resultAsView.Model!;
         Assert.Equal("User 1", viewModel.UserName);
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.ViewModels;
+using Tweed.Web.ViewModels.Shared;
 
 namespace Tweed.Web.Controllers;
 
@@ -40,7 +41,7 @@ public class ProfileController : Controller
         foreach (var tweed in tweeds)
             tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
 
-        var viewModel = new ProfileViewModel
+        var viewModel = new ProfileIndexViewModel
         {
             UserName = user.UserName,
             Tweeds = tweeds

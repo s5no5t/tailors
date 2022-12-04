@@ -70,8 +70,8 @@ public class HomeControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<IndexViewModel>(resultAsView.Model);
-        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.IsType<HomeIndexViewModel>(resultAsView.Model);
+        var viewModel = (HomeIndexViewModel)resultAsView.Model!;
         Assert.True(viewModel.Tweeds[0].LikedByCurrentUser);
     }
 }
