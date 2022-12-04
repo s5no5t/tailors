@@ -1,4 +1,4 @@
-namespace Tweed.Web.Views.Shared;
+namespace Tweed.Web.ViewModels;
 
 public class ErrorViewModel
 {

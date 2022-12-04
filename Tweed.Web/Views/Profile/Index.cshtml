@@ -1,5 +1,4 @@
-@page
-@model ProfilePageModel
+@model ProfileViewModel
 
 @{
     ViewData["Title"] = "Profile";
@@ -9,5 +8,5 @@
 
 @foreach (var tweed in Model.Tweeds)
 {
-    <partial name="Shared/_Tweed" model="tweed"/>
+    <partial name="_Tweed" model="tweed"/>
 }

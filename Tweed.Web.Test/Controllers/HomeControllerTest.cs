@@ -11,7 +11,7 @@ using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Controllers;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.Views.Home;
+using Tweed.Web.ViewModels;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;

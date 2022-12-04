@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tweed.Data;
 using Tweed.Data.Entities;
-using Tweed.Web.Pages.Shared;
-using Tweed.Web.Views.Home;
-using Tweed.Web.Views.Shared;
+using Tweed.Web.ViewModels;
 
 namespace Tweed.Web.Controllers;
 

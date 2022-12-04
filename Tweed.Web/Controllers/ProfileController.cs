@@ -1,41 +1,31 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Tweed.Data;
 using Tweed.Data.Entities;
-using Tweed.Web.Pages.Shared;
+using Tweed.Web.ViewModels;
 
-namespace Tweed.Web.Pages;
+namespace Tweed.Web.Controllers;
 
 [Authorize]
-public class ProfilePageModel : PageModel
+public class ProfileController : Controller
 {
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
 
-    public ProfilePageModel(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
+    public ProfileController(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
     }
 
-    public List<TweedViewModel> Tweeds { get; } = new();
-    [FromQuery(Name = "user-id")] public string? UserId { get; set; }
-    public string? UserName { get; set; }
-
-    public async Task<IActionResult> OnGetAsync()
+    public async Task<IActionResult> Index(string userId)
     {
-        if (UserId == null)
-            return NotFound();
-
-        var user = await _userManager.FindByIdAsync(UserId);
+        var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
             return NotFound();
 
-        UserName = user.UserName;
-
-        var userTweeds = await _tweedQueries.GetTweedsForUser(UserId);
+        var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
 
         var currentUserId = _userManager.GetUserId(User);
         var tweeds = userTweeds.Select(t => new TweedViewModel
@@ -50,8 +40,12 @@ public class ProfilePageModel : PageModel
         foreach (var tweed in tweeds)
             tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
 
-        Tweeds.AddRange(tweeds);
+        var viewModel = new ProfileViewModel
+        {
+            UserName = user.UserName,
+            Tweeds = tweeds
+        };
 
-        return Page();
+        return View(viewModel);
     }
 }

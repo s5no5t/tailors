@@ -1,0 +1,30 @@
+@model TweedViewModel
+
+<div class="card mt-2">
+    <div class="card-header">
+        <a asp-controller="Profile" asp-route-userid="@Model.AuthorId">@Model.Author</a>
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+            @Model.Text
+        </div>
+    </div>
+    <div class="card-footer small">
+        <small class="text-muted">@Model.CreatedAt</small>
+        <small class="text-muted">Likes: @Model.Likes</small>
+        <form method="post">
+            @if (Model.LikedByCurrentUser)
+            {
+                <button asp-page="/unlike" asp-route-id="@Model.Id">
+                    <i class="bi bi-balloon-heart-fill" style="font-size: 1.5em"></i>
+                </button>
+            }
+            else
+            {
+                <button asp-page="/like" asp-route-id="@Model.Id">
+                    <i class="bi bi-balloon-heart" style="font-size: 1.5em"></i>
+                </button>
+            }
+        </form>
+    </div>
+</div>

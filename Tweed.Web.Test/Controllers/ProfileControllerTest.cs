@@ -6,17 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Data;
 using Tweed.Data.Entities;
-using Tweed.Web.Pages;
+using Tweed.Web.Controllers;
 using Tweed.Web.Test.TestHelper;
+using Tweed.Web.ViewModels;
 using Xunit;
 
-namespace Tweed.Web.Test.Pages;
+namespace Tweed.Web.Test.Controllers;
 
-public class ProfilePageModelTest
+public class ProfileControllerTest
 {
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
-    public ProfilePageModelTest()
+    public ProfileControllerTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
     }
@@ -25,7 +26,7 @@ public class ProfilePageModelTest
     public void CreateModel_RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(ProfilePageModel), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(ProfileController), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 
@@ -35,28 +36,11 @@ public class ProfilePageModelTest
         var tweedQueriesMock = new Mock<ITweedQueries>();
         var appUser = new AppUser();
         _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync(appUser);
-        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
-        {
-            UserId = "user1"
-        };
+        var controller = new ProfileController(tweedQueriesMock.Object, _userManagerMock.Object);
 
-        await indexModel.OnGetAsync();
+        await controller.Index("user1");
 
         tweedQueriesMock.Verify(t => t.GetTweedsForUser("user1"));
-    }
-
-    [Fact]
-    public async Task OnGet_ShouldReturnNotFound_WhenUserIdIsNull()
-    {
-        var tweedQueriesMock = new Mock<ITweedQueries>();
-        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
-        {
-            UserId = null
-        };
-
-        var result = await indexModel.OnGetAsync();
-
-        Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
@@ -64,12 +48,9 @@ public class ProfilePageModelTest
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
         _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync((AppUser)null!);
-        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
-        {
-            UserId = "user1"
-        };
+        var controller = new ProfileController(tweedQueriesMock.Object, _userManagerMock.Object);
 
-        var result = await indexModel.OnGetAsync();
+        var result = await controller.Index("user1");
 
         Assert.IsType<NotFoundResult>(result);
     }
@@ -83,13 +64,14 @@ public class ProfilePageModelTest
             UserName = "User 1"
         };
         _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync(appUser);
-        var indexModel = new ProfilePageModel(tweedQueriesMock.Object, _userManagerMock.Object)
-        {
-            UserId = "user1"
-        };
+        var controller = new ProfileController(tweedQueriesMock.Object, _userManagerMock.Object);
 
-        await indexModel.OnGetAsync();
+        var result = await controller.Index("user1");
 
-        Assert.Equal("User 1", indexModel.UserName);
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<ProfileViewModel>(resultAsView.Model);
+        var viewModel = (ProfileViewModel)resultAsView.Model!;
+        Assert.Equal("User 1", viewModel.UserName);
     }
 }

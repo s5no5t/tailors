@@ -1,6 +1,4 @@
-using Tweed.Web.Pages.Shared;
-
-namespace Tweed.Web.Views.Home;
+namespace Tweed.Web.ViewModels;
 
 public class IndexViewModel
 {
