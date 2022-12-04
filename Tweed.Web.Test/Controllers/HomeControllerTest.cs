@@ -4,46 +4,48 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
-using Tweed.Web.Pages;
+using Tweed.Web.Controllers;
+using Tweed.Web.Models;
 using Tweed.Web.Test.TestHelper;
 using Xunit;
 
-namespace Tweed.Web.Test.Pages;
+namespace Tweed.Web.Test.Controllers;
 
-public class IndexPageModelTest
+public class HomeControllerTest
 {
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
-    public IndexPageModelTest()
+    public HomeControllerTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
     }
 
     [Fact]
-    public void IndexPageModel_RequiresAuthorization()
+    public void RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(IndexPageModel), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(HomeController), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 
     [Fact]
-    public async Task OnGet_ShouldLoadLatestTweeds()
+    public async Task Index_ShouldLoadLatestTweeds()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
-        var indexModel = new IndexPageModel(tweedQueriesMock.Object, _userManagerMock.Object);
+        var indexModel = new HomeController(tweedQueriesMock.Object, _userManagerMock.Object);
 
-        await indexModel.OnGetAsync();
+        await indexModel.Index();
 
         tweedQueriesMock.Verify(t => t.GetLatestTweeds());
     }
 
     [Fact]
-    public async Task OnGet_ShouldMarkTweedsWrittenByCurrentUser()
+    public async Task Index_ShouldMarkTweedsWrittenByCurrentUser()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
 
@@ -62,10 +64,14 @@ public class IndexPageModelTest
             UserName = "User 2"
         };
         _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(appUser);
-        var indexModel = new IndexPageModel(tweedQueriesMock.Object, _userManagerMock.Object);
+        var indexModel = new HomeController(tweedQueriesMock.Object, _userManagerMock.Object);
 
-        await indexModel.OnGetAsync();
+        var result = await indexModel.Index();
 
-        Assert.True(indexModel.Tweeds[0].LikedByCurrentUser);
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.True(viewModel.Tweeds[0].LikedByCurrentUser);
     }
 }

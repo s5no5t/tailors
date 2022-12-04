@@ -1,6 +1,4 @@
-﻿@page
-@using Tweed.Data.Entities
-@model IndexPageModel
+﻿@model IndexViewModel
 @inject SignInManager<AppUser> SignInManager
 
 @{
@@ -13,7 +11,7 @@
 
 @foreach (var tweed in Model.Tweeds)
 {
-    <partial name="Shared/_Tweed" model="tweed"/>
+    <partial name="_Tweed" model="tweed"/>
 }
 
 <a class="btn btn-primary" asp-page="/create">Create</a>
