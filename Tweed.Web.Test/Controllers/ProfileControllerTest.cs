@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +35,8 @@ public class ProfileControllerTest
     public async Task OnGet_ShouldLoadTweeds()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
+        tweedQueriesMock.Setup(t => t.GetTweedsForUser("user1"))
+            .ReturnsAsync(new List<Data.Entities.Tweed>());
         var appUser = new AppUser();
         _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync(appUser);
         var controller = new ProfileController(tweedQueriesMock.Object, _userManagerMock.Object);
@@ -59,6 +62,8 @@ public class ProfileControllerTest
     public async Task OnGet_ShouldLoadUserName()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
+        tweedQueriesMock.Setup(t => t.GetTweedsForUser("user1"))
+            .ReturnsAsync(new List<Data.Entities.Tweed>());
         var appUser = new AppUser
         {
             UserName = "User 1"

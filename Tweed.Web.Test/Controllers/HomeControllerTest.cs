@@ -37,6 +37,8 @@ public class HomeControllerTest
     public async Task Index_ShouldLoadLatestTweeds()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
+        tweedQueriesMock.Setup(t => t.GetLatestTweeds())
+            .ReturnsAsync(new List<Data.Entities.Tweed>());
         var indexModel = new HomeController(tweedQueriesMock.Object, _userManagerMock.Object);
 
         await indexModel.Index();
@@ -57,7 +59,8 @@ public class HomeControllerTest
                 { new() { UserId = "user1", LikedAt = fixedZonedDateTime } },
             AuthorId = "user2"
         };
-        tweedQueriesMock.Setup(t => t.GetLatestTweeds()).ReturnsAsync(new[] { tweed });
+        tweedQueriesMock.Setup(t => t.GetLatestTweeds())
+            .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
         var appUser = new AppUser
         {

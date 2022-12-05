@@ -24,23 +24,19 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var latestTweeds = await _tweedQueries.GetLatestTweeds();
+        var currentUserId = _userManager.GetUserId(User)!;
 
-        var currentUserId = _userManager.GetUserId(User);
-        var tweeds = latestTweeds.Select(t => new TweedViewModel
+        List<TweedViewModel> tweedViewModels = new();
+        foreach (var tweed in latestTweeds)
         {
-            Id = t.Id,
-            Text = t.Text, CreatedAt = t.CreatedAt,
-            AuthorId = t.AuthorId,
-            Likes = t.LikedBy.Count,
-            LikedByCurrentUser = t.LikedBy.Any(lb => lb.UserId == currentUserId)
-        }).ToList();
-
-        foreach (var tweed in tweeds)
-            tweed.Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName;
+            var author = await _userManager.FindByIdAsync(tweed.AuthorId);
+            var tweedViewModel = ViewModelFactory.BuildTweedViewModel(tweed, author, currentUserId);
+            tweedViewModels.Add(tweedViewModel);
+        }
 
         var viewModel = new IndexViewModel
         {
-            Tweeds = tweeds
+            Tweeds = tweedViewModels
         };
 
         return View(viewModel);
