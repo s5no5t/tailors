@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data", "Tweed.Data\Tw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data.Test", "Tweed.Data.Test\Tweed.Data.Test.csproj", "{3CD15B19-9E32-4D4A-A466-13A2D7617804}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data.GenerateFakes", "Tweed.Data.GenerateFakes\Tweed.Data.GenerateFakes.csproj", "{A580B502-4FC4-4BA4-9088-667B24EA73C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{3CD15B19-9E32-4D4A-A466-13A2D7617804}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CD15B19-9E32-4D4A-A466-13A2D7617804}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CD15B19-9E32-4D4A-A466-13A2D7617804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
