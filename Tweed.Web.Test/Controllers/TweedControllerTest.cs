@@ -87,9 +87,19 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Data.Entities.Tweed tweed = new();
+        Data.Entities.Tweed tweed = new()
+        {
+            AuthorId = "user2"
+        };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
+        
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
+        var appUser = new AppUser
+        {
+            UserName = "User 2"
+        };
+        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(appUser);
+
         var controller = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
 
@@ -101,9 +111,19 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Data.Entities.Tweed tweed = new();
+        Data.Entities.Tweed tweed = new()
+        {
+            AuthorId = "user2"
+        };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
+        
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
+        var appUser = new AppUser
+        {
+            UserName = "User 2"
+        };
+        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(appUser);
+        
         var controller = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
 
@@ -115,9 +135,19 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Data.Entities.Tweed tweed = new();
+        Data.Entities.Tweed tweed = new()
+        {
+            AuthorId = "user2"
+        };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
+        
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
+        var appUser = new AppUser
+        {
+            UserName = "User 2"
+        };
+        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(appUser);
+        
         var controller = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
 
@@ -129,9 +159,19 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Data.Entities.Tweed tweed = new();
+        Data.Entities.Tweed tweed = new()
+        {
+            AuthorId = "user2"
+        };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
+        
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
+        var appUser = new AppUser
+        {
+            UserName = "User 2"
+        };
+        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(appUser);
+        
         var controller = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
 

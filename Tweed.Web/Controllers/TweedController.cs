@@ -63,7 +63,8 @@ public class TweedController : Controller
             Text = tweed.Text, CreatedAt = tweed.CreatedAt,
             AuthorId = tweed.AuthorId,
             Likes = tweed.LikedBy.Count,
-            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId)
+            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId),
+            Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName
         };
 
         return PartialView("_Tweed", viewModel);
@@ -84,7 +85,8 @@ public class TweedController : Controller
             Text = tweed.Text, CreatedAt = tweed.CreatedAt,
             AuthorId = tweed.AuthorId,
             Likes = tweed.LikedBy.Count,
-            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId)
+            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId),
+            Author = (await _userManager.FindByIdAsync(tweed.AuthorId)).UserName
         };
 
         return PartialView("_Tweed", viewModel);
