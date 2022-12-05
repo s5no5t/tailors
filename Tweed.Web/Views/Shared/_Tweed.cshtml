@@ -1,7 +1,7 @@
 @using TweedViewModel = Tweed.Web.Views.Shared.TweedViewModel
 @model TweedViewModel
 
-<div class="card mt-2">
+<div class="card mt-2 tweed">
     <div class="card-header">
         <a asp-controller="Profile" asp-route-userid="@Model.AuthorId">@Model.Author</a>
     </div>
@@ -13,7 +13,7 @@
     <div class="card-footer small">
         <small class="text-muted">@Model.CreatedAt</small>
         <small class="text-muted">Likes: @Model.Likes</small>
-        <form method="post" up-submit>
+        <form method="post" up-submit up-target=".tweed">
             @if (Model.LikedByCurrentUser)
             {
                 <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id">
