@@ -62,6 +62,7 @@ public class TweedController : Controller
         return PartialView("_Tweed", viewModel);
     }
 
+    [HttpPost]
     public async Task<IActionResult> Unlike(string tweedId)
     {
         var tweed = await _tweedQueries.GetById(tweedId);
