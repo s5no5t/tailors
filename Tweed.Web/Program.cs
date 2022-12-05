@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
 
 builder.Services.AddRavenDbDocStore(options =>
 {
@@ -31,8 +31,7 @@ builder.Services.AddScoped<INotificationManager, NotificationManager>();
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddRazorPages()
-    .AddMvcOptions(o => o.Filters.Add<RavenSaveChangesAsyncFilter>());
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
