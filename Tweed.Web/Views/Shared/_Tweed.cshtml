@@ -13,16 +13,16 @@
     <div class="card-footer small">
         <small class="text-muted">@Model.CreatedAt</small>
         <small class="text-muted">Likes: @Model.Likes</small>
-        <form method="post">
+        <form method="post" up-submit>
             @if (Model.LikedByCurrentUser)
             {
-                <button asp-page="/unlike" asp-route-id="@Model.Id">
+                <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id">
                     <i class="bi bi-balloon-heart-fill" style="font-size: 1.5em"></i>
                 </button>
             }
             else
             {
-                <button asp-page="/like" asp-route-id="@Model.Id">
+                <button asp-controller="Tweed" asp-action="Like" asp-route-tweedid="@Model.Id">
                     <i class="bi bi-balloon-heart" style="font-size: 1.5em"></i>
                 </button>
             }

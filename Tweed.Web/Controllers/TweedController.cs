@@ -5,6 +5,7 @@ using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Helper;
+using Tweed.Web.Views.Shared;
 using Tweed.Web.Views.Tweed;
 
 namespace Tweed.Web.Controllers;
@@ -43,5 +44,49 @@ public class TweedController : Controller
         _notificationManager.AppendSuccess("Tweed Posted");
 
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Like(string tweedId)
+    {
+        var tweed = await _tweedQueries.GetById(tweedId);
+        if (tweed == null)
+            return NotFound();
+
+        var currentUserId = _userManager.GetUserId(User);
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        await _tweedQueries.AddLike(tweedId, currentUserId, now);
+
+        TweedViewModel viewModel = new()
+        {
+            Id = tweed.Id,
+            Text = tweed.Text, CreatedAt = tweed.CreatedAt,
+            AuthorId = tweed.AuthorId,
+            Likes = tweed.LikedBy.Count,
+            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId)
+        };
+
+        return PartialView("_Tweed", viewModel);
+    }
+
+    public async Task<IActionResult> Unlike(string tweedId)
+    {
+        var tweed = await _tweedQueries.GetById(tweedId);
+        if (tweed == null)
+            return NotFound();
+
+        var currentUserId = _userManager.GetUserId(User);
+        await _tweedQueries.RemoveLike(tweedId, currentUserId);
+
+        TweedViewModel viewModel = new()
+        {
+            Id = tweed.Id,
+            Text = tweed.Text, CreatedAt = tweed.CreatedAt,
+            AuthorId = tweed.AuthorId,
+            Likes = tweed.LikedBy.Count,
+            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId)
+        };
+
+        return PartialView("_Tweed", viewModel);
     }
 }
