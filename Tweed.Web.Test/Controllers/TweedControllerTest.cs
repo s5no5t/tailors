@@ -38,7 +38,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task OnPostAsync_ValidModel_ReturnsRedirectToPageResult()
+    public async Task Create_ShouldReturnRedirect()
     {
         var createModel = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);
@@ -53,7 +53,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task OnPostAsync_SavesTweed()
+    public async Task Create_ShouldSaveTweed()
     {
         _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
         var controller = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
@@ -70,7 +70,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task OnPostAsync_ValidModel_SetsSuccessMessage()
+    public async Task Create_ShouldSetSuccessMessage()
     {
         var controller = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object);

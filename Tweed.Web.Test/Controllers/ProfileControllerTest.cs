@@ -24,7 +24,7 @@ public class ProfileControllerTest
     }
 
     [Fact]
-    public void CreateModel_RequiresAuthorization()
+    public void RequiresAuthorization()
     {
         var authorizeAttributeValue =
             Attribute.GetCustomAttribute(typeof(ProfileController), typeof(AuthorizeAttribute));
@@ -32,7 +32,7 @@ public class ProfileControllerTest
     }
 
     [Fact]
-    public async Task OnGet_ShouldLoadTweeds()
+    public async Task Index_ShouldLoadTweeds()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
         tweedQueriesMock.Setup(t => t.GetTweedsForUser("user1"))
@@ -47,7 +47,7 @@ public class ProfileControllerTest
     }
 
     [Fact]
-    public async Task OnGet_ShouldReturnNotFound_WhenUserIdDoesntExist()
+    public async Task Index_ShouldReturnNotFound_WhenUserIdDoesntExist()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
         _userManagerMock.Setup(u => u.FindByIdAsync("user1")).ReturnsAsync((AppUser)null!);
@@ -59,7 +59,7 @@ public class ProfileControllerTest
     }
 
     [Fact]
-    public async Task OnGet_ShouldLoadUserName()
+    public async Task Index_ShouldLoadUserName()
     {
         var tweedQueriesMock = new Mock<ITweedQueries>();
         tweedQueriesMock.Setup(t => t.GetTweedsForUser("user1"))
