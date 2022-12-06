@@ -55,8 +55,8 @@ public class HomeControllerTest
             DateTimeZone.Utc, new Offset());
         var tweed = new Data.Entities.Tweed
         {
-            LikedBy = new List<LikedBy>
-                { new() { UserId = "user1", LikedAt = fixedZonedDateTime } },
+            Likes = new List<Likes>
+                { new() { UserId = "user1", CreatedAt = fixedZonedDateTime } },
             AuthorId = "user2"
         };
         tweedQueriesMock.Setup(t => t.GetLatestTweeds())

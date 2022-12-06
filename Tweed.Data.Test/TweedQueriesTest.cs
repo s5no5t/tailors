@@ -152,7 +152,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var queries = new TweedQueries(session);
         await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
 
-        Assert.Single(tweed.LikedBy);
+        Assert.Single(tweed.Likes);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            LikedBy = new List<LikedBy> { new() { UserId = "user1" } }
+            Likes = new List<Likes> { new() { UserId = "user1" } }
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -173,7 +173,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var queries = new TweedQueries(session);
         await queries.RemoveLike(tweed.Id, "user1");
 
-        Assert.Empty(tweed.LikedBy);
+        Assert.Empty(tweed.Likes);
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            LikedBy = new List<LikedBy>()
+            Likes = new List<Likes>()
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -194,7 +194,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var queries = new TweedQueries(session);
         await queries.RemoveLike(tweed.Id, "user1");
 
-        Assert.Empty(tweed.LikedBy);
+        Assert.Empty(tweed.Likes);
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            LikedBy = new List<LikedBy>
+            Likes = new List<Likes>
             {
                 new()
                 {
@@ -221,7 +221,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var queries = new TweedQueries(session);
         await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
 
-        Assert.Single(tweed.LikedBy);
+        Assert.Single(tweed.Likes);
     }
 
     [Fact]

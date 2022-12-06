@@ -13,8 +13,8 @@ public static class ViewModelFactory
             Id = tweed.Id,
             Text = tweed.Text, CreatedAt = tweed.CreatedAt,
             AuthorId = tweed.AuthorId,
-            Likes = tweed.LikedBy.Count,
-            LikedByCurrentUser = tweed.LikedBy.Any(lb => lb.UserId == currentUserId),
+            LikesCount = tweed.Likes.Count,
+            LikedByCurrentUser = tweed.Likes.Any(lb => lb.UserId == currentUserId),
             Author = author.UserName
         };
         return viewModel;

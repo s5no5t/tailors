@@ -8,11 +8,11 @@ public class Tweed
     public string? Text { get; init; }
     public ZonedDateTime? CreatedAt { get; init; }
     public string? AuthorId { get; set; }
-    public List<LikedBy> LikedBy { get; set; } = new();
+    public List<Likes> Likes { get; set; } = new();
 }
 
-public class LikedBy
+public class Likes
 {
     public string? UserId { get; set; }
-    public ZonedDateTime? LikedAt { get; set; }
+    public ZonedDateTime? CreatedAt { get; set; }
 }

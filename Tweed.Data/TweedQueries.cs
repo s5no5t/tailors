@@ -39,19 +39,19 @@ public sealed class TweedQueries : ITweedQueries
     public async Task AddLike(string id, string userId, ZonedDateTime likedAt)
     {
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
-        if (tweed.LikedBy.Any(l => l.UserId == userId))
+        if (tweed.Likes.Any(l => l.UserId == userId))
             return;
-        tweed.LikedBy.Add(new LikedBy
+        tweed.Likes.Add(new Likes
         {
             UserId = userId,
-            LikedAt = likedAt
+            CreatedAt = likedAt
         });
     }
 
     public async Task RemoveLike(string id, string userId)
     {
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
-        tweed.LikedBy.RemoveAll(lb => lb.UserId == userId);
+        tweed.Likes.RemoveAll(lb => lb.UserId == userId);
     }
 
     public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)

@@ -12,7 +12,7 @@
     </div>
     <div class="card-footer small">
         <small class="text-muted">@Model.CreatedAt</small>
-        <small class="text-muted">Likes: @Model.Likes</small>
+        <small class="text-muted">Likes: @Model.LikesCount</small>
         <form method="post" up-submit up-target=".tweed">
             @if (Model.LikedByCurrentUser)
             {
