@@ -37,7 +37,13 @@ foreach (var appUser in appUsers)
 var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
     .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
     .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
-    .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id);
+    .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id)
+    .RuleFor(t => t.Likes, f => f.PickRandom(appUsers, f.Random.Number(appUsers.Count - 1))
+        .Select(a => new Like
+        {
+            CreatedAt = dateTimeToZonedDateTime(f.Date.Past()),
+            UserId = f.PickRandom(appUsers).Id
+        }).ToList());
 
 var tweeds = tweedFaker.Generate(5);
 foreach (var tweed in tweeds)
