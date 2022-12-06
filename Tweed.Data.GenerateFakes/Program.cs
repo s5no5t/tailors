@@ -8,19 +8,7 @@ using Raven.DependencyInjection;
 using Tweed.Data;
 using Tweed.Data.Entities;
 
-var config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.Development.json")
-    .Build();
-
-var ravenSettings = config.GetRequiredSection("RavenSettings").Get<RavenSettings>();
-
-using var store = new DocumentStore
-{
-    Urls = ravenSettings.Urls,
-    Database = ravenSettings.DatabaseName
-}.Initialize();
-
-store.EnsureDatabaseExists();
+using var store = OpenDocumentStore();
 
 await using var bulkInsert = store.BulkInsert();
 
@@ -33,7 +21,6 @@ foreach (var appUser in appUsers)
     await bulkInsert.StoreAsync(appUser);
     Console.WriteLine("AppUser {0} created", appUser.UserName);
 }
-
 
 using (var session = store.OpenAsyncSession())
 {
@@ -77,4 +64,23 @@ ZonedDateTime dateTimeToZonedDateTime(DateTime dateTime)
     var berlinTimeZone = DateTimeZoneProviders.Tzdb["Europe/Berlin"];
     var timeZonedDateTime = berlinTimeZone.AtStrictly(localDate);
     return timeZonedDateTime;
+}
+
+IDocumentStore OpenDocumentStore()
+{
+    var config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.Development.json")
+        .Build();
+
+    var ravenSettings = config.GetRequiredSection("RavenSettings").Get<RavenSettings>();
+
+    var documentStore = new DocumentStore
+    {
+        Urls = ravenSettings.Urls,
+        Database = ravenSettings.DatabaseName
+    }.Initialize();
+
+    documentStore.EnsureDatabaseExists();
+    
+    return documentStore;
 }
