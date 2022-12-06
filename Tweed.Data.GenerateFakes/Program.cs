@@ -4,6 +4,7 @@ using Bogus;
 using Microsoft.Extensions.Configuration;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
+using Tweed.Data;
 using Tweed.Data.Entities;
 
 var config = new ConfigurationBuilder()
@@ -17,6 +18,9 @@ using var store = new DocumentStore
     Urls = ravenSettings.Urls,
     Database = ravenSettings.DatabaseName
 }.Initialize();
+
+store.EnsureDatabaseExists();
+
 await using var bulkInsert = store.BulkInsert();
 
 var appUsersFaker = new Faker<AppUser>()
