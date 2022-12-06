@@ -22,11 +22,8 @@ var appUserFaker = new Faker<AppUser>()
 
 var numAppUsers = config.GetValue<int>("NumberOfAppUsers");
 var appUsers = appUserFaker.Generate(numAppUsers);
-foreach (var appUser in appUsers)
-{
-    await bulkInsert.StoreAsync(appUser);
-    Console.WriteLine("AppUser {0} created", appUser.UserName);
-}
+foreach (var appUser in appUsers) await bulkInsert.StoreAsync(appUser);
+Console.WriteLine("{0} AppUser instances created", appUsers.Count);
 
 using (var session = store.OpenAsyncSession())
 {
@@ -46,6 +43,8 @@ using (var session = store.OpenAsyncSession())
     await session.SaveChangesAsync();
 }
 
+Console.WriteLine("{0} AppUser instances updated with followers", appUsers.Count);
+
 var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
     .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
     .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
@@ -59,11 +58,8 @@ var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
 
 var numTweeds = config.GetValue<int>("NumberOfTweeds");
 var tweeds = tweedFaker.Generate(numTweeds);
-foreach (var tweed in tweeds)
-{
-    await bulkInsert.StoreAsync(tweed);
-    Console.WriteLine("Tweed {0} created", tweed.Text);
-}
+foreach (var tweed in tweeds) await bulkInsert.StoreAsync(tweed);
+Console.WriteLine("{0} Tweed instances created", tweeds.Count);
 
 ZonedDateTime dateTimeToZonedDateTime(DateTime dateTime)
 {
