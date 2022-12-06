@@ -4,6 +4,7 @@ using Bogus;
 using Microsoft.Extensions.Configuration;
 using NodaTime;
 using Raven.Client.Documents;
+using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
 using Tweed.Data;
 using Tweed.Data.Entities;
@@ -67,8 +68,8 @@ foreach (var tweed in tweeds)
 ZonedDateTime dateTimeToZonedDateTime(DateTime dateTime)
 {
     var localDate = LocalDateTime.FromDateTime(dateTime);
-    var berlinTimeZone = DateTimeZoneProviders.Tzdb["Europe/Berlin"];
-    var timeZonedDateTime = berlinTimeZone.AtStrictly(localDate);
+    var berlinTimeZone = DateTimeZoneProviders.Tzdb["UTC"];
+    var timeZonedDateTime = berlinTimeZone.AtLeniently(localDate);
     return timeZonedDateTime;
 }
 
@@ -80,8 +81,10 @@ IDocumentStore OpenDocumentStore(IConfigurationRoot configurationRoot)
     {
         Urls = ravenSettings.Urls,
         Database = ravenSettings.DatabaseName
-    }.Initialize();
+    };
 
+    documentStore.ConfigureForNodaTime();
+    documentStore.Initialize();
     documentStore.EnsureDatabaseExists();
 
     return documentStore;

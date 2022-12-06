@@ -8,13 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bogus" Version="34.0.2"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0"/>
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+        <PackageReference Include="NodaTime" Version="3.1.6" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Tweed.Data\Tweed.Data.csproj"/>
+        <ProjectReference Include="..\Tweed.Data\Tweed.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,7 +24,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
-        <None Remove="appsettings.Development.json"/>
+        <None Remove="appsettings.Development.json" />
         <Content Include="appsettings.Development.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
