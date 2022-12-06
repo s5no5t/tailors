@@ -8,14 +8,19 @@ using Raven.DependencyInjection;
 using Tweed.Data;
 using Tweed.Data.Entities;
 
-using var store = OpenDocumentStore();
+var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.Development.json")
+    .Build();
+
+using var store = OpenDocumentStore(config);
 
 await using var bulkInsert = store.BulkInsert();
 
 var appUserFaker = new Faker<AppUser>()
     .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName());
 
-var appUsers = appUserFaker.Generate(5);
+var numAppUsers = config.GetValue<int>("NumberOfAppUsers");
+var appUsers = appUserFaker.Generate(numAppUsers);
 foreach (var appUser in appUsers)
 {
     await bulkInsert.StoreAsync(appUser);
@@ -51,7 +56,8 @@ var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
             UserId = f.PickRandom(appUsers).Id
         }).ToList());
 
-var tweeds = tweedFaker.Generate(5);
+var numTweeds = config.GetValue<int>("NumberOfTweeds");
+var tweeds = tweedFaker.Generate(numTweeds);
 foreach (var tweed in tweeds)
 {
     await bulkInsert.StoreAsync(tweed);
@@ -66,13 +72,9 @@ ZonedDateTime dateTimeToZonedDateTime(DateTime dateTime)
     return timeZonedDateTime;
 }
 
-IDocumentStore OpenDocumentStore()
+IDocumentStore OpenDocumentStore(IConfigurationRoot configurationRoot)
 {
-    var config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.Development.json")
-        .Build();
-
-    var ravenSettings = config.GetRequiredSection("RavenSettings").Get<RavenSettings>();
+    var ravenSettings = configurationRoot.GetRequiredSection("RavenSettings").Get<RavenSettings>();
 
     var documentStore = new DocumentStore
     {
@@ -81,6 +83,6 @@ IDocumentStore OpenDocumentStore()
     }.Initialize();
 
     documentStore.EnsureDatabaseExists();
-    
+
     return documentStore;
 }
