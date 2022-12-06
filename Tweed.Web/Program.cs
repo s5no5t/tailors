@@ -28,6 +28,7 @@ identityBuilder.AddDefaultUI();
 
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
+builder.Services.AddScoped<IAppUserQueries, AppUserQueries>();
 
 builder.Services.AddHttpContextAccessor();
 
