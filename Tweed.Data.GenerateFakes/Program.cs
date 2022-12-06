@@ -34,6 +34,25 @@ foreach (var appUser in appUsers)
     Console.WriteLine("AppUser {0} created", appUser.UserName);
 }
 
+
+using (var session = store.OpenAsyncSession())
+{
+    var followsFaker = new Faker<Follows>()
+        .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
+        .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
+
+    var appUserFollowsFaker = new Faker<AppUser>()
+        .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
+
+    foreach (var appUser in appUsers)
+    {
+        appUserFollowsFaker.Populate(appUser);
+        await session.StoreAsync(appUser);
+    }
+
+    await session.SaveChangesAsync();
+}
+
 var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
     .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
     .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
