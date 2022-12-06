@@ -41,7 +41,7 @@ public sealed class TweedQueries : ITweedQueries
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
         if (tweed.Likes.Any(l => l.UserId == userId))
             return;
-        tweed.Likes.Add(new Likes
+        tweed.Likes.Add(new Like
         {
             UserId = userId,
             CreatedAt = likedAt
@@ -74,3 +74,4 @@ public sealed class TweedQueries : ITweedQueries
         await _session.StoreAsync(tweed);
     }
 }
+

@@ -55,7 +55,7 @@ public class HomeControllerTest
             DateTimeZone.Utc, new Offset());
         var tweed = new Data.Entities.Tweed
         {
-            Likes = new List<Likes>
+            Likes = new List<Like>
                 { new() { UserId = "user1", CreatedAt = fixedZonedDateTime } },
             AuthorId = "user2"
         };
@@ -78,3 +78,4 @@ public class HomeControllerTest
         Assert.True(viewModel.Tweeds[0].LikedByCurrentUser);
     }
 }
+

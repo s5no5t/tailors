@@ -165,7 +165,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            Likes = new List<Likes> { new() { UserId = "user1" } }
+            Likes = new List<Like> { new() { UserId = "user1" } }
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -186,7 +186,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            Likes = new List<Likes>()
+            Likes = new List<Like>()
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -207,7 +207,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            Likes = new List<Likes>
+            Likes = new List<Like>
             {
                 new()
                 {
@@ -321,3 +321,4 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Assert.Empty(tweeds);
     }
 }
+
