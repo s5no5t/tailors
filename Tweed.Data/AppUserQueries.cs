@@ -7,6 +7,7 @@ namespace Tweed.Data;
 public interface IAppUserQueries
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
+    Task RemoveFollower(string leaderId, string userId);
 }
 
 public class AppUserQueries : IAppUserQueries
@@ -29,5 +30,11 @@ public class AppUserQueries : IAppUserQueries
             LeaderId = leaderId,
             CreatedAt = createdAt
         });
+    }
+
+    public async Task RemoveFollower(string leaderId, string userId)
+    {
+        var follower = await _session.LoadAsync<AppUser>(userId);
+        follower.Follows.RemoveAll(f => f.LeaderId == leaderId);
     }
 }

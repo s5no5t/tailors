@@ -161,4 +161,29 @@ public class ProfileControllerTest
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("user", ((RedirectToActionResult)result).RouteValues!["userId"]);
     }
+
+    [Fact]
+    public async Task Unfollow_ShouldReturnNotFound_WhenLeaderIdNotFound()
+    {
+        var result = await _profileController.Unfollow("unknownUser");
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task Unfollow_ShouldAddFollower()
+    {
+        await _profileController.Unfollow("user");
+
+        _appUserQueriesMock.Verify(t =>
+            t.RemoveFollower("user", "currentUser"));
+    }
+
+    [Fact]
+    public async Task Unfollow_ShouldRedirectToIndex()
+    {
+        var result = await _profileController.Unfollow("user");
+
+        Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("user", ((RedirectToActionResult)result).RouteValues!["userId"]);
+    }
 }

@@ -9,7 +9,9 @@
 
 @if (Model.CurrentUserFollows)
 {
-    <button class="btn btn-primary">Unfollow</button>
+    <form method="post">
+        <button class="btn btn-primary" asp-action="Unfollow" asp-route-userid="@Model.UserId">Unfollow</button>
+    </form>
 }
 else
 {

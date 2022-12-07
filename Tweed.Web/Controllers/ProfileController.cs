@@ -70,4 +70,21 @@ public class ProfileController : Controller
             userId
         });
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Unfollow(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return NotFound();
+
+        var currentUserId = _userManager.GetUserId(User);
+
+        await _appUserQueries.RemoveFollower(userId, currentUserId);
+
+        return RedirectToAction("Index", new
+        {
+            userId
+        });
+    }
 }
