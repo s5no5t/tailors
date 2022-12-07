@@ -1,22 +1,25 @@
 @using IndexViewModel = Tweed.Web.Views.Profile.IndexViewModel
 @model IndexViewModel
-
+@inject UserManager<AppUser> UserManager
 @{
     ViewData["Title"] = "Profile";
 }
 
 <h1>Profile for @Model.UserName</h1>
 
-<form method="post" up-submit>
-    @if (Model.CurrentUserFollows)
-    {
-        <button class="btn btn-primary" asp-action="Unfollow" asp-route-userid="@Model.UserId">Unfollow</button>
-    }
-    else
-    {
-        <button class="btn btn-primary" asp-action="Follow" asp-route-userid="@Model.UserId">Follow</button>
-    }
-</form>
+@if (UserManager.GetUserId(User) != Model.UserId)
+{
+    <form method="post" up-submit>
+        @if (Model.CurrentUserFollows)
+        {
+            <button class="btn btn-primary" asp-action="Unfollow" asp-route-userid="@Model.UserId">Unfollow</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" asp-action="Follow" asp-route-userid="@Model.UserId">Follow</button>
+        }
+    </form>
+}
 
 @foreach (var tweed in Model.Tweeds)
 {

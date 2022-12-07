@@ -61,8 +61,10 @@ public class ProfileController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        if (userId == currentUserId)
+            return BadRequest("Following yourself isn't allowed");
 
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
         await _appUserQueries.AddFollower(userId, currentUserId, now);
 
         return RedirectToAction("Index", new

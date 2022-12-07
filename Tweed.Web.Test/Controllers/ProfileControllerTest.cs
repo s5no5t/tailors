@@ -145,6 +145,17 @@ public class ProfileControllerTest
     }
 
     [Fact]
+    public async Task Follow_ShouldReturnBadRequest_WhenTryingToFollowCurrentUser()
+    {
+        _userManagerMock.Setup(u => u.FindByIdAsync("currentUser"))
+            .ReturnsAsync(_currentUser);
+        
+        var result = await _profileController.Follow("currentUser");
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
     public async Task Follow_ShouldAddFollower()
     {
         await _profileController.Follow("user");
