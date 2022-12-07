@@ -151,7 +151,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
+        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
 
         Assert.Single(tweed.Likes);
     }
@@ -166,13 +166,13 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like> { new() { UserId = "user1" } }
+            Likes = new List<Like> { new() { UserId = "currentUser" } }
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.RemoveLike(tweed.Id, "user1");
+        await queries.RemoveLike(tweed.Id, "currentUser");
 
         Assert.Empty(tweed.Likes);
     }
@@ -193,7 +193,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.RemoveLike(tweed.Id, "user1");
+        await queries.RemoveLike(tweed.Id, "currentUser");
 
         Assert.Empty(tweed.Likes);
     }
@@ -212,7 +212,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             {
                 new()
                 {
-                    UserId = "user1"
+                    UserId = "currentUser"
                 }
             }
         };
@@ -220,7 +220,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        await queries.AddLike(tweed.Id, "user1", FixedZonedDateTime);
+        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
 
         Assert.Single(tweed.Likes);
     }
@@ -234,13 +234,13 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Entities.Tweed tweed = new()
         {
             Text = "test",
-            AuthorId = "user1"
+            AuthorId = "user"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        var tweeds = await queries.GetTweedsForUser("user1");
+        var tweeds = await queries.GetTweedsForUser("user");
 
         Assert.NotEmpty(tweeds);
     }
