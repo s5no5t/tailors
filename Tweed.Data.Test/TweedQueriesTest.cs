@@ -34,22 +34,31 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task GetFeed_ShouldReturnTweeds()
+    public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
         using var store = _ravenDb.CreateDocumentStore();
         using var session = store.OpenAsyncSession();
 
-        Entities.Tweed tweed = new()
+        Entities.Tweed currentUserTweed = new()
         {
-            Text = "test"
+            Text = "test", 
+            AuthorId = "currentUser" 
         };
-        await session.StoreAsync(tweed);
+        await session.StoreAsync(currentUserTweed);
+        Entities.Tweed otherUserTweed = new()
+        {
+            Text = "test", 
+            AuthorId = "otherUser" 
+        };
+        await session.StoreAsync(otherUserTweed);
+        
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
         var tweeds = await queries.GetFeed("currentUser");
 
-        Assert.NotEmpty(tweeds);
+        Assert.Contains(currentUserTweed, tweeds);
+        Assert.DoesNotContain(otherUserTweed, tweeds);
     }
 
     [Fact]
@@ -61,6 +70,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Entities.Tweed olderTweed = new()
         {
             Text = "older tweed",
+            AuthorId = "currentUser",
             CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(olderTweed);
@@ -68,6 +78,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Entities.Tweed recentTweed = new()
         {
             Text = "recent tweed",
+            AuthorId = "currentUser",
             CreatedAt = recent
         };
         await session.StoreAsync(recentTweed);
@@ -91,6 +102,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             Entities.Tweed tweed = new()
             {
                 Text = "test",
+                AuthorId = "currentUser",
                 CreatedAt = FixedZonedDateTime
             };
             await session.StoreAsync(tweed);
