@@ -7,6 +7,15 @@
 
 <h1>Profile for @Model.UserName</h1>
 
+@if (Model.CurrentUserFollows)
+{
+    <button class="btn btn-primary">Unfollow</button>
+}
+else
+{
+    <button class="btn btn-primary">Follow</button>
+}
+
 @foreach (var tweed in Model.Tweeds)
 {
     <partial name="_Tweed" model="tweed"/>

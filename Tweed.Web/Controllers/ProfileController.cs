@@ -31,20 +31,22 @@ public class ProfileController : Controller
             return NotFound();
 
         var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
-        var currentUserId = _userManager.GetUserId(User);
+        var currentUser = await _userManager.GetUserAsync(User);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)
         {
             var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-            var tweedViewModel = ViewModelFactory.BuildTweedViewModel(tweed, author, currentUserId);
+            var tweedViewModel =
+                ViewModelFactory.BuildTweedViewModel(tweed, author, currentUser.Id!);
             tweedViewModels.Add(tweedViewModel);
         }
 
         var viewModel = new IndexViewModel
         {
             UserName = user.UserName,
-            Tweeds = tweedViewModels
+            Tweeds = tweedViewModels,
+            CurrentUserFollows = currentUser.Follows.Any(f => f.LeaderId == user.Id)
         };
 
         return View(viewModel);
