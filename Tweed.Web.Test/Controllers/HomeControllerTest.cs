@@ -18,11 +18,22 @@ namespace Tweed.Web.Test.Controllers;
 
 public class HomeControllerTest
 {
+    private readonly HomeController _homeController;
+    private readonly Mock<ITweedQueries> _tweedQueriesMock;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
     public HomeControllerTest()
     {
+        var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
+        _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("user1");
+        _tweedQueriesMock = new Mock<ITweedQueries>();
+        _tweedQueriesMock.Setup(t => t.GetLatestTweeds())
+            .ReturnsAsync(new List<Data.Entities.Tweed>());
+        _homeController = new HomeController(_tweedQueriesMock.Object, _userManagerMock.Object)
+        {
+            ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
+        };
     }
 
     [Fact]
@@ -36,21 +47,14 @@ public class HomeControllerTest
     [Fact]
     public async Task Index_ShouldLoadLatestTweeds()
     {
-        var tweedQueriesMock = new Mock<ITweedQueries>();
-        tweedQueriesMock.Setup(t => t.GetLatestTweeds())
-            .ReturnsAsync(new List<Data.Entities.Tweed>());
-        var indexModel = new HomeController(tweedQueriesMock.Object, _userManagerMock.Object);
+        await _homeController.Index();
 
-        await indexModel.Index();
-
-        tweedQueriesMock.Verify(t => t.GetLatestTweeds());
+        _tweedQueriesMock.Verify(t => t.GetLatestTweeds());
     }
 
     [Fact]
     public async Task Index_ShouldMarkTweedsWrittenByCurrentUser()
     {
-        var tweedQueriesMock = new Mock<ITweedQueries>();
-
         var fixedZonedDateTime = new ZonedDateTime(new LocalDateTime(2022, 11, 18, 15, 20),
             DateTimeZone.Utc, new Offset());
         var tweed = new Data.Entities.Tweed
@@ -59,17 +63,15 @@ public class HomeControllerTest
                 { new() { UserId = "user1", CreatedAt = fixedZonedDateTime } },
             AuthorId = "user2"
         };
-        tweedQueriesMock.Setup(t => t.GetLatestTweeds())
+        _tweedQueriesMock.Setup(t => t.GetLatestTweeds())
             .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
-        _userManagerMock.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
-        var appUser = new AppUser
+        var user = new AppUser
         {
             UserName = "User 2"
         };
-        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(appUser);
-        var indexModel = new HomeController(tweedQueriesMock.Object, _userManagerMock.Object);
+        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(user);
 
-        var result = await indexModel.Index();
+        var result = await _homeController.Index();
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
