@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +25,7 @@ public class HomeControllerTest
     {
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
-        _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("user1");
+        _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("currentUser");
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetLatestTweeds())
             .ReturnsAsync(new List<Data.Entities.Tweed>());
@@ -60,16 +59,17 @@ public class HomeControllerTest
         var tweed = new Data.Entities.Tweed
         {
             Likes = new List<Like>
-                { new() { UserId = "user1", CreatedAt = fixedZonedDateTime } },
-            AuthorId = "user2"
+                { new() { UserId = "currentUser", CreatedAt = fixedZonedDateTime } },
+            AuthorId = "author"
         };
         _tweedQueriesMock.Setup(t => t.GetLatestTweeds())
             .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
-        var user = new AppUser
-        {
-            UserName = "User 2"
-        };
-        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(user);
+
+        _userManagerMock.Setup(u => u.FindByIdAsync("author"))
+            .ReturnsAsync(new AppUser
+            {
+                UserName = "Author"
+            });
 
         var result = await _homeController.Index();
 
