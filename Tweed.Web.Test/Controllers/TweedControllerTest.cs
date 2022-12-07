@@ -27,7 +27,7 @@ public class TweedControllerTest
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-        _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("user1");
+        _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("currentUser");
         _notificationManagerMock = new Mock<INotificationManager>();
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object)
@@ -66,7 +66,7 @@ public class TweedControllerTest
         await _tweedController.Create(viewModel);
 
         _tweedQueriesMock.Verify(t =>
-            t.StoreTweed("text", "user1", It.IsAny<ZonedDateTime>()));
+            t.StoreTweed("text", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
     [Fact]
@@ -86,16 +86,15 @@ public class TweedControllerTest
     {
         Data.Entities.Tweed tweed = new()
         {
-            AuthorId = "user2"
+            AuthorId = "author"
         };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        var user = new AppUser();
-        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(user);
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         await _tweedController.Like("123");
 
-        _tweedQueriesMock.Verify(t => t.AddLike("123", "user1", It.IsAny<ZonedDateTime>()));
+        _tweedQueriesMock.Verify(t => t.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
     [Fact]
@@ -103,12 +102,11 @@ public class TweedControllerTest
     {
         Data.Entities.Tweed tweed = new()
         {
-            AuthorId = "user2"
+            AuthorId = "author"
         };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        var user = new AppUser();
-        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(user);
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _tweedController.Like("123");
 
@@ -120,16 +118,15 @@ public class TweedControllerTest
     {
         Data.Entities.Tweed tweed = new()
         {
-            AuthorId = "user2"
+            AuthorId = "author"
         };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        var user = new AppUser();
-        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(user);
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         await _tweedController.Unlike("123");
 
-        _tweedQueriesMock.Verify(t => t.RemoveLike("123", "user1"));
+        _tweedQueriesMock.Verify(t => t.RemoveLike("123", "currentUser"));
     }
 
     [Fact]
@@ -137,12 +134,11 @@ public class TweedControllerTest
     {
         Data.Entities.Tweed tweed = new()
         {
-            AuthorId = "user2"
+            AuthorId = "author"
         };
         _tweedQueriesMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        var user = new AppUser();
-        _userManagerMock.Setup(u => u.FindByIdAsync("user2")).ReturnsAsync(user);
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _tweedController.Unlike("123");
 
