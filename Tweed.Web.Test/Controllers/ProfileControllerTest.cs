@@ -27,6 +27,7 @@ public class ProfileControllerTest
     private readonly ProfileController _profileController;
     private readonly Mock<ITweedQueries> _tweedQueriesMock;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
+    private readonly AppUser _user;
 
     public ProfileControllerTest()
     {
@@ -36,8 +37,12 @@ public class ProfileControllerTest
             u.GetUserAsync(currentUserPrincipal)).ReturnsAsync(_currentUser);
         _userManagerMock.Setup(u =>
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
+        _user = new AppUser();
+        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
         _appUserQueriesMock = new Mock<IAppUserQueries>();
         _tweedQueriesMock = new Mock<ITweedQueries>();
+        _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
+            .ReturnsAsync(new List<Data.Entities.Tweed>());
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object,
             _appUserQueriesMock.Object)
@@ -57,11 +62,6 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldLoadTweeds()
     {
-        _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
-            .ReturnsAsync(new List<Data.Entities.Tweed>());
-        var user = new AppUser();
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(user);
-
         await _profileController.Index("user");
 
         _tweedQueriesMock.Verify(t => t.GetTweedsForUser("user"));
@@ -80,14 +80,8 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldLoadUserName()
     {
-        _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
-            .ReturnsAsync(new List<Data.Entities.Tweed>());
-        var user = new AppUser
-        {
-            UserName = "UserName"
-        };
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(user);
-
+        _user.UserName = "UserName";
+        
         var result = await _profileController.Index("user");
 
         Assert.IsType<ViewResult>(result);
@@ -100,16 +94,11 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsTrue_WhenCurrentUserIsFollower()
     {
-        _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
-            .ReturnsAsync(new List<Data.Entities.Tweed>());
-        var user = new AppUser
-        {
-            Id = "user"
-        };
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(user);
+        _user.Id = "user";
+        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
         _currentUser.Follows.Add(new Follows
         {
-            LeaderId = user.Id
+            LeaderId = _user.Id
         });
 
         var result = await _profileController.Index("user");
@@ -124,13 +113,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsFalse_WhenCurrentUserIsNotFollower()
     {
-        _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
-            .ReturnsAsync(new List<Data.Entities.Tweed>());
-        var user = new AppUser
-        {
-            Id = "user"
-        };
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(user);
+        _user.Id = "user";
 
         var result = await _profileController.Index("user");
 
@@ -151,12 +134,6 @@ public class ProfileControllerTest
     [Fact]
     public async Task Follow_ShouldAddFollower()
     {
-        var user = new AppUser
-        {
-            UserName = "UserName"
-        };
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(user);
-
         await _profileController.Follow("user");
 
         _appUserQueriesMock.Verify(t =>
