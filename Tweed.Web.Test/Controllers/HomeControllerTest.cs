@@ -52,7 +52,7 @@ public class HomeControllerTest
     }
 
     [Fact]
-    public async Task Index_ShouldMarkTweedsWrittenByCurrentUser()
+    public async Task Index_ShouldSetLikedByCurrentUser()
     {
         var fixedZonedDateTime = new ZonedDateTime(new LocalDateTime(2022, 11, 18, 15, 20),
             DateTimeZone.Utc, new Offset());
