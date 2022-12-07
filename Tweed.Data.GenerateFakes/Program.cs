@@ -27,20 +27,22 @@ Console.WriteLine("{0} AppUser instances created", appUsers.Count);
 
 using (var session = store.OpenAsyncSession())
 {
-    var followsFaker = new Faker<Follows>()
-        .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
-        .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
-
-    var appUserFollowsFaker = new Faker<AppUser>()
-        .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
-
-    foreach (var appUser in appUsers)
     {
-        appUserFollowsFaker.Populate(appUser);
-        await session.StoreAsync(appUser);
-    }
+        var followsFaker = new Faker<Follows>()
+            .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
+            .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
 
-    await session.SaveChangesAsync();
+        var appUserFollowsFaker = new Faker<AppUser>()
+            .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
+
+        foreach (var appUser in appUsers)
+        {
+            appUserFollowsFaker.Populate(appUser);
+            await session.StoreAsync(appUser);
+        }
+
+        await session.SaveChangesAsync();
+    }
 }
 
 Console.WriteLine("{0} AppUser instances updated with followers", appUsers.Count);
