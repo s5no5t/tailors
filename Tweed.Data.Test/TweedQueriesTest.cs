@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Tweed.Data.Test;
 
+[Collection("RavenDb Collection")]
 public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 {
     private static readonly ZonedDateTime FixedZonedDateTime =

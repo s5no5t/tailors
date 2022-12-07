@@ -5,7 +5,8 @@ using Xunit;
 
 namespace Tweed.Data.Test;
 
-public class AppUserQueriesTest : IClassFixture<RavenTestDbFixture>
+[Collection("RavenDb Collection")]
+public class AppUserQueriesTest
 {
     private readonly RavenTestDbFixture _ravenDb;
 
