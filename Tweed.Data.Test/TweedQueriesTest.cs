@@ -41,17 +41,17 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Entities.Tweed currentUserTweed = new()
         {
-            Text = "test", 
-            AuthorId = "currentUser" 
+            Text = "test",
+            AuthorId = "currentUser"
         };
         await session.StoreAsync(currentUserTweed);
         Entities.Tweed otherUserTweed = new()
         {
-            Text = "test", 
-            AuthorId = "otherUser" 
+            Text = "test",
+            AuthorId = "otherUser"
         };
         await session.StoreAsync(otherUserTweed);
-        
+
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
@@ -59,6 +59,55 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Contains(currentUserTweed, tweeds);
         Assert.DoesNotContain(otherUserTweed, tweeds);
+    }
+
+    [Fact]
+    public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using var session = store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+
+        var currentUser = new AppUser
+        {
+            Id = "currentUser",
+            Follows = new List<Follows>
+            {
+                new()
+                {
+                    LeaderId = "followedUser"
+                }
+            }
+        };
+        await session.StoreAsync(currentUser);
+        var followedUser = new AppUser
+        {
+            Id = "followedUser"
+        };
+        await session.StoreAsync(followedUser);
+        Entities.Tweed followedUserTweed = new()
+        {
+            Text = "test",
+            AuthorId = "followedUser"
+        };
+        await session.StoreAsync(followedUserTweed);
+        Entities.Tweed notFollowedUserTweed = new()
+        {
+            Text = "test",
+            AuthorId = "notFollowedUser"
+        };
+        await session.StoreAsync(notFollowedUserTweed);
+
+        await session.SaveChangesAsync();
+        
+
+        using var session2 = store.OpenAsyncSession();
+
+        var queries = new TweedQueries(session2);
+        var tweeds = await queries.GetFeed("currentUser");
+
+        Assert.True(tweeds.Any(t => t.Id == followedUserTweed.Id));
+        Assert.False(tweeds.Any(t => t.Id == notFollowedUserTweed.Id));
     }
 
     [Fact]
