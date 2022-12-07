@@ -47,7 +47,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        var tweeds = await queries.GetFeed();
+        var tweeds = await queries.GetFeed("currentUser");
 
         Assert.NotEmpty(tweeds);
     }
@@ -74,7 +74,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        var tweeds = (await queries.GetFeed()).ToList();
+        var tweeds = (await queries.GetFeed("currentUser")).ToList();
 
         Assert.Equal(recentTweed, tweeds[0]);
         Assert.Equal(olderTweed, tweeds[1]);
@@ -99,7 +99,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
 
         var queries = new TweedQueries(session);
-        var tweeds = (await queries.GetFeed()).ToList();
+        var tweeds = (await queries.GetFeed("currentUser")).ToList();
 
         Assert.Equal(20, tweeds.Count);
     }

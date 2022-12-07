@@ -27,7 +27,7 @@ public class HomeControllerTest
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
         _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("currentUser");
         _tweedQueriesMock = new Mock<ITweedQueries>();
-        _tweedQueriesMock.Setup(t => t.GetFeed())
+        _tweedQueriesMock.Setup(t => t.GetFeed("currentUser"))
             .ReturnsAsync(new List<Data.Entities.Tweed>());
         _homeController = new HomeController(_tweedQueriesMock.Object, _userManagerMock.Object)
         {
@@ -48,7 +48,7 @@ public class HomeControllerTest
     {
         await _homeController.Index();
 
-        _tweedQueriesMock.Verify(t => t.GetFeed());
+        _tweedQueriesMock.Verify(t => t.GetFeed("currentUser"));
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class HomeControllerTest
                 { new() { UserId = "currentUser", CreatedAt = fixedZonedDateTime } },
             AuthorId = "author"
         };
-        _tweedQueriesMock.Setup(t => t.GetFeed())
+        _tweedQueriesMock.Setup(t => t.GetFeed("currentUser"))
             .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
 
         _userManagerMock.Setup(u => u.FindByIdAsync("author"))

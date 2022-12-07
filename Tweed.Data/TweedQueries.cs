@@ -9,7 +9,7 @@ namespace Tweed.Data;
 public interface ITweedQueries
 {
     Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
-    Task<List<Entities.Tweed>> GetFeed();
+    Task<List<Entities.Tweed>> GetFeed(string userId);
     Task<Entities.Tweed?> GetById(string id);
     Task AddLike(string id, string userId, ZonedDateTime likedAt);
     Task<List<Entities.Tweed>> GetTweedsForUser(string userId);
@@ -25,7 +25,7 @@ public sealed class TweedQueries : ITweedQueries
         _session = session;
     }
 
-    public async Task<List<Entities.Tweed>> GetFeed()
+    public async Task<List<Entities.Tweed>> GetFeed(string userId)
     {
         return await _session.Query<Entities.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20)
             .ToListAsync();
