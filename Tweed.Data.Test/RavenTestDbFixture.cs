@@ -8,7 +8,9 @@ public class RavenTestDbFixture : RavenTestDriver
 {
     public IDocumentStore CreateDocumentStore()
     {
-        return GetDocumentStore();
+        var store = GetDocumentStore();
+        store.DeployIndexes();
+        return store;
     }
 
     protected override void PreInitialize(IDocumentStore documentStore)

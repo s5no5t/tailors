@@ -40,6 +40,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 {
     var documentStore = app.Services.GetRequiredService<IDocumentStore>();
     documentStore.EnsureDatabaseExists();
+    documentStore.DeployIndexes();
 });
 
 // Configure the HTTP request pipeline.

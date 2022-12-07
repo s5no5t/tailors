@@ -30,4 +30,9 @@ public static class RavenExtensions
 
         return store;
     }
+
+    public static void DeployIndexes(this IDocumentStore store)
+    {
+        new Tweeds_ByAuthorId().Execute(store);
+    }
 }
