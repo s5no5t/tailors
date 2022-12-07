@@ -26,8 +26,8 @@ public class ProfileControllerTest
 
     private readonly ProfileController _profileController;
     private readonly Mock<ITweedQueries> _tweedQueriesMock;
-    private readonly Mock<UserManager<AppUser>> _userManagerMock;
     private readonly AppUser _user;
+    private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
     public ProfileControllerTest()
     {
@@ -81,7 +81,7 @@ public class ProfileControllerTest
     public async Task Index_ShouldLoadUserName()
     {
         _user.UserName = "UserName";
-        
+
         var result = await _profileController.Index("user");
 
         Assert.IsType<ViewResult>(result);
@@ -95,7 +95,6 @@ public class ProfileControllerTest
     public async Task Index_ShouldSetCurrentUserFollowsIsTrue_WhenCurrentUserIsFollower()
     {
         _user.Id = "user";
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
         _currentUser.Follows.Add(new Follows
         {
             LeaderId = _user.Id
@@ -125,6 +124,20 @@ public class ProfileControllerTest
     }
 
     [Fact]
+    public async Task Index_ShouldSetUserId()
+    {
+        _user.Id = "user";
+
+        var result = await _profileController.Index("user");
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.Equal("user", viewModel.UserId);
+    }
+
+    [Fact]
     public async Task Follow_ShouldReturnNotFound_WhenLeaderIdNotFound()
     {
         var result = await _profileController.Follow("unknownUser");
@@ -138,5 +151,14 @@ public class ProfileControllerTest
 
         _appUserQueriesMock.Verify(t =>
             t.AddFollower("user", "currentUser", It.IsAny<ZonedDateTime>()));
+    }
+
+    [Fact]
+    public async Task Follow_ShouldRedirectToIndex()
+    {
+        var result = await _profileController.Follow("user");
+
+        Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("user", ((RedirectToActionResult)result).RouteValues!["userId"]);
     }
 }

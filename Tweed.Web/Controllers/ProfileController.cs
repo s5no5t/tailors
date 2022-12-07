@@ -44,6 +44,7 @@ public class ProfileController : Controller
 
         var viewModel = new IndexViewModel
         {
+            UserId = userId,
             UserName = user.UserName,
             Tweeds = tweedViewModels,
             CurrentUserFollows = currentUser.Follows.Any(f => f.LeaderId == user.Id)
@@ -52,17 +53,21 @@ public class ProfileController : Controller
         return View(viewModel);
     }
 
-    public async Task<IActionResult> Follow(string leaderId)
+    [HttpPost]
+    public async Task<IActionResult> Follow(string userId)
     {
-        var leader = await _userManager.FindByIdAsync(leaderId);
-        if (leader == null)
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _appUserQueries.AddFollower(leaderId, currentUserId, now);
+        await _appUserQueries.AddFollower(userId, currentUserId, now);
 
-        return Ok();
+        return RedirectToAction("Index", new
+        {
+            userId
+        });
     }
 }

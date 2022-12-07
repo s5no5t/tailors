@@ -13,7 +13,9 @@
 }
 else
 {
-    <button class="btn btn-primary">Follow</button>
+    <form method="post">
+        <button class="btn btn-primary" asp-action="Follow" asp-route-userid="@Model.UserId">Follow</button>
+    </form>
 }
 
 @foreach (var tweed in Model.Tweeds)
