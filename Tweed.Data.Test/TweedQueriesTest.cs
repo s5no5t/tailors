@@ -53,7 +53,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task GetLatestTweeds_ShouldReturnOrderedTweeds()
+    public async Task GetFeed_ShouldReturnOrderedTweeds()
     {
         using var store = _ravenDb.CreateDocumentStore();
         using var session = store.OpenAsyncSession();
@@ -81,7 +81,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task GetLatestTweeds_ShouldReturn20Tweeds()
+    public async Task GetFeed_ShouldReturn20Tweeds()
     {
         using var store = _ravenDb.CreateDocumentStore();
         using var session = store.OpenAsyncSession();
