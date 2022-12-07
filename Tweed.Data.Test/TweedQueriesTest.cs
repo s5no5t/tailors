@@ -39,12 +39,19 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         using var store = _ravenDb.CreateDocumentStore();
         using var session = store.OpenAsyncSession();
 
+        var currentUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        await session.StoreAsync(currentUser);
+
         Entities.Tweed currentUserTweed = new()
         {
             Text = "test",
             AuthorId = "currentUser"
         };
         await session.StoreAsync(currentUserTweed);
+
         Entities.Tweed otherUserTweed = new()
         {
             Text = "test",
@@ -54,14 +61,15 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         await session.SaveChangesAsync();
 
-        var queries = new TweedQueries(session);
+        using var session2 = store.OpenAsyncSession();
+        var queries = new TweedQueries(session2);
         var tweeds = await queries.GetFeed("currentUser");
 
-        Assert.Contains(currentUserTweed, tweeds);
-        Assert.DoesNotContain(otherUserTweed, tweeds);
+        Assert.Contains(currentUserTweed.Id, tweeds.Select(t => t.Id));
+        Assert.DoesNotContain(otherUserTweed.Id, tweeds.Select(t => t.Id));
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
     {
         using var store = _ravenDb.CreateDocumentStore();
@@ -100,7 +108,6 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         await session.SaveChangesAsync();
 
-
         using var session2 = store.OpenAsyncSession();
 
         var queries = new TweedQueries(session2);
@@ -116,6 +123,12 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         using var store = _ravenDb.CreateDocumentStore();
         using var session = store.OpenAsyncSession();
 
+        var currentUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        await session.StoreAsync(currentUser);
+
         Entities.Tweed olderTweed = new()
         {
             Text = "older tweed",
@@ -123,6 +136,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(olderTweed);
+
         var recent = FixedZonedDateTime.PlusHours(1);
         Entities.Tweed recentTweed = new()
         {
@@ -131,13 +145,15 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             CreatedAt = recent
         };
         await session.StoreAsync(recentTweed);
+
         await session.SaveChangesAsync();
 
-        var queries = new TweedQueries(session);
+        using var session2 = store.OpenAsyncSession();
+        var queries = new TweedQueries(session2);
         var tweeds = (await queries.GetFeed("currentUser")).ToList();
 
-        Assert.Equal(recentTweed, tweeds[0]);
-        Assert.Equal(olderTweed, tweeds[1]);
+        Assert.Equal(recentTweed.Id, tweeds[0].Id);
+        Assert.Equal(olderTweed.Id, tweeds[1].Id);
     }
 
     [Fact]
@@ -146,6 +162,12 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         using var store = _ravenDb.CreateDocumentStore();
         using var session = store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
+
+        var currentUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        await session.StoreAsync(currentUser);
 
         for (var i = 0; i < 25; i++)
         {
@@ -160,7 +182,8 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         await session.SaveChangesAsync();
 
-        var queries = new TweedQueries(session);
+        using var session2 = store.OpenAsyncSession();
+        var queries = new TweedQueries(session2);
         var tweeds = (await queries.GetFeed("currentUser")).ToList();
 
         Assert.Equal(20, tweeds.Count);
@@ -180,7 +203,8 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
 
-        var queries = new TweedQueries(session);
+        using var session2 = store.OpenAsyncSession();
+        var queries = new TweedQueries(session2);
         var tweed2 = await queries.GetById(tweed.Id);
 
         Assert.Equal(tweed.Id, tweed2?.Id);

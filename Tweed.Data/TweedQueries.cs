@@ -41,8 +41,13 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<List<Entities.Tweed>> GetFeed(string userId)
     {
+        var user = await _session.LoadAsync<AppUser>(userId);
+        var authorIds = user.Follows.Select(f => f.LeaderId).ToList();
+
+        authorIds.Add(userId);
+
         return await _session.Query<Entities.Tweed, Tweeds_ByAuthorId>()
-            .Where(t => t.AuthorId == userId)
+            .Where(t => t.AuthorId.In(authorIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
             .ToListAsync();
