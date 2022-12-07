@@ -7,7 +7,7 @@
 
 <h1>Create</h1>
 
-<form method="post">
+<form method="post" up-submit>
     <div class="mb-3">
         <label for="text" class="form-label">Text</label>
         @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
