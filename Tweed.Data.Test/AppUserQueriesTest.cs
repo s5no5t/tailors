@@ -10,19 +10,17 @@ namespace Tweed.Data.Test;
 [Collection("RavenDb Collection")]
 public class AppUserQueriesTest
 {
-    private readonly RavenTestDbFixture _ravenDb;
+    private readonly IDocumentStore _store;
 
     public AppUserQueriesTest(RavenTestDbFixture ravenDb)
     {
-        _ravenDb = ravenDb;
+        _store = ravenDb.CreateDocumentStore();
     }
 
     [Fact]
     public async Task RemoveFollower()
     {
-        using var store = _ravenDb.CreateDocumentStore();
-        using var session = store.OpenAsyncSession();
-        
+        using var session = _store.OpenAsyncSession();
         AppUser user = new()
         {
             Id = "userId",
@@ -46,8 +44,7 @@ public class AppUserQueriesTest
     [Fact]
     public async Task GetFollowerCount_ShouldReturnFollowerCount()
     {
-        using var store = _ravenDb.CreateDocumentStore();
-        using var session = store.OpenAsyncSession();
+        using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
         AppUser leader = new()
