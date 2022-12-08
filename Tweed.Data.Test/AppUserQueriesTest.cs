@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Raven.Client.Documents;
 using Tweed.Data.Entities;
 using Xunit;
 
@@ -39,5 +41,43 @@ public class AppUserQueriesTest
 
         var userAfterQuery = await session.LoadAsync<AppUser>("userId");
         Assert.DoesNotContain(userAfterQuery.Follows, u => u.LeaderId == "leaderId");
+    }
+
+    [Fact]
+    public async Task GetFollowerCount_ShouldReturnFollowerCount()
+    {
+        using var store = _ravenDb.CreateDocumentStore();
+        using (var session = store.OpenAsyncSession())
+        {
+            session.Advanced.WaitForIndexesAfterSaveChanges();
+            AppUser leader = new()
+            {
+                Id = "leaderId"
+            };
+            await session.StoreAsync(leader);
+            AppUser follower = new()
+            {
+                Id = "followerId",
+                Follows = new List<Follows>
+                {
+                    new()
+                    {
+                        LeaderId = "leaderId"
+                    }
+                }
+            };
+            await session.StoreAsync(follower);
+            await session.SaveChangesAsync();
+        }
+
+        using (var session2 = store.OpenAsyncSession())
+        {
+            var result = await session2.Query<AppUsers_FollowerCount.Result, AppUsers_FollowerCount>()
+                .Where(u => u.AppUserId == "leaderId")
+                .FirstOrDefaultAsync();
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.FollowerCount);
+        }
     }
 }

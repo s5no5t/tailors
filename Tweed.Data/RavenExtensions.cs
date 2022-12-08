@@ -34,5 +34,6 @@ public static class RavenExtensions
     public static void DeployIndexes(this IDocumentStore store)
     {
         new Tweeds_ByAuthorId().Execute(store);
+        new AppUsers_FollowerCount().Execute(store);
     }
 }
