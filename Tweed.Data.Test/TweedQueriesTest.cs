@@ -37,6 +37,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         var currentUser = new AppUser
         {
             Id = "currentUser"
@@ -55,9 +56,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(otherUserTweed);
         await session.SaveChangesAsync();
-
-        using var session2 = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session2);
+        var queries = new TweedQueries(session);
         
         var tweeds = await queries.GetFeed("currentUser");
 
@@ -100,9 +99,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(notFollowedUserTweed);
         await session.SaveChangesAsync();
-
-        using var session2 = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session2);
+        var queries = new TweedQueries(session);
 
         var tweeds = await queries.GetFeed("currentUser");
 
@@ -114,6 +111,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetFeed_ShouldReturnOrderedTweeds()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         var currentUser = new AppUser
         {
             Id = "currentUser"
@@ -135,9 +133,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(recentTweed);
         await session.SaveChangesAsync();
-
-        using var session2 = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session2);
+        var queries = new TweedQueries(session);
 
         var tweeds = (await queries.GetFeed("currentUser")).ToList();
 
@@ -166,8 +162,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             await session.StoreAsync(tweed);
         }
         await session.SaveChangesAsync();
-        using var session2 = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session2);
+        var queries = new TweedQueries(session);
 
         var tweeds = (await queries.GetFeed("currentUser")).ToList();
 
@@ -185,9 +180,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-
-        using var session2 = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session2);
+        var queries = new TweedQueries(session);
 
         var tweed2 = await queries.GetById(tweed.Id);
 
@@ -373,4 +366,3 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Assert.Empty(tweeds);
     }
 }
-
