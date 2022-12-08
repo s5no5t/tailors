@@ -42,7 +42,26 @@ public class AppUserQueriesTest
     }
 
     [Fact]
-    public async Task GetFollowerCount_ShouldReturnFollowerCount()
+    public async Task GetFollowerCount_ShouldReturn0_WithoutFollowers()
+    {
+        using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+
+        AppUser leader = new()
+        {
+            Id = "userId"
+        };
+        await session.StoreAsync(leader);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+        
+        var followerCount = await queries.GetFollowerCount("userId");
+
+        Assert.Equal(0, followerCount);
+    }
+    
+    [Fact]
+    public async Task GetFollowerCount_ShouldReturn1_WhenThereIsOneFollower()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -67,8 +86,8 @@ public class AppUserQueriesTest
         await session.SaveChangesAsync();
         AppUserQueries queries = new(session);
         
-        var followrCount = await queries.GetFollowerCount("leaderId");
+        var followerCount = await queries.GetFollowerCount("leaderId");
 
-        Assert.Equal(1, followrCount);
+        Assert.Equal(1, followerCount);
     }
 }
