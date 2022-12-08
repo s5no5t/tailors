@@ -8,4 +8,5 @@ public class IndexViewModel
     public List<TweedViewModel> Tweeds { get; init; } = new();
     public bool CurrentUserFollows { get; init; }
     public string UserId { get; init; }
+    public int FollowersCount { get; set; }
 }

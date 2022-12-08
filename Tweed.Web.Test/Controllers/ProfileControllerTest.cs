@@ -40,6 +40,7 @@ public class ProfileControllerTest
         _user = new AppUser();
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
         _appUserQueriesMock = new Mock<IAppUserQueries>();
+        _appUserQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>())).ReturnsAsync(0);
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
             .ReturnsAsync(new List<Data.Entities.Tweed>());
@@ -138,7 +139,24 @@ public class ProfileControllerTest
     }
 
     [Fact]
-    public async Task Follow_ShouldReturnNotFound_WhenLeaderIdNotFound()
+    public async Task Index_ShouldSetFollowersCount()
+    {
+        _appUserQueriesMock.Setup(u => u.GetFollowerCount("user")).ReturnsAsync(10);
+        _user.Id = "user";
+
+        var result = await _profileController.Index("user");
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.Equal(10, viewModel.FollowersCount);
+
+        _appUserQueriesMock.Verify(u => u.GetFollowerCount("user"));
+    }
+
+    [Fact]
+    public async Task Follow_ShouldReturnNotFound_WhenUserIdNotFound()
     {
         var result = await _profileController.Follow("unknownUser");
         Assert.IsType<NotFoundResult>(result);
@@ -149,7 +167,7 @@ public class ProfileControllerTest
     {
         _userManagerMock.Setup(u => u.FindByIdAsync("currentUser"))
             .ReturnsAsync(_currentUser);
-        
+
         var result = await _profileController.Follow("currentUser");
 
         Assert.IsType<BadRequestObjectResult>(result);

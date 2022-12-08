@@ -47,7 +47,8 @@ public class ProfileController : Controller
             UserId = userId,
             UserName = user.UserName,
             Tweeds = tweedViewModels,
-            CurrentUserFollows = currentUser.Follows.Any(f => f.LeaderId == user.Id)
+            CurrentUserFollows = currentUser.Follows.Any(f => f.LeaderId == user.Id),
+            FollowersCount = await _appUserQueries.GetFollowerCount(userId)
         };
 
         return View(viewModel);
