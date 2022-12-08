@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Identity;
 using Raven.Client.Documents;
 using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
 using Tweed.Data.Entities;
+using Tweed.Web;
+using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
 using Tweed.Web.Helper;
 
@@ -20,11 +21,14 @@ builder.Services.AddRavenDbDocStore(options =>
 });
 builder.Services.AddRavenDbAsyncSession();
 
-var identityBuilder = builder.Services
-    .AddDefaultIdentity<AppUser>()
-    .AddRavenDbIdentityStores<AppUser>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-identityBuilder.AddDefaultUI();
+var identityBuilder = builder.Services
+    .AddIdentity<AppUser, IdentityRole>()
+    .AddRavenDbIdentityStores<AppUser, IdentityRole>();
+
+builder.Services.ConfigureApplicationCookie(
+    options => options.LoginPath = "/Identity/Account/login");
 
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
@@ -48,15 +52,15 @@ if (!app.Environment.IsDevelopment()) app.UseExceptionHandler("/Error");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
-
 app.MapControllerRoute(
     "default",
     "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();
