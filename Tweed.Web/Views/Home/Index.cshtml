@@ -2,14 +2,10 @@
 @model IndexViewModel
 
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
 <partial name="_NotificationPartial"/>
-
-<a class="btn btn-primary" asp-controller="Tweed" asp-action="Create" up-follow>Create</a>
-
-<h1>All Tweeds</h1>
 
 @foreach (var tweed in Model.Tweeds)
 {

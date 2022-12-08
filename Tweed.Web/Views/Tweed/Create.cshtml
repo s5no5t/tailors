@@ -5,21 +5,22 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
 <form method="post" up-submit>
     <div class="mb-3">
         <label for="text" class="form-label">Text</label>
         @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
         {
-            <input type="text" class="form-control is-invalid" id="text" value="@Model.Text" name="Text" aria-describedby="validationTextFeedback">
+            <textarea rows="5" class="form-control is-invalid" 
+                id="text" value="@Model.Text" 
+                name="Text" aria-describedby="validationTextFeedback"></textarea>
             <div id="validationTextFeedback" class="invalid-feedback">
                 Please enter a text.
             </div>
         }
         else
         {
-            <input type="text" class="form-control" id="text" value="@Model.Text" name="Text">
+            <textarea rows="5" class="form-control" 
+                id="text" value="@Model.Text" name="Text"></textarea>
         }
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
