@@ -1,19 +1,26 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Tweed.Data;
+using Tweed.Data.Entities;
 using Tweed.Web.Controllers;
+using Tweed.Web.Views.Search;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
+    private readonly Mock<IAppUserQueries> _appUserQueriesMock;
     private readonly SearchController _searchController;
 
     public SearchControllerTest()
     {
-        _searchController = new SearchController();
+        _appUserQueriesMock = new Mock<IAppUserQueries>();
+        _searchController = new SearchController(_appUserQueriesMock.Object);
     }
 
     [Fact]
@@ -31,5 +38,26 @@ public class SearchControllerTest
 
         Assert.IsType<ViewResult>(result);
     }
+
+    [Fact]
+    public async Task Index_ShouldSearchAppUsers()
+    {
+        AppUser user = new()
+        {
+            Id = "userId"
+        };
+        _appUserQueriesMock.Setup(u => u.Search("abc")).ReturnsAsync(new List<AppUser> { user });
+
+        var result = await _searchController.Index();
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.Contains(viewModel.Users, u => u.UserId == user.Id);
+    }
 }
+
+
+
 

@@ -41,6 +41,7 @@ public interface IAppUserQueries
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string userId);
     Task<int> GetFollowerCount(string userId);
+    Task<List<AppUser>> Search(string abc);
 }
 
 public class AppUserQueries : IAppUserQueries
@@ -79,4 +80,11 @@ public class AppUserQueries : IAppUserQueries
 
         return result?.FollowerCount ?? 0;
     }
+
+    public async Task<List<AppUser>> Search(string abc)
+    {
+        throw new NotImplementedException();
+    }
 }
+
+
