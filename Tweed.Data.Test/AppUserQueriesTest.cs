@@ -65,13 +65,10 @@ public class AppUserQueriesTest
         };
         await session.StoreAsync(follower);
         await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+        
+        var followrCount = await queries.GetFollowerCount("leaderId");
 
-        var result = await session
-            .Query<AppUsers_FollowerCount.Result, AppUsers_FollowerCount>()
-            .Where(u => u.AppUserId == "leaderId")
-            .FirstOrDefaultAsync();
-
-        Assert.NotNull(result);
-        Assert.Equal(1, result.FollowerCount);
+        Assert.Equal(1, followrCount);
     }
 }
