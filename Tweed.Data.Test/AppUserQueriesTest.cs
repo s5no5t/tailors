@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Data.Entities;
@@ -18,7 +17,7 @@ public class AppUserQueriesTest
     }
 
     [Fact]
-    public async Task RemoveFollower()
+    public async Task RemoveFollower_ShouldRemoveFollower()
     {
         using var session = _store.OpenAsyncSession();
         AppUser user = new()
@@ -41,27 +40,11 @@ public class AppUserQueriesTest
         Assert.DoesNotContain(userAfterQuery.Follows, u => u.LeaderId == "leaderId");
     }
 
-    [Fact]
-    public async Task GetFollowerCount_ShouldReturn0_WithoutFollowers()
-    {
-        using var session = _store.OpenAsyncSession();
-        session.Advanced.WaitForIndexesAfterSaveChanges();
-
-        AppUser leader = new()
-        {
-            Id = "userId"
-        };
-        await session.StoreAsync(leader);
-        await session.SaveChangesAsync();
-        AppUserQueries queries = new(session);
-        
-        var followerCount = await queries.GetFollowerCount("userId");
-
-        Assert.Equal(0, followerCount);
-    }
-    
-    [Fact]
-    public async Task GetFollowerCount_ShouldReturn1_WhenThereIsOneFollower()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(10)]
+    public async Task GetFollowerCount_ShouldReturnFollowerCount(int givenFollowerCount)
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -71,23 +54,26 @@ public class AppUserQueriesTest
             Id = "leaderId"
         };
         await session.StoreAsync(leader);
-        AppUser follower = new()
+        for (var i = 0; i < givenFollowerCount; i++)
         {
-            Id = "followerId",
-            Follows = new List<Follows>
+            AppUser follower = new()
             {
-                new()
+                Id = $"follower/${i}",
+                Follows = new List<Follows>
                 {
-                    LeaderId = "leaderId"
+                    new()
+                    {
+                        LeaderId = "leaderId"
+                    }
                 }
-            }
-        };
-        await session.StoreAsync(follower);
+            };
+            await session.StoreAsync(follower);
+        }
         await session.SaveChangesAsync();
         AppUserQueries queries = new(session);
-        
+
         var followerCount = await queries.GetFollowerCount("leaderId");
 
-        Assert.Equal(1, followerCount);
+        Assert.Equal(givenFollowerCount, followerCount);
     }
 }

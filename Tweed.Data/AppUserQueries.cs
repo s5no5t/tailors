@@ -12,25 +12,26 @@ public class
     public AppUsers_FollowerCount()
     {
         Map = appUsers => from appUser in appUsers
+            from follow in appUser.Follows
             select new
             {
-                AppUserId = appUser.Id,
-                FollowerCount = 1
+                UserId = follow.LeaderId,
+                FollowerCount = 0
             };
 
         Reduce = results => from result in results
-            group result by result.AppUserId
+            group result by result.UserId
             into g
             select new
             {
-                AppUserId = g.Key,
-                FollowerCount = g.Sum(x => x.FollowerCount)
+                UserId = g.Key,
+                FollowerCount = g.Sum(x => x.FollowerCount + 1)
             };
     }
 
     public class Result
     {
-        public string AppUserId { get; set; }
+        public string UserId { get; set; }
         public int FollowerCount { get; set; }
     }
 }
@@ -73,7 +74,7 @@ public class AppUserQueries : IAppUserQueries
     public async Task<int> GetFollowerCount(string userId)
     {
         var result = await _session.Query<AppUsers_FollowerCount.Result, AppUsers_FollowerCount>()
-            .Where(r => r.AppUserId == userId)
+            .Where(r => r.UserId == userId)
             .FirstOrDefaultAsync();
 
         return result?.FollowerCount ?? 0;
