@@ -110,4 +110,21 @@ public class AppUserQueriesTest
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
+    
+    [Fact]
+    public async Task Search_ShouldFindMatchingAppUser_WhenUserNamePrefixGiven()
+    {
+        using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+        await session.StoreAsync(new AppUser
+        {
+            UserName = "UserName"
+        });
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        var results = await queries.Search("Use");
+
+        Assert.Contains(results, u => u.UserName == "UserName");
+    }
 }

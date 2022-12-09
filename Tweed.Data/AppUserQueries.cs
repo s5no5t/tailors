@@ -53,7 +53,7 @@ public class AppUserQueries : IAppUserQueries
     public async Task<List<AppUser>> Search(string term)
     {
         return await _session.Query<AppUser, AppUsers_ByUserName>()
-            .Search(u => u.UserName, term)
+            .Search(u => u.UserName, $"{term}*")
             .Take(20).ToListAsync();
     }
 }
