@@ -36,6 +36,19 @@ public class
     }
 }
 
+public class AppUsers_ByUserName : AbstractIndexCreationTask<AppUser>
+{
+    public AppUsers_ByUserName()
+    {
+        Map = users => from user in users
+            select new
+            {
+                user.UserName
+            };
+        Index(u => u.UserName, FieldIndexing.Search);
+    }
+}
+
 public interface IAppUserQueries
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
@@ -81,10 +94,10 @@ public class AppUserQueries : IAppUserQueries
         return result?.FollowerCount ?? 0;
     }
 
-    public async Task<List<AppUser>> Search(string abc)
+    public async Task<List<AppUser>> Search(string term)
     {
-        throw new NotImplementedException();
+        return await _session.Query<AppUser, AppUsers_ByUserName>()
+            .Search(u => u.UserName, term)
+            .Take(20).ToListAsync();
     }
 }
-
-

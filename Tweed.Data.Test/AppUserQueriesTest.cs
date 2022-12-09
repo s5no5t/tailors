@@ -69,11 +69,45 @@ public class AppUserQueriesTest
             };
             await session.StoreAsync(follower);
         }
+
         await session.SaveChangesAsync();
         AppUserQueries queries = new(session);
 
         var followerCount = await queries.GetFollowerCount("leaderId");
 
         Assert.Equal(givenFollowerCount, followerCount);
+    }
+
+    [Fact]
+    public async Task Search_ShouldReturnEmptyList_WhenNoResults()
+    {
+        using var session = _store.OpenAsyncSession();
+        await session.StoreAsync(new AppUser
+        {
+            UserName = "UserName"
+        });
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        var results = await queries.Search("noresults");
+
+        Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task Search_ShouldFindMatchingAppUser()
+    {
+        using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+        await session.StoreAsync(new AppUser
+        {
+            UserName = "UserName"
+        });
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        var results = await queries.Search("UserName");
+
+        Assert.Contains(results, u => u.UserName == "UserName");
     }
 }
