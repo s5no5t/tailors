@@ -23,7 +23,6 @@
     }
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-
 @if (Model.Term != null)
 {
     @if (Model.FoundUsers.Any())
@@ -39,6 +38,6 @@
     }
     else
     {
-        <p>No users found</p>
+        <p>No users found!!</p>
     }
 }
