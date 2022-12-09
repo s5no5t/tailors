@@ -31,7 +31,9 @@
         <ul>
             @foreach (var user in Model.FoundUsers)
             {
-                <li>@user.UserName</li>
+                <li>
+                    <a asp-controller="Profile" asp-action="Index" asp-route-userId="@user.UserId">@user.UserName</a>
+                </li>
             }
         </ul>
     }
