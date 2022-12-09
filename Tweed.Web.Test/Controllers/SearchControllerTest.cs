@@ -21,6 +21,7 @@ public class SearchControllerTest
     {
         _appUserQueriesMock = new Mock<IAppUserQueries>();
         _searchController = new SearchController(_appUserQueriesMock.Object);
+        _appUserQueriesMock.Setup(u => u.Search("abc")).ReturnsAsync(new List<AppUser>());
     }
 
     [Fact]
@@ -34,7 +35,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Index_ShouldReturnView()
     {
-        var result = await _searchController.Index();
+        var result = await _searchController.Index("abc");
 
         Assert.IsType<ViewResult>(result);
     }
@@ -48,7 +49,7 @@ public class SearchControllerTest
         };
         _appUserQueriesMock.Setup(u => u.Search("abc")).ReturnsAsync(new List<AppUser> { user });
 
-        var result = await _searchController.Index();
+        var result = await _searchController.Index("abc");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -57,7 +58,3 @@ public class SearchControllerTest
         Assert.Contains(viewModel.Users, u => u.UserId == user.Id);
     }
 }
-
-
-
-

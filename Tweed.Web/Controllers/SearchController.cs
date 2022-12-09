@@ -15,13 +15,17 @@ public class SearchController : Controller
         _appUserQueries = appUserQueries;
     }
 
-    public async Task<IActionResult> Index()
+    [HttpGet("{term}")]
+    public async Task<IActionResult> Index(string term)
     {
-        IndexViewModel viewModel = new();
+        var users = await _appUserQueries.Search(term);
+        IndexViewModel viewModel = new()
+        {
+            Users = users.Select(u => new UserViewModel
+            {
+                UserId = u.Id
+            }).ToList()
+        };
         return View(viewModel);
     }
 }
-
-
-
-
