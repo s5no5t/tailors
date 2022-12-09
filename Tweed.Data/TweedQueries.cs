@@ -1,24 +1,10 @@
 ﻿using NodaTime;
 using Raven.Client.Documents;
-using Raven.Client.Documents.Indexes;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Entities;
 
 namespace Tweed.Data;
-
-public class Tweeds_ByAuthorId : AbstractIndexCreationTask<Entities.Tweed>
-{
-    public Tweeds_ByAuthorId()
-    {
-        Map = tweeds => from tweed in tweeds
-            select new
-            {
-                tweed.AuthorId,
-                tweed.CreatedAt
-            };
-    }
-}
 
 public interface ITweedQueries
 {
