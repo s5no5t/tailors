@@ -22,10 +22,13 @@ public class SearchController : Controller
         return View(viewModel);
     }
 
-    public async Task<IActionResult> Results([FromQuery] [Required] string term)
+    public async Task<IActionResult> Results([FromQuery] [Required] [StringLength(50, MinimumLength = 3)] string term)
     {
         if (!ModelState.IsValid)
-            return View("Index");
+            return View("Index", new IndexViewModel
+            {
+                Term = term
+            });
 
         var users = await _appUserQueries.Search(term);
         IndexViewModel viewModel = new()
