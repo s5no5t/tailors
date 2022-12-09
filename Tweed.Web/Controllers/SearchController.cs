@@ -22,7 +22,9 @@ public class SearchController : Controller
         return View(viewModel);
     }
 
-    public async Task<IActionResult> Results([FromQuery] [Required] [StringLength(50, MinimumLength = 3)] string term)
+    public async Task<IActionResult> Results(
+        [FromQuery] [Required] [StringLength(50, MinimumLength = 3)] [RegularExpression(@"^\w*$")]
+        string term)
     {
         if (!ModelState.IsValid)
             return View("Index", new IndexViewModel
