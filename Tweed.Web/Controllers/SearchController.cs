@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tweed.Data;
@@ -15,17 +16,27 @@ public class SearchController : Controller
         _appUserQueries = appUserQueries;
     }
 
-    [HttpGet("{term}")]
-    public async Task<IActionResult> Index(string term)
+    public async Task<IActionResult> Index()
     {
+        IndexViewModel viewModel = new();
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> Results([FromQuery] [Required] string term)
+    {
+        if (!ModelState.IsValid)
+            return View("Index");
+
         var users = await _appUserQueries.Search(term);
         IndexViewModel viewModel = new()
         {
-            Users = users.Select(u => new UserViewModel
+            Term = term,
+            FoundUsers = users.Select(u => new UserViewModel
             {
-                UserId = u.Id
+                UserId = u.Id,
+                UserName = u.UserName
             }).ToList()
         };
-        return View(viewModel);
+        return View("index", viewModel);
     }
 }

@@ -35,26 +35,45 @@ public class SearchControllerTest
     [Fact]
     public async Task Index_ShouldReturnView()
     {
-        var result = await _searchController.Index("abc");
+        var result = await _searchController.Index();
 
         Assert.IsType<ViewResult>(result);
     }
 
     [Fact]
-    public async Task Index_ShouldSearchAppUsers()
+    public async Task Results_ShouldSearchAppUsers()
     {
         AppUser user = new()
         {
             Id = "userId"
         };
-        _appUserQueriesMock.Setup(u => u.Search("abc")).ReturnsAsync(new List<AppUser> { user });
+        _appUserQueriesMock.Setup(u => u.Search("userId")).ReturnsAsync(new List<AppUser> { user });
 
-        var result = await _searchController.Index("abc");
+        var result = await _searchController.Results("userId");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
         Assert.IsType<IndexViewModel>(resultAsView.Model);
         var viewModel = (IndexViewModel)resultAsView.Model!;
-        Assert.Contains(viewModel.Users, u => u.UserId == user.Id);
+        Assert.Contains(viewModel.FoundUsers, u => u.UserId == user.Id);
+    }
+
+    [Fact]
+    public async Task Results_ShouldReturnUserName()
+    {
+        AppUser user = new()
+        {
+            Id = "userId",
+            UserName = "UserName"
+        };
+        _appUserQueriesMock.Setup(u => u.Search("userId")).ReturnsAsync(new List<AppUser> { user });
+
+        var result = await _searchController.Results("userId");
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.Equal("UserName", viewModel.FoundUsers[0].UserName);
     }
 }

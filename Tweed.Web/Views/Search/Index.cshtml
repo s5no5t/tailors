@@ -1,2 +1,42 @@
 @using IndexViewModel = Tweed.Web.Views.Search.IndexViewModel
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 @model IndexViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<form method="get" asp-action="Results" up-submit>
+    <label for="text" class="form-label">Search</label>
+    @if (ViewData.ModelState.GetValidationState("term") == ModelValidationState.Invalid)
+    {
+        <input type="text" class="form-control is-invalid"
+               id="term" value="@Model.Term"
+               name="Term" aria-describedby="validationTermFeedback"/>
+        <div id="validationTermFeedback" class="invalid-feedback">
+            Please enter a search term.
+        </div>
+    }
+    else
+    {
+        <input type="text" class="form-control"
+               id="term" value="@Model.Term" name="Term"/>
+    }
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (Model.Term != null)
+{
+    @if (Model.FoundUsers.Any())
+    {
+        <ul>
+            @foreach (var user in Model.FoundUsers)
+            {
+                <li>@user.UserName</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No users found</p>
+    }
+}
