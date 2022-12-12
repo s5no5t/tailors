@@ -82,6 +82,7 @@ public sealed class TweedQueries : ITweedQueries
     {
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
         tweed.Likes.RemoveAll(lb => lb.UserId == userId);
+        _session.CountersFor(tweed).Increment("Likes", -1);
     }
 
     public async Task<int> GetLikesCount(string tweedId)
