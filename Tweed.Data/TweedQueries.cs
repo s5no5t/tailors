@@ -83,9 +83,10 @@ public sealed class TweedQueries : ITweedQueries
         tweed.Likes.RemoveAll(lb => lb.UserId == userId);
     }
 
-    public Task<int> GetLikesCount(string tweedId)
+    public async Task<int> GetLikesCount(string tweedId)
     {
-        return Task.FromResult(0); // TODO
+        var tweed = await _session.LoadAsync<Entities.Tweed>(tweedId);
+        return tweed.Likes.Count;
     }
 }
 

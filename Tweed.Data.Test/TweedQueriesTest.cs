@@ -286,7 +286,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Empty(tweeds);
     }
-    
+
     [Fact]
     public async Task AddLike_ShouldIncreaseLikes()
     {
@@ -299,7 +299,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
-        
+
         await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
 
         Assert.Single(tweed.Likes);
@@ -366,5 +366,30 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await queries.RemoveLike(tweed.Id, "currentUser");
 
         Assert.Empty(tweed.Likes);
+    }
+
+    [Fact]
+    public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
+    {
+        using var session = _store.OpenAsyncSession();
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            Likes = new List<Like>
+            {
+                new()
+                {
+                    UserId = "userId"
+                }
+            }
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new TweedQueries(session);
+
+        var likesCount = await queries.GetLikesCount(tweed.Id);
+
+        Assert.Equal(1, likesCount);
     }
 }
