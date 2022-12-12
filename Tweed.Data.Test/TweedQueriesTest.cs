@@ -57,7 +57,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.StoreAsync(otherUserTweed);
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
-        
+
         var tweeds = await queries.GetFeed("currentUser");
 
         Assert.Contains(currentUserTweed.Id, tweeds.Select(t => t.Id));
@@ -161,6 +161,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             };
             await session.StoreAsync(tweed);
         }
+
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 
@@ -192,35 +193,10 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         var queries = new TweedQueries(session);
-        
+
         var tweed = await queries.GetById("invalid");
 
         Assert.Null(tweed);
-    }
-
-    [Fact]
-    public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like>
-            {
-                new()
-                {
-                    UserId = "currentUser"
-                }
-            }
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
-
-        Assert.Single(tweed.Likes);
     }
 
     [Fact]
@@ -321,6 +297,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             };
             await session.StoreAsync(tweed);
         }
+
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 

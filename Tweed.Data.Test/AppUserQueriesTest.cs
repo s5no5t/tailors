@@ -10,22 +10,23 @@ namespace Tweed.Data.Test;
 [Collection("RavenDb Collection")]
 public class AppUserQueriesTest
 {
-    private readonly IDocumentStore _store;
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+
+    private readonly IDocumentStore _store;
 
     public AppUserQueriesTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
-    
+
     [Fact]
     public async Task AddLike_ShouldIncreaseLikes()
     {
         using var session = _store.OpenAsyncSession();
         AppUser user = new()
         {
-            Id = "userId",
+            Id = "userId"
         };
         await session.StoreAsync(user);
         Entities.Tweed tweed = new()
@@ -36,7 +37,36 @@ public class AppUserQueriesTest
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         AppUserQueries queries = new(session);
-        
+
+        await queries.AddLike("userId", tweed.Id, FixedZonedDateTime);
+
+        Assert.Single(user.Likes);
+    }
+
+    [Fact]
+    public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId",
+            Likes = new List<TweedLike>
+            {
+                new()
+                {
+                    TweedId = "tweedId"
+                }
+            }
+        };
+        await session.StoreAsync(user);
+        Entities.Tweed tweed = new()
+        {
+            Id = "tweedId"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
         await queries.AddLike("userId", tweed.Id, FixedZonedDateTime);
 
         Assert.Single(user.Likes);
