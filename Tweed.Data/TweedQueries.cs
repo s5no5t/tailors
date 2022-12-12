@@ -19,6 +19,7 @@ public interface ITweedQueries
 
 public sealed class TweedQueries : ITweedQueries
 {
+    private const string LikesCounterName = "Likes";
     private readonly IAsyncDocumentSession _session;
 
     public TweedQueries(IAsyncDocumentSession session)
@@ -75,19 +76,19 @@ public sealed class TweedQueries : ITweedQueries
             UserId = userId,
             CreatedAt = likedAt
         });
-        _session.CountersFor(tweed).Increment("Likes");
+        _session.CountersFor(tweed).Increment(LikesCounterName);
     }
 
     public async Task RemoveLike(string id, string userId)
     {
         var tweed = await _session.LoadAsync<Entities.Tweed>(id);
         tweed.Likes.RemoveAll(lb => lb.UserId == userId);
-        _session.CountersFor(tweed).Increment("Likes", -1);
+        _session.CountersFor(tweed).Increment(LikesCounterName, -1);
     }
 
     public async Task<long> GetLikesCount(string tweedId)
     {
-        var likesCounter = await _session.CountersFor(tweedId).GetAsync("Likes");
+        var likesCounter = await _session.CountersFor(tweedId).GetAsync(LikesCounterName);
         return likesCounter ?? 0L;
     }
 }
