@@ -8,11 +8,11 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
     Task<List<Entities.Tweed>> GetFeed(string userId);
-    Task<Entities.Tweed?> GetById(string id);
-    Task AddLike(string id, string userId, ZonedDateTime likedAt);
     Task<List<Entities.Tweed>> GetTweedsForUser(string userId);
+    Task<Entities.Tweed?> GetById(string id);
+    Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
+    Task AddLike(string id, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string id, string userId);
     Task<int> GetLikesCount(string tweedId);
 }
@@ -40,9 +40,29 @@ public sealed class TweedQueries : ITweedQueries
             .ToListAsync();
     }
 
+    public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)
+    {
+        return await _session.Query<Entities.Tweed>()
+            .Where(t => t.AuthorId == userId)
+            .OrderByDescending(t => t.CreatedAt)
+            .Take(20)
+            .ToListAsync();
+    }
+
     public Task<Entities.Tweed?> GetById(string id)
     {
         return _session.LoadAsync<Entities.Tweed>(id)!;
+    }
+
+    public async Task StoreTweed(string text, string authorId, ZonedDateTime createdAt)
+    {
+        var tweed = new Entities.Tweed
+        {
+            CreatedAt = createdAt,
+            AuthorId = authorId,
+            Text = text
+        };
+        await _session.StoreAsync(tweed);
     }
 
     public async Task AddLike(string id, string userId, ZonedDateTime likedAt)
@@ -66,26 +86,6 @@ public sealed class TweedQueries : ITweedQueries
     public Task<int> GetLikesCount(string tweedId)
     {
         return Task.FromResult(0); // TODO
-    }
-
-    public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)
-    {
-        return await _session.Query<Entities.Tweed>()
-            .Where(t => t.AuthorId == userId)
-            .OrderByDescending(t => t.CreatedAt)
-            .Take(20)
-            .ToListAsync();
-    }
-
-    public async Task StoreTweed(string text, string authorId, ZonedDateTime createdAt)
-    {
-        var tweed = new Entities.Tweed
-        {
-            CreatedAt = createdAt,
-            AuthorId = authorId,
-            Text = text
-        };
-        await _session.StoreAsync(tweed);
     }
 }
 
