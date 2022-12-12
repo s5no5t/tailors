@@ -286,4 +286,85 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Empty(tweeds);
     }
+    
+    [Fact]
+    public async Task AddLike_ShouldIncreaseLikes()
+    {
+        using var session = _store.OpenAsyncSession();
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new TweedQueries(session);
+        
+        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
+
+        Assert.Single(tweed.Likes);
+    }
+
+    [Fact]
+    public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
+    {
+        using var session = _store.OpenAsyncSession();
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            Likes = new List<Like>
+            {
+                new()
+                {
+                    UserId = "currentUser"
+                }
+            }
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new TweedQueries(session);
+
+        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
+
+        Assert.Single(tweed.Likes);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldDecreaseLikes()
+    {
+        using var session = _store.OpenAsyncSession();
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            Likes = new List<Like> { new() { UserId = "currentUser" } }
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new TweedQueries(session);
+
+        await queries.RemoveLike(tweed.Id, "currentUser");
+
+        Assert.Empty(tweed.Likes);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
+    {
+        using var session = _store.OpenAsyncSession();
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime,
+            Likes = new List<Like>()
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new TweedQueries(session);
+
+        await queries.RemoveLike(tweed.Id, "currentUser");
+
+        Assert.Empty(tweed.Likes);
+    }
 }
