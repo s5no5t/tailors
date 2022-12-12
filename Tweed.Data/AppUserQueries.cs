@@ -10,8 +10,6 @@ public interface IAppUserQueries
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string userId);
     Task<int> GetFollowerCount(string userId);
-    Task AddLike(string userId, string tweedId, ZonedDateTime createdAt);
-    Task RemoveLike(string userId, string tweedId);
     Task<List<AppUser>> Search(string abc);
 }
 
@@ -50,26 +48,6 @@ public class AppUserQueries : IAppUserQueries
             .FirstOrDefaultAsync();
 
         return result?.FollowerCount ?? 0;
-    }
-
-    public async Task AddLike(string userId, string tweedId, ZonedDateTime createdAt)
-    {
-        var user = await _session.LoadAsync<AppUser>(userId);
-        if (user.Likes.Any(l => l.TweedId == tweedId))
-            return;
-
-        user.Likes.Add(new TweedLike
-        {
-            TweedId = tweedId,
-            CreatedAt = createdAt
-        });
-    }
-
-    public async Task RemoveLike(string userId, string tweedId)
-    {
-        var user = await _session.LoadAsync<AppUser>(userId);
-
-        user.Likes.RemoveAll(l => l.TweedId == tweedId);
     }
 
     public async Task<List<AppUser>> Search(string term)
