@@ -306,6 +306,25 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
+    public async Task AddLike_ShouldIncreaseLikesCounter()
+    {
+        using var session = _store.OpenAsyncSession();
+        Entities.Tweed tweed = new()
+        {
+            Id = "tweedId"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new TweedQueries(session);
+
+        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
+        await session.SaveChangesAsync();
+
+        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
+        Assert.Equal(1, likesCounter);
+    }
+
+    [Fact]
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
         using var session = _store.OpenAsyncSession();

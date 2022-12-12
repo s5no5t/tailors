@@ -75,6 +75,7 @@ public sealed class TweedQueries : ITweedQueries
             UserId = userId,
             CreatedAt = likedAt
         });
+        _session.CountersFor(tweed).Increment("Likes");
     }
 
     public async Task RemoveLike(string id, string userId)
