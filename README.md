@@ -20,7 +20,7 @@ A playground web app.
 
 * [Microsoft Razor Pages](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-7.0&tabs=visual-studio) framework for backend HTML templating
 * [Unpoly](https://unpoly.com/) for nice but unobtrusive frontend interactions
-* [RavenDB](https://ravendb.com) for storing and querying data
+* [RavenDB](https://ravendb.net/) for storing and querying data
 * [Bootstrap](https://getbootstrap.com/) for easy-to-use frontend components
 
 ## Build & Run
