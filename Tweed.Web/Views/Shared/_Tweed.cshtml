@@ -4,28 +4,28 @@
 <div class="container mt-2 p-2 border tweed">
     <div>
         <a asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId" up-follow>@Model.Author</a>
+        <small class="text-muted">@Model.CreatedAt</small>
     </div>
-    <div>
+    <div class="mt-1">
         @Model.Text
     </div>
-    <div class="small">
-        <small class="text-muted">@Model.CreatedAt</small>
+    <div class="mt-1">
         <small class="text-muted">
             <i class="bi bi-heart-fill" style="font-size: 1em"></i> @Model.LikesCount
         </small>
-        <form method="post" up-submit up-target=".tweed">
-            @if (Model.LikedByCurrentUser)
-            {
-                <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id" class="btn btn-light">
-                    <i class="bi bi-heart-fill" style="font-size: 1em"></i>
-                </button>
-            }
-            else
-            {
-                <button asp-controller="Tweed" asp-action="Like" asp-route-tweedid="@Model.Id" class="btn btn-light">
-                    <i class="bi bi-heart" style="font-size: 1em"></i>
-                </button>
-            }
-        </form>
     </div>
+    <form method="post" up-submit up-target=".tweed">
+        @if (Model.LikedByCurrentUser)
+        {
+            <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id" class="btn btn-light mt-2">
+                <i class="bi bi-heart-fill" style="font-size: 1em"></i>
+            </button>
+        }
+        else
+        {
+            <button asp-controller="Tweed" asp-action="Like" asp-route-tweedid="@Model.Id" class="btn btn-light mt-2">
+                <i class="bi bi-heart" style="font-size: 1em"></i>
+            </button>
+        }
+    </form>
 </div>
