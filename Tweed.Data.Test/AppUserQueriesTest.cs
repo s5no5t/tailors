@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NodaTime;
 using Raven.Client.Documents;
 using Tweed.Data.Entities;
 using Xunit;
@@ -10,10 +11,35 @@ namespace Tweed.Data.Test;
 public class AppUserQueriesTest
 {
     private readonly IDocumentStore _store;
+    private static readonly ZonedDateTime FixedZonedDateTime =
+        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     public AppUserQueriesTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
+    }
+    
+    [Fact]
+    public async Task AddLike_ShouldIncreaseLikes()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId",
+        };
+        await session.StoreAsync(user);
+        Entities.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+        
+        await queries.AddLike("userId", tweed.Id, FixedZonedDateTime);
+
+        Assert.Single(user.Likes);
     }
 
     [Fact]

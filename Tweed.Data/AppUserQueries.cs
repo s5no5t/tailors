@@ -9,6 +9,7 @@ public interface IAppUserQueries
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string userId);
+    Task AddLike(string userId, string tweedId, ZonedDateTime createdAt);
     Task<int> GetFollowerCount(string userId);
     Task<List<AppUser>> Search(string abc);
 }
@@ -39,6 +40,19 @@ public class AppUserQueries : IAppUserQueries
     {
         var follower = await _session.LoadAsync<AppUser>(userId);
         follower.Follows.RemoveAll(f => f.LeaderId == leaderId);
+    }
+
+    public async Task AddLike(string userId, string tweedId, ZonedDateTime createdAt)
+    {
+        var user = await _session.LoadAsync<AppUser>(userId);
+        if (user.Likes.Any(l => l.TweedId == tweedId))
+            return;
+
+        user.Likes.Add(new TweedLike()
+        {
+            TweedId = tweedId,
+            CreatedAt = createdAt
+        });
     }
 
     public async Task<int> GetFollowerCount(string userId)
