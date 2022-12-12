@@ -1,29 +1,29 @@
 @using TweedViewModel = Tweed.Web.Views.Shared.TweedViewModel
 @model TweedViewModel
 
-<div class="card mt-2 tweed">
-    <div class="card-header">
+<div class="container mt-2 p-2 border tweed">
+    <div>
         <a asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId" up-follow>@Model.Author</a>
     </div>
-    <div class="card-body">
-        <div class="card-text">
-            @Model.Text
-        </div>
+    <div>
+        @Model.Text
     </div>
-    <div class="card-footer small">
+    <div class="small">
         <small class="text-muted">@Model.CreatedAt</small>
-        <small class="text-muted">Likes: @Model.LikesCount</small>
+        <small class="text-muted">
+            <i class="bi bi-heart-fill" style="font-size: 1em"></i> @Model.LikesCount
+        </small>
         <form method="post" up-submit up-target=".tweed">
             @if (Model.LikedByCurrentUser)
             {
-                <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id">
-                    <i class="bi bi-balloon-heart-fill" style="font-size: 1.5em"></i>
+                <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id" class="btn btn-light">
+                    <i class="bi bi-heart-fill" style="font-size: 1em"></i>
                 </button>
             }
             else
             {
-                <button asp-controller="Tweed" asp-action="Like" asp-route-tweedid="@Model.Id">
-                    <i class="bi bi-balloon-heart" style="font-size: 1.5em"></i>
+                <button asp-controller="Tweed" asp-action="Like" asp-route-tweedid="@Model.Id" class="btn btn-light">
+                    <i class="bi bi-heart" style="font-size: 1em"></i>
                 </button>
             }
         </form>
