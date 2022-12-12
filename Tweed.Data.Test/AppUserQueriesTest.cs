@@ -21,6 +21,109 @@ public class AppUserQueriesTest
     }
 
     [Fact]
+    public async Task AddFollower_ShouldAddFollower()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId"
+        };
+        await session.StoreAsync(user);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
+
+        Assert.Equal(user.Follows[0].LeaderId, "leaderId");
+    }
+
+    [Fact]
+    public async Task AddFollower_ShouldNotAddFollower_WhenAlreadyFollowed()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId",
+            Follows = new List<Follows>
+            {
+                new Follows
+                {
+                    LeaderId = "leaderId"
+                }
+            }
+        };
+        await session.StoreAsync(user);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
+
+        Assert.Single(user.Follows);
+    }
+
+    [Fact]
+    public async Task RemoveFollower_ShouldRemoveFollower()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId",
+            Follows = new List<Follows>
+            {
+                new()
+                {
+                    LeaderId = "leaderId"
+                }
+            }
+        };
+        await session.StoreAsync(user);
+
+        AppUserQueries queries = new(session);
+        await queries.RemoveFollower("leaderId", "userId");
+
+        var userAfterQuery = await session.LoadAsync<AppUser>("userId");
+        Assert.DoesNotContain(userAfterQuery.Follows, u => u.LeaderId == "leaderId");
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(10)]
+    public async Task GetFollowerCount_ShouldReturnFollowerCount(int givenFollowerCount)
+    {
+        using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+
+        AppUser leader = new()
+        {
+            Id = "leaderId"
+        };
+        await session.StoreAsync(leader);
+        for (var i = 0; i < givenFollowerCount; i++)
+        {
+            AppUser follower = new()
+            {
+                Id = $"follower/${i}",
+                Follows = new List<Follows>
+                {
+                    new()
+                    {
+                        LeaderId = "leaderId"
+                    }
+                }
+            };
+            await session.StoreAsync(follower);
+        }
+
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        var followerCount = await queries.GetFollowerCount("leaderId");
+
+        Assert.Equal(givenFollowerCount, followerCount);
+    }
+
+    [Fact]
     public async Task AddLike_ShouldIncreaseLikes()
     {
         using var session = _store.OpenAsyncSession();
@@ -91,7 +194,7 @@ public class AppUserQueriesTest
         using var session = _store.OpenAsyncSession();
         AppUser user = new()
         {
-            Id = "userId",
+            Id = "userId"
         };
         await session.StoreAsync(user);
         await session.SaveChangesAsync();
@@ -100,68 +203,6 @@ public class AppUserQueriesTest
         await queries.RemoveLike("userId", "tweedId");
 
         Assert.Empty(user.Likes);
-    }
-
-    [Fact]
-    public async Task RemoveFollower_ShouldRemoveFollower()
-    {
-        using var session = _store.OpenAsyncSession();
-        AppUser user = new()
-        {
-            Id = "userId",
-            Follows = new List<Follows>
-            {
-                new()
-                {
-                    LeaderId = "leaderId"
-                }
-            }
-        };
-        await session.StoreAsync(user);
-
-        AppUserQueries queries = new(session);
-        await queries.RemoveFollower("leaderId", "userId");
-
-        var userAfterQuery = await session.LoadAsync<AppUser>("userId");
-        Assert.DoesNotContain(userAfterQuery.Follows, u => u.LeaderId == "leaderId");
-    }
-
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(10)]
-    public async Task GetFollowerCount_ShouldReturnFollowerCount(int givenFollowerCount)
-    {
-        using var session = _store.OpenAsyncSession();
-        session.Advanced.WaitForIndexesAfterSaveChanges();
-
-        AppUser leader = new()
-        {
-            Id = "leaderId"
-        };
-        await session.StoreAsync(leader);
-        for (var i = 0; i < givenFollowerCount; i++)
-        {
-            AppUser follower = new()
-            {
-                Id = $"follower/${i}",
-                Follows = new List<Follows>
-                {
-                    new()
-                    {
-                        LeaderId = "leaderId"
-                    }
-                }
-            };
-            await session.StoreAsync(follower);
-        }
-
-        await session.SaveChangesAsync();
-        AppUserQueries queries = new(session);
-
-        var followerCount = await queries.GetFollowerCount("leaderId");
-
-        Assert.Equal(givenFollowerCount, followerCount);
     }
 
     [Fact]
