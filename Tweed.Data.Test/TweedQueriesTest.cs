@@ -200,44 +200,6 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task RemoveLike_ShouldDecreaseLikes()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like> { new() { UserId = "currentUser" } }
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.RemoveLike(tweed.Id, "currentUser");
-
-        Assert.Empty(tweed.Likes);
-    }
-
-    [Fact]
-    public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like>()
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.RemoveLike(tweed.Id, "currentUser");
-
-        Assert.Empty(tweed.Likes);
-    }
-
-    [Fact]
     public async Task GetTweedsForUser_ShouldReturnTweeds()
     {
         using var session = _store.OpenAsyncSession();

@@ -29,16 +29,10 @@ public class AppUserQueriesTest
             Id = "userId"
         };
         await session.StoreAsync(user);
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime
-        };
-        await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         AppUserQueries queries = new(session);
 
-        await queries.AddLike("userId", tweed.Id, FixedZonedDateTime);
+        await queries.AddLike("userId", "tweedId", FixedZonedDateTime);
 
         Assert.Single(user.Likes);
     }
@@ -59,17 +53,53 @@ public class AppUserQueriesTest
             }
         };
         await session.StoreAsync(user);
-        Entities.Tweed tweed = new()
-        {
-            Id = "tweedId"
-        };
-        await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         AppUserQueries queries = new(session);
 
-        await queries.AddLike("userId", tweed.Id, FixedZonedDateTime);
+        await queries.AddLike("userId", "tweedId", FixedZonedDateTime);
 
         Assert.Single(user.Likes);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldDecreaseLikes()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId",
+            Likes = new List<TweedLike>
+            {
+                new()
+                {
+                    TweedId = "tweedId"
+                }
+            }
+        };
+        await session.StoreAsync(user);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        await queries.RemoveLike("userId", "tweedId");
+
+        Assert.Empty(user.Likes);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
+    {
+        using var session = _store.OpenAsyncSession();
+        AppUser user = new()
+        {
+            Id = "userId",
+        };
+        await session.StoreAsync(user);
+        await session.SaveChangesAsync();
+        AppUserQueries queries = new(session);
+
+        await queries.RemoveLike("userId", "tweedId");
+
+        Assert.Empty(user.Likes);
     }
 
     [Fact]
