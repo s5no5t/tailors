@@ -431,6 +431,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             }
         };
         await session.StoreAsync(tweed);
+        session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 

@@ -57,7 +57,7 @@ public class TweedController : Controller
         await _tweedQueries.AddLike(tweedId, currentUserId, now);
 
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-        int likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
+        var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
         var viewModel = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId);
 
         return PartialView("_Tweed", viewModel);
@@ -74,7 +74,7 @@ public class TweedController : Controller
         await _tweedQueries.RemoveLike(tweedId, currentUserId);
 
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-        int likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
+        var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
         var viewModel = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId);
 
         return PartialView("_Tweed", viewModel);

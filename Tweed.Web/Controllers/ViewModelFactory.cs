@@ -5,7 +5,7 @@ namespace Tweed.Web.Controllers;
 
 public static class ViewModelFactory
 {
-    internal static TweedViewModel BuildTweedViewModel(Data.Entities.Tweed tweed, int likesCount, AppUser author,
+    internal static TweedViewModel BuildTweedViewModel(Data.Entities.Tweed tweed, long likesCount, AppUser author,
         string currentUserId)
     {
         TweedViewModel viewModel = new()
