@@ -37,8 +37,9 @@ public class ProfileController : Controller
         foreach (var tweed in userTweeds)
         {
             var author = await _userManager.FindByIdAsync(tweed.AuthorId);
+            int likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
             var tweedViewModel =
-                ViewModelFactory.BuildTweedViewModel(tweed, author, currentUser.Id!);
+                ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUser.Id!);
             tweedViewModels.Add(tweedViewModel);
         }
 

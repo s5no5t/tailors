@@ -44,6 +44,7 @@ public class ProfileControllerTest
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
             .ReturnsAsync(new List<Data.Entities.Tweed>());
+        _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object,
             _appUserQueriesMock.Object)

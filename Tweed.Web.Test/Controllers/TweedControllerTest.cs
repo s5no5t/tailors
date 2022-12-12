@@ -25,6 +25,7 @@ public class TweedControllerTest
     public TweedControllerTest()
     {
         _tweedQueriesMock = new Mock<ITweedQueries>();
+        _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
         _userManagerMock.Setup(u => u.GetUserId(currentUserPrincipal)).Returns("currentUser");

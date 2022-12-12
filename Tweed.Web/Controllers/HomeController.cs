@@ -30,7 +30,8 @@ public class HomeController : Controller
         foreach (var tweed in latestTweeds)
         {
             var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-            var tweedViewModel = ViewModelFactory.BuildTweedViewModel(tweed, author, currentUserId);
+            var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
+            var tweedViewModel = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId);
             tweedViewModels.Add(tweedViewModel);
         }
 

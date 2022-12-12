@@ -5,7 +5,7 @@ namespace Tweed.Web.Controllers;
 
 public static class ViewModelFactory
 {
-    internal static TweedViewModel BuildTweedViewModel(Data.Entities.Tweed tweed, AppUser author,
+    internal static TweedViewModel BuildTweedViewModel(Data.Entities.Tweed tweed, int likesCount, AppUser author,
         string currentUserId)
     {
         TweedViewModel viewModel = new()
@@ -13,7 +13,7 @@ public static class ViewModelFactory
             Id = tweed.Id,
             Text = tweed.Text, CreatedAt = tweed.CreatedAt,
             AuthorId = tweed.AuthorId,
-            LikesCount = tweed.Likes.Count,
+            LikesCount = likesCount,
             LikedByCurrentUser = tweed.Likes.Any(lb => lb.UserId == currentUserId),
             Author = author.UserName
         };

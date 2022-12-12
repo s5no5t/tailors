@@ -29,6 +29,7 @@ public class HomeControllerTest
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetFeed("currentUser"))
             .ReturnsAsync(new List<Data.Entities.Tweed>());
+        _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _homeController = new HomeController(_tweedQueriesMock.Object, _userManagerMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
