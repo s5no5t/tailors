@@ -6,38 +6,42 @@
 }
 
 <form method="get" asp-action="Results" up-submit>
-    <label for="text" class="form-label">Search</label>
-    @if (ViewData.ModelState.GetValidationState("term") == ModelValidationState.Invalid)
-    {
-        <input type="text" class="form-control is-invalid"
-               id="term" value="@Model.Term"
-               name="Term" aria-describedby="validationTermFeedback"/>
-        <div id="validationTermFeedback" class="invalid-feedback">
-            Please enter a search term.
-        </div>
-    }
-    else
-    {
-        <input type="text" class="form-control"
-               id="term" value="@Model.Term" name="Term"/>
-    }
+    <div class="mb-3">
+        <label for="text" class="form-label">Search</label>
+        @if (ViewData.ModelState.GetValidationState("term") == ModelValidationState.Invalid)
+        {
+            <input type="text" class="form-control is-invalid"
+                   id="term" value="@Model.Term"
+                   name="Term" aria-describedby="validationTermFeedback"/>
+            <div id="validationTermFeedback" class="invalid-feedback">
+                Please enter a search term.
+            </div>
+        }
+        else
+        {
+            <input type="text" class="form-control"
+                   id="term" value="@Model.Term" name="Term"/>
+        }
+    </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-@if (Model.Term != null)
-{
-    @if (Model.FoundUsers.Any())
+
+<div class="mt-3">
+    @if (Model.Term != null)
     {
-        <ul>
+        @if (Model.FoundUsers.Any())
+        {
+            <h2>Results found</h2>
             @foreach (var user in Model.FoundUsers)
             {
-                <li>
+                <div>
                     <a asp-controller="Profile" asp-action="Index" asp-route-userId="@user.UserId">@user.UserName</a>
-                </li>
+                </div>
             }
-        </ul>
+        }
+        else
+        {
+            <p>No users found!!</p>
+        }
     }
-    else
-    {
-        <p>No users found!!</p>
-    }
-}
+</div>
