@@ -9,9 +9,9 @@ public interface IAppUserQueries
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string userId);
+    Task<int> GetFollowerCount(string userId);
     Task AddLike(string userId, string tweedId, ZonedDateTime createdAt);
     Task RemoveLike(string userId, string tweedId);
-    Task<int> GetFollowerCount(string userId);
     Task<List<AppUser>> Search(string abc);
 }
 
@@ -43,6 +43,15 @@ public class AppUserQueries : IAppUserQueries
         follower.Follows.RemoveAll(f => f.LeaderId == leaderId);
     }
 
+    public async Task<int> GetFollowerCount(string userId)
+    {
+        var result = await _session.Query<AppUsers_FollowerCount.Result, AppUsers_FollowerCount>()
+            .Where(r => r.UserId == userId)
+            .FirstOrDefaultAsync();
+
+        return result?.FollowerCount ?? 0;
+    }
+
     public async Task AddLike(string userId, string tweedId, ZonedDateTime createdAt)
     {
         var user = await _session.LoadAsync<AppUser>(userId);
@@ -61,15 +70,6 @@ public class AppUserQueries : IAppUserQueries
         var user = await _session.LoadAsync<AppUser>(userId);
 
         user.Likes.RemoveAll(l => l.TweedId == tweedId);
-    }
-
-    public async Task<int> GetFollowerCount(string userId)
-    {
-        var result = await _session.Query<AppUsers_FollowerCount.Result, AppUsers_FollowerCount>()
-            .Where(r => r.UserId == userId)
-            .FirstOrDefaultAsync();
-
-        return result?.FollowerCount ?? 0;
     }
 
     public async Task<List<AppUser>> Search(string term)
