@@ -5,7 +5,7 @@
     ViewData["Title"] = "Create";
 }
 
-<form method="post" up-submit>
+<form method="post" up-submit up-layer="parent">
     <div class="mb-3">
         <label for="text" class="form-label">Text</label>
         @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
@@ -16,7 +16,7 @@
             <div id="validationTextFeedback" class="invalid-feedback">
                 Please enter a text.
             </div>
-        }
+        }   
         else
         {
             <textarea rows="5" class="form-control" 

@@ -5,7 +5,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Tweed" asp-action="Create" up-follow>Create</a>
+            <a class="nav-link text-dark" asp-controller="Tweed" asp-action="Create" up-follow up-layer="new">Create</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Search", asp-action="Index" up-follow>Search</a>
