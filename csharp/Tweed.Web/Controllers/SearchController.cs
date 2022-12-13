@@ -53,3 +53,4 @@ public class SearchController : Controller
         return View("index", viewModel);
     }
 }
+
