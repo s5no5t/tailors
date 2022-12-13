@@ -38,6 +38,14 @@ public class TweedControllerTest
     }
 
     [Fact]
+    public async Task GetById_ShouldReturnView()
+    {
+        var result = await _tweedController.GetById("123");
+
+        Assert.IsType<ViewResult>(result);
+    }
+
+    [Fact]
     public void RequiresAuthorization()
     {
         var authorizeAttributeValue =

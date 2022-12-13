@@ -79,4 +79,11 @@ public class TweedController : Controller
 
         return PartialView("_Tweed", viewModel);
     }
+
+    [HttpGet("{tweedId}")]
+    public async Task<ActionResult> GetById(string tweedId)
+    {
+        GetByIdViewModel viewModel = new();
+        return View(viewModel);
+    }
 }
