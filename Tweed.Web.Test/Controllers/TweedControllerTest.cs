@@ -38,19 +38,47 @@ public class TweedControllerTest
     }
 
     [Fact]
+    public void RequiresAuthorization()
+    {
+        var authorizeAttributeValue =
+            Attribute.GetCustomAttribute(typeof(TweedController), typeof(AuthorizeAttribute));
+        Assert.NotNull(authorizeAttributeValue);
+    }
+
+    [Fact]
     public async Task GetById_ShouldReturnView()
     {
+        Data.Entities.Tweed tweed = new()
+        {
+            Id = "123"
+        };
+        _tweedQueriesMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
+        AppUser author = new();
+        _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(author);
+
         var result = await _tweedController.GetById("123");
 
         Assert.IsType<ViewResult>(result);
     }
 
     [Fact]
-    public void RequiresAuthorization()
+    public async Task GetById_ShouldReturnTweed()
     {
-        var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(TweedController), typeof(AuthorizeAttribute));
-        Assert.NotNull(authorizeAttributeValue);
+        Data.Entities.Tweed tweed = new()
+        {
+            Id = "123"
+        };
+        _tweedQueriesMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
+        AppUser author = new();
+        _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(author);
+
+        var result = await _tweedController.GetById("123");
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<GetByIdViewModel>(resultAsView.Model);
+        var viewModel = (GetByIdViewModel)resultAsView.Model!;
+        Assert.Equal("123", viewModel.Tweed.Id);
     }
 
     [Fact]

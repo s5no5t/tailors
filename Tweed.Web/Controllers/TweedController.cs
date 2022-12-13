@@ -83,7 +83,18 @@ public class TweedController : Controller
     [HttpGet("{tweedId}")]
     public async Task<ActionResult> GetById(string tweedId)
     {
-        GetByIdViewModel viewModel = new();
+        var tweed = await _tweedQueries.GetById(tweedId);
+        if (tweed == null)
+            return NotFound();
+
+        var currentUserId = _userManager.GetUserId(User);
+        var author = await _userManager.FindByIdAsync(tweed.AuthorId);
+        var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
+
+        GetByIdViewModel viewModel = new()
+        {
+            Tweed = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId)
+        };
         return View(viewModel);
     }
 }
