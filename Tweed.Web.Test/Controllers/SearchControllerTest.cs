@@ -23,6 +23,7 @@ public class SearchControllerTest
         _appUserQueriesMock = new Mock<IAppUserQueries>();
         _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<AppUser>());
         _tweedQueriesMock = new Mock<ITweedQueries>();
+        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<Data.Entities.Tweed>());
         _searchController = new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
     }
 
