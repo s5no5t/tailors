@@ -25,7 +25,7 @@ public class SearchController : Controller
     }
 
     public async Task<IActionResult> Results(
-        [FromQuery] [Required] [StringLength(50, MinimumLength = 3)] [RegularExpression(@"^\w*$")]
+        [FromQuery] [Required] [StringLength(50, MinimumLength = 3)] [RegularExpression(@"^[\w\s]*$")]
         string term)
     {
         if (!ModelState.IsValid)
@@ -44,7 +44,7 @@ public class SearchController : Controller
                 UserId = u.Id,
                 UserName = u.UserName
             }).ToList(),
-            FoundTweeds = tweeds.Select(t => new TweedViewModel()
+            FoundTweeds = tweeds.Select(t => new TweedViewModel
             {
                 TweedId = t.Id,
                 Text = t.Text
