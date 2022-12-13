@@ -5,7 +5,7 @@
     ViewData["Title"] = "Search";
 }
 
-<form method="get" asp-action="Results" up-submit>
+<form method="get" asp-action="Results" up-submit up-focus="keep" up-autosubmit up-delay="1000">
     <div class="mb-3">
         <label for="text" class="form-label">Search</label>
         @if (ViewData.ModelState.GetValidationState("term") == ModelValidationState.Invalid)
