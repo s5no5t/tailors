@@ -36,9 +36,9 @@ public class SearchControllerTest
     }
 
     [Fact]
-    public async Task Index_ShouldReturnView()
+    public void Index_ShouldReturnView()
     {
-        var result = await _searchController.Index();
+        var result = _searchController.Index();
 
         Assert.IsType<ViewResult>(result);
     }

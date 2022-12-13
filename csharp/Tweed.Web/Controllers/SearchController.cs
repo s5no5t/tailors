@@ -18,7 +18,7 @@ public class SearchController : Controller
         _tweedQueries = tweedQueries;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         IndexViewModel viewModel = new();
         return View(viewModel);
@@ -41,13 +41,13 @@ public class SearchController : Controller
             Term = term,
             FoundUsers = users.Select(u => new UserViewModel
             {
-                UserId = u.Id,
+                UserId = u.Id!,
                 UserName = u.UserName
             }).ToList(),
             FoundTweeds = tweeds.Select(t => new TweedViewModel
             {
                 TweedId = t.Id,
-                Text = t.Text
+                Text = t.Text!
             }).ToList()
         };
         return View("index", viewModel);
