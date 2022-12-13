@@ -7,7 +7,9 @@
         <small class="text-muted">@Model.CreatedAt</small>
     </div>
     <div class="mt-1">
-        @Model.Text
+        <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@Model.Id">
+            @Model.Text
+        </a>
     </div>
     <div class="mt-1">
         <small class="text-muted">

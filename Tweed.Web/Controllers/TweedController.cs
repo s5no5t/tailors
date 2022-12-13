@@ -1,3 +1,4 @@
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,12 @@ public class TweedController : Controller
         _notificationManager = notificationManager;
     }
 
-    [HttpGet("{tweedId}")]
+    [HttpGet("tweed/{tweedId}")]
     public async Task<ActionResult> GetById(string tweedId)
     {
-        var tweed = await _tweedQueries.GetById(tweedId);
+        string decodedId = HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
+        
+        var tweed = await _tweedQueries.GetById(decodedId);
         if (tweed == null)
             return NotFound();
 
