@@ -24,6 +24,24 @@ public class TweedController : Controller
         _notificationManager = notificationManager;
     }
 
+    [HttpGet("{tweedId}")]
+    public async Task<ActionResult> GetById(string tweedId)
+    {
+        var tweed = await _tweedQueries.GetById(tweedId);
+        if (tweed == null)
+            return NotFound();
+
+        var currentUserId = _userManager.GetUserId(User);
+        var author = await _userManager.FindByIdAsync(tweed.AuthorId);
+        var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
+
+        GetByIdViewModel viewModel = new()
+        {
+            Tweed = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId)
+        };
+        return View(viewModel);
+    }
+
     public IActionResult Create()
     {
         CreateViewModel viewModel = new();
@@ -78,23 +96,5 @@ public class TweedController : Controller
         var viewModel = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId);
 
         return PartialView("_Tweed", viewModel);
-    }
-
-    [HttpGet("{tweedId}")]
-    public async Task<ActionResult> GetById(string tweedId)
-    {
-        var tweed = await _tweedQueries.GetById(tweedId);
-        if (tweed == null)
-            return NotFound();
-
-        var currentUserId = _userManager.GetUserId(User);
-        var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-        var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
-
-        GetByIdViewModel viewModel = new()
-        {
-            Tweed = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId)
-        };
-        return View(viewModel);
     }
 }
