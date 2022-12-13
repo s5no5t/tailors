@@ -41,7 +41,22 @@
         }
         else
         {
-            <p>No users found!!</p>
+            <p>No users found</p>
+        }
+
+        @if (Model.FoundTweeds.Any())
+        {
+            <h2>Results found</h2>
+            @foreach (var tweed in Model.FoundTweeds)
+            {
+                <div>
+                    <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@tweed.TweedId">@tweed.Text</a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No tweeds found</p>
         }
     }
 </div>
