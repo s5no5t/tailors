@@ -25,11 +25,11 @@ public class TweedController : Controller
         _notificationManager = notificationManager;
     }
 
-    [HttpGet("tweed/{tweedId}")]
+    [HttpGet("Tweed/{tweedId}")]
     public async Task<ActionResult> GetById(string tweedId)
     {
-        string decodedId = HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
-        
+        var decodedId = HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
+
         var tweed = await _tweedQueries.GetById(decodedId);
         if (tweed == null)
             return NotFound();

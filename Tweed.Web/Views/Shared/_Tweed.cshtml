@@ -7,13 +7,12 @@
         <small class="text-muted">@Model.CreatedAt</small>
     </div>
     <div class="mt-1">
-        <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@Model.Id">
-            @Model.Text
-        </a>
+        @Model.Text
     </div>
     <div class="mt-1">
         <small class="text-muted">
             <i class="bi bi-heart-fill" style="font-size: 1em"></i> @Model.LikesCount
+            <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@Model.Id" up-follow>More</a>
         </small>
     </div>
     <form method="post" up-submit up-target=".tweed">
