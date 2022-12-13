@@ -10,10 +10,12 @@ namespace Tweed.Web.Controllers;
 public class SearchController : Controller
 {
     private readonly IAppUserQueries _appUserQueries;
+    private readonly ITweedQueries _tweedQueries;
 
-    public SearchController(IAppUserQueries appUserQueries)
+    public SearchController(IAppUserQueries appUserQueries, ITweedQueries tweedQueries)
     {
         _appUserQueries = appUserQueries;
+        _tweedQueries = tweedQueries;
     }
 
     public async Task<IActionResult> Index()
@@ -33,6 +35,7 @@ public class SearchController : Controller
             });
 
         var users = await _appUserQueries.Search(term);
+        var tweeds = await _tweedQueries.Search(term);
         IndexViewModel viewModel = new()
         {
             Term = term,
@@ -40,6 +43,11 @@ public class SearchController : Controller
             {
                 UserId = u.Id,
                 UserName = u.UserName
+            }).ToList(),
+            FoundTweeds = tweeds.Select(t => new TweedViewModel()
+            {
+                TweedId = t.Id,
+                Text = t.Text
             }).ToList()
         };
         return View("index", viewModel);

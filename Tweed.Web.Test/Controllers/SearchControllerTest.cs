@@ -16,12 +16,14 @@ public class SearchControllerTest
 {
     private readonly Mock<IAppUserQueries> _appUserQueriesMock;
     private readonly SearchController _searchController;
+    private readonly Mock<ITweedQueries> _tweedQueriesMock;
 
     public SearchControllerTest()
     {
         _appUserQueriesMock = new Mock<IAppUserQueries>();
-        _searchController = new SearchController(_appUserQueriesMock.Object);
-        _appUserQueriesMock.Setup(u => u.Search("abc")).ReturnsAsync(new List<AppUser>());
+        _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<AppUser>());
+        _tweedQueriesMock = new Mock<ITweedQueries>();
+        _searchController = new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
     }
 
     [Fact]
@@ -75,5 +77,25 @@ public class SearchControllerTest
         Assert.IsType<IndexViewModel>(resultAsView.Model);
         var viewModel = (IndexViewModel)resultAsView.Model!;
         Assert.Equal("UserName", viewModel.FoundUsers[0].UserName);
+    }
+
+    [Fact]
+    public async Task Results_ShouldSearchTweeds()
+    {
+        _tweedQueriesMock.Setup(u => u.Search("term")).ReturnsAsync(new List<Data.Entities.Tweed>
+        {
+            new()
+            {
+                Id = "tweedId"
+            }
+        });
+
+        var result = await _searchController.Results("term");
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.Contains(viewModel.FoundTweeds, t => t.TweedId == "tweedId");
     }
 }
