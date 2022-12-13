@@ -10,7 +10,7 @@ public interface IAppUserQueries
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string userId);
     Task<int> GetFollowerCount(string userId);
-    Task<List<AppUser>> Search(string abc);
+    Task<List<AppUser>> Search(string term);
 }
 
 public class AppUserQueries : IAppUserQueries
