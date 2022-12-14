@@ -288,147 +288,13 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task AddLike_ShouldIncreaseLikes()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
-
-        Assert.Single(tweed.Likes);
-    }
-
-    [Fact]
-    public async Task AddLike_ShouldIncreaseLikesCounter()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Id = "tweedId"
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
-        await session.SaveChangesAsync();
-
-        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
-        Assert.Equal(1, likesCounter);
-    }
-
-    [Fact]
-    public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like>
-            {
-                new()
-                {
-                    UserId = "currentUser"
-                }
-            }
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.AddLike(tweed.Id, "currentUser", FixedZonedDateTime);
-
-        Assert.Single(tweed.Likes);
-    }
-
-    [Fact]
-    public async Task RemoveLike_ShouldDecreaseLikes()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like> { new() { UserId = "currentUser" } }
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.RemoveLike(tweed.Id, "currentUser");
-
-        Assert.Empty(tweed.Likes);
-    }
-
-    [Fact]
-    public async Task RemoveLike_ShouldDecreaseLikesCounter()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Id = "tweedId",
-            Likes = new List<Like>
-            {
-                new()
-                {
-                    UserId = "userId"
-                }
-            }
-        };
-        await session.StoreAsync(tweed);
-        session.CountersFor(tweed.Id).Increment("Likes");
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.RemoveLike(tweed.Id, "userId");
-        await session.SaveChangesAsync();
-
-        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
-        Assert.Equal(0, likesCounter);
-    }
-
-    [Fact]
-    public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
-    {
-        using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like>()
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
-
-        await queries.RemoveLike(tweed.Id, "currentUser");
-
-        Assert.Empty(tweed.Likes);
-    }
-
-    [Fact]
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
         Entities.Tweed tweed = new()
         {
             Text = "test",
-            CreatedAt = FixedZonedDateTime,
-            Likes = new List<Like>
-            {
-                new()
-                {
-                    UserId = "userId"
-                }
-            }
+            CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");
@@ -458,7 +324,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         Entities.Tweed tweed = new()
         {
             Id = "tweedId",
-            Text = "Here is a word included.",
+            Text = "Here is a word included."
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();

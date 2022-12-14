@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
+using Tweed.Web.Helper;
 using Tweed.Web.Views.Profile;
 using Tweed.Web.Views.Shared;
 
@@ -13,15 +14,17 @@ namespace Tweed.Web.Controllers;
 public class ProfileController : Controller
 {
     private readonly IAppUserQueries _appUserQueries;
+    private readonly IViewModelFactory _viewModelFactory;
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
 
     public ProfileController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
-        IAppUserQueries appUserQueries)
+        IAppUserQueries appUserQueries, IViewModelFactory viewModelFactory)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
         _appUserQueries = appUserQueries;
+        _viewModelFactory = viewModelFactory;
     }
 
     public async Task<IActionResult> Index(string userId)
@@ -36,10 +39,7 @@ public class ProfileController : Controller
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)
         {
-            var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-            var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
-            var tweedViewModel =
-                ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUser.Id!);
+            var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
             tweedViewModels.Add(tweedViewModel);
         }
 

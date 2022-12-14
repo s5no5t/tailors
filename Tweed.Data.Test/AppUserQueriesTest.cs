@@ -46,7 +46,7 @@ public class AppUserQueriesTest
             Id = "userId",
             Follows = new List<Follows>
             {
-                new Follows
+                new()
                 {
                     LeaderId = "leaderId"
                 }
@@ -192,5 +192,152 @@ public class AppUserQueriesTest
         var results = await queries.Search("User");
 
         Assert.Equal(20, results.Count);
+    }
+
+    [Fact]
+    public async Task AddLike_ShouldIncreaseLikes()
+    {
+        using var session = _store.OpenAsyncSession();
+        var appUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        await session.StoreAsync(appUser);
+        var tweed = new Entities.Tweed
+        {
+            Id = "tweedId"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new AppUserQueries(session);
+
+        await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+
+        Assert.Single(appUser.Likes);
+    }
+
+    [Fact]
+    public async Task AddLike_ShouldIncreaseLikesCounter()
+    {
+        using var session = _store.OpenAsyncSession();
+        var appUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        await session.StoreAsync(appUser);
+        var tweed = new Entities.Tweed
+        {
+            Id = "tweedId"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new AppUserQueries(session);
+
+        await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+        await session.SaveChangesAsync();
+
+        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
+        Assert.Equal(1, likesCounter);
+    }
+
+    [Fact]
+    public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
+    {
+        using var session = _store.OpenAsyncSession();
+        var appUser = new AppUser
+        {
+            Id = "currentUser",
+            Likes = new List<TweedLike>
+            {
+                new()
+                {
+                    TweedId = "tweedId"
+                }
+            }
+        };
+        await session.StoreAsync(appUser);
+        await session.SaveChangesAsync();
+        var queries = new AppUserQueries(session);
+
+        await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+
+        Assert.Single(appUser.Likes);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldDecreaseLikes()
+    {
+        using var session = _store.OpenAsyncSession();
+        var appUser = new AppUser
+        {
+            Id = "currentUser",
+            Likes = new List<TweedLike>
+            {
+                new()
+                {
+                    TweedId = "tweedId"
+                }
+            }
+        };
+        await session.StoreAsync(appUser);
+        var tweed = new Entities.Tweed
+        {
+            Id = "tweedId"
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new AppUserQueries(session);
+
+        await queries.RemoveLike("tweedId", "currentUser");
+
+        Assert.Empty(appUser.Likes);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldDecreaseLikesCounter()
+    {
+        using var session = _store.OpenAsyncSession();
+        var appUser = new AppUser
+        {
+            Id = "userId"
+        };
+        await session.StoreAsync(appUser);
+        var tweed = new Entities.Tweed
+        {
+            Id = "tweedId"
+        };
+        session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        session.CountersFor(tweed.Id).Increment("Likes");
+        await session.SaveChangesAsync();
+        var queries = new AppUserQueries(session);
+
+        await queries.RemoveLike(tweed.Id, "userId");
+        await session.SaveChangesAsync();
+
+        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
+        Assert.Equal(0, likesCounter);
+    }
+
+    [Fact]
+    public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
+    {
+        using var session = _store.OpenAsyncSession();
+        var appUser = new AppUser
+        {
+            Id = "userId"
+        };
+        await session.StoreAsync(appUser);
+        var tweed = new Entities.Tweed
+        {
+            Id = "tweedId"
+        };
+        session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new AppUserQueries(session);
+
+        await queries.RemoveLike("tweedId", "userId");
+
+        Assert.Empty(appUser.Likes);
     }
 }

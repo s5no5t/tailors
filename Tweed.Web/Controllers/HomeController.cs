@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tweed.Data;
 using Tweed.Data.Entities;
+using Tweed.Web.Helper;
 using Tweed.Web.Views.Home;
 using Tweed.Web.Views.Shared;
 
@@ -14,24 +15,25 @@ public class HomeController : Controller
 {
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IViewModelFactory _viewModelFactory;
 
-    public HomeController(ITweedQueries tweedQueries, UserManager<AppUser> userManager)
+    public HomeController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+        IViewModelFactory viewModelFactory)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
+        _viewModelFactory = viewModelFactory;
     }
 
     public async Task<IActionResult> Index()
     {
-        var currentUserId = _userManager.GetUserId(User)!;
-        var latestTweeds = await _tweedQueries.GetFeed(currentUserId);
+        var currentUser = await _userManager.GetUserAsync(User)!;
+        var feed = await _tweedQueries.GetFeed(currentUser.Id);
 
         List<TweedViewModel> tweedViewModels = new();
-        foreach (var tweed in latestTweeds)
+        foreach (var tweed in feed)
         {
-            var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-            var likesCount = await _tweedQueries.GetLikesCount(tweed.Id);
-            var tweedViewModel = ViewModelFactory.BuildTweedViewModel(tweed, likesCount, author, currentUserId);
+            var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
             tweedViewModels.Add(tweedViewModel);
         }
 

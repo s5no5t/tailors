@@ -9,6 +9,7 @@ using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Controllers;
+using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
 using Tweed.Web.Views.Profile;
 using Xunit;
@@ -26,9 +27,10 @@ public class ProfileControllerTest
 
     private readonly ProfileController _profileController;
     private readonly Mock<ITweedQueries> _tweedQueriesMock;
-    private readonly AppUser _user;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
-
+    private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
+    private readonly AppUser _user;
+    
     public ProfileControllerTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
@@ -47,7 +49,7 @@ public class ProfileControllerTest
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object,
-            _appUserQueriesMock.Object)
+            _appUserQueriesMock.Object, _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };

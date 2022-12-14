@@ -27,22 +27,20 @@ Console.WriteLine("{0} AppUser instances created", appUsers.Count);
 
 using (var session = store.OpenAsyncSession())
 {
+    var followsFaker = new Faker<Follows>()
+        .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
+        .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
+
+    var appUserFollowsFaker = new Faker<AppUser>()
+        .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
+
+    foreach (var appUser in appUsers)
     {
-        var followsFaker = new Faker<Follows>()
-            .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
-            .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
-
-        var appUserFollowsFaker = new Faker<AppUser>()
-            .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
-
-        foreach (var appUser in appUsers)
-        {
-            appUserFollowsFaker.Populate(appUser);
-            await session.StoreAsync(appUser);
-        }
-
-        await session.SaveChangesAsync();
+        appUserFollowsFaker.Populate(appUser);
+        await session.StoreAsync(appUser);
     }
+
+    await session.SaveChangesAsync();
 }
 
 Console.WriteLine("{0} AppUser instances updated with followers", appUsers.Count);
@@ -50,18 +48,32 @@ Console.WriteLine("{0} AppUser instances updated with followers", appUsers.Count
 var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
     .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
     .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
-    .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id)
-    .RuleFor(t => t.Likes, f => f.PickRandom(appUsers, f.Random.Number(appUsers.Count - 1))
-        .Select(a => new Like
-        {
-            CreatedAt = dateTimeToZonedDateTime(f.Date.Past()),
-            UserId = f.PickRandom(appUsers).Id
-        }).ToList());
+    .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id);
 
 var numTweeds = config.GetValue<int>("NumberOfTweeds");
 var tweeds = tweedFaker.Generate(numTweeds);
 foreach (var tweed in tweeds) await bulkInsert.StoreAsync(tweed);
 Console.WriteLine("{0} Tweed instances created", tweeds.Count);
+
+using (var session = store.OpenAsyncSession())
+{
+    var likesFaker = new Faker<TweedLike>()
+        .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
+        .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
+
+    var appUserLikesFaker = new Faker<AppUser>()
+        .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, tweeds.Count - 1));
+
+    foreach (var appUser in appUsers)
+    {
+        appUserLikesFaker.Populate(appUser);
+        await session.StoreAsync(appUser);
+    }
+
+    await session.SaveChangesAsync();
+}
+
+Console.WriteLine("{0} AppUser instances updated with likes", appUsers.Count);
 
 ZonedDateTime dateTimeToZonedDateTime(DateTime dateTime)
 {

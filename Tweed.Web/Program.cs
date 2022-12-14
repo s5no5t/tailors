@@ -23,7 +23,7 @@ builder.Services.AddRavenDbAsyncSession();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-var identityBuilder = builder.Services
+builder.Services
     .AddIdentity<AppUser, IdentityRole>()
     .AddRavenDbIdentityStores<AppUser, IdentityRole>();
 
@@ -33,6 +33,7 @@ builder.Services.ConfigureApplicationCookie(
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
 builder.Services.AddScoped<IAppUserQueries, AppUserQueries>();
+builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
 builder.Services.AddHttpContextAccessor();
 

@@ -12,15 +12,12 @@ public interface ITweedQueries
     Task<List<Entities.Tweed>> GetTweedsForUser(string userId);
     Task<Entities.Tweed?> GetById(string id);
     Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
-    Task AddLike(string id, string userId, ZonedDateTime likedAt);
-    Task RemoveLike(string id, string userId);
     Task<long> GetLikesCount(string tweedId);
     Task<List<Entities.Tweed>> Search(string term);
 }
 
 public sealed class TweedQueries : ITweedQueries
 {
-    private const string LikesCounterName = "Likes";
     private readonly IAsyncDocumentSession _session;
 
     public TweedQueries(IAsyncDocumentSession session)
@@ -67,29 +64,9 @@ public sealed class TweedQueries : ITweedQueries
         await _session.StoreAsync(tweed);
     }
 
-    public async Task AddLike(string id, string userId, ZonedDateTime likedAt)
-    {
-        var tweed = await _session.LoadAsync<Entities.Tweed>(id);
-        if (tweed.Likes.Any(l => l.UserId == userId))
-            return;
-        tweed.Likes.Add(new Like
-        {
-            UserId = userId,
-            CreatedAt = likedAt
-        });
-        _session.CountersFor(tweed).Increment(LikesCounterName);
-    }
-
-    public async Task RemoveLike(string id, string userId)
-    {
-        var tweed = await _session.LoadAsync<Entities.Tweed>(id);
-        tweed.Likes.RemoveAll(lb => lb.UserId == userId);
-        _session.CountersFor(tweed).Increment(LikesCounterName, -1);
-    }
-
     public async Task<long> GetLikesCount(string tweedId)
     {
-        var likesCounter = await _session.CountersFor(tweedId).GetAsync(LikesCounterName);
+        var likesCounter = await _session.CountersFor(tweedId).GetAsync(Entities.Tweed.LikesCounterName);
         return likesCounter ?? 0L;
     }
 

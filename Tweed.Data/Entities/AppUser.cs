@@ -7,6 +7,7 @@ namespace Tweed.Data.Entities;
 public class AppUser : IdentityUser
 {
     public List<Follows> Follows { get; set; } = new();
+    public List<TweedLike> Likes { get; set; } = new();
 }
 
 public class Follows
