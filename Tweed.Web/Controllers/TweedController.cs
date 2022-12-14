@@ -45,6 +45,7 @@ public class TweedController : Controller
         return View(viewModel);
     }
 
+    [HttpGet("Tweed/Create")]
     public IActionResult Create()
     {
         CreateViewModel viewModel = new();
