@@ -2,9 +2,9 @@ using Raven.Client.Documents.Indexes;
 
 namespace Tweed.Data;
 
-public class Tweeds_ByAuthorId : AbstractIndexCreationTask<Entities.Tweed>
+public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Entities.Tweed>
 {
-    public Tweeds_ByAuthorId()
+    public Tweeds_ByAuthorIdAndCreatedAt()
     {
         Map = tweeds => from tweed in tweeds
             select new

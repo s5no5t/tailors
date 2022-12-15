@@ -32,7 +32,7 @@ public sealed class TweedQueries : ITweedQueries
 
         followedUserIds.Add(userId); // show her own Tweeds as well
 
-        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorId>()
+        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
@@ -41,7 +41,7 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)
     {
-        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorId>()
+        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == userId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
