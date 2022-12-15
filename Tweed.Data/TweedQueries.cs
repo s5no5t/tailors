@@ -32,11 +32,24 @@ public sealed class TweedQueries : ITweedQueries
 
         followedUserIds.Add(userId); // show her own Tweeds as well
 
-        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        var followerTweeds = await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
             .ToListAsync();
+
+        var numExtraTweeds = 20 - followerTweeds.Count;
+        var extraTweeds = await _session.Query<Entities.Tweed>()
+            .Where(t => !t.Id.In(followerTweeds.Select(f => f.Id).ToList())) // not Tweeds that are already in the feed
+            .OrderByDescending(t => t.CreatedAt)
+            .Take(numExtraTweeds)
+            .ToListAsync();
+
+        var tweeds = new List<Entities.Tweed>();
+        tweeds.AddRange(followerTweeds);
+        tweeds.AddRange(extraTweeds);
+        tweeds = tweeds.OrderByDescending(t => t.CreatedAt?.LocalDateTime).ToList();
+        return tweeds;
     }
 
     public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)

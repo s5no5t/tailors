@@ -61,7 +61,6 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var tweeds = await queries.GetFeed("currentUser");
 
         Assert.Contains(currentUserTweed.Id, tweeds.Select(t => t.Id));
-        Assert.DoesNotContain(otherUserTweed.Id, tweeds.Select(t => t.Id));
     }
 
     [Fact]
@@ -104,7 +103,6 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var tweeds = await queries.GetFeed("currentUser");
 
         Assert.Contains(tweeds, t => t.Id == followedUserTweed.Id);
-        Assert.DoesNotContain(tweeds, t => t.Id == notFollowedUserTweed.Id);
     }
 
     [Fact]
@@ -203,6 +201,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetTweedsForUser_ShouldReturnTweeds()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         Entities.Tweed tweed = new()
         {
             Text = "test",
@@ -221,6 +220,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetTweedsForUser_ShouldReturnOrderedTweeds()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         Entities.Tweed olderTweed = new()
         {
             Text = "older tweed",
@@ -239,7 +239,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 
-        var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
+        var tweeds = await queries.GetTweedsForUser("user1");
 
         Assert.Equal(recentTweed, tweeds[0]);
         Assert.Equal(olderTweed, tweeds[1]);
@@ -249,6 +249,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetTweedsForUser_ShouldReturn20Tweeds()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
             Entities.Tweed tweed = new()
@@ -263,7 +264,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 
-        var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
+        var tweeds = await queries.GetTweedsForUser("user1");
 
         Assert.Equal(20, tweeds.Count);
     }
@@ -272,6 +273,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetTweedsForUser_ShouldNotReturnTweedsFromOtherUsers()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         Entities.Tweed tweed = new()
         {
             Text = "test",
@@ -282,7 +284,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 
-        var tweeds = (await queries.GetTweedsForUser("user1")).ToList();
+        var tweeds = await queries.GetTweedsForUser("user1");
 
         Assert.Empty(tweeds);
     }
