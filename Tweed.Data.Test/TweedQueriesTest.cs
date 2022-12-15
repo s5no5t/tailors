@@ -323,6 +323,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task Search_ShouldReturnResult_WhenTermIsFound()
     {
         using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
         Entities.Tweed tweed = new()
         {
             Id = "tweedId",
