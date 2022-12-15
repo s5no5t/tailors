@@ -41,7 +41,7 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)
     {
-        return await _session.Query<Entities.Tweed>()
+        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorId>()
             .Where(t => t.AuthorId == userId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
