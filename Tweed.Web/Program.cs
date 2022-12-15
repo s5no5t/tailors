@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Raven.Client.Documents;
 using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
@@ -8,6 +9,7 @@ using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
 using Tweed.Web.Helper;
+using IdentityRole = Raven.Identity.IdentityRole;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +27,8 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services
     .AddIdentity<AppUser, IdentityRole>()
-    .AddRavenDbIdentityStores<AppUser, IdentityRole>();
+    .AddRavenDbIdentityStores<AppUser, IdentityRole>()
+    .AddDefaultTokenProviders();;
 
 builder.Services.ConfigureApplicationCookie(
     options => options.LoginPath = "/Identity/Account/login");
@@ -34,6 +37,16 @@ builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
 builder.Services.AddScoped<IAppUserQueries, AppUserQueries>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+});
 
 builder.Services.AddHttpContextAccessor();
 
