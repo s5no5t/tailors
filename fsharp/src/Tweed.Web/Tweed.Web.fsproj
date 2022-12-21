@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Model.fs" />
+    <Compile Include="Views.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
