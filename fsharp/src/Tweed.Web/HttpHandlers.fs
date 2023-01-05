@@ -2,7 +2,7 @@ module Tweed.Web.HttpHandlers
 
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Http
-open Giraffe    
+open Giraffe
 open Tweed.Data
 open ViewModels
 
@@ -13,19 +13,16 @@ module Index =
         let view = Views.Index.indexGetView viewModel
         htmlView view
 
-    let handlers =
-        GET >=> indexGetHandler
+    let handlers = GET >=> indexGetHandler
 
 module Tweed =
     [<CLIMutable>]
-    type CreateTweedDto = {
-        Text: string
-    }
+    type CreateTweedDto = { Text: string }
 
-    let storeTweedHandler = 
-        fun (next : HttpFunc) (ctx : HttpContext) ->
+    let storeTweedHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let documentStore = RavenDb.documentStore ["http://localhost:8080"] "TweedFsharp"
+                let documentStore = RavenDb.documentStore [ "http://localhost:8080" ] "TweedFsharp"
                 let! tweedDto = ctx.BindFormAsync<CreateTweedDto>()
                 use session = RavenDb.createSession documentStore
                 do! session |> Queries.storeTweed tweedDto.Text
@@ -33,25 +30,21 @@ module Tweed =
                 return! next ctx
             }
 
-    let tweedPostHandler =
-        storeTweedHandler
-        >=> redirectTo false "/"
+    let tweedPostHandler = storeTweedHandler >=> redirectTo false "/"
 
     let createTweedGetHandler =
         let view = Views.Tweed.createTweedView None
         htmlView view
-    
+
     let handlers =
-        route "/create" >=> POST >=> tweedPostHandler
-        route "/create" >=> GET >=> createTweedGetHandler
+        route "/create"
+        >=> choose [ POST >=> tweedPostHandler; GET >=> createTweedGetHandler ]
 
 module Fallback =
-    let notFoundHandler =
-        setStatusCode 404 >=> text "Not Found"
+    let notFoundHandler = setStatusCode 404 >=> text "Not Found"
 
-let handler : HttpHandler =
-    choose [
-        subRoute "/tweed" Tweed.handlers 
-        route "/" >=> Index.handlers
-        Fallback.notFoundHandler
-    ]
+let handler: HttpHandler =
+    choose
+        [ subRoute "/tweed" Tweed.handlers
+          route "/" >=> Index.handlers
+          Fallback.notFoundHandler ]
