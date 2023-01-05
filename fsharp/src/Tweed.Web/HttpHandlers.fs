@@ -37,8 +37,13 @@ module Tweed =
         storeTweedHandler
         >=> redirectTo false "/"
 
+    let createTweedGetHandler =
+        let view = Views.Tweed.createTweedView None
+        htmlView view
+    
     let handlers =
         route "/create" >=> POST >=> tweedPostHandler
+        route "/create" >=> GET >=> createTweedGetHandler
 
 module Fallback =
     let notFoundHandler =

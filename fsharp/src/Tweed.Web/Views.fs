@@ -12,12 +12,25 @@ let layout (content: XmlNode list) =
                 link [ _rel "stylesheet"; _type "text/css"; _href "/main.css" ] ]
           body [] content ]
 
-let partial () = h1 [] [ encodedText "Tweed.Web" ]
+let titlePartial () = h1 [] [ encodedText "Tweed.Web" ]
 
 
-module Index = 
+module Index =
     let indexGetView (model: IndexViewModel) =
-        [ partial ()
+        [ titlePartial ()
           yield! model.Tweeds |> List.map (fun t -> div [] [ str t.Content ]) ]
         |> layout
 
+module Tweed =
+    let createTweedView text =
+        let value = match text with
+                    | Some(t) -> t
+                    | None -> ""
+        [
+        titlePartial ()
+        form [ _method "POST" ] [
+            label [ _for "text" ] []
+            textarea [ _rows "5"; _name "Text"; _value value ] []
+            button [ _type "submit" ] [ encodedText "Submit" ]
+        ] ]
+        |> layout
