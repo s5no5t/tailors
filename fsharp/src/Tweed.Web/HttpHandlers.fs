@@ -9,8 +9,8 @@ open ViewModels
 module Index =
     let indexGetHandler =
         let tweed = { Content = "Some tweed" }
-        let model = { Tweeds = [ tweed ] }
-        let view = Views.index model
+        let viewModel = { Tweeds = [ tweed ] }
+        let view = Views.Index.indexGetView viewModel
         htmlView view
 
     let handlers =

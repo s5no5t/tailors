@@ -14,7 +14,10 @@ let layout (content: XmlNode list) =
 
 let partial () = h1 [] [ encodedText "Tweed.Web" ]
 
-let index (model: IndexViewModel) =
-    [ partial ()
-      yield! model.Tweeds |> List.map (fun t -> div [] [ str t.Content ]) ]
-    |> layout
+
+module Index = 
+    let indexGetView (model: IndexViewModel) =
+        [ partial ()
+          yield! model.Tweeds |> List.map (fun t -> div [] [ str t.Content ]) ]
+        |> layout
+
