@@ -7,19 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Giraffe" Version="6.0.0"/>
-        <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0"/>
-        <PackageReference Include="Ply" Version="0.3.*"/>
+        <PackageReference Include="Giraffe" Version="6.0.0" />
+        <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
+        <PackageReference Include="Ply" Version="0.3.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="ViewModels.fs"/>
-        <Compile Include="Views.fs"/>
-        <Compile Include="Program.fs"/>
+        <Compile Include="ViewModels.fs" />
+        <Compile Include="Views.fs" />
+        <Compile Include="HttpHandlers.fs" />
+        <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="web.config" CopyToOutputDirectory="PreserveNewest"/>
+        <None Include="web.config" CopyToOutputDirectory="PreserveNewest" />
         <Content Include="WebRoot\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

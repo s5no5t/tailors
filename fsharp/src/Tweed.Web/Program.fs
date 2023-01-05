@@ -9,20 +9,8 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
-open ViewModels
 
-let indexHandler (name: string) =
-    let greetings = sprintf "Hello %s, from Giraffe!" name
-    let tweed = { Content = "tweed4" }
-    let model = { Tweeds = [ tweed ] }
-    let view = Views.index model
-    htmlView view
-
-let webApp =
-    choose
-        [ GET
-          >=> choose [ route "/" >=> indexHandler "world"; routef "/hello/%s" indexHandler ]
-          setStatusCode 404 >=> text "Not Found" ]
+let webApp = choose HttpHandlers.handlers
 
 // ---------------------------------
 // Error handler
