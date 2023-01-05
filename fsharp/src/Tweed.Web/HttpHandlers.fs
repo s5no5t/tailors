@@ -4,16 +4,14 @@ open Microsoft.AspNetCore.Hosting
 open Giraffe    
 open ViewModels
 
-let indexHandler =
-    let tweed = { Content = "tweed4" }
+let indexGetHandler =
+    let tweed = { Content = "Some tweed" }
     let model = { Tweeds = [ tweed ] }
     let view = Views.index model
     htmlView view
 
 let handler : HttpHandler =
     choose [
-        GET
-          >=> choose [ route "/" >=> indexHandler
-        ]
+        route "/" >=> GET >=> indexGetHandler
         setStatusCode 404 >=> text "Not Found"
     ]
