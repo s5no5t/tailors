@@ -10,7 +10,7 @@ let layout (content: XmlNode list) =
               []
               [ title [] [ encodedText "Tweed.Web" ]
                 link [ _rel "stylesheet"; _type "text/css"; _href "/main.css" ] ]
-          body [] content ]
+          body [] [ yield! content; a [ _href "/tweed/create" ] [ encodedText "Create Tweed" ] ] ]
 
 let titlePartial () = h1 [] [ encodedText "Tweed.Web" ]
 
@@ -23,14 +23,15 @@ module Index =
 
 module Tweed =
     let createTweedView text =
-        let value = match text with
-                    | Some(t) -> t
-                    | None -> ""
-        [
-        titlePartial ()
-        form [ _method "POST" ] [
-            label [ _for "text" ] []
-            textarea [ _rows "5"; _name "Text"; _value value ] []
-            button [ _type "submit" ] [ encodedText "Submit" ]
-        ] ]
+        let value =
+            match text with
+            | Some(t) -> t
+            | None -> ""
+
+        [ titlePartial ()
+          form
+              [ _method "POST" ]
+              [ label [ _for "text" ] []
+                textarea [ _rows "5"; _name "Text"; _value value ] []
+                button [ _type "submit" ] [ encodedText "Submit" ] ] ]
         |> layout
