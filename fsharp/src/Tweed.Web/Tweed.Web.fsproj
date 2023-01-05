@@ -25,4 +25,8 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Tweed.Data\Tweed.Data.fsproj" />
+    </ItemGroup>
 </Project>
