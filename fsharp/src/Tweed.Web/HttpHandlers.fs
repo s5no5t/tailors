@@ -10,8 +10,10 @@ let indexHandler =
     let view = Views.index model
     htmlView view
 
-let handlers : HttpHandler list =
-        [ GET
+let handler : HttpHandler =
+    choose [
+        GET
           >=> choose [ route "/" >=> indexHandler
-          ]
-          setStatusCode 404 >=> text "Not Found" ]
+        ]
+        setStatusCode 404 >=> text "Not Found"
+    ]

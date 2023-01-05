@@ -10,7 +10,7 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
-let webApp = choose HttpHandlers.handlers
+let webApp = HttpHandlers.handler
 
 // ---------------------------------
 // Error handler
