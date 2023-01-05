@@ -1,6 +1,6 @@
 # Tweed
 
-A playground web app. 
+A social media web app to play with.
 
 ## Design Goals
 
