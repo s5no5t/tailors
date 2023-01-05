@@ -19,14 +19,17 @@ module Index =
 module Tweed =
     [<CLIMutable>]
     type CreateTweed = {
-        Text: string    
+        Text: string
     }
 
     let storeTweedHandler = 
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
+                let documentStore = Queries.documentStore ["http://localhost:8080"] "TweedFsharp"
+                use session = Queries.createSession documentStore
                 let! tweed = ctx.BindFormAsync<CreateTweed>()
-                Queries.storeTweed tweed.Text |> ignore
+                do! Queries.storeTweed session tweed.Text
+                do! session.SaveChangesAsync()
                 return! next ctx
             }
 
