@@ -1,18 +1,7 @@
 ﻿
 module Tweed.Data.Queries
 
-open Raven.Client.Documents
 open Raven.Client.Documents.Session
-
-let documentStore urls databaseName =
-    let documentStore = new DocumentStore()
-    documentStore.Urls <- urls |> List.toArray
-    documentStore.Database <- databaseName
-    documentStore.Initialize() |> ignore
-    documentStore
-
-let createSession (documentStore: IDocumentStore) =
-    documentStore.OpenAsyncSession()
 
 [<CLIMutable>]
 type Tweed = {

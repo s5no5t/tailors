@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="RavenDb.fs" />
         <Compile Include="Queries.fs" />
     </ItemGroup>
 
