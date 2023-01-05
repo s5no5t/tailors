@@ -1,6 +1,7 @@
 module Tweed.Web.HttpHandlers
 
 open Microsoft.AspNetCore.Hosting
+open Microsoft.AspNetCore.Http
 open Giraffe    
 open ViewModels
 
@@ -10,8 +11,16 @@ let indexGetHandler =
     let view = Views.index model
     htmlView view
 
-let tweedPostHandler : HttpHandler  =
-    redirectTo false "/"
+let storeTweedHandler = 
+    fun (next : HttpFunc) (ctx : HttpContext) ->
+        task {
+            // TODO
+            return! next ctx
+        }
+
+let tweedPostHandler =
+    storeTweedHandler
+    >=> redirectTo false "/"
 
 let notFoundHandler =
     setStatusCode 404 >=> text "Not Found"
