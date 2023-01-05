@@ -13,6 +13,9 @@ module Index =
         let view = Views.index model
         htmlView view
 
+    let handlers =
+        GET >=> indexGetHandler
+
 module Tweed =
     [<CLIMutable>]
     type CreateTweed = {
@@ -31,13 +34,16 @@ module Tweed =
         storeTweedHandler
         >=> redirectTo false "/"
 
+    let handlers =
+        route "/create" >=> POST >=> tweedPostHandler
+
 module Fallback =
     let notFoundHandler =
         setStatusCode 404 >=> text "Not Found"
 
 let handler : HttpHandler =
     choose [
-        route "/" >=> GET >=> Index.indexGetHandler
-        route "/tweed/create" >=> POST >=> Tweed.tweedPostHandler 
+        subRoute "/tweed" Tweed.handlers 
+        route "/" >=> Index.handlers
         Fallback.notFoundHandler
     ]
