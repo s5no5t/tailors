@@ -4,5 +4,5 @@ module Tweed.Data.Queries
 let storeTweed text =
     task {
         // TODO
-        printfn $"Hello %s{text}"
+        printfn $"Creating tweed %s{text}"
     }
