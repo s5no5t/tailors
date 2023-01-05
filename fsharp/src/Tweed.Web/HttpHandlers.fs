@@ -3,6 +3,7 @@ module Tweed.Web.HttpHandlers
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Http
 open Giraffe    
+open Tweed.Data
 open ViewModels
 
 let indexGetHandler =
@@ -11,10 +12,16 @@ let indexGetHandler =
     let view = Views.index model
     htmlView view
 
+[<CLIMutable>]
+type CreateTweed = {
+    Text: string    
+}
+
 let storeTweedHandler = 
     fun (next : HttpFunc) (ctx : HttpContext) ->
         task {
-            // TODO
+            let! tweed = ctx.BindFormAsync<CreateTweed>()
+            Queries.storeTweed tweed.Text |> ignore
             return! next ctx
         }
 
