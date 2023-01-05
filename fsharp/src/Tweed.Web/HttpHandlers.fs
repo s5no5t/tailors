@@ -18,7 +18,7 @@ module Index =
 
 module Tweed =
     [<CLIMutable>]
-    type CreateTweed = {
+    type CreateTweedDto = {
         Text: string
     }
 
@@ -26,9 +26,9 @@ module Tweed =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let documentStore = RavenDb.documentStore ["http://localhost:8080"] "TweedFsharp"
-                let! tweed = ctx.BindFormAsync<CreateTweed>()
+                let! tweedDto = ctx.BindFormAsync<CreateTweedDto>()
                 use session = RavenDb.createSession documentStore
-                do! session |> Queries.storeTweed tweed.Text
+                do! session |> Queries.storeTweed tweedDto.Text
                 do! session |> RavenDb.saveChangesAsync
                 return! next ctx
             }
