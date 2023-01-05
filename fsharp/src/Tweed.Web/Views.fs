@@ -3,6 +3,9 @@ module Tweed.Web.Views
 open Giraffe.ViewEngine
 open ViewModels
 
+let _upSubmit = flag "up-submit"
+let _upLayer = attr "up-layer"
+
 let layout (content: XmlNode list) =
     html
         []
@@ -30,7 +33,7 @@ module Tweed =
 
         [ titlePartial ()
           form
-              [ _method "POST" ]
+              [ _method "POST"; _upSubmit; _upLayer "parent" ] 
               [ label [ _for "text" ] []
                 textarea [ _rows "5"; _name "Text"; _value value ] []
                 button [ _type "submit" ] [ encodedText "Submit" ] ] ]
