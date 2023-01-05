@@ -10,8 +10,15 @@ let indexGetHandler =
     let view = Views.index model
     htmlView view
 
+let tweedPostHandler : HttpHandler  =
+    redirectTo false "/"
+
+let notFoundHandler =
+    setStatusCode 404 >=> text "Not Found"
+
 let handler : HttpHandler =
     choose [
         route "/" >=> GET >=> indexGetHandler
-        setStatusCode 404 >=> text "Not Found"
+        route "/tweed/create" >=> POST >=> tweedPostHandler 
+        notFoundHandler
     ]
