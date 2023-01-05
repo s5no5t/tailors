@@ -1,6 +1,7 @@
 module Tweed.Data.RavenDb
 
 open Raven.Client.Documents
+open Raven.Client.Documents.Session
 
 let documentStore urls databaseName =
     let documentStore = new DocumentStore()
@@ -10,3 +11,8 @@ let documentStore urls databaseName =
 
 let createSession (documentStore: IDocumentStore) =
     documentStore.OpenAsyncSession()
+
+let saveChangesAsync (session: IAsyncDocumentSession) =
+    task {
+        do! session.SaveChangesAsync()
+    }

@@ -1,15 +1,17 @@
 ﻿
 module Tweed.Data.Queries
 
+module RavenDbTypes =
+    [<CLIMutable>]
+    type Tweed = {
+        Id: string
+        Text: string
+    }
+
 open Raven.Client.Documents.Session
+open RavenDbTypes
 
-[<CLIMutable>]
-type Tweed = {
-    Id: string
-    Text: string
-}
-
-let storeTweed (session:IAsyncDocumentSession) (text: string) =
+let storeTweed (text: string) (session: IAsyncDocumentSession) =
     task {
         printfn $"Creating tweed %s{text}"
         let tweed = {

@@ -26,10 +26,10 @@ module Tweed =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let documentStore = RavenDb.documentStore ["http://localhost:8080"] "TweedFsharp"
-                use session = RavenDb.createSession documentStore
                 let! tweed = ctx.BindFormAsync<CreateTweed>()
-                do! Queries.storeTweed session tweed.Text
-                do! session.SaveChangesAsync()
+                use session = RavenDb.createSession documentStore
+                do! session |> Queries.storeTweed tweed.Text
+                do! session |> RavenDb.saveChangesAsync
                 return! next ctx
             }
 
