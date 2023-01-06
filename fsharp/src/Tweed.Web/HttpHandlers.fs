@@ -19,10 +19,9 @@ module Tweed =
     [<CLIMutable>]
     type CreateTweedDto = { Text: string }
 
-    let storeTweedHandler =
+    let storeTweedHandler documentStore =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let documentStore = RavenDb.documentStore [ "http://localhost:8080" ] "TweedFsharp"
                 let! tweedDto = ctx.BindFormAsync<CreateTweedDto>()
                 use session = RavenDb.createSession documentStore
                 do! session |> Queries.storeTweed tweedDto.Text
@@ -30,21 +29,21 @@ module Tweed =
                 return! next ctx
             }
 
-    let tweedPostHandler = storeTweedHandler >=> redirectTo false "/"
+    let tweedPostHandler documentStore = storeTweedHandler documentStore >=> redirectTo false "/"
 
     let createTweedGetHandler =
         let view = Views.Tweed.createTweedView None
         htmlView view
 
-    let handlers =
+    let handlers documentStore =
         route "/create"
-        >=> choose [ POST >=> tweedPostHandler; GET >=> createTweedGetHandler ]
+        >=> choose [ POST >=> tweedPostHandler documentStore; GET >=> createTweedGetHandler ]
 
 module Fallback =
     let notFoundHandler = setStatusCode 404 >=> text "Not Found"
 
-let handler: HttpHandler =
+let handler documentStore: HttpHandler =
     choose
-        [ subRoute "/tweed" Tweed.handlers
+        [ subRoute "/tweed" (Tweed.handlers documentStore)
           route "/" >=> Index.handlers
           Fallback.notFoundHandler ]
