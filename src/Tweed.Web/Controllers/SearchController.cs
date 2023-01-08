@@ -20,7 +20,7 @@ public class SearchController : Controller
 
     public IActionResult Index()
     {
-        IndexViewModel viewModel = new();
+        IndexViewModel viewModel = new("", new List<UserViewModel>(), new List<TweedViewModel>());
         return View(viewModel);
     }
 
@@ -29,27 +29,15 @@ public class SearchController : Controller
         string term)
     {
         if (!ModelState.IsValid)
-            return View("Index", new IndexViewModel
-            {
-                Term = term
-            });
+            return View("Index", new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
 
         var users = await _appUserQueries.Search(term);
         var tweeds = await _tweedQueries.Search(term);
-        IndexViewModel viewModel = new()
-        {
-            Term = term,
-            FoundUsers = users.Select(u => new UserViewModel
-            {
-                UserId = u.Id!,
-                UserName = u.UserName
-            }).ToList(),
-            FoundTweeds = tweeds.Select(t => new TweedViewModel
-            {
-                TweedId = t.Id,
-                Text = t.Text!
-            }).ToList()
-        };
+        IndexViewModel viewModel = new(
+            term,
+            users.Select(u => new UserViewModel(u.Id!, u.UserName!)).ToList(),
+            tweeds.Select(t => new TweedViewModel(t.Id!, t.Text!)).ToList()
+        );
         return View("index", viewModel);
     }
 }

@@ -34,7 +34,7 @@ public class AppUserQueriesTest
 
         await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
-        Assert.Equal(user.Follows[0].LeaderId, "leaderId");
+        Assert.Equal("leaderId", user.Follows[0].LeaderId);
     }
 
     [Fact]

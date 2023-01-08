@@ -12,7 +12,7 @@ public class AppUser : IdentityUser
 
 public class Follows
 {
-    public string LeaderId { get; set; }
+    public string? LeaderId { get; set; }
     public ZonedDateTime CreatedAt { get; set; }
 }
 

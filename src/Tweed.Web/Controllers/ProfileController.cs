@@ -43,14 +43,13 @@ public class ProfileController : Controller
             tweedViewModels.Add(tweedViewModel);
         }
 
-        var viewModel = new IndexViewModel
-        {
-            UserId = userId,
-            UserName = user.UserName,
-            Tweeds = tweedViewModels,
-            CurrentUserFollows = currentUser.Follows.Any(f => f.LeaderId == user.Id),
-            FollowersCount = await _appUserQueries.GetFollowerCount(userId)
-        };
+        var viewModel = new IndexViewModel(
+            userId,
+            user.UserName,
+            tweedViewModels,
+            currentUser.Follows.Any(f => f.LeaderId == user.Id),
+            await _appUserQueries.GetFollowerCount(userId)
+        );
 
         return View(viewModel);
     }

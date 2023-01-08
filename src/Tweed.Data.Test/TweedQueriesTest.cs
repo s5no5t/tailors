@@ -181,7 +181,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 
-        var tweed2 = await queries.GetById(tweed.Id);
+        var tweed2 = await queries.GetById(tweed.Id!);
 
         Assert.Equal(tweed.Id, tweed2?.Id);
     }
@@ -303,7 +303,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var queries = new TweedQueries(session);
 
-        var likesCount = await queries.GetLikesCount(tweed.Id);
+        var likesCount = await queries.GetLikesCount(tweed.Id!);
 
         Assert.Equal(1, likesCount);
     }

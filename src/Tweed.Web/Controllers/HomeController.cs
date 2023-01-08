@@ -28,7 +28,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
-        var feed = await _tweedQueries.GetFeed(currentUser.Id);
+        var feed = await _tweedQueries.GetFeed(currentUser.Id!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)

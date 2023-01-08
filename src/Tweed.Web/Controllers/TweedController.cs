@@ -38,10 +38,8 @@ public class TweedController : Controller
         if (tweed == null)
             return NotFound();
 
-        GetByIdViewModel viewModel = new()
-        {
-            Tweed = await _viewModelFactory.BuildTweedViewModel(tweed)
-        };
+        var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
+        GetByIdViewModel viewModel = new(tweedViewModel);
         return View(viewModel);
     }
 
