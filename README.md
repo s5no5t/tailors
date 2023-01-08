@@ -29,10 +29,14 @@ A social media web app to play with.
 2. Install [Docker Desktop](https://www.docker.com/)
 3. Start RavenDB
 
-   cd Tweed.Web
-   docker compose up
+        cd ./src/Tweed.Web
+        docker compose up
 
 4. Run Tweed
 
-   cd Tweed.Web
-   dotnet run
+        cd ./src/Tweed.Web
+        dotnet run
+
+## Run Tests
+
+    dotnet test
