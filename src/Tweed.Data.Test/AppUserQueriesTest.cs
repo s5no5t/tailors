@@ -306,7 +306,7 @@ public class AppUserQueriesTest
         {
             Id = "tweedId"
         };
-        session.StoreAsync(tweed);
+        await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
@@ -332,7 +332,7 @@ public class AppUserQueriesTest
         {
             Id = "tweedId"
         };
-        session.StoreAsync(tweed);
+        await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var queries = new AppUserQueries(session);
 
