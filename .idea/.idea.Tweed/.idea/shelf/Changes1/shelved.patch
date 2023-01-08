@@ -1,0 +1,198 @@
+Index: Tweed.Data/TweedQueries.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Raven.Client.Documents;\nusing Raven.Client.Documents.Linq;\nusing Raven.Client.Documents.Session;\n\nnamespace Tweed.Data;\n\npublic interface ITweedQueries\n{\n    Task StoreTweed(Models.Tweed tweed);\n    Task<IEnumerable<Models.Tweed>> GetLatestTweeds();\n}\n\npublic sealed class TweedQueries : ITweedQueries\n{\n    private readonly IAsyncDocumentSession _session;\n\n    public TweedQueries(IAsyncDocumentSession session)\n    {\n        _session = session;\n    }\n\n    public async Task<IEnumerable<Models.Tweed>> GetLatestTweeds()\n    {\n        return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();\n    }\n\n    public async Task StoreTweed(Models.Tweed tweed)\n    {\n        if (tweed.CreatedAt is null)\n            throw new ArgumentException(\"tweed.CreatedAt must not be null\");\n        if (tweed.AuthorId is null)\n            throw new ArgumentException(\"tweed.AuthorId must not be null\");\n\n        await _session.StoreAsync(tweed);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data/TweedQueries.cs b/Tweed.Data/TweedQueries.cs
+--- a/Tweed.Data/TweedQueries.cs	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Data/TweedQueries.cs	(date 1669673456433)
+@@ -7,7 +7,7 @@
+ public interface ITweedQueries
+ {
+     Task StoreTweed(Models.Tweed tweed);
+-    Task<IEnumerable<Models.Tweed>> GetLatestTweeds();
++    Task<List<Tweeds_Feed.Result>> GetLatestTweeds();
+ }
+ 
+ public sealed class TweedQueries : ITweedQueries
+@@ -19,9 +19,13 @@
+         _session = session;
+     }
+ 
+-    public async Task<IEnumerable<Models.Tweed>> GetLatestTweeds()
++    public async Task<List<Tweeds_Feed.Result>> GetLatestTweeds()
+     {
+-        return await _session.Query<Models.Tweed>().OrderByDescending(t => t.CreatedAt).Take(20).ToListAsync();
++        return await _session
++            .Query<Tweeds_Feed.Result, Tweeds_Feed>()
++            .OrderByDescending(t => t.CreatedAt)
++            .Take(20)
++            .ToListAsync();
+     }
+ 
+     public async Task StoreTweed(Models.Tweed tweed)
+Index: Tweed.Data/Models/Tweed.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using NodaTime;\n\nnamespace Tweed.Data.Models;\n\npublic class Tweed\n{\n    public string? Text { get; init; }\n    public ZonedDateTime? CreatedAt { get; init; }\n    public string? AuthorId { get; set; }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data/Models/Tweed.cs b/Tweed.Data/Models/Tweed.cs
+--- a/Tweed.Data/Models/Tweed.cs	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Data/Models/Tweed.cs	(date 1669672945641)
+@@ -4,6 +4,7 @@
+ 
+ public class Tweed
+ {
++    public string Id { get; set; }
+     public string? Text { get; init; }
+     public ZonedDateTime? CreatedAt { get; init; }
+     public string? AuthorId { get; set; }
+Index: Tweed.Web/Pages/Index.cshtml.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Microsoft.AspNetCore.Mvc.RazorPages;\nusing Tweed.Data;\n\nnamespace Tweed.Web.Pages;\n\npublic class IndexModel : PageModel\n{\n    private readonly ITweedQueries _tweedQueries;\n\n    public IndexModel(ITweedQueries tweedQueries)\n    {\n        _tweedQueries = tweedQueries;\n    }\n\n    public List<Data.Models.Tweed> Tweeds { get; } = new();\n\n    public async Task OnGetAsync()\n    {\n        var latestTweeds = await _tweedQueries.GetLatestTweeds();\n        Tweeds.AddRange(latestTweeds);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Web/Pages/Index.cshtml.cs b/Tweed.Web/Pages/Index.cshtml.cs
+--- a/Tweed.Web/Pages/Index.cshtml.cs	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Web/Pages/Index.cshtml.cs	(date 1669672858446)
+@@ -12,7 +12,7 @@
+         _tweedQueries = tweedQueries;
+     }
+ 
+-    public List<Data.Models.Tweed> Tweeds { get; } = new();
++    public List<Tweeds_Feed.Result> Tweeds { get; } = new();
+ 
+     public async Task OnGetAsync()
+     {
+Index: Tweed.Web/Pages/Index.cshtml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>@page\n@model IndexModel\n\n@{\n    ViewData[\"Title\"] = \"Home page\";\n}\n\n@foreach (var tweed in Model.Tweeds)\n{\n    <div class=\"card mt-2\">\n        <div class=\"card-header\">\n            @tweed.AuthorId\n        </div>\n        <div class=\"card-body\">\n            <div class=\"card-text\">\n                @tweed.Text\n            </div>\n        </div>\n        <div class=\"card-footer small\">\n            <small class=\"text-muted\">@tweed.CreatedAt</small>\n        </div>\n    </div>\n}\n\n<a class=\"btn btn-primary\" asp-page=\"/create\">Create</a>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Web/Pages/Index.cshtml b/Tweed.Web/Pages/Index.cshtml
+--- a/Tweed.Web/Pages/Index.cshtml	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Web/Pages/Index.cshtml	(date 1669673008548)
+@@ -9,7 +9,7 @@
+ {
+     <div class="card mt-2">
+         <div class="card-header">
+-            @tweed.AuthorId
++            @tweed.Author
+         </div>
+         <div class="card-body">
+             <div class="card-text">
+Index: Tweed.Data/Indexes.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data/Indexes.cs b/Tweed.Data/Indexes.cs
+new file mode 100644
+--- /dev/null	(date 1669672971829)
++++ b/Tweed.Data/Indexes.cs	(date 1669672971829)
+@@ -0,0 +1,28 @@
++using NodaTime;
++using Raven.Client.Documents.Indexes;
++using Tweed.Data.Models;
++
++namespace Tweed.Data;
++
++public class Tweeds_Feed : AbstractIndexCreationTask<Models.Tweed>
++{
++    public Tweeds_Feed()
++    {
++        Map = tweeds => from tweed in tweeds
++            select new Result
++            {
++                Id = tweed.Id,
++                Author = LoadDocument<AppUser>(tweed.AuthorId).UserName,
++                Text = tweed.Text,
++                CreatedAt = tweed.CreatedAt
++            };
++    }
++
++    public class Result
++    {
++        public string Id { get; set; }
++        public string? Text { get; set; }
++        public string? Author { get; set; }
++        public ZonedDateTime? CreatedAt { get; set; }
++    }
++}
+\ No newline at end of file
+Index: Tweed.Data/Tweed.Data.csproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Project Sdk=\"Microsoft.NET.Sdk\">\n\n    <PropertyGroup>\n        <TargetFramework>net6.0</TargetFramework>\n        <ImplicitUsings>enable</ImplicitUsings>\n        <Nullable>enable</Nullable>\n    </PropertyGroup>\n\n    <ItemGroup>\n      <PackageReference Include=\"NodaTime\" Version=\"3.1.5\" />\n      <PackageReference Include=\"RavenDB.Client\" Version=\"5.4.4\" />\n      <PackageReference Include=\"RavenDB.Client.NodaTime\" Version=\"5.3.102\" />\n    </ItemGroup>\n\n</Project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data/Tweed.Data.csproj b/Tweed.Data/Tweed.Data.csproj
+--- a/Tweed.Data/Tweed.Data.csproj	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Data/Tweed.Data.csproj	(date 1669672363518)
+@@ -10,6 +10,7 @@
+       <PackageReference Include="NodaTime" Version="3.1.5" />
+       <PackageReference Include="RavenDB.Client" Version="5.4.4" />
+       <PackageReference Include="RavenDB.Client.NodaTime" Version="5.3.102" />
++      <PackageReference Include="RavenDB.Identity" Version="8.0.7" />
+     </ItemGroup>
+ 
+ </Project>
+Index: Tweed.Data.Test/RavenTestDb.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Raven.Client.Documents;\nusing Raven.Client.Documents.Session;\nusing Raven.TestDriver;\n\nnamespace Tweed.Data.Test;\n\npublic class RavenTestDb : RavenTestDriver\n{\n    private readonly IDocumentStore _store;\n\n    public RavenTestDb()\n    {\n        _store = GetDocumentStore();\n    }\n\n    public IAsyncDocumentSession Session => _store.OpenAsyncSession();\n\n    protected override void PreInitialize(IDocumentStore documentStore)\n    {\n        documentStore.Conventions.ThrowIfQueryPageSizeIsNotSet = true;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data.Test/RavenTestDb.cs b/Tweed.Data.Test/RavenTestDb.cs
+--- a/Tweed.Data.Test/RavenTestDb.cs	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Data.Test/RavenTestDb.cs	(date 1669673763190)
+@@ -11,6 +11,7 @@
+     public RavenTestDb()
+     {
+         _store = GetDocumentStore();
++        _store.EnsureIndexesExist();
+     }
+ 
+     public IAsyncDocumentSession Session => _store.OpenAsyncSession();
+Index: Tweed.Data/RavenExtensions.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Raven.Client.Documents;\nusing Raven.Client.Documents.Operations;\nusing Raven.Client.Exceptions;\nusing Raven.Client.Exceptions.Database;\nusing Raven.Client.ServerWide;\nusing Raven.Client.ServerWide.Operations;\n\nnamespace Tweed.Data;\n\npublic static class RavenExtensions\n{\n    public static IDocumentStore EnsureDatabaseExists(this IDocumentStore store)\n    {\n        try\n        {\n            store.Maintenance.ForDatabase(store.Database).Send(new GetStatisticsOperation());\n        }\n        catch (DatabaseDoesNotExistException)\n        {\n            try\n            {\n                store.Maintenance.Server.Send(new CreateDatabaseOperation(new DatabaseRecord(store.Database)));\n            }\n            catch (ConcurrencyException)\n            {\n                // The database was already created before calling CreateDatabaseOperation\n            }\n        }\n\n        return store;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data/RavenExtensions.cs b/Tweed.Data/RavenExtensions.cs
+--- a/Tweed.Data/RavenExtensions.cs	(revision fab544bf0a3f82457bd87de92ea39429dc4d71e0)
++++ b/Tweed.Data/RavenExtensions.cs	(date 1669672415113)
+@@ -9,7 +9,7 @@
+ 
+ public static class RavenExtensions
+ {
+-    public static IDocumentStore EnsureDatabaseExists(this IDocumentStore store)
++    public static void EnsureDatabaseExists(this IDocumentStore store)
+     {
+         try
+         {
+@@ -26,7 +26,10 @@
+                 // The database was already created before calling CreateDatabaseOperation
+             }
+         }
++    }
+ 
+-        return store;
++    public static void EnsureIndexesExist(this IDocumentStore store)
++    {
++        new Tweeds_Feed().Execute(store);
+     }
+ }
+\ No newline at end of file

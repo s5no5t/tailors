@@ -1,0 +1,56 @@
+Index: Tweed.Data.Test/RavenTestContainersTest.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data.Test/RavenTestContainersTest.cs b/Tweed.Data.Test/RavenTestContainersTest.cs
+new file mode 100644
+--- /dev/null	(date 1669586696102)
++++ b/Tweed.Data.Test/RavenTestContainersTest.cs	(date 1669586696102)
+@@ -0,0 +1,27 @@
++using System.Threading.Tasks;
++using DotNet.Testcontainers.Builders;
++using DotNet.Testcontainers.Configurations;
++using DotNet.Testcontainers.Containers;
++using Xunit;
++
++namespace Tweed.Data.Test;
++
++public class RavenTestContainersTest
++{
++    [Fact]
++    public async Task TestContainer()
++    {
++        object config;
++        var ravenDbContainer = new TestcontainersBuilder<TestcontainersContainer>()
++            .WithImage("ravendb/ravendb:latest")
++            .WithPortBinding(38888, true)
++            .Build();
++
++        await ravenDbContainer.StartAsync().ConfigureAwait(false);
++
++        var hostName = ravenDbContainer.Hostname;
++        var port = ravenDbContainer.GetMappedPublicPort(38888);
++
++        await ravenDbContainer.StopAsync();
++    }
++}
+\ No newline at end of file
+Index: Tweed.Data.Test/Tweed.Data.Test.csproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Project Sdk=\"Microsoft.NET.Sdk\">\n\n    <PropertyGroup>\n        <TargetFramework>net6.0</TargetFramework>\n        <Nullable>enable</Nullable>\n\n        <IsPackable>false</IsPackable>\n    </PropertyGroup>\n\n    <ItemGroup>\n        <PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"16.11.0\" />\n        <PackageReference Include=\"Moq\" Version=\"4.18.2\" />\n        <PackageReference Include=\"NodaTime\" Version=\"3.1.5\" />\n        <PackageReference Include=\"RavenDB.TestDriver\" Version=\"5.4.4\" />\n        <PackageReference Include=\"xunit\" Version=\"2.4.1\" />\n        <PackageReference Include=\"xunit.runner.visualstudio\" Version=\"2.4.3\">\n            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>\n            <PrivateAssets>all</PrivateAssets>\n        </PackageReference>\n        <PackageReference Include=\"coverlet.collector\" Version=\"3.1.0\">\n            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>\n            <PrivateAssets>all</PrivateAssets>\n        </PackageReference>\n    </ItemGroup>\n\n    <ItemGroup>\n      <ProjectReference Include=\"..\\Tweed.Data\\Tweed.Data.csproj\" />\n    </ItemGroup>\n\n</Project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Tweed.Data.Test/Tweed.Data.Test.csproj b/Tweed.Data.Test/Tweed.Data.Test.csproj
+--- a/Tweed.Data.Test/Tweed.Data.Test.csproj	(revision d99eab38171b66dcc931ada1583494448ff2f0a6)
++++ b/Tweed.Data.Test/Tweed.Data.Test.csproj	(date 1669586253321)
+@@ -12,6 +12,7 @@
+         <PackageReference Include="Moq" Version="4.18.2" />
+         <PackageReference Include="NodaTime" Version="3.1.5" />
+         <PackageReference Include="RavenDB.TestDriver" Version="5.4.4" />
++        <PackageReference Include="Testcontainers" Version="2.2.0" />
+         <PackageReference Include="xunit" Version="2.4.1" />
+         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
