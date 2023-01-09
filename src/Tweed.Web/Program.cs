@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using OpenTelemetry.Trace;
 using Raven.Client.Documents;
 using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
@@ -28,7 +29,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services
     .AddIdentity<AppUser, IdentityRole>()
     .AddRavenDbIdentityStores<AppUser, IdentityRole>()
-    .AddDefaultTokenProviders();;
+    .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(
     options => options.LoginPath = "/Identity/Account/login");
@@ -51,6 +52,16 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
+
+var honeycombOptions = builder.Configuration.GetHoneycombOptions();
+
+// Setup OpenTelemetry Tracing
+builder.Services.AddOpenTelemetryTracing(otelBuilder =>
+{
+    otelBuilder
+        .AddHoneycomb(honeycombOptions)
+        .AddAutoInstrumentations();
+});
 
 var app = builder.Build();
 
