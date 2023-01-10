@@ -8,7 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1395f6c5-cc58-440b-8238-50039f2076fc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Tweed/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tweed/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tweed.sln" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,36 +41,19 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6818c1ae16684bb6a6533b1e52073ad994de00/d6/54fde8a3/InvalidOperationException.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/74ee8628a8b44fb5b21aa4dfe7753cf623e600/05/edad7e4c/DocumentStoreBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/74ee8628a8b44fb5b21aa4dfe7753cf623e600/34/ad617c9a/AbstractIndexCreationTask`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/74ee8628a8b44fb5b21aa4dfe7753cf623e600/c5/c1501abd/DocumentStore.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7e75f377282f40f2a0c4ef0eeccaa6283ac800/48/0faca103/IQueryable`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3cda2997474e4225b4a1c24cf28fdf8e5800/2e/1c279eb1/MvcServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8517f607c12a4b508364c3f896f0fe6f11da8/94/cf3d35de/Assert.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a03bef28fa5844aea9c9d6687d085aad94de00/62/0c131b9c/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a03bef28fa5844aea9c9d6687d085aad94de00/b1/0b7f8e31/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a3190c5f84014d35a1c61bfcb56a7a8c6e00/29/10e679eb/RavenTestDriver.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b22d575919fd47d8850436c21af8983514600/7c/e8832a13/ClaimTypes.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b22d575919fd47d8850436c21af8983514600/7e/3f37beaf/ClaimsPrincipal.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/bada84bcebb34b1eb198a95e32eb37a9f400/ca/647841fc/IdentityUser.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e8693f492687465490f454632067739cc1000/3e/dc1981d1/ViewResult.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fcf7341d39f84d168d3bec80d1386a4766800/33/0f1e7537/IQueryableUserStore`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fcf7341d39f84d168d3bec80d1386a4766800/36/35c27ab1/UserManager`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/16ea1c32c73613e6cf15ccadfcdf9842bde9b47254a4ceff51f7a79628b0e3/TestcontainersBuilder.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2b171ecac960de49aaa7585f7d9ee7ff8de656b42e7be8e71f352b57dac31e6/IOperatingSystem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/31eb6268c8e21c66bbd94ea7f49b1a33cdcbb5a754dc33c4ae3b740dbc42926/IDockerResourceConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/42794acf9c224fece37166245d579235973727b16c1931c5ccd329df39ad78/ConfigurationBinder.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ad6b98ccb713e54ec22ab662267a5b91af6729822d53f38b02f28afd8/AbstractBuilder.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5fa080365df4696c155bb06d6a2739f49bb8b6ffcb159b86101ddad2f2693b4/Faker.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/639b35ef8b43554f27e35d214d41a2d043dd9a95397bc0d747825acadaad3518/Randomizer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7fca34d6eb302ccddf3311f2474de0ea929aec24fd6f95656b1a2a19cdb86b/RavenSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9c25c2606f16aea3fa30447e58ba8f471f1922332141bebeac71e457993/Date.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a0992e7316ed273bf182bffe30614386226815be68ab70e576df338675f9b8bd/TzdbDateTimeZoneSource.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a9f0f7aa6f3994da3fad9ce836727f1b6eef8519cface336c0d46029ed50f3/OpenTelemetryServicesExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b06ba9c8d57dcc8dd16eb3f06e1bf4ee8d4e5cc26a10492f55e7cb51c255c4/TestcontainersContainer.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b1171d6a40e773f141b348e0393da92d8eb51b22987bde8cbf1c477ed917fcb/DateTimeZone.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b314525519f1b27e1c94253a577de2a24832a6aaaacfe82068889f9ae4f0cd/Faker[T].cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d1b96b7a383b82ecf6d8328d36c1acc2ddd899039b8ed89e553dc598e87be/DateTimeZoneProviders.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d24ba26b4fc43d32b5a634b6111b48d51e4e299d41cb7e6128cc0869bfced/Register.cshtml.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/stephan/workspace/tweed/src/Tweed.Web/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/Tweed.Web/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/Tweed.Web/appsettings.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -132,9 +114,9 @@
       </method>
     </configuration>
     <configuration name="Tweed.Web" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/src/Tweed.Web/bin/Debug/net6.0/Tweed.Web" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/Tweed.Web" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -144,13 +126,13 @@
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
+      <option name="PROJECT_TFM" value="net6.0" />
       <method v="2">
         <option name="Build" />
       </method>
     </configuration>
     <configuration name="Tweed.Web" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
-      <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Tweed.Web/Tweed.Web.csproj" />
+      <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/src/Tweed.Web/Tweed.Web.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net6.0" />
       <option name="LAUNCH_PROFILE_NAME" value="Tweed.Web" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
@@ -211,6 +193,7 @@
       <workItem from="1670967222866" duration="754000" />
       <workItem from="1671139677866" duration="403000" />
       <workItem from="1673195529516" duration="58000" />
+      <workItem from="1673269704502" duration="3554000" />
     </task>
     <task id="LOCAL-00001" summary="Test Testcontainers">
       <created>1669585065426</created>
@@ -478,7 +461,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670964367232</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Add OTEL instrumentation w/ Honeycomb">
+      <created>1673273915352</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1673273915353</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -546,7 +536,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Add missing reference" />
     <MESSAGE value="Add Id property" />
     <MESSAGE value="Remove redundant ToList" />
     <MESSAGE value="Add fake data generator project" />
@@ -571,7 +560,8 @@
     <MESSAGE value="Fix warnings" />
     <MESSAGE value="Setup openid on startup" />
     <MESSAGE value="Decouple AppUser from IdentityUser" />
-    <option name="LAST_COMMIT_MESSAGE" value="Decouple AppUser from IdentityUser" />
+    <MESSAGE value="Add OTEL instrumentation w/ Honeycomb" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add OTEL instrumentation w/ Honeycomb" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
