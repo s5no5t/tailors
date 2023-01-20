@@ -29,9 +29,10 @@
 <div class="mt-3">
     @if (Model.Term != null)
     {
+        <h2>Users found:</h2>
+
         @if (Model.FoundUsers.Any())
         {
-            <h2>Results found</h2>
             @foreach (var user in Model.FoundUsers)
             {
                 <div>
@@ -44,9 +45,10 @@
             <p>No users found</p>
         }
 
+        <h2>Tweeds found:</h2>
+        
         @if (Model.FoundTweeds.Any())
         {
-            <h2>Results found</h2>
             @foreach (var tweed in Model.FoundTweeds)
             {
                 <div>
