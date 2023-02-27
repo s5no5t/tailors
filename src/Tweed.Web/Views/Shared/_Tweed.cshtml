@@ -18,13 +18,19 @@
     <form method="post">
         @if (Model.LikedByCurrentUser)
         {
-            <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id" class="btn btn-light mt-2">
+            <button hx-post="@Url.Action(action: "Unlike", controller: "Tweed", values: new { tweedId = @Model.Id} )"
+                    hx-target="closest .tweed"
+                    hx-swap="outerHTML"
+                    class="btn btn-light mt-2">
                 <i class="bi bi-heart-fill" style="font-size: 1em"></i>
             </button>
         }
         else
         {
-            <button asp-controller="Tweed" asp-action="Like" asp-route-tweedid="@Model.Id" class="btn btn-light mt-2">
+            <button hx-post="@Url.Action(action: "Like", controller: "Tweed", values: new { tweedId = @Model.Id} )"
+                    hx-target="closest .tweed"
+                    hx-swap="outerHTML"
+                    class="btn btn-light mt-2">
                 <i class="bi bi-heart" style="font-size: 1em"></i>
             </button>
         }
