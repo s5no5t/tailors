@@ -3,7 +3,7 @@
 
 <div class="container mt-2 p-2 border tweed">
     <div>
-        <a asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId" up-follow>@Model.Author</a>
+        <a asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId">@Model.Author</a>
         <small class="text-muted">@Model.CreatedAt</small>
     </div>
     <div class="mt-1">
@@ -12,10 +12,10 @@
     <div class="mt-1">
         <small class="text-muted">
             <i class="bi bi-heart-fill" style="font-size: 1em"></i> @Model.LikesCount
-            <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@Model.Id" up-follow>More</a>
+            <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@Model.Id">More</a>
         </small>
     </div>
-    <form method="post" up-submit up-target=".tweed">
+    <form method="post">
         @if (Model.LikedByCurrentUser)
         {
             <button asp-controller="Tweed" asp-action="Unlike" asp-route-tweedid="@Model.Id" class="btn btn-light mt-2">
