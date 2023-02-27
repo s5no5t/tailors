@@ -53,7 +53,7 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateViewModel viewModel)
     {
-        if (!ModelState.IsValid) return View();
+        if (!ModelState.IsValid) return View(viewModel);
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
