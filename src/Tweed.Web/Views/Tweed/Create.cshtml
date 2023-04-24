@@ -6,7 +6,7 @@
 }
 
 <form method="post">
-    <div class="mb-3">
+    <div class="form-floating mb-3">
         <label for="text" class="form-label">Text</label>
         @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
         {
@@ -23,5 +23,6 @@
                 id="text" value="@Model.Text" name="Text"></textarea>
         }
     </div>
+    
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
