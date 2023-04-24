@@ -1,6 +1,4 @@
-using Tweed.Web.Areas.Identity;
-
-namespace Tweed.Web;
+namespace Tweed.Web.Areas.Identity;
 
 public class EmailSender : IEmailSender
 {
