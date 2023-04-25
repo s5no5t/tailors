@@ -9,7 +9,7 @@ public interface IFeedBuilder
     Task<List<Entities.Tweed>> GetFeed(string userId);
 }
 
-public class FeedBuilder
+public class FeedBuilder : IFeedBuilder
 {
     private readonly IAsyncDocumentSession _session;
     private readonly IAppUserFollowsQueries _appUserFollowsQueries;
