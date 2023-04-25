@@ -27,7 +27,10 @@ builder.Services.AddRavenDbAsyncSession();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services
-    .AddIdentity<AppUser, IdentityRole>()
+    .AddIdentity<AppUser, IdentityRole>(options =>
+    {
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+    })
     .AddRavenDbIdentityStores<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
