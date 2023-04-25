@@ -8,7 +8,7 @@ public class AppUserFollows
     public string Id { get; set; }
     public List<Follows> Follows { get; set; } = new();
 
-    public static string BuildId(string appUserId) => $"AppUsers/{appUserId}/Follows";
+    public static string BuildId(string appUserId) => $"{appUserId}/Follows";
 }
 
 public class Follows
