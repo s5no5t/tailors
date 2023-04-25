@@ -45,7 +45,7 @@ public class IdentityUserQueries : IIdentityUserQueries
 
     public async Task<int> GetFollowerCount(string userId)
     {
-        var result = await _session.Query<AppUsers_FollowerCount.Result, AppUsers_FollowerCount>()
+        var result = await _session.Query<IdentityUsers_FollowerCount.Result, IdentityUsers_FollowerCount>()
             .Where(r => r.UserId == userId)
             .FirstOrDefaultAsync();
 
@@ -54,7 +54,7 @@ public class IdentityUserQueries : IIdentityUserQueries
 
     public async Task<List<TweedIdentityUser>> Search(string term)
     {
-        return await _session.Query<TweedIdentityUser, AppUsers_ByUserName>()
+        return await _session.Query<TweedIdentityUser, IdentityUsers_ByUserName>()
             .Search(u => u.UserName, $"{term}*")
             .Take(20).ToListAsync();
     }

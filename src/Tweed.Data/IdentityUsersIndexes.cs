@@ -4,9 +4,9 @@ using Tweed.Data.Entities;
 namespace Tweed.Data;
 
 public class
-    AppUsers_FollowerCount : AbstractIndexCreationTask<TweedIdentityUser, AppUsers_FollowerCount.Result>
+    IdentityUsers_FollowerCount : AbstractIndexCreationTask<TweedIdentityUser, IdentityUsers_FollowerCount.Result>
 {
-    public AppUsers_FollowerCount()
+    public IdentityUsers_FollowerCount()
     {
         Map = appUsers => from appUser in appUsers
                           from follow in appUser.Follows
@@ -34,9 +34,9 @@ public class
     }
 }
 
-public class AppUsers_ByUserName : AbstractIndexCreationTask<TweedIdentityUser>
+public class IdentityUsers_ByUserName : AbstractIndexCreationTask<TweedIdentityUser>
 {
-    public AppUsers_ByUserName()
+    public IdentityUsers_ByUserName()
     {
         Map = users => from user in users
                        select new

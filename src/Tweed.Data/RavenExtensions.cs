@@ -35,7 +35,7 @@ public static class RavenExtensions
     {
         new Tweeds_ByAuthorIdAndCreatedAt().Execute(store);
         new Tweeds_ByText().Execute(store);
-        new AppUsers_FollowerCount().Execute(store);
-        new AppUsers_ByUserName().Execute(store);
+        new IdentityUsers_FollowerCount().Execute(store);
+        new IdentityUsers_ByUserName().Execute(store);
     }
 }
