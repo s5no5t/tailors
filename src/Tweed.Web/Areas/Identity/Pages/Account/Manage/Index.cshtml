@@ -15,9 +15,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" disabled />
+                <input asp-for="Username" class="form-control" />
                 <label asp-for="Username" class="form-label"></label>
             </div>
+            
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
 </div>
