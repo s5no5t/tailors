@@ -8,14 +8,14 @@ using Xunit;
 namespace Tweed.Data.Test;
 
 [Collection("RavenDb Collection")]
-public class AppUserQueriesTest
+public class IdentityUserQueriesTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     private readonly IDocumentStore _store;
 
-    public AppUserQueriesTest(RavenTestDbFixture ravenDb)
+    public IdentityUserQueriesTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
