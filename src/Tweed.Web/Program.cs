@@ -6,7 +6,6 @@ using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
 using Tweed.Data.Entities;
-using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
 using Tweed.Web.Helper;
@@ -15,7 +14,9 @@ using IdentityRole = Raven.Identity.IdentityRole;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages()
+    .AddMvcOptions(options => options.Filters.Add<RavenSaveChangesAsyncPageFilter>());
+
 builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
 
 builder.Services.AddRavenDbDocStore(options =>
@@ -29,7 +30,8 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services
     .AddIdentity<AppUser, IdentityRole>(options =>
     {
-        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+        options.User.AllowedUserNameCharacters =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     })
     .AddRavenDbIdentityStores<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
