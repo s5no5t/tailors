@@ -4,6 +4,7 @@ using Raven.Client.Exceptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
+using Tweed.Data.Entities;
 
 namespace Tweed.Data;
 
@@ -31,11 +32,17 @@ public static class RavenExtensions
         return store;
     }
 
+    public static void ApplyCustomConventions(this IDocumentStore store)
+    {
+        store.Conventions.RegisterAsyncIdConvention<AppUserFollows>((s, follows) =>
+            Task.FromResult(AppUserFollows.BuildId(follows.AppUserId)));
+    }
+
     public static void DeployIndexes(this IDocumentStore store)
     {
         new Tweeds_ByAuthorIdAndCreatedAt().Execute(store);
         new Tweeds_ByText().Execute(store);
-        new AppUsers_FollowerCount().Execute(store);
+        new AppUserFollows_FollowerCount().Execute(store);
         new AppUsers_ByUserName().Execute(store);
     }
 }

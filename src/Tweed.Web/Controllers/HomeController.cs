@@ -13,14 +13,14 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class HomeController : Controller
 {
-    private readonly ITweedQueries _tweedQueries;
+    private readonly IFeedBuilder _feedBuilder;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public HomeController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+    public HomeController(IFeedBuilder feedBuilder, UserManager<AppUser> userManager,
         IViewModelFactory viewModelFactory)
     {
-        _tweedQueries = tweedQueries;
+        _feedBuilder = feedBuilder;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
     }
@@ -28,7 +28,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
-        var feed = await _tweedQueries.GetFeed(currentUser.Id!);
+        var feed = await _feedBuilder.GetFeed(currentUser.Id!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)

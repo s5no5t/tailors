@@ -22,13 +22,13 @@ public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly HomeController _homeController;
-    private readonly Mock<ITweedQueries> _tweedQueriesMock = new();
+    private readonly Mock<IFeedBuilder> _feedBuilderMock = new();
     private readonly Mock<UserManager<AppUser>> _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
     
     public HomeControllerTest()
     {
-        _homeController = new HomeController(_tweedQueriesMock.Object, _userManagerMock.Object, _viewModelFactoryMock.Object)
+        _homeController = new HomeController(_feedBuilderMock.Object, _userManagerMock.Object, _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
         };
@@ -64,7 +64,7 @@ public class HomeControllerTest
             }
         };
         _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
-        _tweedQueriesMock.Setup(t => t.GetFeed("currentUser"))
+        _feedBuilderMock.Setup(t => t.GetFeed("currentUser"))
             .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(new TweedViewModel());
 
