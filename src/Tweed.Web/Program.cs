@@ -42,6 +42,7 @@ builder.Services.ConfigureApplicationCookie(
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
 builder.Services.AddScoped<IIdentityUserQueries, IdentityUserQueries>();
+builder.Services.AddScoped<ITweedUserQueries, TweedUserQueries>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
 builder.Services.Configure<IdentityOptions>(options =>
