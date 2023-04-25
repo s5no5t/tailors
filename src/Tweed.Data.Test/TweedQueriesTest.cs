@@ -38,7 +38,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        var currentUser = new TweedIdentityUser
+        var currentUser = new TweedUser
         {
             Id = "currentUser"
         };
@@ -68,7 +68,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        var currentUser = new TweedIdentityUser
+        var currentUser = new TweedUser()
         {
             Id = "currentUser",
             Follows = new List<Follows>
@@ -80,7 +80,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
             }
         };
         await session.StoreAsync(currentUser);
-        var followedUser = new TweedIdentityUser
+        var followedUser = new TweedUser
         {
             Id = "followedUser"
         };
@@ -110,7 +110,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        var currentUser = new TweedIdentityUser
+        var currentUser = new TweedUser
         {
             Id = "currentUser"
         };
@@ -144,7 +144,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        var currentUser = new TweedIdentityUser
+        var currentUser = new TweedUser
         {
             Id = "currentUser"
         };

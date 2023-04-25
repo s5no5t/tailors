@@ -41,7 +41,7 @@ public class TweedUserQueriesTest
     public async Task AddFollower_ShouldNotAddFollower_WhenAlreadyFollowed()
     {
         using var session = _store.OpenAsyncSession();
-        TweedIdentityUser user = new()
+        TweedUser user = new()
         {
             Id = "userId",
             Follows = new List<Follows>
@@ -65,7 +65,7 @@ public class TweedUserQueriesTest
     public async Task RemoveFollower_ShouldRemoveFollower()
     {
         using var session = _store.OpenAsyncSession();
-        TweedIdentityUser user = new()
+        TweedUser user = new()
         {
             Id = "userId",
             Follows = new List<Follows>
@@ -81,7 +81,7 @@ public class TweedUserQueriesTest
         TweedUserQueries queries = new(session);
         await queries.RemoveFollower("leaderId", "userId");
 
-        var userAfterQuery = await session.LoadAsync<TweedIdentityUser>("userId");
+        var userAfterQuery = await session.LoadAsync<TweedUser>("userId");
         Assert.DoesNotContain(userAfterQuery.Follows, u => u.LeaderId == "leaderId");
     }
 
@@ -94,14 +94,14 @@ public class TweedUserQueriesTest
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        TweedIdentityUser leader = new()
+        TweedUser leader = new()
         {
             Id = "leaderId"
         };
         await session.StoreAsync(leader);
         for (var i = 0; i < givenFollowerCount; i++)
         {
-            TweedIdentityUser follower = new()
+            TweedUser follower = new()
             {
                 Id = $"follower/${i}",
                 Follows = new List<Follows>
@@ -127,11 +127,11 @@ public class TweedUserQueriesTest
     public async Task AddLike_ShouldIncreaseLikes()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new TweedIdentityUser
+        var tweedUser = new TweedUser
         {
             Id = "currentUser"
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(tweedUser);
         var tweed = new Entities.Tweed
         {
             Id = "tweedId"
@@ -142,14 +142,14 @@ public class TweedUserQueriesTest
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
-        Assert.Single(appUser.Likes);
+        Assert.Single(tweedUser.Likes);
     }
 
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new TweedIdentityUser
+        var appUser = new TweedUser
         {
             Id = "currentUser"
         };
@@ -173,7 +173,7 @@ public class TweedUserQueriesTest
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new TweedIdentityUser
+        var appUser = new TweedUser
         {
             Id = "currentUser",
             Likes = new List<TweedLike>
@@ -197,7 +197,7 @@ public class TweedUserQueriesTest
     public async Task RemoveLike_ShouldDecreaseLikes()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new TweedIdentityUser
+        var appUser = new TweedUser
         {
             Id = "currentUser",
             Likes = new List<TweedLike>
@@ -226,7 +226,7 @@ public class TweedUserQueriesTest
     public async Task RemoveLike_ShouldDecreaseLikesCounter()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new TweedIdentityUser
+        var appUser = new TweedUser
         {
             Id = "userId"
         };
@@ -252,7 +252,7 @@ public class TweedUserQueriesTest
     public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new TweedIdentityUser
+        var appUser = new TweedUser
         {
             Id = "userId"
         };

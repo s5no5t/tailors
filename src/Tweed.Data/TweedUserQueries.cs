@@ -12,6 +12,7 @@ public interface ITweedUserQueries
     Task<int> GetFollowerCount(string userId);
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
+    Task<TweedUser> FindByIdentityUserId(string identityUserId);
 }
 
 public class TweedUserQueries : ITweedUserQueries
@@ -71,5 +72,10 @@ public class TweedUserQueries : ITweedUserQueries
         appUser.Likes.RemoveAll(lb => lb.TweedId == tweedId);
         var tweed = await _session.LoadAsync<Entities.Tweed>(tweedId);
         _session.CountersFor(tweed).Increment(Entities.Tweed.LikesCounterName, -1);
+    }
+
+    public Task<TweedUser> FindByIdentityUserId(string identityUserId)
+    {
+        throw new NotImplementedException();
     }
 }

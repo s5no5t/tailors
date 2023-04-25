@@ -8,7 +8,7 @@ namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task<List<Entities.Tweed>> GetFeed(string userId);
+    Task<List<Entities.Tweed>> GetFeed(string tweedUserId);
     Task<List<Entities.Tweed>> GetTweedsForUser(string userId);
     Task<Entities.Tweed?> GetById(string id);
     Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
@@ -25,12 +25,12 @@ public sealed class TweedQueries : ITweedQueries
         _session = session;
     }
 
-    public async Task<List<Entities.Tweed>> GetFeed(string userId)
+    public async Task<List<Entities.Tweed>> GetFeed(string tweedUserId)
     {
-        var user = await _session.LoadAsync<TweedIdentityUser>(userId);
+        var user = await _session.LoadAsync<TweedUser>(tweedUserId);
         var followedUserIds = user.Follows.Select(f => f.LeaderId).ToList();
 
-        followedUserIds.Add(userId); // show her own Tweeds as well
+        followedUserIds.Add(tweedUserId); // show her own Tweeds as well
 
         var followerTweeds = await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))

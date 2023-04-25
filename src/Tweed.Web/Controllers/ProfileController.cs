@@ -34,7 +34,8 @@ public class ProfileController : Controller
             return NotFound();
 
         var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
-        var currentUser = await _userManager.GetUserAsync(User);
+        var currentIdentityUser = await _userManager.GetUserAsync(User);
+        var currentTweeUser = await _tweedUserQueries.FindByIdentityUserId(currentIdentityUser.Id!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)
@@ -47,7 +48,7 @@ public class ProfileController : Controller
             userId,
             user.UserName,
             tweedViewModels,
-            currentUser.Follows.Any(f => f.LeaderId == user.Id),
+            currentTweeUser.Follows.Any(f => f.LeaderId == user.Id),
             await _tweedUserQueries.GetFollowerCount(userId)
         );
 

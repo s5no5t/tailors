@@ -20,7 +20,7 @@ public class ProfileControllerTest
 {
     private readonly Mock<ITweedUserQueries> _tweedUserQueriesMock;
 
-    private readonly TweedIdentityUser _currentUser = new()
+    private readonly TweedIdentityUser _currentIdentityUser = new()
     {
         Id = "currentUser"
     };
@@ -36,9 +36,9 @@ public class ProfileControllerTest
         _userManagerMock = UserManagerMockHelper.MockUserManager<TweedIdentityUser>();
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
         _userManagerMock.Setup(u =>
-            u.GetUserAsync(currentUserPrincipal)).ReturnsAsync(_currentUser);
+            u.GetUserAsync(currentUserPrincipal)).ReturnsAsync(_currentIdentityUser);
         _userManagerMock.Setup(u =>
-            u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
+            u.GetUserId(currentUserPrincipal)).Returns(_currentIdentityUser.Id!);
         _user = new TweedIdentityUser();
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
         _tweedUserQueriesMock = new Mock<ITweedUserQueries>();
@@ -99,7 +99,17 @@ public class ProfileControllerTest
     public async Task Index_ShouldSetCurrentUserFollowsIsTrue_WhenCurrentUserIsFollower()
     {
         _user.Id = "user";
-        _currentUser.Follows.Add(new Follows
+        var currentTweedUser = new TweedUser()
+        {
+            Follows = new List<Follows>()
+            {
+                new Follows()
+                {
+                    LeaderId = _user.Id
+                }
+            }
+        }
+        _currentIdentityUser.Follows.Add(new Follows
         {
             LeaderId = _user.Id
         });
@@ -169,7 +179,7 @@ public class ProfileControllerTest
     public async Task Follow_ShouldReturnBadRequest_WhenTryingToFollowCurrentUser()
     {
         _userManagerMock.Setup(u => u.FindByIdAsync("currentUser"))
-            .ReturnsAsync(_currentUser);
+            .ReturnsAsync(_currentIdentityUser);
 
         var result = await _profileController.Follow("currentUser");
 
