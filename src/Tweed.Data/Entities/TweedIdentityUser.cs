@@ -4,7 +4,6 @@ namespace Tweed.Data.Entities;
 
 public class TweedIdentityUser : Raven.Identity.IdentityUser
 {
-    public string? Id { get; set; }
     public List<Follows> Follows { get; set; } = new();
     public List<TweedLike> Likes { get; set; } = new();
 }

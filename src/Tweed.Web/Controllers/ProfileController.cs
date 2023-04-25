@@ -13,17 +13,17 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class ProfileController : Controller
 {
-    private readonly IIdentityUserQueries _identityUserQueries;
+    private readonly ITweedUserQueries _tweedUserQueries;
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<TweedIdentityUser> _userManager;
 
     public ProfileController(ITweedQueries tweedQueries, UserManager<TweedIdentityUser> userManager,
-        IIdentityUserQueries identityUserQueries, IViewModelFactory viewModelFactory)
+        ITweedUserQueries tweedUserQueries, IViewModelFactory viewModelFactory)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
-        _identityUserQueries = identityUserQueries;
+        _tweedUserQueries = tweedUserQueries;
         _viewModelFactory = viewModelFactory;
     }
 
@@ -48,7 +48,7 @@ public class ProfileController : Controller
             user.UserName,
             tweedViewModels,
             currentUser.Follows.Any(f => f.LeaderId == user.Id),
-            await _identityUserQueries.GetFollowerCount(userId)
+            await _tweedUserQueries.GetFollowerCount(userId)
         );
 
         return View(viewModel);
@@ -66,7 +66,7 @@ public class ProfileController : Controller
             return BadRequest("Following yourself isn't allowed");
 
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _identityUserQueries.AddFollower(userId, currentUserId, now);
+        await _tweedUserQueries.AddFollower(userId, currentUserId, now);
 
         return RedirectToAction("Index", new
         {
@@ -83,7 +83,7 @@ public class ProfileController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
 
-        await _identityUserQueries.RemoveFollower(userId, currentUserId);
+        await _tweedUserQueries.RemoveFollower(userId, currentUserId);
 
         return RedirectToAction("Index", new
         {

@@ -13,26 +13,28 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly IIdentityUserQueries _identityUserQueries;
+    private readonly ITweedUserQueries _tweedUserQueries;
     private readonly INotificationManager _notificationManager;
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<TweedIdentityUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedQueries tweedQueries, UserManager<TweedIdentityUser> userManager,
-        INotificationManager notificationManager, IIdentityUserQueries identityUserQueries, IViewModelFactory viewModelFactory)
+        INotificationManager notificationManager, ITweedUserQueries tweedUserQueries,
+        IViewModelFactory viewModelFactory)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _identityUserQueries = identityUserQueries;
+        _tweedUserQueries = tweedUserQueries;
         _viewModelFactory = viewModelFactory;
     }
 
     [HttpGet("Tweed/{tweedId}")]
     public async Task<ActionResult> GetById(string tweedId)
     {
-        var decodedId = HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
+        var decodedId =
+            HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
         var tweed = await _tweedQueries.GetById(decodedId);
         if (tweed == null)
@@ -74,7 +76,7 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _identityUserQueries.AddLike(tweedId, currentUserId, now);
+        await _tweedUserQueries.AddLike(tweedId, currentUserId, now);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
@@ -88,7 +90,7 @@ public class TweedController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _identityUserQueries.RemoveLike(tweedId, currentUserId);
+        await _tweedUserQueries.RemoveLike(tweedId, currentUserId);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);

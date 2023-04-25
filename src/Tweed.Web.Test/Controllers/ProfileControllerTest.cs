@@ -18,7 +18,7 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly Mock<IIdentityUserQueries> _appUserQueriesMock;
+    private readonly Mock<ITweedUserQueries> _tweedUserQueriesMock;
 
     private readonly TweedIdentityUser _currentUser = new()
     {
@@ -41,15 +41,15 @@ public class ProfileControllerTest
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _user = new TweedIdentityUser();
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
-        _appUserQueriesMock = new Mock<IIdentityUserQueries>();
-        _appUserQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>())).ReturnsAsync(0);
+        _tweedUserQueriesMock = new Mock<ITweedUserQueries>();
+        _tweedUserQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>())).ReturnsAsync(0);
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
             .ReturnsAsync(new List<Data.Entities.Tweed>());
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object,
-            _appUserQueriesMock.Object, _viewModelFactoryMock.Object)
+            _tweedUserQueriesMock.Object, _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -144,7 +144,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetFollowersCount()
     {
-        _appUserQueriesMock.Setup(u => u.GetFollowerCount("user")).ReturnsAsync(10);
+        _tweedUserQueriesMock.Setup(u => u.GetFollowerCount("user")).ReturnsAsync(10);
         _user.Id = "user";
 
         var result = await _profileController.Index("user");
@@ -155,7 +155,7 @@ public class ProfileControllerTest
         var viewModel = (IndexViewModel)resultAsView.Model!;
         Assert.Equal(10, viewModel.FollowersCount);
 
-        _appUserQueriesMock.Verify(u => u.GetFollowerCount("user"));
+        _tweedUserQueriesMock.Verify(u => u.GetFollowerCount("user"));
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class ProfileControllerTest
     {
         await _profileController.Follow("user");
 
-        _appUserQueriesMock.Verify(t =>
+        _tweedUserQueriesMock.Verify(t =>
             t.AddFollower("user", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
@@ -206,7 +206,7 @@ public class ProfileControllerTest
     {
         await _profileController.Unfollow("user");
 
-        _appUserQueriesMock.Verify(t =>
+        _tweedUserQueriesMock.Verify(t =>
             t.RemoveFollower("user", "currentUser"));
     }
 

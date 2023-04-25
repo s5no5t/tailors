@@ -20,7 +20,7 @@ namespace Tweed.Web.Test.Controllers;
 public class TweedControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly Mock<IIdentityUserQueries> _appUserQueriesMock = new();
+    private readonly Mock<ITweedUserQueries> _tweedUserQueriesMock = new();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly Mock<ITweedQueries> _tweedQueriesMock = new();
     private readonly Mock<UserManager<TweedIdentityUser>> _userManagerMock = UserManagerMockHelper.MockUserManager<TweedIdentityUser>();
@@ -32,7 +32,7 @@ public class TweedControllerTest
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
-            _notificationManagerMock.Object, _appUserQueriesMock.Object, _viewModelFactoryMock.Object)
+            _notificationManagerMock.Object, _tweedUserQueriesMock.Object, _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
         };
@@ -111,7 +111,7 @@ public class TweedControllerTest
 
         await _tweedController.Like("123");
 
-        _appUserQueriesMock.Verify(u => u.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
+        _tweedUserQueriesMock.Verify(u => u.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class TweedControllerTest
 
         await _tweedController.Unlike("123");
 
-        _appUserQueriesMock.Verify(u => u.RemoveLike("123", "currentUser"));
+        _tweedUserQueriesMock.Verify(u => u.RemoveLike("123", "currentUser"));
     }
 
     [Fact]

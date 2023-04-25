@@ -24,13 +24,13 @@ public class TweedUserQueriesTest
     public async Task AddFollower_ShouldAddFollower()
     {
         using var session = _store.OpenAsyncSession();
-        TweedIdentityUser user = new()
+        TweedUser user = new()
         {
             Id = "userId"
         };
         await session.StoreAsync(user);
         await session.SaveChangesAsync();
-        IdentityUserQueries queries = new(session);
+        TweedUserQueries queries = new(session);
 
         await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
@@ -54,7 +54,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(user);
         await session.SaveChangesAsync();
-        IdentityUserQueries queries = new(session);
+        TweedUserQueries queries = new(session);
 
         await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
@@ -78,7 +78,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(user);
 
-        IdentityUserQueries queries = new(session);
+        TweedUserQueries queries = new(session);
         await queries.RemoveFollower("leaderId", "userId");
 
         var userAfterQuery = await session.LoadAsync<TweedIdentityUser>("userId");
@@ -116,7 +116,7 @@ public class TweedUserQueriesTest
         }
 
         await session.SaveChangesAsync();
-        IdentityUserQueries queries = new(session);
+        TweedUserQueries queries = new(session);
 
         var followerCount = await queries.GetFollowerCount("leaderId");
 
@@ -138,7 +138,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new IdentityUserQueries(session);
+        var queries = new TweedUserQueries(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
@@ -160,7 +160,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new IdentityUserQueries(session);
+        var queries = new TweedUserQueries(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
         await session.SaveChangesAsync();
@@ -186,7 +186,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(appUser);
         await session.SaveChangesAsync();
-        var queries = new IdentityUserQueries(session);
+        var queries = new TweedUserQueries(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
@@ -215,7 +215,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new IdentityUserQueries(session);
+        var queries = new TweedUserQueries(session);
 
         await queries.RemoveLike("tweedId", "currentUser");
 
@@ -239,7 +239,7 @@ public class TweedUserQueriesTest
         await session.SaveChangesAsync();
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var queries = new IdentityUserQueries(session);
+        var queries = new TweedUserQueries(session);
 
         await queries.RemoveLike(tweed.Id, "userId");
         await session.SaveChangesAsync();
@@ -263,7 +263,7 @@ public class TweedUserQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new IdentityUserQueries(session);
+        var queries = new TweedUserQueries(session);
 
         await queries.RemoveLike("tweedId", "userId");
 
