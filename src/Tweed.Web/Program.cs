@@ -21,7 +21,11 @@ builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyn
 
 builder.Services.AddRavenDbDocStore(options =>
 {
-    options.BeforeInitializeDocStore = store => { store.ConfigureForNodaTime(); };
+    options.BeforeInitializeDocStore = store =>
+    {
+        store.ConfigureForNodaTime();
+        store.ApplyCustomConventions();
+    };
 });
 builder.Services.AddRavenDbAsyncSession();
 
