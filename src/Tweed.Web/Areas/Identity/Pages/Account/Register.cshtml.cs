@@ -18,7 +18,7 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<AppUser> _emailStore;
+    private readonly IUserEmailStore<AppUser> _userEmailStore;
     private readonly ILogger<RegisterModel> _logger;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly UserManager<AppUser> _userManager;
@@ -33,7 +33,7 @@ public class RegisterModel : PageModel
     {
         _userManager = userManager;
         _userStore = userStore;
-        _emailStore = GetEmailStore();
+        _userEmailStore = GetEmailStore();
         _signInManager = signInManager;
         _logger = logger;
         _emailSender = emailSender;
@@ -76,8 +76,8 @@ public class RegisterModel : PageModel
         {
             var user = CreateUser();
 
-            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            await _userEmailStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+            await _userEmailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
@@ -151,6 +151,18 @@ public class RegisterModel : PageModel
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be
+        ///     used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        [Required]
+        [StringLength(15,
+            ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            MinimumLength = 5)]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be
