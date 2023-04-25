@@ -16,19 +16,22 @@ public class HomeController : Controller
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<TweedIdentityUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
+    private readonly ITweedUserQueries _tweedUserQueries;
 
     public HomeController(ITweedQueries tweedQueries, UserManager<TweedIdentityUser> userManager,
-        IViewModelFactory viewModelFactory)
+        IViewModelFactory viewModelFactory, ITweedUserQueries tweedUserQueries)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
+        _tweedUserQueries = tweedUserQueries;
     }
 
     public async Task<IActionResult> Index()
     {
-        var currentUser = await _userManager.GetUserAsync(User)!;
-        var feed = await _tweedQueries.GetFeed(currentUser.Id!);
+        var currentIdentityUser = await _userManager.GetUserAsync(User)!;
+        var currentTweedUser = await _tweedUserQueries.FindByIdentityUserId(currentIdentityUser.Id!);
+        var feed = await _tweedQueries.GetFeed(currentTweedUser.Id!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)
