@@ -18,7 +18,8 @@ using var store = OpenDocumentStore(config);
 await using var bulkInsert = store.BulkInsert();
 
 var appUserFaker = new Faker<AppUser>()
-    .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName());
+    .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName())
+    .RuleFor(u => u.Email, (f, _) => f.Internet.ExampleEmail());
 
 var numAppUsers = config.GetValue<int>("NumberOfAppUsers");
 var appUsers = appUserFaker.Generate(numAppUsers);
