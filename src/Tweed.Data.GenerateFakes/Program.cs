@@ -10,10 +10,11 @@ using var store = RavenDocumentStore.OpenDocumentStore(config);
 await using var bulkInsert = store.BulkInsert();
 
 var identityUsers = await FakesCreator.CreateFakeIdentityUsers(config, bulkInsert);
+var tweedUsers = await FakesCreator.CreateFakeTweedUsers(config, bulkInsert, identityUsers);
 
 using (var session = store.OpenAsyncSession())
 {
-    await FakesCreator.CreateFakeFollows(identityUsers, session);
+    await FakesCreator.CreateFakeFollows(tweedUsers, session);
 
     await session.SaveChangesAsync();
 }
@@ -24,7 +25,7 @@ var tweeds = await FakesCreator.CreateTweeds(identityUsers, config, bulkInsert);
 
 using (var session = store.OpenAsyncSession())
 {
-    await FakesCreator.CreateLikes(tweeds, identityUsers, session);
+    await FakesCreator.CreateLikes(tweeds, tweedUsers, session);
 
     await session.SaveChangesAsync();
 }

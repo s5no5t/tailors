@@ -16,29 +16,46 @@ public static class FakesCreator
             .RuleFor(u => u.Email, (f, _) => f.Internet.ExampleEmail());
 
         var numIdentityUsers = config1.GetValue<int>("NumberOfAppUsers");
-        var list = identityUserFaker.Generate(numIdentityUsers);
-        foreach (var identityUser in list) await bulkInsertOperation.StoreAsync(identityUser);
-        Console.WriteLine("{0} IdentityUser instances created", list.Count);
-        return list;
+        var identityUsers = identityUserFaker.Generate(numIdentityUsers);
+        foreach (var identityUser in identityUsers) await bulkInsertOperation.StoreAsync(identityUser);
+        Console.WriteLine("{0} IdentityUser instances created", identityUsers.Count);
+        return identityUsers;
     }
-    
-    internal static async Task CreateFakeFollows(List<TweedIdentityUser> list, IAsyncDocumentSession asyncDocumentSession)
+
+    public static async Task<List<TweedUser>> CreateFakeTweedUsers(IConfigurationRoot config,
+        BulkInsertOperation bulkInsert, List<TweedIdentityUser> identityUsers)
+    {
+        var tweedUserFaker = new Faker<TweedUser>();
+        var tweedUsers = tweedUserFaker.Generate(identityUsers.Count);
+        for (int index = 0; index < identityUsers.Count; index++)
+        {
+            tweedUsers[index].IdentityUserId = identityUsers[index].Id;
+        }
+
+        foreach (var tweedUser in tweedUsers) await bulkInsert.StoreAsync(tweedUser);
+
+        Console.WriteLine("{0} TweedUser instances created", tweedUsers.Count);
+        return tweedUsers;
+    }
+
+    internal static async Task CreateFakeFollows(List<TweedUser> list, IAsyncDocumentSession asyncDocumentSession)
     {
         var followsFaker = new Faker<Follows>()
             .RuleFor(f => f.LeaderId, f => f.PickRandom(list).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
-        var appUserFollowsFaker = new Faker<TweedIdentityUser>()
+        var tweedUserFollowsFaker = new Faker<TweedUser>()
             .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, list.Count - 1));
 
         foreach (var appUser in list)
         {
-            appUserFollowsFaker.Populate(appUser);
+            tweedUserFollowsFaker.Populate(appUser);
             await asyncDocumentSession.StoreAsync(appUser);
         }
     }
-    
-    internal static async Task<List<Tweed.Data.Entities.Tweed>> CreateTweeds(List<TweedIdentityUser> list, IConfigurationRoot config1,
+
+    internal static async Task<List<Tweed.Data.Entities.Tweed>> CreateTweeds(List<TweedIdentityUser> list,
+        IConfigurationRoot config1,
         BulkInsertOperation bulkInsertOperation)
     {
         var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
@@ -52,20 +69,21 @@ public static class FakesCreator
         Console.WriteLine("{0} Tweed instances created", tweeds1.Count);
         return tweeds1;
     }
-    
-    internal static async Task CreateLikes(List<Tweed.Data.Entities.Tweed> list, List<TweedIdentityUser> identityUsers1, IAsyncDocumentSession asyncDocumentSession)
+
+    internal static async Task CreateLikes(List<Tweed.Data.Entities.Tweed> list, List<TweedUser> tweedUsers,
+        IAsyncDocumentSession asyncDocumentSession)
     {
         var likesFaker = new Faker<TweedLike>()
             .RuleFor(f => f.TweedId, f => f.PickRandom(list).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
-        var appUserLikesFaker = new Faker<TweedIdentityUser>()
+        var tweedUserLikesFaker = new Faker<TweedUser>()
             .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, list.Count - 1));
 
-        foreach (var appUser in identityUsers1)
+        foreach (var tweedUser in tweedUsers)
         {
-            appUserLikesFaker.Populate(appUser);
-            await asyncDocumentSession.StoreAsync(appUser);
+            tweedUserLikesFaker.Populate(tweedUser);
+            await asyncDocumentSession.StoreAsync(tweedUser);
         }
     }
 }
