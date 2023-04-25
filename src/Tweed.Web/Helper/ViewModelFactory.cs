@@ -14,16 +14,16 @@ public interface IViewModelFactory
 
 public class ViewModelFactory : IViewModelFactory
 {
-    private readonly IAppUserQueries _appUserQueries;
+    private readonly IIdentityUserQueries _identityUserQueries;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly INotificationManager _notificationManager;
     private readonly ITweedQueries _tweedQueries;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
-    public ViewModelFactory(IAppUserQueries appUserQueries, INotificationManager notificationManager,
-        ITweedQueries tweedQueries, UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
+    public ViewModelFactory(IIdentityUserQueries identityUserQueries, INotificationManager notificationManager,
+        ITweedQueries tweedQueries, UserManager<TweedIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
     {
-        _appUserQueries = appUserQueries;
+        _identityUserQueries = identityUserQueries;
         _notificationManager = notificationManager;
         _tweedQueries = tweedQueries;
         _userManager = userManager;

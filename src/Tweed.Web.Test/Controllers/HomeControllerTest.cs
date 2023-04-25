@@ -23,7 +23,7 @@ public class HomeControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly HomeController _homeController;
     private readonly Mock<ITweedQueries> _tweedQueriesMock = new();
-    private readonly Mock<UserManager<AppUser>> _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
+    private readonly Mock<UserManager<TweedIdentityUser>> _userManagerMock = UserManagerMockHelper.MockUserManager<TweedIdentityUser>();
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
     
     public HomeControllerTest()
@@ -52,7 +52,7 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        var appUser = new AppUser
+        var appUser = new TweedIdentityUser
         {
             Id = "currentUser",
             Likes = new List<TweedLike>

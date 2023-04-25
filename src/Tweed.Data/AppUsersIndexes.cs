@@ -4,7 +4,7 @@ using Tweed.Data.Entities;
 namespace Tweed.Data;
 
 public class
-    AppUsers_FollowerCount : AbstractIndexCreationTask<AppUser, AppUsers_FollowerCount.Result>
+    AppUsers_FollowerCount : AbstractIndexCreationTask<TweedIdentityUser, AppUsers_FollowerCount.Result>
 {
     public AppUsers_FollowerCount()
     {
@@ -34,7 +34,7 @@ public class
     }
 }
 
-public class AppUsers_ByUserName : AbstractIndexCreationTask<AppUser>
+public class AppUsers_ByUserName : AbstractIndexCreationTask<TweedIdentityUser>
 {
     public AppUsers_ByUserName()
     {

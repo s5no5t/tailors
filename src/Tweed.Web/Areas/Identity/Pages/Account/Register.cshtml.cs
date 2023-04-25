@@ -18,16 +18,16 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<AppUser> _userEmailStore;
+    private readonly IUserEmailStore<TweedIdentityUser> _userEmailStore;
     private readonly ILogger<RegisterModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IUserStore<AppUser> _userStore;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
+    private readonly IUserStore<TweedIdentityUser> _userStore;
 
     public RegisterModel(
-        UserManager<AppUser> userManager,
-        IUserStore<AppUser> userStore,
-        SignInManager<AppUser> signInManager,
+        UserManager<TweedIdentityUser> userManager,
+        IUserStore<TweedIdentityUser> userStore,
+        SignInManager<TweedIdentityUser> signInManager,
         ILogger<RegisterModel> logger,
         IEmailSender emailSender)
     {
@@ -112,27 +112,27 @@ public class RegisterModel : PageModel
         return Page();
     }
 
-    private AppUser CreateUser()
+    private TweedIdentityUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<AppUser>();
+            return Activator.CreateInstance<TweedIdentityUser>();
         }
         catch
         {
             throw new InvalidOperationException(
-                $"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                $"Can't create an instance of '{nameof(Microsoft.AspNetCore.Identity.IdentityUser)}'. " +
+                $"Ensure that '{nameof(Microsoft.AspNetCore.Identity.IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                 "override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
         }
     }
 
-    private IUserEmailStore<AppUser> GetEmailStore()
+    private IUserEmailStore<TweedIdentityUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
             throw new NotSupportedException(
                 "The default UI requires a user store with email support.");
-        return (IUserEmailStore<AppUser>)_userStore;
+        return (IUserEmailStore<TweedIdentityUser>)_userStore;
     }
 
     /// <summary>

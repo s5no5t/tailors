@@ -13,10 +13,10 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class GenerateRecoveryCodesModel : PageModel
 {
     private readonly ILogger<GenerateRecoveryCodesModel> _logger;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public GenerateRecoveryCodesModel(
-        UserManager<AppUser> userManager,
+        UserManager<TweedIdentityUser> userManager,
         ILogger<GenerateRecoveryCodesModel> logger)
     {
         _userManager = userManager;

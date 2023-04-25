@@ -28,12 +28,12 @@ builder.Services.AddRavenDbAsyncSession();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services
-    .AddIdentity<AppUser, IdentityRole>(options =>
+    .AddIdentity<TweedIdentityUser, IdentityRole>(options =>
     {
         options.User.AllowedUserNameCharacters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     })
-    .AddRavenDbIdentityStores<AppUser, IdentityRole>()
+    .AddRavenDbIdentityStores<TweedIdentityUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(
@@ -41,7 +41,7 @@ builder.Services.ConfigureApplicationCookie(
 
 builder.Services.AddScoped<ITweedQueries, TweedQueries>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
-builder.Services.AddScoped<IAppUserQueries, AppUserQueries>();
+builder.Services.AddScoped<IIdentityUserQueries, IdentityUserQueries>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
 builder.Services.Configure<IdentityOptions>(options =>

@@ -27,7 +27,7 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<List<Entities.Tweed>> GetFeed(string userId)
     {
-        var user = await _session.LoadAsync<AppUser>(userId);
+        var user = await _session.LoadAsync<TweedIdentityUser>(userId);
         var followedUserIds = user.Follows.Select(f => f.LeaderId).ToList();
 
         followedUserIds.Add(userId); // show her own Tweeds as well

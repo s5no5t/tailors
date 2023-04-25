@@ -1,6 +1,7 @@
 @using IndexViewModel = Tweed.Web.Views.Profile.IndexViewModel
+@using IdentityUser = Tweed.Data.Entities.TweedIdentityUser
 @model IndexViewModel
-@inject UserManager<AppUser> UserManager
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = "Profile";
 }

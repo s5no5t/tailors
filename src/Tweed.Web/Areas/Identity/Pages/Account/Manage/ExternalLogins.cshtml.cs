@@ -13,14 +13,14 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 
 public class ExternalLoginsModel : PageModel
 {
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IUserStore<AppUser> _userStore;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
+    private readonly IUserStore<TweedIdentityUser> _userStore;
 
     public ExternalLoginsModel(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
-        IUserStore<AppUser> userStore)
+        UserManager<TweedIdentityUser> userManager,
+        SignInManager<TweedIdentityUser> signInManager,
+        IUserStore<TweedIdentityUser> userStore)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -68,7 +68,7 @@ public class ExternalLoginsModel : PageModel
             .ToList();
 
         string passwordHash = null;
-        if (_userStore is IUserPasswordStore<AppUser> userPasswordStore)
+        if (_userStore is IUserPasswordStore<TweedIdentityUser> userPasswordStore)
             passwordHash =
                 await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
 

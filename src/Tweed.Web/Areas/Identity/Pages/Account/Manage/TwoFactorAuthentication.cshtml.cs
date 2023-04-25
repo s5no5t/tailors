@@ -13,11 +13,11 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class TwoFactorAuthenticationModel : PageModel
 {
     private readonly ILogger<TwoFactorAuthenticationModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public TwoFactorAuthenticationModel(
-        UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
+        UserManager<TweedIdentityUser> userManager, SignInManager<TweedIdentityUser> signInManager,
         ILogger<TwoFactorAuthenticationModel> logger)
     {
         _userManager = userManager;

@@ -1,6 +1,7 @@
 @using Tweed.Data.Entities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@inject SignInManager<AppUser> SignInManager
+@using IdentityUser = Tweed.Data.Entities.TweedIdentityUser
+@inject SignInManager<IdentityUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

@@ -14,9 +14,9 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 
 public class ConfirmEmailModel : PageModel
 {
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
-    public ConfirmEmailModel(UserManager<AppUser> userManager)
+    public ConfirmEmailModel(UserManager<TweedIdentityUser> userManager)
     {
         _userManager = userManager;
     }

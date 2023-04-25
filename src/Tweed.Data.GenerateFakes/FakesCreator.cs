@@ -8,10 +8,10 @@ namespace Tweed.Data.GenerateFakes;
 
 public static class FakesCreator
 {
-    internal static async Task<List<IdentityUser>> CreateFakeIdentityUsers(IConfigurationRoot config1,
+    internal static async Task<List<TweedIdentityUser>> CreateFakeIdentityUsers(IConfigurationRoot config1,
         BulkInsertOperation bulkInsertOperation)
     {
-        var identityUserFaker = new Faker<IdentityUser>()
+        var identityUserFaker = new Faker<TweedIdentityUser>()
             .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName())
             .RuleFor(u => u.Email, (f, _) => f.Internet.ExampleEmail());
 
@@ -22,13 +22,13 @@ public static class FakesCreator
         return list;
     }
     
-    internal static async Task CreateFakeFollows(List<IdentityUser> list, IAsyncDocumentSession asyncDocumentSession)
+    internal static async Task CreateFakeFollows(List<TweedIdentityUser> list, IAsyncDocumentSession asyncDocumentSession)
     {
         var followsFaker = new Faker<Follows>()
             .RuleFor(f => f.LeaderId, f => f.PickRandom(list).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
-        var appUserFollowsFaker = new Faker<IdentityUser>()
+        var appUserFollowsFaker = new Faker<TweedIdentityUser>()
             .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, list.Count - 1));
 
         foreach (var appUser in list)
@@ -38,7 +38,7 @@ public static class FakesCreator
         }
     }
     
-    internal static async Task<List<Tweed.Data.Entities.Tweed>> CreateTweeds(List<IdentityUser> list, IConfigurationRoot config1,
+    internal static async Task<List<Tweed.Data.Entities.Tweed>> CreateTweeds(List<TweedIdentityUser> list, IConfigurationRoot config1,
         BulkInsertOperation bulkInsertOperation)
     {
         var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
@@ -53,13 +53,13 @@ public static class FakesCreator
         return tweeds1;
     }
     
-    internal static async Task CreateLikes(List<Tweed.Data.Entities.Tweed> list, List<IdentityUser> identityUsers1, IAsyncDocumentSession asyncDocumentSession)
+    internal static async Task CreateLikes(List<Tweed.Data.Entities.Tweed> list, List<TweedIdentityUser> identityUsers1, IAsyncDocumentSession asyncDocumentSession)
     {
         var likesFaker = new Faker<TweedLike>()
             .RuleFor(f => f.TweedId, f => f.PickRandom(list).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
-        var appUserLikesFaker = new Faker<IdentityUser>()
+        var appUserLikesFaker = new Faker<TweedIdentityUser>()
             .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, list.Count - 1));
 
         foreach (var appUser in identityUsers1)

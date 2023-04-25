@@ -14,12 +14,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class LoginWithRecoveryCodeModel : PageModel
 {
     private readonly ILogger<LoginWithRecoveryCodeModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public LoginWithRecoveryCodeModel(
-        SignInManager<AppUser> signInManager,
-        UserManager<AppUser> userManager,
+        SignInManager<TweedIdentityUser> signInManager,
+        UserManager<TweedIdentityUser> userManager,
         ILogger<LoginWithRecoveryCodeModel> logger)
     {
         _signInManager = signInManager;

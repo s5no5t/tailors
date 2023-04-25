@@ -1,5 +1,6 @@
-@inject SignInManager<AppUser> SignInManager
-@inject UserManager<AppUser> UserManager
+@using IdentityUser = Tweed.Data.Entities.TweedIdentityUser
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))

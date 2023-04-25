@@ -11,10 +11,10 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class PersonalDataModel : PageModel
 {
     private readonly ILogger<PersonalDataModel> _logger;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public PersonalDataModel(
-        UserManager<AppUser> userManager,
+        UserManager<TweedIdentityUser> userManager,
         ILogger<PersonalDataModel> logger)
     {
         _userManager = userManager;

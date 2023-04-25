@@ -14,12 +14,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class DeletePersonalDataModel : PageModel
 {
     private readonly ILogger<DeletePersonalDataModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public DeletePersonalDataModel(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
+        UserManager<TweedIdentityUser> userManager,
+        SignInManager<TweedIdentityUser> signInManager,
         ILogger<DeletePersonalDataModel> logger)
     {
         _userManager = userManager;

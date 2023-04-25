@@ -13,12 +13,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class ResetAuthenticatorModel : PageModel
 {
     private readonly ILogger<ResetAuthenticatorModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public ResetAuthenticatorModel(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
+        UserManager<TweedIdentityUser> userManager,
+        SignInManager<TweedIdentityUser> signInManager,
         ILogger<ResetAuthenticatorModel> logger)
     {
         _userManager = userManager;

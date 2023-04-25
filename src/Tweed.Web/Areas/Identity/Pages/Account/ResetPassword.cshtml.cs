@@ -15,9 +15,9 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 
 public class ResetPasswordModel : PageModel
 {
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
-    public ResetPasswordModel(UserManager<AppUser> userManager)
+    public ResetPasswordModel(UserManager<TweedIdentityUser> userManager)
     {
         _userManager = userManager;
     }

@@ -13,10 +13,10 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class Disable2faModel : PageModel
 {
     private readonly ILogger<Disable2faModel> _logger;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public Disable2faModel(
-        UserManager<AppUser> userManager,
+        UserManager<TweedIdentityUser> userManager,
         ILogger<Disable2faModel> logger)
     {
         _userManager = userManager;

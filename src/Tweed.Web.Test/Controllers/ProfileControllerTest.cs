@@ -18,30 +18,30 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly Mock<IAppUserQueries> _appUserQueriesMock;
+    private readonly Mock<IIdentityUserQueries> _appUserQueriesMock;
 
-    private readonly AppUser _currentUser = new()
+    private readonly TweedIdentityUser _currentUser = new()
     {
         Id = "currentUser"
     };
 
     private readonly ProfileController _profileController;
     private readonly Mock<ITweedQueries> _tweedQueriesMock;
-    private readonly Mock<UserManager<AppUser>> _userManagerMock;
+    private readonly Mock<UserManager<TweedIdentityUser>> _userManagerMock;
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
-    private readonly AppUser _user;
+    private readonly TweedIdentityUser _user;
     
     public ProfileControllerTest()
     {
-        _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
+        _userManagerMock = UserManagerMockHelper.MockUserManager<TweedIdentityUser>();
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
         _userManagerMock.Setup(u =>
             u.GetUserAsync(currentUserPrincipal)).ReturnsAsync(_currentUser);
         _userManagerMock.Setup(u =>
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
-        _user = new AppUser();
+        _user = new TweedIdentityUser();
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_user);
-        _appUserQueriesMock = new Mock<IAppUserQueries>();
+        _appUserQueriesMock = new Mock<IIdentityUserQueries>();
         _appUserQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>())).ReturnsAsync(0);
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
@@ -74,7 +74,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldReturnNotFound_WhenUserIdDoesntExist()
     {
-        _userManagerMock.Setup(u => u.FindByIdAsync("unknownUser")).ReturnsAsync((AppUser)null!);
+        _userManagerMock.Setup(u => u.FindByIdAsync("unknownUser")).ReturnsAsync((TweedIdentityUser)null!);
 
         var result = await _profileController.Index("unknownUser");
 

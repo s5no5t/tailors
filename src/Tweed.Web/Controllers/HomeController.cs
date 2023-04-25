@@ -14,10 +14,10 @@ namespace Tweed.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly ITweedQueries _tweedQueries;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public HomeController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+    public HomeController(ITweedQueries tweedQueries, UserManager<TweedIdentityUser> userManager,
         IViewModelFactory viewModelFactory)
     {
         _tweedQueries = tweedQueries;

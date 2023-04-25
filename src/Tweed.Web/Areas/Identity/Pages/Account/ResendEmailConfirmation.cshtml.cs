@@ -19,9 +19,9 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class ResendEmailConfirmationModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
-    public ResendEmailConfirmationModel(UserManager<AppUser> userManager,
+    public ResendEmailConfirmationModel(UserManager<TweedIdentityUser> userManager,
         IEmailSender emailSender)
     {
         _userManager = userManager;

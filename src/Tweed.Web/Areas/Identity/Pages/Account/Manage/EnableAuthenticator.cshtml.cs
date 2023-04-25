@@ -21,10 +21,10 @@ public class EnableAuthenticatorModel : PageModel
 
     private readonly ILogger<EnableAuthenticatorModel> _logger;
     private readonly UrlEncoder _urlEncoder;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
     public EnableAuthenticatorModel(
-        UserManager<AppUser> userManager,
+        UserManager<TweedIdentityUser> userManager,
         ILogger<EnableAuthenticatorModel> logger,
         UrlEncoder urlEncoder)
     {
@@ -124,7 +124,7 @@ public class EnableAuthenticatorModel : PageModel
         return RedirectToPage("./TwoFactorAuthentication");
     }
 
-    private async Task LoadSharedKeyAndQrCodeUriAsync(AppUser user)
+    private async Task LoadSharedKeyAndQrCodeUriAsync(TweedIdentityUser user)
     {
         // Load the authenticator key & QR code URI to display on the form
         var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);

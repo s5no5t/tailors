@@ -20,16 +20,16 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class ExternalLoginModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<AppUser> _emailStore;
+    private readonly IUserEmailStore<TweedIdentityUser> _emailStore;
     private readonly ILogger<ExternalLoginModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IUserStore<AppUser> _userStore;
+    private readonly SignInManager<TweedIdentityUser> _signInManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
+    private readonly IUserStore<TweedIdentityUser> _userStore;
 
     public ExternalLoginModel(
-        SignInManager<AppUser> signInManager,
-        UserManager<AppUser> userManager,
-        IUserStore<AppUser> userStore,
+        SignInManager<TweedIdentityUser> signInManager,
+        UserManager<TweedIdentityUser> userManager,
+        IUserStore<TweedIdentityUser> userStore,
         ILogger<ExternalLoginModel> logger,
         IEmailSender emailSender)
     {
@@ -183,27 +183,27 @@ public class ExternalLoginModel : PageModel
         return Page();
     }
 
-    private AppUser CreateUser()
+    private TweedIdentityUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<AppUser>();
+            return Activator.CreateInstance<TweedIdentityUser>();
         }
         catch
         {
             throw new InvalidOperationException(
-                $"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                $"Can't create an instance of '{nameof(Microsoft.AspNetCore.Identity.IdentityUser)}'. " +
+                $"Ensure that '{nameof(Microsoft.AspNetCore.Identity.IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                 "override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
         }
     }
 
-    private IUserEmailStore<AppUser> GetEmailStore()
+    private IUserEmailStore<TweedIdentityUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
             throw new NotSupportedException(
                 "The default UI requires a user store with email support.");
-        return (IUserEmailStore<AppUser>)_userStore;
+        return (IUserEmailStore<TweedIdentityUser>)_userStore;
     }
 
     /// <summary>

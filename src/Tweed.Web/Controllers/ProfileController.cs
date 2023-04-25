@@ -13,17 +13,17 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class ProfileController : Controller
 {
-    private readonly IAppUserQueries _appUserQueries;
+    private readonly IIdentityUserQueries _identityUserQueries;
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ITweedQueries _tweedQueries;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<TweedIdentityUser> _userManager;
 
-    public ProfileController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
-        IAppUserQueries appUserQueries, IViewModelFactory viewModelFactory)
+    public ProfileController(ITweedQueries tweedQueries, UserManager<TweedIdentityUser> userManager,
+        IIdentityUserQueries identityUserQueries, IViewModelFactory viewModelFactory)
     {
         _tweedQueries = tweedQueries;
         _userManager = userManager;
-        _appUserQueries = appUserQueries;
+        _identityUserQueries = identityUserQueries;
         _viewModelFactory = viewModelFactory;
     }
 
@@ -48,7 +48,7 @@ public class ProfileController : Controller
             user.UserName,
             tweedViewModels,
             currentUser.Follows.Any(f => f.LeaderId == user.Id),
-            await _appUserQueries.GetFollowerCount(userId)
+            await _identityUserQueries.GetFollowerCount(userId)
         );
 
         return View(viewModel);
@@ -66,7 +66,7 @@ public class ProfileController : Controller
             return BadRequest("Following yourself isn't allowed");
 
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserQueries.AddFollower(userId, currentUserId, now);
+        await _identityUserQueries.AddFollower(userId, currentUserId, now);
 
         return RedirectToAction("Index", new
         {
@@ -83,7 +83,7 @@ public class ProfileController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
 
-        await _appUserQueries.RemoveFollower(userId, currentUserId);
+        await _identityUserQueries.RemoveFollower(userId, currentUserId);
 
         return RedirectToAction("Index", new
         {
