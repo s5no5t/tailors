@@ -15,7 +15,7 @@ public class RavenTestDbFixture : RavenTestDriver
 
     protected override void PreInitialize(IDocumentStore documentStore)
     {
-        documentStore.ApplyCustomConventions();
+        documentStore.PreInitialize();
         documentStore.Conventions.ThrowIfQueryPageSizeIsNotSet = true;
     }
 }

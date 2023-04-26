@@ -4,7 +4,6 @@ using Bogus;
 using Microsoft.Extensions.Configuration;
 using NodaTime;
 using Raven.Client.Documents;
-using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
 using Tweed.Data;
 using Tweed.Data.Entities;
@@ -94,8 +93,7 @@ IDocumentStore OpenDocumentStore(IConfigurationRoot configurationRoot)
         Database = ravenSettings.DatabaseName
     };
 
-    documentStore.ApplyCustomConventions();
-    documentStore.ConfigureForNodaTime();
+    documentStore.PreInitialize();
     documentStore.Initialize();
     documentStore.EnsureDatabaseExists();
 

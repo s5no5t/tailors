@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using OpenTelemetry.Trace;
 using Raven.Client.Documents;
-using Raven.Client.NodaTime;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
@@ -21,11 +20,7 @@ builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyn
 
 builder.Services.AddRavenDbDocStore(options =>
 {
-    options.BeforeInitializeDocStore = store =>
-    {
-        store.ConfigureForNodaTime();
-        store.ApplyCustomConventions();
-    };
+    options.BeforeInitializeDocStore = store => store.PreInitialize();
 });
 builder.Services.AddRavenDbAsyncSession();
 
