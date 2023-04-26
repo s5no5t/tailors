@@ -32,19 +32,19 @@ using (var session = store.OpenAsyncSession())
         .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
         .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
 
-    var appUserFollowsFaker = new Faker<AppUser>()
+    var appUserFollowsFaker = new Faker<AppUserFollows>()
         .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
 
     foreach (var appUser in appUsers)
     {
-        appUserFollowsFaker.Populate(appUser);
-        await session.StoreAsync(appUser);
+        var appUserFollows = appUserFollowsFaker.Generate(1).First();
+        appUserFollows.AppUserId = appUser.Id;
+        await session.StoreAsync(appUserFollows);
     }
 
     await session.SaveChangesAsync();
+    Console.WriteLine("{0} AppUserFollows instances created", appUsers.Count);
 }
-
-Console.WriteLine("{0} AppUser instances updated with followers", appUsers.Count);
 
 var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
     .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
