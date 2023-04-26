@@ -42,7 +42,7 @@ public static class RavenExtensions
 
     private static void ApplyCustomConventions(this IDocumentStore store)
     {
-        store.Conventions.RegisterAsyncIdConvention<AppUserFollows>((s, follows) =>
+        store.Conventions.RegisterAsyncIdConvention<AppUserFollows>((_, follows) =>
         {
             ArgumentNullException.ThrowIfNull(follows.AppUserId);
             return Task.FromResult(AppUserFollows.BuildId(follows.AppUserId));
