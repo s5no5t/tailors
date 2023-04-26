@@ -3,6 +3,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Entities;
+using Tweed.Data.Indexes;
 
 namespace Tweed.Data;
 
