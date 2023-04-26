@@ -78,4 +78,10 @@
       <Folder Include="wwwroot\lib" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="render.com.pfx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
