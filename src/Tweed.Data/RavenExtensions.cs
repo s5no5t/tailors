@@ -2,6 +2,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Exceptions;
 using Raven.Client.Exceptions.Database;
+using Raven.Client.NodaTime;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 using Tweed.Data.Entities;
@@ -33,7 +34,13 @@ public static class RavenExtensions
         return store;
     }
 
-    public static void ApplyCustomConventions(this IDocumentStore store)
+    public static void PreInitialize(this IDocumentStore store)
+    {
+        store.ApplyCustomConventions();
+        store.ConfigureForNodaTime();
+    }
+
+    private static void ApplyCustomConventions(this IDocumentStore store)
     {
         store.Conventions.RegisterAsyncIdConvention<AppUserFollows>((s, follows) =>
             Task.FromResult(AppUserFollows.BuildId(follows.AppUserId)));
