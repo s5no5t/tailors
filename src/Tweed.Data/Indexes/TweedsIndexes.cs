@@ -1,6 +1,6 @@
 using Raven.Client.Documents.Indexes;
 
-namespace Tweed.Data;
+namespace Tweed.Data.Indexes;
 
 public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Entities.Tweed>
 {

@@ -5,6 +5,7 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 using Tweed.Data.Entities;
+using Tweed.Data.Indexes;
 
 namespace Tweed.Data;
 
