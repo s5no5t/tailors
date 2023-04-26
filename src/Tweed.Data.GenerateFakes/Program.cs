@@ -94,6 +94,7 @@ IDocumentStore OpenDocumentStore(IConfigurationRoot configurationRoot)
         Database = ravenSettings.DatabaseName
     };
 
+    documentStore.ApplyCustomConventions();
     documentStore.ConfigureForNodaTime();
     documentStore.Initialize();
     documentStore.EnsureDatabaseExists();
