@@ -13,10 +13,10 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class ProfileController : Controller
 {
-    private readonly IViewModelFactory _viewModelFactory;
     private readonly IAppUserFollowsQueries _appUserFollowsQueries;
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IViewModelFactory _viewModelFactory;
 
     public ProfileController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
         IViewModelFactory viewModelFactory,
@@ -35,7 +35,9 @@ public class ProfileController : Controller
             return NotFound();
 
         var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
-        var currentUserFollows = await _appUserFollowsQueries.GetFollows(userId);
+
+        var currentUserId = _userManager.GetUserId(User);
+        var currentUserFollows = await _appUserFollowsQueries.GetFollows(currentUserId);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)

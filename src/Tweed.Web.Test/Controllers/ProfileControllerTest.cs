@@ -18,20 +18,23 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
+    private readonly Mock<IAppUserFollowsQueries> _appUserFollowsQueriesMock = new();
+
     private readonly AppUser _currentUser = new()
     {
         Id = "currentUser"
     };
+
+    private readonly ProfileController _profileController;
+
     private readonly AppUser _profileUser = new()
     {
         Id = "user"
     };
 
-    private readonly ProfileController _profileController;
     private readonly Mock<ITweedQueries> _tweedQueriesMock;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
-    private readonly Mock<IAppUserFollowsQueries> _appUserFollowsQueriesMock = new();
 
     public ProfileControllerTest()
     {
@@ -43,8 +46,10 @@ public class ProfileControllerTest
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);
 
-        _appUserFollowsQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>())).ReturnsAsync(0);
-        _appUserFollowsQueriesMock.Setup(u => u.GetFollows(It.IsAny<string>())).ReturnsAsync(new List<Follows>());
+        _appUserFollowsQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
+            .ReturnsAsync(0);
+        _appUserFollowsQueriesMock.Setup(u => u.GetFollows(It.IsAny<string>()))
+            .ReturnsAsync(new List<Follows>());
 
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
@@ -52,7 +57,8 @@ public class ProfileControllerTest
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
 
         _profileController = new ProfileController(_tweedQueriesMock.Object,
-            _userManagerMock.Object, _viewModelFactoryMock.Object, _appUserFollowsQueriesMock.Object)
+            _userManagerMock.Object, _viewModelFactoryMock.Object,
+            _appUserFollowsQueriesMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -101,14 +107,14 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsTrue_WhenCurrentUserIsFollower()
     {
-        List<Follows> follows = new List<Follows>()
+        var follows = new List<Follows>
         {
             new()
             {
                 LeaderId = _profileUser.Id
             }
         };
-        _appUserFollowsQueriesMock.Setup(f => f.GetFollows(_profileUser.Id)).ReturnsAsync(follows);
+        _appUserFollowsQueriesMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
 
         var result = await _profileController.Index("user");
 
@@ -122,6 +128,9 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsFalse_WhenCurrentUserIsNotFollower()
     {
+        _appUserFollowsQueriesMock.Setup(f => f.GetFollows(_currentUser.Id!))
+            .ReturnsAsync(new List<Follows>());
+
         var result = await _profileController.Index("user");
 
         Assert.IsType<ViewResult>(result);
