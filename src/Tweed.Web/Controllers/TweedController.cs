@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 using Tweed.Data;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Tweed;
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Xunit;
 
 namespace Tweed.Data.Test;

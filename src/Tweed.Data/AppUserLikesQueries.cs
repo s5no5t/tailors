@@ -1,6 +1,6 @@
 using NodaTime;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 
 namespace Tweed.Data;
 
@@ -36,16 +36,16 @@ public class AppUserLikesQueries : IAppUserLikesQueries
             TweedId = tweedId,
             CreatedAt = likedAt
         });
-        var tweed = await _session.LoadAsync<Entities.Tweed>(tweedId);
-        _session.CountersFor(tweed).Increment(Entities.Tweed.LikesCounterName);
+        var tweed = await _session.LoadAsync<Model.Tweed>(tweedId);
+        _session.CountersFor(tweed).Increment(Model.Tweed.LikesCounterName);
     }
 
     public async Task RemoveLike(string tweedId, string userId)
     {
         var appUserLikes = await GetOrCreateAppUserLikes(userId);
         appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
-        var tweed = await _session.LoadAsync<Entities.Tweed>(tweedId);
-        _session.CountersFor(tweed).Increment(Entities.Tweed.LikesCounterName, -1);
+        var tweed = await _session.LoadAsync<Model.Tweed>(tweedId);
+        _session.CountersFor(tweed).Increment(Model.Tweed.LikesCounterName, -1);
     }
 
     private async Task<AppUserLikes> GetOrCreateAppUserLikes(string userId)

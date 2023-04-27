@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Xunit;
 
 namespace Tweed.Data.Test;
@@ -29,7 +29,7 @@ public class AppUserLikesQueriesTest
             AppUserId = "currentUser"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Entities.Tweed
+        var tweed = new Model.Tweed
         {
             Id = "tweedId"
         };
@@ -51,7 +51,7 @@ public class AppUserLikesQueriesTest
             AppUserId = "currentUser"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Entities.Tweed
+        var tweed = new Model.Tweed
         {
             Id = "tweedId"
         };
@@ -106,7 +106,7 @@ public class AppUserLikesQueriesTest
             }
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Entities.Tweed
+        var tweed = new Model.Tweed
         {
             Id = "tweedId"
         };
@@ -128,7 +128,7 @@ public class AppUserLikesQueriesTest
             AppUserId = "userId"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Entities.Tweed
+        var tweed = new Model.Tweed
         {
             Id = "tweedId"
         };
@@ -154,7 +154,7 @@ public class AppUserLikesQueriesTest
             AppUserId = "userId"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Entities.Tweed
+        var tweed = new Model.Tweed
         {
             Id = "tweedId"
         };

@@ -5,7 +5,6 @@ using Moq;
 using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Entities;
 using Xunit;
 
 namespace Tweed.Data.Test;
@@ -30,14 +29,14 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         var queries = new TweedQueries(session.Object);
         await queries.StoreTweed("text", "user1", FixedZonedDateTime);
 
-        session.Verify(s => s.StoreAsync(It.IsAny<Entities.Tweed>(), default));
+        session.Verify(s => s.StoreAsync(It.IsAny<Model.Tweed>(), default));
     }
 
     [Fact]
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
+        Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
@@ -67,7 +66,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Entities.Tweed tweed = new()
+        Model.Tweed tweed = new()
         {
             Text = "test",
             AuthorId = "user"
@@ -86,7 +85,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Entities.Tweed olderTweed = new()
+        Model.Tweed olderTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedZonedDateTime,
@@ -94,7 +93,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Entities.Tweed recentTweed = new()
+        Model.Tweed recentTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent,
@@ -117,7 +116,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Entities.Tweed tweed = new()
+            Model.Tweed tweed = new()
             {
                 Text = "test",
                 CreatedAt = FixedZonedDateTime,
@@ -139,7 +138,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Entities.Tweed tweed = new()
+        Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
@@ -158,7 +157,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Entities.Tweed tweed = new()
+        Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
@@ -189,7 +188,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Entities.Tweed tweed = new()
+        Model.Tweed tweed = new()
         {
             Id = "tweedId",
             Text = "Here is a word included."

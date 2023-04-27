@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
 using Tweed.Data;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -53,7 +53,7 @@ public class ProfileControllerTest
 
         _tweedQueriesMock = new Mock<ITweedQueries>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
-            .ReturnsAsync(new List<Data.Entities.Tweed>());
+            .ReturnsAsync(new List<Data.Model.Tweed>());
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
 
         _profileController = new ProfileController(_tweedQueriesMock.Object,

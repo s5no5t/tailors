@@ -6,7 +6,7 @@ using NodaTime;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Tweed.Data;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Development.json")
@@ -45,7 +45,7 @@ using (var session = store.OpenAsyncSession())
     Console.WriteLine("{0} AppUserFollows instances created", appUsers.Count);
 }
 
-var tweedFaker = new Faker<Tweed.Data.Entities.Tweed>()
+var tweedFaker = new Faker<Tweed.Data.Model.Tweed>()
     .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
     .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
     .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id);

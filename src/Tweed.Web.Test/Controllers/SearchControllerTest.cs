@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Data;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;
 using Xunit;
@@ -23,7 +23,7 @@ public class SearchControllerTest
         _appUserQueriesMock = new Mock<IAppUserQueries>();
         _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<AppUser>());
         _tweedQueriesMock = new Mock<ITweedQueries>();
-        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<Data.Entities.Tweed>());
+        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<Data.Model.Tweed>());
         _searchController = new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
     }
 
@@ -83,7 +83,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _tweedQueriesMock.Setup(u => u.Search("term")).ReturnsAsync(new List<Data.Entities.Tweed>
+        _tweedQueriesMock.Setup(u => u.Search("term")).ReturnsAsync(new List<Data.Model.Tweed>
         {
             new()
             {
