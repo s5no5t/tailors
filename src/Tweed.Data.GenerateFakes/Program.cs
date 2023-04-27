@@ -2,10 +2,10 @@
 
 using Bogus;
 using Microsoft.Extensions.Configuration;
-using NodaTime;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Tweed.Data;
+using Tweed.Data.GenerateFakes;
 using Tweed.Data.Model;
 
 var config = new ConfigurationBuilder()
@@ -29,7 +29,7 @@ using (var session = store.OpenAsyncSession())
 {
     var followsFaker = new Faker<Follows>()
         .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
-        .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
+        .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
     var appUserFollowsFaker = new Faker<AppUserFollows>()
         .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
@@ -46,7 +46,7 @@ using (var session = store.OpenAsyncSession())
 }
 
 var tweedFaker = new Faker<Tweed.Data.Model.Tweed>()
-    .RuleFor(t => t.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()))
+    .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
     .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
     .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id);
 
@@ -59,7 +59,7 @@ using (var session = store.OpenAsyncSession())
 {
     var likesFaker = new Faker<TweedLike>()
         .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
-        .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
+        .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
     var appUserLikesFaker = new Faker<AppUserLikes>()
         .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, tweeds.Count - 1));
@@ -75,14 +75,6 @@ using (var session = store.OpenAsyncSession())
 }
 
 Console.WriteLine("{0} AppUser instances updated with likes", appUsers.Count);
-
-ZonedDateTime dateTimeToZonedDateTime(DateTime dateTime)
-{
-    var localDate = LocalDateTime.FromDateTime(dateTime);
-    var berlinTimeZone = DateTimeZoneProviders.Tzdb["UTC"];
-    var timeZonedDateTime = berlinTimeZone.AtLeniently(localDate);
-    return timeZonedDateTime;
-}
 
 IDocumentStore OpenDocumentStore(IConfigurationRoot configurationRoot)
 {
