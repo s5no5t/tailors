@@ -7,7 +7,7 @@ namespace Tweed.Data;
 
 public interface IFeedBuilder
 {
-    Task<List<Model.Tweed>> GetFeed(string userId);
+    Task<List<Model.Tweed>> GetFeed(string userId, int page);
 }
 
 public class FeedBuilder : IFeedBuilder
@@ -21,7 +21,7 @@ public class FeedBuilder : IFeedBuilder
         _appUserFollowsQueries = appUserFollowsQueries;
     }
 
-    public async Task<List<Model.Tweed>> GetFeed(string userId)
+    public async Task<List<Model.Tweed>> GetFeed(string userId, int page)
     {
         var follows = await _appUserFollowsQueries.GetFollows(userId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
@@ -45,6 +45,9 @@ public class FeedBuilder : IFeedBuilder
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);
         tweeds = tweeds.OrderByDescending(t => t.CreatedAt?.LocalDateTime).ToList();
+        
+        // TODO: return only tweeds according to page
+        
         return tweeds;
     }
 }

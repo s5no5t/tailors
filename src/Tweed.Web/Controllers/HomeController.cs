@@ -47,9 +47,7 @@ public class HomeController : Controller
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
-        AppUser currentUser;
-        // TODO: Use page param
-        var feed = await _feedBuilder.GetFeed(currentUserId);
+        var feed = await _feedBuilder.GetFeed(currentUserId, page);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)
