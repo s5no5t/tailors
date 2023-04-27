@@ -2,9 +2,6 @@
 
 using Bogus;
 using Microsoft.Extensions.Configuration;
-using Raven.Client.Documents;
-using Raven.DependencyInjection;
-using Tweed.Data;
 using Tweed.Data.GenerateFakes;
 using Tweed.Data.Model;
 
@@ -12,7 +9,7 @@ var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Development.json")
     .Build();
 
-using var store = OpenDocumentStore(config);
+using var store = DocumentStoreHelper.OpenDocumentStore(config);
 
 await using var bulkInsert = store.BulkInsert();
 
@@ -75,20 +72,3 @@ using (var session = store.OpenAsyncSession())
 }
 
 Console.WriteLine("{0} AppUser instances updated with likes", appUsers.Count);
-
-IDocumentStore OpenDocumentStore(IConfigurationRoot configurationRoot)
-{
-    var ravenSettings = configurationRoot.GetRequiredSection("RavenSettings").Get<RavenSettings>();
-
-    var documentStore = new DocumentStore
-    {
-        Urls = ravenSettings.Urls,
-        Database = ravenSettings.DatabaseName
-    };
-
-    documentStore.PreInitialize();
-    documentStore.Initialize();
-    documentStore.EnsureDatabaseExists();
-
-    return documentStore;
-}
