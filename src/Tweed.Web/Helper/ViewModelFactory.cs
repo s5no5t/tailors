@@ -20,8 +20,10 @@ public class ViewModelFactory : IViewModelFactory
     private readonly ITweedQueries _tweedQueries;
     private readonly UserManager<AppUser> _userManager;
 
-    public ViewModelFactory(IAppUserQueries appUserQueries, INotificationManager notificationManager,
-        ITweedQueries tweedQueries, UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
+    public ViewModelFactory(IAppUserQueries appUserQueries,
+        INotificationManager notificationManager,
+        ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+        IHttpContextAccessor httpContextAccessor)
     {
         _appUserQueries = appUserQueries;
         _notificationManager = notificationManager;
@@ -36,7 +38,9 @@ public class ViewModelFactory : IViewModelFactory
             .Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
         var likesCount = await _tweedQueries.GetLikesCount(tweed.Id!);
-        var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+
+        var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
+        var currentUserLikes = await _appUserQueries.GetLikes(currentUserId);
 
         TweedViewModel viewModel = new()
         {
@@ -45,7 +49,7 @@ public class ViewModelFactory : IViewModelFactory
             CreatedAt = humanizedCreatedAt,
             AuthorId = tweed.AuthorId,
             LikesCount = likesCount,
-            LikedByCurrentUser = currentUser.Likes.Any(lb => lb.TweedId == tweed.Id),
+            LikedByCurrentUser = currentUserLikes.Any(lb => lb.TweedId == tweed.Id),
             Author = author.UserName
         };
         return viewModel;

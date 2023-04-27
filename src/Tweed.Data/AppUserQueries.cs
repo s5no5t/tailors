@@ -9,6 +9,7 @@ namespace Tweed.Data;
 public interface IAppUserQueries
 {
     Task<List<AppUser>> Search(string term);
+    Task<List<TweedLike>> GetLikes(string userId);
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
 }
@@ -29,12 +30,18 @@ public class AppUserQueries : IAppUserQueries
             .Take(20).ToListAsync();
     }
 
+    public async Task<List<TweedLike>> GetLikes(string userId)
+    {
+        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        return appUserLikes.Likes;
+    }
+
     public async Task AddLike(string tweedId, string userId, ZonedDateTime likedAt)
     {
-        var appUser = await _session.LoadAsync<AppUser>(userId);
-        if (appUser.Likes.Any(l => l.TweedId == tweedId))
+        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        if (appUserLikes.Likes.Any(l => l.TweedId == tweedId))
             return;
-        appUser.Likes.Add(new TweedLike
+        appUserLikes.Likes.Add(new TweedLike
         {
             TweedId = tweedId,
             CreatedAt = likedAt
@@ -45,9 +52,21 @@ public class AppUserQueries : IAppUserQueries
 
     public async Task RemoveLike(string tweedId, string userId)
     {
-        var appUser = await _session.LoadAsync<AppUser>(userId);
-        appUser.Likes.RemoveAll(lb => lb.TweedId == tweedId);
+        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
         var tweed = await _session.LoadAsync<Entities.Tweed>(tweedId);
         _session.CountersFor(tweed).Increment(Entities.Tweed.LikesCounterName, -1);
+    }
+
+    private async Task<AppUserLikes> GetOrCreateAppUserLikes(string userId)
+    {
+        var appUserLikesId = AppUserLikes.BuildId(userId);
+        var appUserLikes = await _session.LoadAsync<AppUserLikes>(appUserLikesId) ??
+                           new AppUserLikes
+                           {
+                               AppUserId = userId
+                           };
+        await _session.StoreAsync(appUserLikes);
+        return appUserLikes;
     }
 }

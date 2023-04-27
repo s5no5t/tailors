@@ -95,11 +95,11 @@ public class AppUserQueriesTest
     public async Task AddLike_ShouldIncreaseLikes()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new AppUser
+        var appUserLikes = new AppUserLikes
         {
-            Id = "currentUser"
+            AppUserId = "currentUser"
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(appUserLikes);
         var tweed = new Entities.Tweed
         {
             Id = "tweedId"
@@ -110,18 +110,18 @@ public class AppUserQueriesTest
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
-        Assert.Single(appUser.Likes);
+        Assert.Single(appUserLikes.Likes);
     }
 
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new AppUser
+        var appUserLikes = new AppUserLikes
         {
-            Id = "currentUser"
+            AppUserId = "currentUser"
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(appUserLikes);
         var tweed = new Entities.Tweed
         {
             Id = "tweedId"
@@ -141,9 +141,9 @@ public class AppUserQueriesTest
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new AppUser
+        var appUserLikes = new AppUserLikes
         {
-            Id = "currentUser",
+            AppUserId = "currentUser",
             Likes = new List<TweedLike>
             {
                 new()
@@ -152,22 +152,22 @@ public class AppUserQueriesTest
                 }
             }
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(appUserLikes);
         await session.SaveChangesAsync();
         var queries = new AppUserQueries(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
-        Assert.Single(appUser.Likes);
+        Assert.Single(appUserLikes.Likes);
     }
 
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikes()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new AppUser
+        var appUserLikes = new AppUserLikes
         {
-            Id = "currentUser",
+            AppUserId = "currentUser",
             Likes = new List<TweedLike>
             {
                 new()
@@ -176,7 +176,7 @@ public class AppUserQueriesTest
                 }
             }
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(appUserLikes);
         var tweed = new Entities.Tweed
         {
             Id = "tweedId"
@@ -187,18 +187,18 @@ public class AppUserQueriesTest
 
         await queries.RemoveLike("tweedId", "currentUser");
 
-        Assert.Empty(appUser.Likes);
+        Assert.Empty(appUserLikes.Likes);
     }
 
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikesCounter()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new AppUser
+        var appUserLikes = new AppUserLikes
         {
-            Id = "userId"
+            AppUserId = "userId"
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(appUserLikes);
         var tweed = new Entities.Tweed
         {
             Id = "tweedId"
@@ -220,11 +220,11 @@ public class AppUserQueriesTest
     public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
     {
         using var session = _store.OpenAsyncSession();
-        var appUser = new AppUser
+        var appUserLikes = new AppUserLikes
         {
-            Id = "userId"
+            AppUserId = "userId"
         };
-        await session.StoreAsync(appUser);
+        await session.StoreAsync(appUserLikes);
         var tweed = new Entities.Tweed
         {
             Id = "tweedId"
@@ -235,6 +235,6 @@ public class AppUserQueriesTest
 
         await queries.RemoveLike("tweedId", "userId");
 
-        Assert.Empty(appUser.Likes);
+        Assert.Empty(appUserLikes.Likes);
     }
 }
