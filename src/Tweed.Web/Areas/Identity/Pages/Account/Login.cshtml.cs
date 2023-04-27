@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account;
 

@@ -7,7 +7,7 @@ namespace Tweed.Data;
 
 public interface IFeedBuilder
 {
-    Task<List<Entities.Tweed>> GetFeed(string userId);
+    Task<List<Model.Tweed>> GetFeed(string userId);
 }
 
 public class FeedBuilder : IFeedBuilder
@@ -21,27 +21,27 @@ public class FeedBuilder : IFeedBuilder
         _appUserFollowsQueries = appUserFollowsQueries;
     }
 
-    public async Task<List<Entities.Tweed>> GetFeed(string userId)
+    public async Task<List<Model.Tweed>> GetFeed(string userId)
     {
         var follows = await _appUserFollowsQueries.GetFollows(userId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
 
         followedUserIds.Add(userId); // show her own Tweeds as well
 
-        var followerTweeds = await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        var followerTweeds = await _session.Query<Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
             .ToListAsync();
 
         var numExtraTweeds = 20 - followerTweeds.Count;
-        var extraTweeds = await _session.Query<Entities.Tweed>()
+        var extraTweeds = await _session.Query<Model.Tweed>()
             .Where(t => !t.Id.In(followerTweeds.Select(f => f.Id).ToList())) // not Tweeds that are already in the feed
             .OrderByDescending(t => t.CreatedAt)
             .Take(numExtraTweeds)
             .ToListAsync();
 
-        var tweeds = new List<Entities.Tweed>();
+        var tweeds = new List<Model.Tweed>();
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);
         tweeds = tweeds.OrderByDescending(t => t.CreatedAt?.LocalDateTime).ToList();

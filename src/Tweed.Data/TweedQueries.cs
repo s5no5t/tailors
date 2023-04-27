@@ -2,18 +2,17 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Entities;
 using Tweed.Data.Indexes;
 
 namespace Tweed.Data;
 
 public interface ITweedQueries
 {
-    Task<List<Entities.Tweed>> GetTweedsForUser(string userId);
-    Task<Entities.Tweed?> GetById(string id);
+    Task<List<Model.Tweed>> GetTweedsForUser(string userId);
+    Task<Model.Tweed?> GetById(string id);
     Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
     Task<long> GetLikesCount(string tweedId);
-    Task<List<Entities.Tweed>> Search(string term);
+    Task<List<Model.Tweed>> Search(string term);
 }
 
 public sealed class TweedQueries : ITweedQueries
@@ -25,23 +24,23 @@ public sealed class TweedQueries : ITweedQueries
         _session = session;
     }
 
-    public async Task<List<Entities.Tweed>> GetTweedsForUser(string userId)
+    public async Task<List<Model.Tweed>> GetTweedsForUser(string userId)
     {
-        return await _session.Query<Entities.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        return await _session.Query<Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == userId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
             .ToListAsync();
     }
 
-    public Task<Entities.Tweed?> GetById(string id)
+    public Task<Model.Tweed?> GetById(string id)
     {
-        return _session.LoadAsync<Entities.Tweed>(id)!;
+        return _session.LoadAsync<Model.Tweed>(id)!;
     }
 
     public async Task StoreTweed(string text, string authorId, ZonedDateTime createdAt)
     {
-        var tweed = new Entities.Tweed
+        var tweed = new Model.Tweed
         {
             CreatedAt = createdAt,
             AuthorId = authorId,
@@ -52,13 +51,13 @@ public sealed class TweedQueries : ITweedQueries
 
     public async Task<long> GetLikesCount(string tweedId)
     {
-        var likesCounter = await _session.CountersFor(tweedId).GetAsync(Entities.Tweed.LikesCounterName);
+        var likesCounter = await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
         return likesCounter ?? 0L;
     }
 
-    public async Task<List<Entities.Tweed>> Search(string term)
+    public async Task<List<Model.Tweed>> Search(string term)
     {
-        return await _session.Query<Entities.Tweed, Tweeds_ByText>()
+        return await _session.Query<Model.Tweed, Tweeds_ByText>()
             .Search(t => t.Text, term)
             .Take(20).ToListAsync();
     }

@@ -1,7 +1,7 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Entities;
 using Tweed.Data.Indexes;
+using Tweed.Data.Model;
 
 namespace Tweed.Data;
 

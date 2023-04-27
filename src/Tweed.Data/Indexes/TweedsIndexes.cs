@@ -2,7 +2,7 @@ using Raven.Client.Documents.Indexes;
 
 namespace Tweed.Data.Indexes;
 
-public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Entities.Tweed>
+public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Model.Tweed>
 {
     public Tweeds_ByAuthorIdAndCreatedAt()
     {
@@ -15,7 +15,7 @@ public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Entities.
     }
 }
 
-public class Tweeds_ByText : AbstractIndexCreationTask<Entities.Tweed>
+public class Tweeds_ByText : AbstractIndexCreationTask<Model.Tweed>
 {
     public Tweeds_ByText()
     {

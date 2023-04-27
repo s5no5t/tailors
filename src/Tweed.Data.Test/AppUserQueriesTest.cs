@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Raven.Client.Documents;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Xunit;
 
 namespace Tweed.Data.Test;

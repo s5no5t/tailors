@@ -1,4 +1,4 @@
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Xunit;
 
 namespace Tweed.Data.Test;

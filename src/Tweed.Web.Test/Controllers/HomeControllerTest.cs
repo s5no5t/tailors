@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Data;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -48,7 +48,7 @@ public class HomeControllerTest
     [Fact]
     public async Task Index_ShouldReturnIndexViewModel()
     {
-        var tweed = new Data.Entities.Tweed
+        var tweed = new Data.Model.Tweed
         {
             Id = "tweedId",
             AuthorId = "author"
@@ -59,7 +59,7 @@ public class HomeControllerTest
         };
         _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser"))
-            .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
+            .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel());
 

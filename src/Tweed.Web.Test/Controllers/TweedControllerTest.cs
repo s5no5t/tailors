@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
 using Tweed.Data;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -55,7 +55,7 @@ public class TweedControllerTest
     [Fact]
     public async Task GetById_ShouldReturnGetByIdViewResult()
     {
-        Data.Entities.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             Id = "123"
         };
@@ -108,7 +108,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Data.Entities.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -123,7 +123,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Data.Entities.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -138,7 +138,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Data.Entities.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -152,7 +152,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Data.Entities.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };

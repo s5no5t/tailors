@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Data.Entities;
+using Tweed.Data.Model;
 using Xunit;
 
 namespace Tweed.Data.Test;
@@ -30,13 +30,13 @@ public class FeedBuilderTest
             Id = "currentUser"
         };
         await session.StoreAsync(currentUser);
-        Entities.Tweed currentUserTweed = new()
+        Model.Tweed currentUserTweed = new()
         {
             Text = "test",
             AuthorId = "currentUser"
         };
         await session.StoreAsync(currentUserTweed);
-        Entities.Tweed otherUserTweed = new()
+        Model.Tweed otherUserTweed = new()
         {
             Text = "test",
             AuthorId = "otherUser"
@@ -78,13 +78,13 @@ public class FeedBuilderTest
             Id = "followedUser"
         };
         await session.StoreAsync(followedUser);
-        Entities.Tweed followedUserTweed = new()
+        Model.Tweed followedUserTweed = new()
         {
             Text = "test",
             AuthorId = "followedUser"
         };
         await session.StoreAsync(followedUserTweed);
-        Entities.Tweed notFollowedUserTweed = new()
+        Model.Tweed notFollowedUserTweed = new()
         {
             Text = "test",
             AuthorId = "notFollowedUser"
@@ -109,7 +109,7 @@ public class FeedBuilderTest
             Id = "currentUser"
         };
         await session.StoreAsync(currentUser);
-        Entities.Tweed olderTweed = new()
+        Model.Tweed olderTweed = new()
         {
             Text = "older tweed",
             AuthorId = "currentUser",
@@ -117,7 +117,7 @@ public class FeedBuilderTest
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Entities.Tweed recentTweed = new()
+        Model.Tweed recentTweed = new()
         {
             Text = "recent tweed",
             AuthorId = "currentUser",
@@ -146,7 +146,7 @@ public class FeedBuilderTest
         await session.StoreAsync(currentUser);
         for (var i = 0; i < 25; i++)
         {
-            Entities.Tweed tweed = new()
+            Model.Tweed tweed = new()
             {
                 Text = "test",
                 AuthorId = "currentUser",
