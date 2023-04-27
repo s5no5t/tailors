@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NodaTime;
 using Tweed.Data;
 using Tweed.Data.Entities;
 using Tweed.Web.Controllers;
@@ -21,14 +20,18 @@ namespace Tweed.Web.Test.Controllers;
 public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly HomeController _homeController;
     private readonly Mock<IFeedBuilder> _feedBuilderMock = new();
-    private readonly Mock<UserManager<AppUser>> _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
+    private readonly HomeController _homeController;
+
+    private readonly Mock<UserManager<AppUser>> _userManagerMock =
+        UserManagerMockHelper.MockUserManager<AppUser>();
+
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
-    
+
     public HomeControllerTest()
     {
-        _homeController = new HomeController(_feedBuilderMock.Object, _userManagerMock.Object, _viewModelFactoryMock.Object)
+        _homeController = new HomeController(_feedBuilderMock.Object, _userManagerMock.Object,
+            _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
         };
@@ -43,10 +46,8 @@ public class HomeControllerTest
     }
 
     [Fact]
-    public async Task Index_ShouldSetLikedByCurrentUser()
+    public async Task Index_ShouldReturnIndexViewModel()
     {
-        var fixedZonedDateTime = new ZonedDateTime(new LocalDateTime(2022, 11, 18, 15, 20),
-            DateTimeZone.Utc, new Offset());
         var tweed = new Data.Entities.Tweed
         {
             Id = "tweedId",
@@ -54,19 +55,13 @@ public class HomeControllerTest
         };
         var appUser = new AppUser
         {
-            Id = "currentUser",
-            Likes = new List<TweedLike>
-            {
-                new()
-                {
-                    TweedId = "tweedId"
-                }
-            }
+            Id = "currentUser"
         };
         _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser"))
             .ReturnsAsync(new List<Data.Entities.Tweed> { tweed });
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(new TweedViewModel());
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
+            .ReturnsAsync(new TweedViewModel());
 
         var result = await _homeController.Index();
 
@@ -75,4 +70,3 @@ public class HomeControllerTest
         Assert.IsType<IndexViewModel>(resultAsView.Model);
     }
 }
-

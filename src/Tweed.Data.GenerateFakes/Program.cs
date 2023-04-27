@@ -61,13 +61,14 @@ using (var session = store.OpenAsyncSession())
         .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
         .RuleFor(f => f.CreatedAt, f => dateTimeToZonedDateTime(f.Date.Past()));
 
-    var appUserLikesFaker = new Faker<AppUser>()
+    var appUserLikesFaker = new Faker<AppUserLikes>()
         .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, tweeds.Count - 1));
 
     foreach (var appUser in appUsers)
     {
-        appUserLikesFaker.Populate(appUser);
-        await session.StoreAsync(appUser);
+        var appUserLikes = appUserLikesFaker.Generate(1).First();
+        appUserLikes.AppUserId = appUser.Id;
+        await session.StoreAsync(appUserLikes);
     }
 
     await session.SaveChangesAsync();
