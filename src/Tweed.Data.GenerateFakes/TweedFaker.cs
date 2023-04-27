@@ -26,7 +26,7 @@ internal class DataFaker
         var numAppUsers = _settings.NumberOfAppUsers;
         var appUsers = appUserFaker.Generate(numAppUsers);
         foreach (var appUser in appUsers) await bulkInsert.StoreAsync(appUser);
-        Console.WriteLine("{0} AppUser instances created", appUsers.Count);
+        Console.WriteLine("{0} AppUsers created", appUsers.Count);
 
         return appUsers;
     }
@@ -49,7 +49,7 @@ internal class DataFaker
             await bulkInsert.StoreAsync(appUserFollows);
         }
 
-        Console.WriteLine("{0} AppUserFollows instances created", appUsers.Count);
+        Console.WriteLine("{0} AppUserFollows created", appUsers.Count);
     }
 
     internal async Task<List<Model.Tweed>> CreateFakeTweeds(List<AppUser> appUsers)
@@ -64,7 +64,7 @@ internal class DataFaker
         var numTweeds = _settings.NumberOfTweeds;
         var tweeds = tweedFaker.Generate(numTweeds);
         foreach (var tweed in tweeds) await bulkInsert.StoreAsync(tweed);
-        Console.WriteLine("{0} Tweed instances created", tweeds.Count);
+        Console.WriteLine("{0} Tweeds created", tweeds.Count);
 
         return tweeds;
     }
@@ -87,7 +87,7 @@ internal class DataFaker
             await bulkInsert.StoreAsync(appUserLikes);
         }
 
-        Console.WriteLine("{0} AppUser instances updated with likes", appUsers.Count);
+        Console.WriteLine("{0} AppUserLikes created", appUsers.Count);
     }
 }
 
