@@ -41,32 +41,31 @@ public class HomeController : Controller
         {
             Feed = new FeedViewModel
             {
+                Page = 0,
                 Tweeds = tweedViewModels
             }
         };
-
         return View(viewModel);
     }
 
     public async Task<IActionResult> Feed(int page = 0)
     {
-        // TODO
+        var currentUser = await _userManager.GetUserAsync(User)!;
+        
+        // TODO: Use page param
+        var feed = await _feedBuilder.GetFeed(currentUser.Id!);
+
+        List<TweedViewModel> tweedViewModels = new();
+        foreach (var tweed in feed)
+        {
+            var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
+            tweedViewModels.Add(tweedViewModel);
+        }
+
         var viewModel = new FeedViewModel
         {
             Page = page,
-            Tweeds = new List<TweedViewModel>
-            {
-                new()
-                {
-                    Id = "123",
-                    AuthorId = "123",
-                    Author = "test",
-                    Text = "test",
-                    CreatedAt = "today",
-                    LikesCount = 2,
-                    LikedByCurrentUser = false
-                }
-            }
+            Tweeds = tweedViewModels
         };
         return PartialView("_Feed", viewModel);
     }
