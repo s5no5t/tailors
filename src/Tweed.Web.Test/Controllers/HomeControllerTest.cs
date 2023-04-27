@@ -68,6 +68,33 @@ public class HomeControllerTest
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
         Assert.IsType<IndexViewModel>(resultAsView.Model);
+    }    
+    
+    [Fact]
+    public async Task Index_ShouldReturnTweeds()
+    {
+        var tweed = new Data.Model.Tweed
+        {
+            Id = "tweedId",
+            AuthorId = "author"
+        };
+        var appUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
+        _feedBuilderMock.Setup(t => t.GetFeed("currentUser"))
+            .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
+            .ReturnsAsync(new TweedViewModel()
+            {
+                Id = tweed.Id,
+            });
+        
+        var result = await _homeController.Index();
+
+        var model = ((result as ViewResult)!.Model as IndexViewModel)!;
+        Assert.Equal(tweed.Id, model.Feed.Tweeds[0].Id);
     }
 
     [Fact]
