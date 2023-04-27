@@ -7,7 +7,8 @@ var config = new ConfigurationBuilder()
 
 using var store = DocumentStoreHelper.OpenDocumentStore(config);
 
-var dataFaker = new DataFaker(store, config);
+var dataFakerSettings = config.GetRequiredSection("DataFakerSettings").Get<DataFakerSettings>();
+var dataFaker = new DataFaker(store, dataFakerSettings);
 
 var appUsers = await dataFaker.CreateFakeAppUsers();
 await dataFaker.CreateFakeFollows(appUsers);
