@@ -30,6 +30,21 @@ public class HomeControllerTest
 
     public HomeControllerTest()
     {
+        var appUser = new AppUser
+        {
+            Id = "currentUser"
+        };
+        _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
+        var tweed = new Data.Model.Tweed
+        {
+            Id = "tweedId",
+            AuthorId = "author"
+        };
+        _feedBuilderMock.Setup(t => t.GetFeed("currentUser"))
+            .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
+            .ReturnsAsync(new TweedViewModel());
+        
         _homeController = new HomeController(_feedBuilderMock.Object, _userManagerMock.Object,
             _viewModelFactoryMock.Object)
         {
@@ -48,6 +63,36 @@ public class HomeControllerTest
     [Fact]
     public async Task Index_ShouldReturnIndexViewModel()
     {
+        var result = await _homeController.Index();
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+    }
+
+    [Fact]
+    public async Task Feed_ShouldReturnFeedPartialViewModel()
+    {
+        var result = await _homeController.Feed();
+
+        Assert.IsType<PartialViewResult>(result);
+        var resultAsView = (PartialViewResult)result;
+        Assert.IsType<FeedViewModel>(resultAsView.Model);
+    }
+
+    [Fact]
+    public async Task Feed_ShouldReturnPage1_WhenPageIs1()
+    {
+        var result = await _homeController.Feed(1);
+
+        var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
+        
+        Assert.Equal(1, model.Page);
+    }
+
+    [Fact]
+    public async Task Feed_ShouldReturnTweeds()
+    {
         var tweed = new Data.Model.Tweed
         {
             Id = "tweedId",
@@ -61,22 +106,14 @@ public class HomeControllerTest
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser"))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
-            .ReturnsAsync(new TweedViewModel());
-
-        var result = await _homeController.Index();
-
-        Assert.IsType<ViewResult>(result);
-        var resultAsView = (ViewResult)result;
-        Assert.IsType<IndexViewModel>(resultAsView.Model);
-    }
-
-    [Fact]
-    public async Task Feed_ShouldReturnFeedViewModel()
-    {
+            .ReturnsAsync(new TweedViewModel()
+            {
+                Id = tweed.Id,
+            });
+        
         var result = await _homeController.Feed();
 
-        Assert.IsType<PartialViewResult>(result);
-        var resultAsView = (PartialViewResult)result;
-        Assert.IsType<FeedViewModel>(resultAsView.Model);
+        var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
+        Assert.Equal(tweed.Id, model.Tweeds[0].Id);
     }
 }
