@@ -46,7 +46,7 @@ public class FeedBuilderTest
         AppUserFollowsQueries appUserFollowsQueries = new(session);
         var queries = new FeedBuilder(session, appUserFollowsQueries);
 
-        var tweeds = await queries.GetFeed("currentUser");
+        var tweeds = await queries.GetFeed("currentUser", 0);
 
         Assert.Contains(currentUserTweed.Id, tweeds.Select(t => t.Id));
     }
@@ -94,7 +94,7 @@ public class FeedBuilderTest
         AppUserFollowsQueries appUserFollowsQueries = new(session);
         var queries = new FeedBuilder(session, appUserFollowsQueries);
 
-        var tweeds = await queries.GetFeed("currentUser");
+        var tweeds = await queries.GetFeed("currentUser", 0);
 
         Assert.Contains(tweeds, t => t.Id == followedUserTweed.Id);
     }
@@ -128,7 +128,7 @@ public class FeedBuilderTest
         AppUserFollowsQueries appUserFollowsQueries = new(session);
         var queries = new FeedBuilder(session, appUserFollowsQueries);
 
-        var tweeds = (await queries.GetFeed("currentUser")).ToList();
+        var tweeds = (await queries.GetFeed("currentUser", 0)).ToList();
 
         Assert.Equal(recentTweed.Id, tweeds[0].Id);
         Assert.Equal(olderTweed.Id, tweeds[1].Id);
@@ -159,7 +159,7 @@ public class FeedBuilderTest
         AppUserFollowsQueries appUserFollowsQueries = new(session);
         var queries = new FeedBuilder(session, appUserFollowsQueries);
 
-        var tweeds = (await queries.GetFeed("currentUser")).ToList();
+        var tweeds = (await queries.GetFeed("currentUser", 0)).ToList();
 
         Assert.Equal(20, tweeds.Count);
     }
