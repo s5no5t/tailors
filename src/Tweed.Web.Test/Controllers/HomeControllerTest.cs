@@ -69,4 +69,14 @@ public class HomeControllerTest
         var resultAsView = (ViewResult)result;
         Assert.IsType<IndexViewModel>(resultAsView.Model);
     }
+
+    [Fact]
+    public async Task Feed_ShouldReturnFeedViewModel()
+    {
+        var result = await _homeController.Feed();
+
+        Assert.IsType<PartialViewResult>(result);
+        var resultAsView = (PartialViewResult)result;
+        Assert.IsType<FeedViewModel>(resultAsView.Model);
+    }
 }

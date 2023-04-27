@@ -1,0 +1,11 @@
+@model Tweed.Web.Views.Home.FeedViewModel
+
+@foreach (var tweed in Model.Tweeds)
+{
+    <partial name="_Tweed" model="tweed"/>
+}
+
+<div hx-get="@Url.Action("Feed", new { page = Model.Page + 1 })"
+     hx-trigger="revealed"
+     hx-swap="beforebegin">
+</div>

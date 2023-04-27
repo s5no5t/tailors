@@ -39,10 +39,36 @@ public class HomeController : Controller
 
         var viewModel = new IndexViewModel
         {
-            Tweeds = tweedViewModels
+            Feed = new FeedViewModel
+            {
+                Tweeds = tweedViewModels
+            }
         };
 
         return View(viewModel);
+    }
+
+    public async Task<IActionResult> Feed(int page = 0)
+    {
+        // TODO
+        var viewModel = new FeedViewModel
+        {
+            Page = page,
+            Tweeds = new List<TweedViewModel>
+            {
+                new()
+                {
+                    Id = "123",
+                    AuthorId = "123",
+                    Author = "test",
+                    Text = "test",
+                    CreatedAt = "today",
+                    LikesCount = 2,
+                    LikedByCurrentUser = false
+                }
+            }
+        };
+        return PartialView("_Feed", viewModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
