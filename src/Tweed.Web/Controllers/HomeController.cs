@@ -28,22 +28,11 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
-        var feed = await _feedBuilder.GetFeed(currentUser.Id!);
-
-        List<TweedViewModel> tweedViewModels = new();
-        foreach (var tweed in feed)
-        {
-            var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
-            tweedViewModels.Add(tweedViewModel);
-        }
-
+        
+        var feedViewModel = await BuildFeedViewModel(0, currentUser.Id!);
         var viewModel = new IndexViewModel
         {
-            Feed = new FeedViewModel
-            {
-                Page = 0,
-                Tweeds = tweedViewModels
-            }
+            Feed = feedViewModel
         };
         return View(viewModel);
     }
@@ -52,8 +41,15 @@ public class HomeController : Controller
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
         
+        var viewModel = await BuildFeedViewModel(page, currentUser.Id!);
+        return PartialView("_Feed", viewModel);
+    }
+
+    private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
+    {
+        AppUser currentUser;
         // TODO: Use page param
-        var feed = await _feedBuilder.GetFeed(currentUser.Id!);
+        var feed = await _feedBuilder.GetFeed(currentUserId);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)
@@ -67,7 +63,7 @@ public class HomeController : Controller
             Page = page,
             Tweeds = tweedViewModels
         };
-        return PartialView("_Feed", viewModel);
+        return viewModel;
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
