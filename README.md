@@ -11,15 +11,17 @@ A social media web app to play with.
 
 ## What works
 
+- Signup & Login
 - Post a Tweed
-- See Tweeds by users you follow
+- See Tweeds from users you follow
+- Follow other users
 - Like Tweeds
-- Search for users
+- Search for Tweeds and users
 
 ## Building Blocks
 
-- [Microsoft Razor Pages](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-7.0&tabs=visual-studio) framework for backend HTML templating
-- [Unpoly](https://unpoly.com/) for nice but unobtrusive frontend interactions
+- [ASP.NET Core MVC](https://github.com/dotnet/aspnetcore) framework for backend HTML templating
+- [HTMX](https://htmx.org/) A hypermedia approach to building Single Page Apps
 - [RavenDB](https://ravendb.net/) for storing and querying data
 - [Bootstrap](https://getbootstrap.com/) for easy-to-use frontend components
 
