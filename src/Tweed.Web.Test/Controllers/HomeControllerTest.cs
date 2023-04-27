@@ -68,7 +68,16 @@ public class HomeControllerTest
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
         Assert.IsType<IndexViewModel>(resultAsView.Model);
-    }    
+    }
+
+    [Fact]
+    public async Task Index_ShouldReturnPage0()
+    {
+        var result = await _homeController.Index();
+
+        var model = ((result as ViewResult)!.Model as IndexViewModel)!;
+        Assert.Equal(0, model.Feed.Page);
+    }
     
     [Fact]
     public async Task Index_ShouldReturnTweeds()
