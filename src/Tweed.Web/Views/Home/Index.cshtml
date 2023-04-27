@@ -1,5 +1,4 @@
-﻿@using IndexViewModel = Tweed.Web.Views.Home.IndexViewModel
-@model IndexViewModel
+﻿@model Tweed.Web.Views.Home.IndexViewModel
 
 @{
     ViewData["Title"] = "Home";
@@ -7,7 +6,4 @@
 
 <partial name="_NotificationPartial"/>
 
-@foreach (var tweed in Model.Tweeds)
-{
-    <partial name="_Tweed" model="tweed"/>
-}
+<partial name="_Feed" model="Model.Feed"/>
