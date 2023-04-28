@@ -16,11 +16,14 @@ public class LoginModel : PageModel
 {
     private readonly ILogger<LoginModel> _logger;
     private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<AppUser> _userManager;
 
-    public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger)
+    public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger,
+        UserManager<AppUser> userManager)
     {
         _signInManager = signInManager;
         _logger = logger;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -76,9 +79,11 @@ public class LoginModel : PageModel
 
         if (ModelState.IsValid)
         {
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password,
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password,
                 Input.RememberMe, false);
             if (result.Succeeded)
             {
