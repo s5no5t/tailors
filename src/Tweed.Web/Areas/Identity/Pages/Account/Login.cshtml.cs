@@ -83,7 +83,7 @@ public class LoginModel : PageModel
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password,
+            var result = await _signInManager.PasswordSignInAsync(user?.UserName ?? "", Input.Password,
                 Input.RememberMe, false);
             if (result.Succeeded)
             {
