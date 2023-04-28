@@ -28,7 +28,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
-        
+
         var feedViewModel = await BuildFeedViewModel(0, currentUser.Id!);
         var viewModel = new IndexViewModel
         {
@@ -40,7 +40,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Feed(int page = 0)
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
-        
+
         var viewModel = await BuildFeedViewModel(page, currentUser.Id!);
         return PartialView("_Feed", viewModel);
     }
@@ -59,7 +59,8 @@ public class HomeController : Controller
         var viewModel = new FeedViewModel
         {
             Page = page,
-            Tweeds = tweedViewModels
+            Tweeds = tweedViewModels,
+            NextPageExists = feed.Count == FeedBuilder.PageSize
         };
         return viewModel;
     }
