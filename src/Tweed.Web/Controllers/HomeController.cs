@@ -27,9 +27,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var currentUser = await _userManager.GetUserAsync(User)!;
+        var currentUserId = _userManager.GetUserId(User)!;
 
-        var feedViewModel = await BuildFeedViewModel(0, currentUser!.Id!);
+        var feedViewModel = await BuildFeedViewModel(0, currentUserId);
         var viewModel = new IndexViewModel
         {
             Feed = feedViewModel
@@ -39,9 +39,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Feed(int page = 0)
     {
-        var currentUser = await _userManager.GetUserAsync(User)!;
+        var currentUserId = _userManager.GetUserId(User)!;
 
-        var viewModel = await BuildFeedViewModel(page, currentUser!.Id!);
+        var viewModel = await BuildFeedViewModel(page, currentUserId);
         return PartialView("_Feed", viewModel);
     }
 

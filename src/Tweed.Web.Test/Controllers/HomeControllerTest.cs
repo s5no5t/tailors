@@ -34,7 +34,7 @@ public class HomeControllerTest
         {
             Id = "currentUser"
         };
-        _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
+        _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(appUser.Id);
         var tweed = new Data.Model.Tweed
         {
             Id = "tweedId",
@@ -87,11 +87,6 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        var appUser = new AppUser
-        {
-            Id = "currentUser"
-        };
-        _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser", 0))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
@@ -134,11 +129,6 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        var appUser = new AppUser
-        {
-            Id = "currentUser"
-        };
-        _userManagerMock.Setup(u => u.GetUserAsync(_currentUserPrincipal)).ReturnsAsync(appUser);
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser", 0))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
