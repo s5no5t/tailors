@@ -63,11 +63,11 @@ builder.Services.AddRazorPages();
 var honeycombOptions = builder.Configuration.GetHoneycombOptions();
 
 // Setup OpenTelemetry Tracing
-builder.Services.AddOpenTelemetryTracing(otelBuilder =>
+builder.Services.AddOpenTelemetry().WithTracing(otelBuilder =>
 {
     otelBuilder
         .AddHoneycomb(honeycombOptions)
-        .AddAutoInstrumentations();
+        .AddCommonInstrumentations();
 });
 
 var app = builder.Build();
