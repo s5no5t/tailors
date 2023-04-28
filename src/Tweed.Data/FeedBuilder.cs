@@ -7,13 +7,15 @@ namespace Tweed.Data;
 
 public interface IFeedBuilder
 {
-    Task<List<Model.Tweed>> GetFeed(string userId, int page);
+    Task<List<Model.Tweed>> GetFeed(string appUserId, int page);
 }
 
 public class FeedBuilder : IFeedBuilder
 {
-    private readonly IAsyncDocumentSession _session;
+    public const int PageSize = 20;
+    private const int FeedSize = 100;
     private readonly IAppUserFollowsQueries _appUserFollowsQueries;
+    private readonly IAsyncDocumentSession _session;
 
     public FeedBuilder(IAsyncDocumentSession session, IAppUserFollowsQueries appUserFollowsQueries)
     {
@@ -21,33 +23,43 @@ public class FeedBuilder : IFeedBuilder
         _appUserFollowsQueries = appUserFollowsQueries;
     }
 
-    public async Task<List<Model.Tweed>> GetFeed(string userId, int page)
+    public async Task<List<Model.Tweed>> GetFeed(string appUserId, int page)
     {
-        var follows = await _appUserFollowsQueries.GetFollows(userId);
-        var followedUserIds = follows.Select(f => f.LeaderId).ToList();
+        var ownTweeds = await _session.Query<Model.Tweed>()
+            .Where(t => t.AuthorId == appUserId)
+            .OrderByDescending(t => t.CreatedAt)
+            .Take(FeedSize)
+            .ToListAsync();
 
-        followedUserIds.Add(userId); // show her own Tweeds as well
+        var follows = await _appUserFollowsQueries.GetFollows(appUserId);
+        var followedUserIds = follows.Select(f => f.LeaderId).ToList();
 
         var followerTweeds = await _session.Query<Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
-            .Take(20)
+            .Take(FeedSize)
             .ToListAsync();
 
-        var numExtraTweeds = 20 - followerTweeds.Count;
+        var numExtraTweeds = FeedSize - ownTweeds.Count - followerTweeds.Count;
         var extraTweeds = await _session.Query<Model.Tweed>()
-            .Where(t => !t.Id.In(followerTweeds.Select(f => f.Id).ToList())) // not Tweeds that are already in the feed
+            .Where(t =>
+                !t.Id.In(ownTweeds.Select(f => f.Id)
+                    .ToList())) // not my own Tweeds
+            .Where(t =>
+                !t.Id.In(followerTweeds.Select(f => f.Id)
+                    .ToList())) // not Tweeds from users I follow
             .OrderByDescending(t => t.CreatedAt)
             .Take(numExtraTweeds)
             .ToListAsync();
 
         var tweeds = new List<Model.Tweed>();
+        tweeds.AddRange(ownTweeds);
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);
         tweeds = tweeds.OrderByDescending(t => t.CreatedAt?.LocalDateTime).ToList();
-        
-        // TODO: return only tweeds according to page
-        
-        return tweeds;
+
+        var feed = tweeds.Skip(page * PageSize).Take(PageSize).ToList();
+
+        return feed;
     }
 }
