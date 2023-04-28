@@ -34,11 +34,11 @@ public class ViewModelFactory : IViewModelFactory
     {
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
-        var author = await _userManager.FindByIdAsync(tweed.AuthorId);
+        var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
         var likesCount = await _tweedQueries.GetLikesCount(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
-        var currentUserLikes = await _appUserLikesQueries.GetLikes(currentUserId);
+        var currentUserLikes = await _appUserLikesQueries.GetLikes(currentUserId!);
 
         TweedViewModel viewModel = new()
         {
@@ -48,7 +48,7 @@ public class ViewModelFactory : IViewModelFactory
             AuthorId = tweed.AuthorId,
             LikesCount = likesCount,
             LikedByCurrentUser = currentUserLikes.Any(lb => lb.TweedId == tweed.Id),
-            Author = author.UserName
+            Author = author!.UserName
         };
         return viewModel;
     }

@@ -62,7 +62,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _tweedQueries.StoreTweed(viewModel.Text, currentUserId, now);
+        await _tweedQueries.StoreTweed(viewModel.Text, currentUserId!, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -78,7 +78,7 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserLikesQueries.AddLike(tweedId, currentUserId, now);
+        await _appUserLikesQueries.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
@@ -92,7 +92,7 @@ public class TweedController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _appUserLikesQueries.RemoveLike(tweedId, currentUserId);
+        await _appUserLikesQueries.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);

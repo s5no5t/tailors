@@ -71,7 +71,7 @@ builder.Services.AddOpenTelemetry().WithTracing(otelBuilder =>
 {
     otelBuilder
         .AddHoneycomb(honeycombOptions)
-        .AddCommonInstrumentations();
+        .AddAspNetCoreInstrumentationWithBaggage();
 });
 
 var app = builder.Build();

@@ -29,7 +29,7 @@ public class HomeController : Controller
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
 
-        var feedViewModel = await BuildFeedViewModel(0, currentUser.Id!);
+        var feedViewModel = await BuildFeedViewModel(0, currentUser!.Id!);
         var viewModel = new IndexViewModel
         {
             Feed = feedViewModel
@@ -41,7 +41,7 @@ public class HomeController : Controller
     {
         var currentUser = await _userManager.GetUserAsync(User)!;
 
-        var viewModel = await BuildFeedViewModel(page, currentUser.Id!);
+        var viewModel = await BuildFeedViewModel(page, currentUser!.Id!);
         return PartialView("_Feed", viewModel);
     }
 

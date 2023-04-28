@@ -37,7 +37,7 @@ public class ProfileController : Controller
         var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
 
         var currentUserId = _userManager.GetUserId(User);
-        var currentUserFollows = await _appUserFollowsQueries.GetFollows(currentUserId);
+        var currentUserFollows = await _appUserFollowsQueries.GetFollows(currentUserId!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)
@@ -69,7 +69,7 @@ public class ProfileController : Controller
             return BadRequest("Following yourself isn't allowed");
 
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserFollowsQueries.AddFollower(userId, currentUserId, now);
+        await _appUserFollowsQueries.AddFollower(userId, currentUserId!, now);
 
         return RedirectToAction("Index", new
         {
@@ -86,7 +86,7 @@ public class ProfileController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
 
-        await _appUserFollowsQueries.RemoveFollower(userId, currentUserId);
+        await _appUserFollowsQueries.RemoveFollower(userId, currentUserId!);
 
         return RedirectToAction("Index", new
         {
