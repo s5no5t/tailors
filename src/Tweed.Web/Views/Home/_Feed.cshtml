@@ -5,7 +5,10 @@
     <partial name="_Tweed" model="tweed"/>
 }
 
-<div hx-get="@Url.Action("Feed", new { page = Model.Page + 1 })"
-     hx-trigger="revealed"
-     hx-swap="beforebegin">
-</div>
+@if (Model.NextPageExists)
+{
+    <div hx-get="@Url.Action("Feed", new { page = Model.Page + 1 })"
+         hx-trigger="revealed"
+         hx-swap="beforebegin">
+    </div>
+}
