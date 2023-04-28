@@ -29,6 +29,7 @@ public class FeedBuilder : IFeedBuilder
             .Where(t => t.AuthorId == appUserId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(FeedSize)
+            .Include(t => t.AuthorId)
             .ToListAsync();
 
         var follows = await _appUserFollowsQueries.GetFollows(appUserId);
@@ -38,6 +39,7 @@ public class FeedBuilder : IFeedBuilder
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(FeedSize)
+            .Include(t => t.AuthorId)
             .ToListAsync();
 
         var numExtraTweeds = FeedSize - ownTweeds.Count - followerTweeds.Count;
@@ -50,6 +52,7 @@ public class FeedBuilder : IFeedBuilder
                     .ToList())) // not Tweeds from users I follow
             .OrderByDescending(t => t.CreatedAt)
             .Take(numExtraTweeds)
+            .Include(t => t.AuthorId)
             .ToListAsync();
 
         var tweeds = new List<Model.Tweed>();
