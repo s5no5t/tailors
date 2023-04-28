@@ -32,7 +32,11 @@ builder.Services
         options.User.AllowedUserNameCharacters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     })
-    .AddRavenDbIdentityStores<AppUser, IdentityRole>()
+    .AddRavenDbIdentityStores<AppUser,
+        IdentityRole>(
+        _ => // empty options is a workaround for an exception in case this param is null
+        {
+        })
     .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(
