@@ -61,7 +61,7 @@ public class FeedBuilder : IFeedBuilder
         tweeds.AddRange(extraTweeds);
         tweeds = tweeds.OrderByDescending(t => t.CreatedAt?.LocalDateTime).ToList();
 
-        var feed = tweeds.Skip(page * PageSize).Take(PageSize).ToList();
+        var feed = tweeds.Take(PageSize).ToList();
 
         return feed;
     }
