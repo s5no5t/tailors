@@ -25,7 +25,8 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         var session = new Mock<IAsyncDocumentSession>();
         var queries = new TweedQueries(session.Object);
-        await queries.StoreTweed("text", "user1", FixedZonedDateTime, null);
+
+        await queries.StoreTweed(new Model.Tweed());
 
         session.Verify(s => s.StoreAsync(It.IsAny<Model.Tweed>(), default));
     }

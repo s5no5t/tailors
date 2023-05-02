@@ -68,7 +68,13 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _tweedQueries.StoreTweed(viewModel.Text, currentUserId!, now, null);
+        Data.Model.Tweed tweed = new()
+        {
+            CreatedAt = now,
+            AuthorId = currentUserId,
+            Text = viewModel.Text
+        };
+        await _tweedQueries.StoreTweed(tweed);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -83,11 +89,18 @@ public class TweedController : Controller
 
         if (viewModel.ParentTweedId is null)
             return BadRequest();
-        
+
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var tweed = await _tweedQueries.StoreTweed(viewModel.Text, currentUserId!, now, viewModel.ParentTweedId);
+        Data.Model.Tweed tweed = new()
+        {
+            ParentTweedId = viewModel.ParentTweedId,
+            CreatedAt = now,
+            AuthorId = currentUserId,
+            Text = viewModel.Text
+        };
+        await _tweedQueries.StoreTweed(tweed);
 
         _notificationManager.AppendSuccess("Reply Posted");
 
