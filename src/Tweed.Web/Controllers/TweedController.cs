@@ -90,6 +90,10 @@ public class TweedController : Controller
         if (viewModel.ParentTweedId is null)
             return BadRequest();
 
+        var parentTweed = await _tweedQueries.GetById(viewModel.ParentTweedId);
+        if (parentTweed is null)
+            return BadRequest();
+
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 

@@ -109,6 +109,8 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldReturnRedirect()
     {
+        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId")).ReturnsAsync(new Data.Model.Tweed());
+
         CreateTweedViewModel viewModel = new()
         {
             Text = "test",
@@ -122,6 +124,7 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldSaveTweed()
     {
+        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId")).ReturnsAsync(new Data.Model.Tweed());
         CreateTweedViewModel viewModel = new()
         {
             Text = "text",
@@ -135,6 +138,7 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
+        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId")).ReturnsAsync(new Data.Model.Tweed());
         CreateTweedViewModel viewModel = new()
         {
             Text = "test",
@@ -151,6 +155,19 @@ public class TweedControllerTest
         CreateTweedViewModel viewModel = new()
         {
             Text = "test"
+        };
+        var result = await _tweedController.CreateReply(viewModel);
+
+        Assert.IsType<BadRequestResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateReply_ShouldReturnBadRequest_WhenParentTweedDoesntExist()
+    {
+        CreateTweedViewModel viewModel = new()
+        {
+            Text = "test",
+            ParentTweedId = "nonExistingTweed"
         };
         var result = await _tweedController.CreateReply(viewModel);
 
