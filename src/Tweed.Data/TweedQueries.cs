@@ -1,5 +1,4 @@
-﻿using NodaTime;
-using Raven.Client.Documents;
+﻿using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Indexes;
@@ -10,7 +9,7 @@ public interface ITweedQueries
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
-    Task<Model.Tweed> StoreTweed(string text, string authorId, ZonedDateTime createdAt, string? parentTweedId);
+    Task StoreTweed(Model.Tweed tweed);
     Task<long> GetLikesCount(string tweedId);
     Task<List<Model.Tweed>> Search(string term);
 }
@@ -38,18 +37,9 @@ public sealed class TweedQueries : ITweedQueries
         return _session.LoadAsync<Model.Tweed>(id)!;
     }
 
-    public async Task<Model.Tweed> StoreTweed(string text, string authorId, ZonedDateTime createdAt,
-        string? parentTweedId)
+    public async Task StoreTweed(Model.Tweed tweed)
     {
-        var tweed = new Model.Tweed
-        {
-            ParentTweedId = parentTweedId,
-            CreatedAt = createdAt,
-            AuthorId = authorId,
-            Text = text
-        };
         await _session.StoreAsync(tweed);
-        return tweed;
     }
 
     public async Task<long> GetLikesCount(string tweedId)

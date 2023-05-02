@@ -34,12 +34,7 @@ public class TweedControllerTest
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
-        _tweedQueriesMock.Setup(t =>
-                t.StoreTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>(), It.IsAny<string>()))
-            .ReturnsAsync(new Data.Model.Tweed());
-        _tweedQueriesMock.Setup(t =>
-                t.StoreTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>(), null))
-            .ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object, _appUserQueriesMock.Object,
             _appUserLikesQueriesMock.Object,
@@ -96,8 +91,7 @@ public class TweedControllerTest
         };
         await _tweedController.Create(viewModel);
 
-        _tweedQueriesMock.Verify(t =>
-            t.StoreTweed("test", "currentUser", It.IsAny<ZonedDateTime>(), null));
+        _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
     }
 
     [Fact]
@@ -135,8 +129,7 @@ public class TweedControllerTest
         };
         await _tweedController.CreateReply(viewModel);
 
-        _tweedQueriesMock.Verify(t =>
-            t.StoreTweed("text", "currentUser", It.IsAny<ZonedDateTime>(), It.IsNotNull<string>()));
+        _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
     }
 
     [Fact]
