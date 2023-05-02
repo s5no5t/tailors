@@ -5,7 +5,7 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-<hr />
+<hr/>
 <p>
     You have requested to log in with a recovery code. This login will not be remembered until you provide
     an authenticator app code at log in or disable 2FA and log in again.
@@ -15,7 +15,7 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
-                <input asp-for="Input.RecoveryCode" class="form-control" autocomplete="off" />
+                <input asp-for="Input.RecoveryCode" class="form-control" autocomplete="off"/>
                 <label asp-for="Input.RecoveryCode" class="form-label"></label>
                 <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
             </div>
@@ -23,7 +23,3 @@
         </form>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
