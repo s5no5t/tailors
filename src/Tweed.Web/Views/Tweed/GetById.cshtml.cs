@@ -10,4 +10,6 @@ public class GetByIdViewModel
     }
 
     public TweedViewModel Tweed { get; set; }
+
+    public CreateTweedViewModel CreateTweed { get; set; } = new();
 }
