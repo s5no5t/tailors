@@ -10,7 +10,7 @@ public interface ITweedQueries
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
-    Task StoreTweed(string text, string authorId, ZonedDateTime createdAt);
+    Task<Model.Tweed> StoreTweed(string text, string authorId, ZonedDateTime createdAt);
     Task<long> GetLikesCount(string tweedId);
     Task<List<Model.Tweed>> Search(string term);
 }
@@ -38,7 +38,7 @@ public sealed class TweedQueries : ITweedQueries
         return _session.LoadAsync<Model.Tweed>(id)!;
     }
 
-    public async Task StoreTweed(string text, string authorId, ZonedDateTime createdAt)
+    public async Task<Model.Tweed> StoreTweed(string text, string authorId, ZonedDateTime createdAt)
     {
         var tweed = new Model.Tweed
         {
@@ -47,11 +47,13 @@ public sealed class TweedQueries : ITweedQueries
             Text = text
         };
         await _session.StoreAsync(tweed);
+        return tweed;
     }
 
     public async Task<long> GetLikesCount(string tweedId)
     {
-        var likesCounter = await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
+        var likesCounter =
+            await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
         return likesCounter ?? 0L;
     }
 

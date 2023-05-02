@@ -34,12 +34,15 @@ public class TweedControllerTest
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
+        _tweedQueriesMock.Setup(t => t.StoreTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>()))
+            .ReturnsAsync(new Data.Model.Tweed());
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object, _appUserQueriesMock.Object,
             _appUserLikesQueriesMock.Object,
             _viewModelFactoryMock.Object)
         {
-            ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
+            ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
+            Url = new Mock<IUrlHelper>().Object
         };
     }
 
@@ -71,38 +74,75 @@ public class TweedControllerTest
     [Fact]
     public async Task Create_ShouldReturnRedirect()
     {
-        CreateViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
             Text = "test"
         };
         var result = await _tweedController.Create(viewModel);
 
-        Assert.IsType<RedirectToActionResult>(result);
+        Assert.IsType<OkResult>(result);
     }
 
     [Fact]
     public async Task Create_ShouldSaveTweed()
     {
-        CreateViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
-            Text = "text"
+            Text = "test"
         };
         await _tweedController.Create(viewModel);
 
         _tweedQueriesMock.Verify(t =>
-            t.StoreTweed("text", "currentUser", It.IsAny<ZonedDateTime>()));
+            t.StoreTweed("test", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
     [Fact]
     public async Task Create_ShouldSetSuccessMessage()
     {
-        CreateViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
             Text = "test"
         };
         await _tweedController.Create(viewModel);
 
         _notificationManagerMock.Verify(n => n.AppendSuccess("Tweed Posted"));
+    }
+
+    [Fact]
+    public async Task CreateReply_ShouldReturnRedirect()
+    {
+        CreateTweedViewModel viewModel = new()
+        {
+            Text = "test"
+        };
+        var result = await _tweedController.CreateReply(viewModel);
+
+        Assert.IsType<OkResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateReply_ShouldSaveTweed()
+    {
+        CreateTweedViewModel viewModel = new()
+        {
+            Text = "text"
+        };
+        await _tweedController.CreateReply(viewModel);
+
+        _tweedQueriesMock.Verify(t =>
+            t.StoreTweed("text", "currentUser", It.IsAny<ZonedDateTime>()));
+    }
+
+    [Fact]
+    public async Task CreateReply_ShouldSetSuccessMessage()
+    {
+        CreateTweedViewModel viewModel = new()
+        {
+            Text = "test"
+        };
+        await _tweedController.CreateReply(viewModel);
+
+        _notificationManagerMock.Verify(n => n.AppendSuccess("Reply Posted"));
     }
 
     [Fact]

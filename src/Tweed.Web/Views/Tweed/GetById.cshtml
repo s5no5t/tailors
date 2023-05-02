@@ -1,8 +1,9 @@
-@using GetByIdViewModel = Tweed.Web.Views.Tweed.GetByIdViewModel
-@model GetByIdViewModel
+@model Tweed.Web.Views.Tweed.GetByIdViewModel
 
 @{
     ViewData["Title"] = "Tweed";
 }
 
 <partial name="_Tweed" model="@Model.Tweed"/>
+
+<partial name="_CreateTweed" model="@Model.CreateTweed"/>

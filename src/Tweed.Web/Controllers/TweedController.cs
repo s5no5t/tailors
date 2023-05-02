@@ -43,7 +43,13 @@ public class TweedController : Controller
             return NotFound();
 
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
-        GetByIdViewModel viewModel = new(tweedViewModel);
+        GetByIdViewModel viewModel = new(tweedViewModel)
+        {
+            CreateTweed = new CreateTweedViewModel
+            {
+                ParentTweedId = tweedId
+            }
+        };
         return View(viewModel);
     }
 
@@ -55,9 +61,9 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateViewModel viewModel)
+    public async Task<IActionResult> Create(CreateTweedViewModel viewModel)
     {
-        if (!ModelState.IsValid) return View(viewModel);
+        if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
@@ -66,7 +72,27 @@ public class TweedController : Controller
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
-        return RedirectToAction("Index", "Home");
+        HttpContext.Response.Headers.Add("HX-Redirect", Url.Action("Index", "Home"));
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateReply(CreateTweedViewModel viewModel)
+    {
+        if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
+
+        var currentUserId = _userManager.GetUserId(User);
+        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+
+        var tweed = await _tweedQueries.StoreTweed(viewModel.Text, currentUserId!, now);
+
+        _notificationManager.AppendSuccess("Reply Posted");
+
+        HttpContext.Response.Headers.Add("HX-Redirect", Url.Action("GetById", new
+        {
+            tweedId = tweed.Id
+        }));
+        return Ok();
     }
 
     [HttpPost]
