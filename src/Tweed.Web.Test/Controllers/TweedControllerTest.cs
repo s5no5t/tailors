@@ -34,7 +34,11 @@ public class TweedControllerTest
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
-        _tweedQueriesMock.Setup(t => t.StoreTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>()))
+        _tweedQueriesMock.Setup(t =>
+                t.StoreTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>(), It.IsAny<string>()))
+            .ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t =>
+                t.StoreTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>(), null))
             .ReturnsAsync(new Data.Model.Tweed());
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object, _appUserQueriesMock.Object,
@@ -93,7 +97,7 @@ public class TweedControllerTest
         await _tweedController.Create(viewModel);
 
         _tweedQueriesMock.Verify(t =>
-            t.StoreTweed("test", "currentUser", It.IsAny<ZonedDateTime>()));
+            t.StoreTweed("test", "currentUser", It.IsAny<ZonedDateTime>(), null));
     }
 
     [Fact]
@@ -113,7 +117,8 @@ public class TweedControllerTest
     {
         CreateTweedViewModel viewModel = new()
         {
-            Text = "test"
+            Text = "test",
+            ParentTweedId = "parentTweedId"
         };
         var result = await _tweedController.CreateReply(viewModel);
 
@@ -125,12 +130,13 @@ public class TweedControllerTest
     {
         CreateTweedViewModel viewModel = new()
         {
-            Text = "text"
+            Text = "text",
+            ParentTweedId = "parentTweedId"
         };
         await _tweedController.CreateReply(viewModel);
 
         _tweedQueriesMock.Verify(t =>
-            t.StoreTweed("text", "currentUser", It.IsAny<ZonedDateTime>()));
+            t.StoreTweed("text", "currentUser", It.IsAny<ZonedDateTime>(), It.IsNotNull<string>()));
     }
 
     [Fact]
@@ -138,11 +144,24 @@ public class TweedControllerTest
     {
         CreateTweedViewModel viewModel = new()
         {
-            Text = "test"
+            Text = "test",
+            ParentTweedId = "parentTweedId"
         };
         await _tweedController.CreateReply(viewModel);
 
         _notificationManagerMock.Verify(n => n.AppendSuccess("Reply Posted"));
+    }
+
+    [Fact]
+    public async Task CreateReply_ShouldReturnBadRequest_WhenParentTweedIdIsMissing()
+    {
+        CreateTweedViewModel viewModel = new()
+        {
+            Text = "test"
+        };
+        var result = await _tweedController.CreateReply(viewModel);
+
+        Assert.IsType<BadRequestResult>(result);
     }
 
     [Fact]
