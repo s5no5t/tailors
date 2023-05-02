@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NodaTime;
@@ -27,7 +25,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         var session = new Mock<IAsyncDocumentSession>();
         var queries = new TweedQueries(session.Object);
-        await queries.StoreTweed("text", "user1", FixedZonedDateTime);
+        await queries.StoreTweed("text", "user1", FixedZonedDateTime, null);
 
         session.Verify(s => s.StoreAsync(It.IsAny<Model.Tweed>(), default));
     }
