@@ -4,6 +4,7 @@ public class TweedThread
 {
     public string? RootTweedId { get; set; }
 
+    public string Id { get; set; }
     public List<TweedThreadReply> Replies { get; set; } = new();
 }
 
