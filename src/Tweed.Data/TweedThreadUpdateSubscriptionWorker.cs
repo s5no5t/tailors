@@ -95,6 +95,6 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         // Insert Tweed into Thread
 
         ThreadQueries threadQueries = new(session);
-        await threadQueries.AddTweedToThread(tweed.Id!, tweed.ParentTweedId!, tweed.ThreadId!);
+        await threadQueries.AddReplyToThread(tweed.Id!, tweed.ParentTweedId!, tweed.ThreadId!);
     }
 }
