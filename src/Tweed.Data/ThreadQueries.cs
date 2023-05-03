@@ -12,12 +12,12 @@ public class ThreadQueries
         _session = session;
     }
 
-    public async Task AddTweedToThread(string tweedId, string parentTweedId, string threadId)
+    public async Task AddReplyToThread(string tweedId, string parentTweedId, string threadId)
     {
         var thread = await LoadOrCreateThread(threadId);
 
         var threadContainsTweed = thread.Replies.Any(r => r.TweedId == tweedId);
-        if (!threadContainsTweed) thread.Replies.Add(new TweedThreadReply { TweedId = tweedId });
+        if (!threadContainsTweed) thread.Replies.Add(new TweedReference { TweedId = tweedId });
     }
 
     private async Task<TweedThread> LoadOrCreateThread(string threadId)

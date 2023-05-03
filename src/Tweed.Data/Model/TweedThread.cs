@@ -2,15 +2,13 @@ namespace Tweed.Data.Model;
 
 public class TweedThread
 {
-    public string? RootTweedId { get; set; }
-
-    public string Id { get; set; }
-    public List<TweedThreadReply> Replies { get; set; } = new();
+    public string? Id { get; set; }
+    public TweedReference Root { get; set; } = new();
 }
 
-public class TweedThreadReply
+public class TweedReference
 {
     public string? TweedId { get; set; }
 
-    public List<TweedThreadReply> Replies { get; set; } = new();
+    public List<TweedReference> Replies { get; set; } = new();
 }
