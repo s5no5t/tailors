@@ -47,7 +47,8 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 await subscriptionWorker.Run(async batch =>
                 {
                     using var session = batch.OpenAsyncSession();
-                    foreach (var item in batch.Items) await ProcessTweed(item.Result, session);
+                    // TODO: Insert tweeds into threads
+                    // foreach (var item in batch.Items) await ProcessTweed(item.Result, session);
                     await session.SaveChangesAsync(stoppingToken);
                 }, stoppingToken);
 
@@ -94,6 +95,6 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         // Insert Tweed into Thread
 
         ThreadQueries threadQueries = new(session);
-        await threadQueries.UpdateThread(tweed.Id!, tweed.ParentTweedId!, tweed.RootTweedId!);
+        await threadQueries.AddTweedToThread(tweed.Id!, tweed.ParentTweedId!, tweed.ThreadId!);
     }
 }
