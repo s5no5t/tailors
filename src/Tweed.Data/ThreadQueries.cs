@@ -11,7 +11,7 @@ public class ThreadQueries
         _session = session;
     }
 
-    public async Task UpdateThread(string tweedId, string parentTweedId, string rootTweedId)
+    public async Task AddTweedToThread(string tweedId, string parentTweedId, string threadId)
     {
         throw new NotImplementedException();
     }
