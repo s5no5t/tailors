@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Subscriptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
@@ -13,7 +14,8 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
     private readonly ILogger<TweedThreadUpdateSubscriptionWorker> _logger;
     private readonly IDocumentStore _store;
 
-    public TweedThreadUpdateSubscriptionWorker(IDocumentStore store, ILogger<TweedThreadUpdateSubscriptionWorker> logger)
+    public TweedThreadUpdateSubscriptionWorker(IDocumentStore store,
+        ILogger<TweedThreadUpdateSubscriptionWorker> logger)
     {
         _store = store;
         _logger = logger;
@@ -44,10 +46,9 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
                 await subscriptionWorker.Run(async batch =>
                 {
-                    foreach (var item in batch.Items)
-                    {
-                        // TODO
-                    }
+                    using var session = batch.OpenAsyncSession();
+                    foreach (var item in batch.Items) await ProcessTweed(item.Result, session);
+                    await session.SaveChangesAsync(stoppingToken);
                 }, stoppingToken);
 
                 return;
@@ -85,5 +86,14 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 await subscriptionWorker.DisposeAsync();
             }
         }
+    }
+
+    private async Task ProcessTweed(Model.Tweed tweed, IAsyncDocumentSession session)
+    {
+        // find Thread with parent Tweed
+        // Insert Tweed into Thread
+
+        ThreadQueries threadQueries = new(session);
+        await threadQueries.UpdateThread(tweed.Id!, tweed.ParentTweedId!, tweed.RootTweedId!);
     }
 }
