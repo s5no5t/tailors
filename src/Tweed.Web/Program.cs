@@ -75,6 +75,8 @@ builder.Services.AddOpenTelemetry().WithTracing(otelBuilder =>
         .AddCommonInstrumentations();
 });
 
+builder.Services.AddHostedService<TweedThreadUpdateSubscriptionWorker>();
+
 var app = builder.Build();
 
 app.Lifetime.ApplicationStarted.Register(() =>
