@@ -17,8 +17,14 @@ public class ThreadQueries
         var thread = await _session.LoadAsync<TweedThread>(threadId);
         if (thread is null)
         {
-            thread = new TweedThread();
+            thread = new TweedThread
+            {
+                Id = threadId
+            };
             await _session.StoreAsync(thread);
         }
+
+        var threadContainsTweed = thread.Replies.Any(r => r.TweedId == tweedId);
+        if (!threadContainsTweed) thread.Replies.Add(new TweedThreadReply { TweedId = tweedId });
     }
 }

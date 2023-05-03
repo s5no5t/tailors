@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Data.Model;
@@ -19,12 +20,23 @@ public class ThreadQueriesTest
     public async Task AddTweedToThread_ShouldCreateThread_IfItDoesntExist()
     {
         using var session = _store.OpenAsyncSession();
-
         ThreadQueries queries = new(session);
 
         await queries.AddTweedToThread("tweedId", "parentTweedId", "threadId");
 
-        var thread = session.LoadAsync<TweedThread>("threadId");
+        var thread = await session.LoadAsync<TweedThread>("threadId");
         Assert.NotNull(thread);
+    }
+
+    [Fact]
+    public async Task AddTweedToThread_ShouldInsertReplyToOriginalTweed()
+    {
+        using var session = _store.OpenAsyncSession();
+        ThreadQueries queries = new(session);
+
+        await queries.AddTweedToThread("tweedId", "parentTweedId", "threadId");
+
+        var thread = await session.LoadAsync<TweedThread>("threadId");
+        Assert.Contains("tweedId", thread.Replies.Select(r => r.TweedId));
     }
 }
