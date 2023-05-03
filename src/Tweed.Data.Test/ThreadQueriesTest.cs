@@ -9,7 +9,7 @@ namespace Tweed.Data.Test;
 public class ThreadQueriesTest
 {
     private readonly IDocumentStore _store;
-    
+
     public ThreadQueriesTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
@@ -24,7 +24,7 @@ public class ThreadQueriesTest
 
         await queries.AddTweedToThread("tweedId", "parentTweedId", "threadId");
 
-        var thread = session.LoadAsync<Thread>("threadId");
+        var thread = session.LoadAsync<TweedThread>("threadId");
         Assert.NotNull(thread);
-    } 
+    }
 }
