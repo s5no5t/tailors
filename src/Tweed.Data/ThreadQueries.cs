@@ -14,17 +14,22 @@ public class ThreadQueries
 
     public async Task AddTweedToThread(string tweedId, string parentTweedId, string threadId)
     {
-        var thread = await _session.LoadAsync<TweedThread>(threadId);
-        if (thread is null)
-        {
-            thread = new TweedThread
-            {
-                Id = threadId
-            };
-            await _session.StoreAsync(thread);
-        }
+        var thread = await LoadOrCreateThread(threadId);
 
         var threadContainsTweed = thread.Replies.Any(r => r.TweedId == tweedId);
         if (!threadContainsTweed) thread.Replies.Add(new TweedThreadReply { TweedId = tweedId });
+    }
+
+    private async Task<TweedThread> LoadOrCreateThread(string threadId)
+    {
+        var thread = await _session.LoadAsync<TweedThread>(threadId);
+        if (thread is not null) return thread;
+
+        var newThread = new TweedThread
+        {
+            Id = threadId
+        };
+        await _session.StoreAsync(newThread);
+        return newThread;
     }
 }
