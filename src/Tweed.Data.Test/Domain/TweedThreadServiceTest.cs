@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Data.Domain;
@@ -20,21 +19,19 @@ public class TweedThreadServiceTest
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldCreateThread_IfItDoesntExist()
+    public async Task InsertTweedIntoThread_ShouldCreateThread_IfItDoesntExist()
     {
         using var session = _store.OpenAsyncSession();
         TweedThreadService service = new(session);
 
-        await service.AddReplyToThread("threadId", "tweedId", "rootTweedId");
+        var thread = await service.InsertTweedIntoThread("tweedId", "parentTweedId");
 
-        var thread = await session.LoadAsync<TweedThread>("threadId");
-        Assert.Equal("threadId", thread.Id);
-        Assert.Equal("rootTweedId", thread.Root.TweedId);
+        Assert.Equal("parentTweedId", thread.Root.TweedId);
         Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
+    public async Task InsertTweedIntoThread_ShouldInsertReplyToRootTweed()
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new()
@@ -42,20 +39,20 @@ public class TweedThreadServiceTest
             Id = "threadId",
             Root = new TweedThread.TweedReference
             {
-                TweedId = "rootTweedId"
+                TweedId = "parentTweedId"
             }
         };
         await session.StoreAsync(thread);
         TweedThreadService service = new(session);
 
-        await service.AddReplyToThread("threadId", "tweedId", "rootTweedId");
+        await service.InsertTweedIntoThread("tweedId", "parentTweedId");
 
         await session.LoadAsync<TweedThread>("threadId");
-        Assert.Contains("tweedId", thread.Root.Replies.Select(r => r.TweedId));
+        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
+    public async Task InsertTweedIntoThread_ShouldInsertReplyToReplyTweed()
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new()
@@ -68,7 +65,7 @@ public class TweedThreadServiceTest
                 {
                     new()
                     {
-                        TweedId = "replyTweedId"
+                        TweedId = "parentTweedId"
                     }
                 }
             }
@@ -76,7 +73,7 @@ public class TweedThreadServiceTest
         await session.StoreAsync(thread);
         TweedThreadService service = new(session);
 
-        await service.AddReplyToThread("threadId", "tweedId", "replyTweedId");
+        await service.InsertTweedIntoThread("tweedId", "parentTweedId");
 
         await session.LoadAsync<TweedThread>("threadId");
 
