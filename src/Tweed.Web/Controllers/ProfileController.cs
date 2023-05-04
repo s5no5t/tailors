@@ -13,19 +13,19 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class ProfileController : Controller
 {
-    private readonly IAppUserFollowsQueries _appUserFollowsQueries;
-    private readonly ITweedQueries _tweedQueries;
+    private readonly IAppUserFollowsService _appUserFollowsService;
+    private readonly ITweedService _tweedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public ProfileController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+    public ProfileController(ITweedService tweedService, UserManager<AppUser> userManager,
         IViewModelFactory viewModelFactory,
-        IAppUserFollowsQueries appUserFollowsQueries)
+        IAppUserFollowsService appUserFollowsService)
     {
-        _tweedQueries = tweedQueries;
+        _tweedService = tweedService;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
-        _appUserFollowsQueries = appUserFollowsQueries;
+        _appUserFollowsService = appUserFollowsService;
     }
 
     public async Task<IActionResult> Index(string userId)
@@ -34,10 +34,10 @@ public class ProfileController : Controller
         if (user == null)
             return NotFound();
 
-        var userTweeds = await _tweedQueries.GetTweedsForUser(userId);
+        var userTweeds = await _tweedService.GetTweedsForUser(userId);
 
         var currentUserId = _userManager.GetUserId(User);
-        var currentUserFollows = await _appUserFollowsQueries.GetFollows(currentUserId!);
+        var currentUserFollows = await _appUserFollowsService.GetFollows(currentUserId!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)
@@ -51,7 +51,7 @@ public class ProfileController : Controller
             user.UserName,
             tweedViewModels,
             currentUserFollows.Any(f => f.LeaderId == user.Id),
-            await _appUserFollowsQueries.GetFollowerCount(userId)
+            await _appUserFollowsService.GetFollowerCount(userId)
         );
 
         return View(viewModel);
@@ -69,7 +69,7 @@ public class ProfileController : Controller
             return BadRequest("Following yourself isn't allowed");
 
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserFollowsQueries.AddFollower(userId, currentUserId!, now);
+        await _appUserFollowsService.AddFollower(userId, currentUserId!, now);
 
         return RedirectToAction("Index", new
         {
@@ -86,7 +86,7 @@ public class ProfileController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
 
-        await _appUserFollowsQueries.RemoveFollower(userId, currentUserId!);
+        await _appUserFollowsService.RemoveFollower(userId, currentUserId!);
 
         return RedirectToAction("Index", new
         {

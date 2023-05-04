@@ -5,7 +5,7 @@ using Tweed.Data.Indexes;
 
 namespace Tweed.Data.Domain;
 
-public interface ITweedQueries
+public interface ITweedService
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
@@ -14,11 +14,11 @@ public interface ITweedQueries
     Task<List<Model.Tweed>> Search(string term);
 }
 
-public sealed class TweedQueries : ITweedQueries
+public sealed class TweedService : ITweedService
 {
     private readonly IAsyncDocumentSession _session;
 
-    public TweedQueries(IAsyncDocumentSession session)
+    public TweedService(IAsyncDocumentSession session)
     {
         _session = session;
     }

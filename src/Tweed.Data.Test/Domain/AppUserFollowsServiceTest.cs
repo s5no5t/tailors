@@ -4,19 +4,20 @@ using NodaTime;
 using Raven.Client.Documents;
 using Tweed.Data.Domain;
 using Tweed.Data.Model;
+using Tweed.Data.Test.Helper;
 using Xunit;
 
-namespace Tweed.Data.Test;
+namespace Tweed.Data.Test.Domain;
 
 [Collection("RavenDb Collection")]
-public class AppUserFollowsQueriesTest
+public class AppUserFollowsServiceTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     private readonly IDocumentStore _store;
 
-    public AppUserFollowsQueriesTest(RavenTestDbFixture ravenDb)
+    public AppUserFollowsServiceTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -36,9 +37,9 @@ public class AppUserFollowsQueriesTest
         };
         await session.StoreAsync(appUserFollows);
         await session.SaveChangesAsync();
-        AppUserFollowsQueries queries = new(session);
+        AppUserFollowsService service = new(session);
 
-        await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
+        await service.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
         Assert.Equal("leaderId", appUserFollows.Follows[0].LeaderId);
     }
@@ -65,9 +66,9 @@ public class AppUserFollowsQueriesTest
         };
         await session.StoreAsync(appUserFollows);
         await session.SaveChangesAsync();
-        AppUserFollowsQueries queries = new(session);
+        AppUserFollowsService service = new(session);
 
-        await queries.AddFollower("leaderId", "userId", FixedZonedDateTime);
+        await service.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
         Assert.Single(appUserFollows.Follows);
     }
@@ -94,8 +95,8 @@ public class AppUserFollowsQueriesTest
         };
         await session.StoreAsync(appUserFollows);
 
-        AppUserFollowsQueries queries = new(session);
-        await queries.RemoveFollower("leaderId", "userId");
+        AppUserFollowsService service = new(session);
+        await service.RemoveFollower("leaderId", "userId");
 
         var userAfterQuery =
             await session.LoadAsync<AppUserFollows>(AppUserFollows.BuildId("userId"));
@@ -138,9 +139,9 @@ public class AppUserFollowsQueriesTest
         }
 
         await session.SaveChangesAsync();
-        AppUserFollowsQueries queries = new(session);
+        AppUserFollowsService service = new(session);
 
-        var followerCount = await queries.GetFollowerCount("leaderId");
+        var followerCount = await service.GetFollowerCount("leaderId");
 
         Assert.Equal(givenFollowerCount, followerCount);
     }

@@ -4,19 +4,20 @@ using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Domain;
+using Tweed.Data.Test.Helper;
 using Xunit;
 
-namespace Tweed.Data.Test;
+namespace Tweed.Data.Test.Domain;
 
 [Collection("RavenDb Collection")]
-public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
+public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     private readonly IDocumentStore _store;
 
-    public TweedQueriesTest(RavenTestDbFixture ravenDb)
+    public TweedServiceTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -25,25 +26,25 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task StoreTweed_SavesTweed()
     {
         var session = new Mock<IAsyncDocumentSession>();
-        var queries = new TweedQueries(session.Object);
+        var queries = new TweedService(session.Object);
 
-        await queries.StoreTweed(new Model.Tweed());
+        await queries.StoreTweed(new Data.Model.Tweed());
 
-        session.Verify(s => s.StoreAsync(It.IsAny<Model.Tweed>(), default));
+        session.Verify(s => s.StoreAsync(It.IsAny<Data.Model.Tweed>(), default));
     }
 
     [Fact]
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Model.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweed2 = await queries.GetById(tweed.Id!);
 
@@ -54,7 +55,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_WithInvalidId_ShouldReturnNull()
     {
         using var session = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweed = await queries.GetById("invalid");
 
@@ -66,14 +67,14 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Model.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             Text = "test",
             AuthorId = "user"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweeds = await queries.GetTweedsForUser("user");
 
@@ -85,7 +86,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Model.Tweed olderTweed = new()
+        Data.Model.Tweed olderTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedZonedDateTime,
@@ -93,7 +94,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Model.Tweed recentTweed = new()
+        Data.Model.Tweed recentTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent,
@@ -101,7 +102,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(recentTweed);
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweeds = await queries.GetTweedsForUser("user1");
 
@@ -116,7 +117,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Model.Tweed tweed = new()
+            Data.Model.Tweed tweed = new()
             {
                 Text = "test",
                 CreatedAt = FixedZonedDateTime,
@@ -126,7 +127,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         }
 
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweeds = await queries.GetTweedsForUser("user1");
 
@@ -138,7 +139,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Model.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
@@ -146,7 +147,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweeds = await queries.GetTweedsForUser("user1");
 
@@ -157,7 +158,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Model.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
@@ -165,7 +166,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var likesCount = await queries.GetLikesCount(tweed.Id!);
 
@@ -176,7 +177,7 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     public async Task Search_ShouldReturnEmptyList_WhenNoResults()
     {
         using var session = _store.OpenAsyncSession();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweeds = await queries.Search("noresults");
 
@@ -188,14 +189,14 @@ public class TweedQueriesTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Model.Tweed tweed = new()
+        Data.Model.Tweed tweed = new()
         {
             Id = "tweedId",
             Text = "Here is a word included."
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedQueries(session);
+        var queries = new TweedService(session);
 
         var tweeds = await queries.Search("word");
 

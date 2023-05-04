@@ -14,16 +14,16 @@ namespace Tweed.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
-    private readonly Mock<IAppUserQueries> _appUserQueriesMock;
+    private readonly Mock<IAppUserService> _appUserQueriesMock;
     private readonly SearchController _searchController;
-    private readonly Mock<ITweedQueries> _tweedQueriesMock;
+    private readonly Mock<ITweedService> _tweedQueriesMock;
 
     public SearchControllerTest()
     {
-        _appUserQueriesMock = new Mock<IAppUserQueries>();
+        _appUserQueriesMock = new Mock<IAppUserService>();
         _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _tweedQueriesMock = new Mock<ITweedQueries>();
+        _tweedQueriesMock = new Mock<ITweedService>();
         _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<Data.Model.Tweed>());
         _searchController =

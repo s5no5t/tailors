@@ -44,12 +44,12 @@ builder.Services
 builder.Services.ConfigureApplicationCookie(
     options => options.LoginPath = "/Identity/Account/login");
 
-builder.Services.AddScoped<ITweedQueries, TweedQueries>();
+builder.Services.AddScoped<ITweedService, TweedService>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
-builder.Services.AddScoped<IAppUserQueries, AppUserQueries>();
-builder.Services.AddScoped<IAppUserFollowsQueries, AppUserFollowsQueries>();
-builder.Services.AddScoped<IAppUserLikesQueries, AppUserLikesQueries>();
-builder.Services.AddScoped<IFeedBuilder, FeedBuilder>();
+builder.Services.AddScoped<IAppUserService, AppUserService>();
+builder.Services.AddScoped<IAppUserFollowsService, AppUserFollowsService>();
+builder.Services.AddScoped<IAppUserLikesService, AppUserLikesService>();
+builder.Services.AddScoped<IFeedBuilderService, FeedBuilderServiceService>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
 builder.Services.Configure<IdentityOptions>(options =>

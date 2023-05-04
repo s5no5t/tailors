@@ -1,7 +1,7 @@
 using Tweed.Data.Model;
 using Xunit;
 
-namespace Tweed.Data.Test;
+namespace Tweed.Data.Test.Model;
 
 public class AppUserFollowsTest
 {

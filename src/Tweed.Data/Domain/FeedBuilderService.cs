@@ -5,22 +5,22 @@ using Tweed.Data.Indexes;
 
 namespace Tweed.Data.Domain;
 
-public interface IFeedBuilder
+public interface IFeedBuilderService
 {
     Task<List<Model.Tweed>> GetFeed(string appUserId, int page);
 }
 
-public class FeedBuilder : IFeedBuilder
+public class FeedBuilderServiceService : IFeedBuilderService
 {
     public const int PageSize = 20;
     private const int FeedSize = 100;
-    private readonly IAppUserFollowsQueries _appUserFollowsQueries;
+    private readonly IAppUserFollowsService _appUserFollowsService;
     private readonly IAsyncDocumentSession _session;
 
-    public FeedBuilder(IAsyncDocumentSession session, IAppUserFollowsQueries appUserFollowsQueries)
+    public FeedBuilderServiceService(IAsyncDocumentSession session, IAppUserFollowsService appUserFollowsService)
     {
         _session = session;
-        _appUserFollowsQueries = appUserFollowsQueries;
+        _appUserFollowsService = appUserFollowsService;
     }
 
     public async Task<List<Model.Tweed>> GetFeed(string appUserId, int page)
@@ -32,7 +32,7 @@ public class FeedBuilder : IFeedBuilder
             .Include(t => t.AuthorId)
             .ToListAsync();
 
-        var follows = await _appUserFollowsQueries.GetFollows(appUserId);
+        var follows = await _appUserFollowsService.GetFollows(appUserId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
 
         var followerTweeds = await _session.Query<Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()

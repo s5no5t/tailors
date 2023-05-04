@@ -14,18 +14,18 @@ public interface IViewModelFactory
 
 public class ViewModelFactory : IViewModelFactory
 {
-    private readonly IAppUserLikesQueries _appUserLikesQueries;
+    private readonly IAppUserLikesService _appUserLikesService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ITweedQueries _tweedQueries;
+    private readonly ITweedService _tweedService;
     private readonly UserManager<AppUser> _userManager;
 
     public ViewModelFactory(
-        IAppUserLikesQueries appUserLikesQueries,
-        ITweedQueries tweedQueries, UserManager<AppUser> userManager,
+        IAppUserLikesService appUserLikesService,
+        ITweedService tweedService, UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
-        _appUserLikesQueries = appUserLikesQueries;
-        _tweedQueries = tweedQueries;
+        _appUserLikesService = appUserLikesService;
+        _tweedService = tweedService;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -35,10 +35,10 @@ public class ViewModelFactory : IViewModelFactory
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
-        var likesCount = await _tweedQueries.GetLikesCount(tweed.Id!);
+        var likesCount = await _tweedService.GetLikesCount(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
-        var currentUserLikes = await _appUserLikesQueries.GetLikes(currentUserId!);
+        var currentUserLikes = await _appUserLikesService.GetLikes(currentUserId!);
 
         TweedViewModel viewModel = new()
         {
