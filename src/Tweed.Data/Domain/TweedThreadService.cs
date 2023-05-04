@@ -85,12 +85,35 @@ public class TweedThreadService
         return newThread;
     }
 
-    public async Task StoreThread(TweedThread thread)
+    public async Task<TweedThread> InsertTweedIntoThread(string tweedId, string? parentTweedId)
     {
-        await _session.StoreAsync(thread);
+        if (parentTweedId is null)
+        {
+            var thread = await CreateThreadForTweed(tweedId);
+            return thread;
+        }
+        else
+        {
+            var thread = await FindThreadForTweed(parentTweedId);
+            await AddReplyToThread(thread.Id!, tweedId, parentTweedId);
+            return thread;
+        }
     }
 
-    public Task<TweedThread> FindOrCreateThreadForTweed(string tweedId)
+    private async Task<TweedThread> CreateThreadForTweed(string rootTweedId)
+    {
+        TweedThread thread = new()
+        {
+            Root = new TweedThread.TweedReference
+            {
+                TweedId = rootTweedId
+            }
+        };
+        await _session.StoreAsync(thread);
+        return thread;
+    }
+
+    private Task<TweedThread> FindThreadForTweed(string tweedId)
     {
         throw new NotImplementedException();
     }

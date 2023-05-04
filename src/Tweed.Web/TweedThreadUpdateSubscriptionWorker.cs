@@ -93,20 +93,17 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
         catch (SubscriptionDoesNotExistException)
         {
-            SubscriptionCreationOptions options = new()
+            SubscriptionCreationOptions<Data.Model.Tweed> options = new()
             {
                 Name = SubscriptionName
             };
-            await _store.Subscriptions.CreateAsync<Data.Model.Tweed>(
-                t => !ReferenceEquals(t.ParentTweedId, null), options, token: stoppingToken);
+            await _store.Subscriptions.CreateAsync(options, token: stoppingToken);
         }
     }
 
     private async Task ProcessTweed(Data.Model.Tweed tweed, IAsyncDocumentSession session)
     {
         TweedThreadService tweedThreadService = new(session);
-
-        var thread = await tweedThreadService.FindOrCreateThreadForTweed(tweed.Id!);
-        await tweedThreadService.AddReplyToThread(thread.Id!, tweed.Id!, tweed.ParentTweedId!);
+        await tweedThreadService.InsertTweedIntoThread(tweed.Id!, tweed.ParentTweedId);
     }
 }
