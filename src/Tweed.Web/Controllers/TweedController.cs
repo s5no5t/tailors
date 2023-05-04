@@ -35,10 +35,10 @@ public class TweedController : Controller
     [HttpGet("Tweed/{tweedId}")]
     public async Task<ActionResult> GetById(string tweedId)
     {
-        var decodedId =
+        var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var tweed = await _tweedQueries.GetById(decodedId);
+        var tweed = await _tweedQueries.GetById(decodedTweedId);
         if (tweed == null)
             return NotFound();
 
@@ -47,7 +47,7 @@ public class TweedController : Controller
         {
             CreateTweed = new CreateTweedViewModel
             {
-                ParentTweedId = tweedId
+                ParentTweedId = decodedTweedId
             }
         };
         return View(viewModel);
