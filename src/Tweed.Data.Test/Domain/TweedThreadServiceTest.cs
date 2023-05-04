@@ -19,15 +19,14 @@ public class TweedThreadServiceTest
     }
 
     [Fact]
-    public async Task InsertTweedIntoThread_ShouldCreateThread_IfItDoesntExist()
+    public async Task InsertTweedIntoThread_ShouldCreateThread_IfParentTweedIdIsNull()
     {
         using var session = _store.OpenAsyncSession();
         TweedThreadService service = new(session);
 
-        var thread = await service.InsertTweedIntoThread("tweedId", "parentTweedId");
+        var thread = await service.InsertTweedIntoThread("tweedId", null);
 
-        Assert.Equal("parentTweedId", thread.Root.TweedId);
-        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
+        Assert.Equal("tweedId", thread.Root.TweedId);
     }
 
     [Fact]
