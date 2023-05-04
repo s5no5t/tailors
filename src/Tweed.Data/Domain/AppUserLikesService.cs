@@ -6,7 +6,7 @@ namespace Tweed.Data.Domain;
 
 public interface IAppUserLikesService
 {
-    Task<List<TweedLike>> GetLikes(string userId);
+    Task<List<AppUserLikes.TweedLike>> GetLikes(string userId);
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
 }
@@ -20,7 +20,7 @@ public class AppUserLikesService : IAppUserLikesService
         _session = session;
     }
 
-    public async Task<List<TweedLike>> GetLikes(string userId)
+    public async Task<List<AppUserLikes.TweedLike>> GetLikes(string userId)
     {
         var appUserLikes = await GetOrCreateAppUserLikes(userId);
         return appUserLikes.Likes;
@@ -31,7 +31,7 @@ public class AppUserLikesService : IAppUserLikesService
         var appUserLikes = await GetOrCreateAppUserLikes(userId);
         if (appUserLikes.Likes.Any(l => l.TweedId == tweedId))
             return;
-        appUserLikes.Likes.Add(new TweedLike
+        appUserLikes.Likes.Add(new AppUserLikes.TweedLike
         {
             TweedId = tweedId,
             CreatedAt = likedAt

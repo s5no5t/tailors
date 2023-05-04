@@ -64,7 +64,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         AppUserFollows currentUserFollows = new()
         {
             AppUserId = _currentUser.Id,
-            Follows = otherUsers.Take(3).Select(u => new Follows
+            Follows = otherUsers.Take(3).Select(u => new AppUserFollows.LeaderReference
             {
                 LeaderId = u.Id,
                 CreatedAt = FixedZonedDateTime.PlusHours(-100)
@@ -113,7 +113,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         AppUserFollows currentUserFollows = new()
         {
             AppUserId = _currentUser.Id,
-            Follows = new List<Follows>
+            Follows = new List<AppUserFollows.LeaderReference>
             {
                 new()
                 {

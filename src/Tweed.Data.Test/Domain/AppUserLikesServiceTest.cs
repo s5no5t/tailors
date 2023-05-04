@@ -75,7 +75,7 @@ public class AppUserLikesQueriesTest
         var appUserLikes = new AppUserLikes
         {
             AppUserId = "currentUser",
-            Likes = new List<TweedLike>
+            Likes = new List<AppUserLikes.TweedLike>
             {
                 new()
                 {
@@ -99,7 +99,7 @@ public class AppUserLikesQueriesTest
         var appUserLikes = new AppUserLikes
         {
             AppUserId = "currentUser",
-            Likes = new List<TweedLike>
+            Likes = new List<AppUserLikes.TweedLike>
             {
                 new()
                 {

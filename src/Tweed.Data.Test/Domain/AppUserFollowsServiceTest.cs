@@ -56,7 +56,7 @@ public class AppUserFollowsServiceTest
         AppUserFollows appUserFollows = new()
         {
             AppUserId = user.Id,
-            Follows = new List<Follows>
+            Follows = new List<AppUserFollows.LeaderReference>
             {
                 new()
                 {
@@ -85,7 +85,7 @@ public class AppUserFollowsServiceTest
         AppUserFollows appUserFollows = new()
         {
             AppUserId = user.Id,
-            Follows = new List<Follows>
+            Follows = new List<AppUserFollows.LeaderReference>
             {
                 new()
                 {
@@ -127,7 +127,7 @@ public class AppUserFollowsServiceTest
             AppUserFollows appUserFollows = new()
             {
                 AppUserId = follower.Id,
-                Follows = new List<Follows>
+                Follows = new List<AppUserFollows.LeaderReference>
                 {
                     new()
                     {

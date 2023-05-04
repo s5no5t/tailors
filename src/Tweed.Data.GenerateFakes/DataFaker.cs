@@ -35,7 +35,7 @@ internal class DataFaker
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var followsFaker = new Faker<Follows>()
+        var followsFaker = new Faker<AppUserFollows.LeaderReference>()
             .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
@@ -73,7 +73,7 @@ internal class DataFaker
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var likesFaker = new Faker<TweedLike>()
+        var likesFaker = new Faker<AppUserLikes.TweedLike>()
             .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 

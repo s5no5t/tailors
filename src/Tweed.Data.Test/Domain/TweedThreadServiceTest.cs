@@ -40,7 +40,7 @@ public class TweedThreadServiceTest
         TweedThread thread = new()
         {
             Id = "threadId",
-            Root = new TweedReference
+            Root = new TweedThread.TweedReference
             {
                 TweedId = "rootTweedId"
             }
@@ -61,10 +61,10 @@ public class TweedThreadServiceTest
         TweedThread thread = new()
         {
             Id = "threadId",
-            Root = new TweedReference
+            Root = new TweedThread.TweedReference
             {
                 TweedId = "rootTweedId",
-                Replies = new List<TweedReference>
+                Replies = new List<TweedThread.TweedReference>
                 {
                     new()
                     {
