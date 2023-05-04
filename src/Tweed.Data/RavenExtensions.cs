@@ -52,6 +52,11 @@ public static class RavenExtensions
             ArgumentNullException.ThrowIfNull(appUserLikes.AppUserId);
             return Task.FromResult(AppUserLikes.BuildId(appUserLikes.AppUserId));
         });
+        store.Conventions.RegisterAsyncIdConvention<TweedThread>((_, thread) =>
+        {
+            ArgumentNullException.ThrowIfNull(thread.Root.TweedId);
+            return Task.FromResult(TweedThread.BuildId(thread.Root.TweedId));
+        });
     }
 
     public static void DeployIndexes(this IDocumentStore store)
