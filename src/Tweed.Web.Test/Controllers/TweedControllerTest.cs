@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -58,15 +59,30 @@ public class TweedControllerTest
     {
         Data.Model.Tweed tweed = new()
         {
-            Id = "123"
+            Id = "tweedId"
         };
         _tweedQueriesMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
 
-        var result = await _tweedController.GetById("123");
+        var result = await _tweedController.GetById("tweedId");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
         Assert.IsType<GetByIdViewModel>(resultAsView.Model);
+    }
+
+    [Fact]
+    public async Task GetById_ShouldSetParentTweedId()
+    {
+        Data.Model.Tweed tweed = new()
+        {
+            Id = "tweeds/1"
+        };
+        _tweedQueriesMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
+
+        var result = await _tweedController.GetById(HttpUtility.UrlEncode(tweed.Id));
+
+        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
+        Assert.Equal(tweed.Id, resultViewModel.CreateTweed.ParentTweedId);
     }
 
     [Fact]
@@ -108,7 +124,10 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldReturnRedirect()
     {
-        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId")).ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId"))
+            .ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.GetById("rootTweedId"))
+            .ReturnsAsync(new Data.Model.Tweed());
 
         CreateTweedViewModel viewModel = new()
         {
@@ -123,7 +142,11 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldSaveTweed()
     {
-        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId")).ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId"))
+            .ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.GetById("rootTweedId"))
+            .ReturnsAsync(new Data.Model.Tweed());
+
         CreateTweedViewModel viewModel = new()
         {
             Text = "text",
@@ -137,7 +160,11 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
-        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId")).ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.GetById("parentTweedId"))
+            .ReturnsAsync(new Data.Model.Tweed());
+        _tweedQueriesMock.Setup(t => t.GetById("rootTweedId"))
+            .ReturnsAsync(new Data.Model.Tweed());
+
         CreateTweedViewModel viewModel = new()
         {
             Text = "test",
