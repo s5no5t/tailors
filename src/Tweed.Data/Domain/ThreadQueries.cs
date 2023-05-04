@@ -1,7 +1,7 @@
 using Raven.Client.Documents.Session;
 using Tweed.Data.Model;
 
-namespace Tweed.Data;
+namespace Tweed.Data.Domain;
 
 public class ThreadQueries
 {

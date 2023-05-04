@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Data;
+using Tweed.Data.Domain;
 using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
@@ -44,7 +44,7 @@ public class HomeControllerTest
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel());
-        
+
         _homeController = new HomeController(_feedBuilderMock.Object, _userManagerMock.Object,
             _viewModelFactoryMock.Object)
         {
@@ -78,7 +78,7 @@ public class HomeControllerTest
         var model = ((result as ViewResult)!.Model as IndexViewModel)!;
         Assert.Equal(0, model.Feed.Page);
     }
-    
+
     [Fact]
     public async Task Index_ShouldReturnTweeds()
     {
@@ -90,11 +90,11 @@ public class HomeControllerTest
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser", 0))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
-            .ReturnsAsync(new TweedViewModel()
+            .ReturnsAsync(new TweedViewModel
             {
-                Id = tweed.Id,
+                Id = tweed.Id
             });
-        
+
         var result = await _homeController.Index();
 
         var model = ((result as ViewResult)!.Model as IndexViewModel)!;
@@ -117,7 +117,7 @@ public class HomeControllerTest
         var result = await _homeController.Feed(1);
 
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
-        
+
         Assert.Equal(1, model.Page);
     }
 
@@ -132,11 +132,11 @@ public class HomeControllerTest
         _feedBuilderMock.Setup(t => t.GetFeed("currentUser", 0))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
-            .ReturnsAsync(new TweedViewModel()
+            .ReturnsAsync(new TweedViewModel
             {
-                Id = tweed.Id,
+                Id = tweed.Id
             });
-        
+
         var result = await _homeController.Feed();
 
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;

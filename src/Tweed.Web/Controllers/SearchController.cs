@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Data;
+using Tweed.Data.Domain;
 using Tweed.Web.Views.Search;
 
 namespace Tweed.Web.Controllers;
@@ -25,11 +25,15 @@ public class SearchController : Controller
     }
 
     public async Task<IActionResult> Results(
-        [FromQuery] [Required] [StringLength(50, MinimumLength = 3)] [RegularExpression(@"^[\w\s]*$")]
+        [FromQuery]
+        [Required]
+        [StringLength(50, MinimumLength = 3)]
+        [RegularExpression(@"^[\w\s]*$")]
         string term)
     {
         if (!ModelState.IsValid)
-            return View("Index", new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
+            return View("Index",
+                new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
 
         var users = await _appUserQueries.Search(term);
         var tweeds = await _tweedQueries.Search(term);
@@ -41,4 +45,3 @@ public class SearchController : Controller
         return View("index", viewModel);
     }
 }
-

@@ -6,6 +6,7 @@ using Raven.Client.Documents.Subscriptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
+using Tweed.Data.Domain;
 using Tweed.Data.Model;
 
 namespace Tweed.Data;
@@ -114,7 +115,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             await threadQueries.StoreThread(thread);
             tweed.ThreadId = thread.Id;
         }
-        
+
         await threadQueries.AddReplyToThread(tweed.ThreadId!, tweed.Id!, tweed.ParentTweedId!);
     }
 }
