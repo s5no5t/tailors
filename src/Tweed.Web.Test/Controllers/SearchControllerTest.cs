@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Data;
+using Tweed.Data.Domain;
 using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;
@@ -21,10 +21,13 @@ public class SearchControllerTest
     public SearchControllerTest()
     {
         _appUserQueriesMock = new Mock<IAppUserQueries>();
-        _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<AppUser>());
+        _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
+            .ReturnsAsync(new List<AppUser>());
         _tweedQueriesMock = new Mock<ITweedQueries>();
-        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>())).ReturnsAsync(new List<Data.Model.Tweed>());
-        _searchController = new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
+        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
+            .ReturnsAsync(new List<Data.Model.Tweed>());
+        _searchController =
+            new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
     }
 
     [Fact]

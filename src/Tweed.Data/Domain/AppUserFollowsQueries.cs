@@ -4,7 +4,7 @@ using Raven.Client.Documents.Session;
 using Tweed.Data.Indexes;
 using Tweed.Data.Model;
 
-namespace Tweed.Data;
+namespace Tweed.Data.Domain;
 
 public interface IAppUserFollowsQueries
 {
@@ -26,7 +26,7 @@ public class AppUserFollowsQueries : IAppUserFollowsQueries
     public async Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt)
     {
         var appUserFollows = await GetOrCreateAppUserFollower(followerId);
-        
+
         if (appUserFollows.Follows.Any(f => f.LeaderId == leaderId))
             return;
 
@@ -45,7 +45,8 @@ public class AppUserFollowsQueries : IAppUserFollowsQueries
 
     public async Task<int> GetFollowerCount(string userId)
     {
-        var result = await _session.Query<AppUserFollows_FollowerCount.Result, AppUserFollows_FollowerCount>()
+        var result = await _session
+            .Query<AppUserFollows_FollowerCount.Result, AppUserFollows_FollowerCount>()
             .Where(r => r.UserId == userId)
             .FirstOrDefaultAsync();
 
@@ -61,10 +62,11 @@ public class AppUserFollowsQueries : IAppUserFollowsQueries
     private async Task<AppUserFollows> GetOrCreateAppUserFollower(string userId)
     {
         var appUserFollowsId = AppUserFollows.BuildId(userId);
-        var appUserFollows = await _session.LoadAsync<AppUserFollows>(appUserFollowsId) ?? new AppUserFollows
-        {
-            AppUserId = userId
-        };
+        var appUserFollows = await _session.LoadAsync<AppUserFollows>(appUserFollowsId) ??
+                             new AppUserFollows
+                             {
+                                 AppUserId = userId
+                             };
         await _session.StoreAsync(appUserFollows);
         return appUserFollows;
     }

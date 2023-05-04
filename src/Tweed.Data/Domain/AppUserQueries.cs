@@ -3,7 +3,7 @@ using Raven.Client.Documents.Session;
 using Tweed.Data.Indexes;
 using Tweed.Data.Model;
 
-namespace Tweed.Data;
+namespace Tweed.Data.Domain;
 
 public interface IAppUserQueries
 {

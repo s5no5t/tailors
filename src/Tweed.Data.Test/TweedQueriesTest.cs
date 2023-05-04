@@ -3,6 +3,7 @@ using Moq;
 using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
+using Tweed.Data.Domain;
 using Xunit;
 
 namespace Tweed.Data.Test;

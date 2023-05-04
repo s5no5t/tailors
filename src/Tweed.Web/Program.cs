@@ -4,6 +4,7 @@ using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Data;
+using Tweed.Data.Domain;
 using Tweed.Data.Model;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;

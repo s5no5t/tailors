@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
+using Tweed.Data.Domain;
 using Tweed.Data.Model;
 using Xunit;
 
@@ -10,9 +11,10 @@ namespace Tweed.Data.Test;
 [Collection("RavenDb Collection")]
 public class AppUserFollowsQueriesTest
 {
-    private readonly IDocumentStore _store;
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+
+    private readonly IDocumentStore _store;
 
     public AppUserFollowsQueriesTest(RavenTestDbFixture ravenDb)
     {
@@ -47,8 +49,7 @@ public class AppUserFollowsQueriesTest
         using var session = _store.OpenAsyncSession();
         AppUser user = new()
         {
-            Id = "userId",
-            
+            Id = "userId"
         };
         await session.StoreAsync(user);
         AppUserFollows appUserFollows = new()
@@ -77,7 +78,7 @@ public class AppUserFollowsQueriesTest
         using var session = _store.OpenAsyncSession();
         AppUser user = new()
         {
-            Id = "userId",
+            Id = "userId"
         };
         await session.StoreAsync(user);
         AppUserFollows appUserFollows = new()
@@ -96,7 +97,8 @@ public class AppUserFollowsQueriesTest
         AppUserFollowsQueries queries = new(session);
         await queries.RemoveFollower("leaderId", "userId");
 
-        var userAfterQuery = await session.LoadAsync<AppUserFollows>(AppUserFollows.BuildId("userId"));
+        var userAfterQuery =
+            await session.LoadAsync<AppUserFollows>(AppUserFollows.BuildId("userId"));
         Assert.DoesNotContain(userAfterQuery.Follows, u => u.LeaderId == "leaderId");
     }
 
@@ -118,8 +120,7 @@ public class AppUserFollowsQueriesTest
         {
             AppUser follower = new()
             {
-                Id = $"follower/${i}",
-                
+                Id = $"follower/${i}"
             };
             await session.StoreAsync(follower);
             AppUserFollows appUserFollows = new()

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
+using Tweed.Data.Domain;
 using Tweed.Data.Model;
 using Xunit;
 
