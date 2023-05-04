@@ -89,4 +89,9 @@ public class ThreadQueries
     {
         await _session.StoreAsync(thread);
     }
+
+    public async Task<TweedThread> FindOrCreateThreadForTweed(string tweedId)
+    {
+        throw new NotImplementedException();
+    }
 }
