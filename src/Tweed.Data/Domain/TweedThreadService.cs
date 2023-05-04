@@ -20,7 +20,7 @@ public class TweedThreadService
         if (thread.Root.TweedId is null)
         {
             thread.Root.TweedId = parentTweedId;
-            thread.Root.Replies.Add(new TweedReference
+            thread.Root.Replies.Add(new TweedThread.TweedReference
             {
                 TweedId = tweedId
             });
@@ -30,7 +30,7 @@ public class TweedThreadService
         // This is a reply to the root Tweed
         if (thread.Root.TweedId == parentTweedId)
         {
-            thread.Root.Replies.Add(new TweedReference
+            thread.Root.Replies.Add(new TweedThread.TweedReference
             {
                 TweedId = tweedId
             });
@@ -40,10 +40,10 @@ public class TweedThreadService
         // This is a reply to a reply
         var parentTweedReference = FindTweedReference(thread.Root, parentTweedId);
         if (parentTweedReference is null)
-            thread.Root.Replies.Add(new TweedReference
+            thread.Root.Replies.Add(new TweedThread.TweedReference
             {
                 TweedId = parentTweedId,
-                Replies = new List<TweedReference>
+                Replies = new List<TweedThread.TweedReference>
                 {
                     new()
                     {
@@ -52,13 +52,13 @@ public class TweedThreadService
                 }
             });
         else
-            parentTweedReference.Replies.Add(new TweedReference
+            parentTweedReference.Replies.Add(new TweedThread.TweedReference
             {
                 TweedId = tweedId
             });
     }
 
-    private TweedReference? FindTweedReference(TweedReference currentReference, string tweedId)
+    private TweedThread.TweedReference? FindTweedReference(TweedThread.TweedReference currentReference, string tweedId)
     {
         if (currentReference.TweedId == tweedId) return currentReference;
 
@@ -90,7 +90,7 @@ public class TweedThreadService
         await _session.StoreAsync(thread);
     }
 
-    public async Task<TweedThread> FindOrCreateThreadForTweed(string tweedId)
+    public Task<TweedThread> FindOrCreateThreadForTweed(string tweedId)
     {
         throw new NotImplementedException();
     }

@@ -47,7 +47,7 @@ public class ProfileControllerTest
         _appUserFollowsQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
             .ReturnsAsync(0);
         _appUserFollowsQueriesMock.Setup(u => u.GetFollows(It.IsAny<string>()))
-            .ReturnsAsync(new List<Follows>());
+            .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
 
         _tweedQueriesMock = new Mock<ITweedService>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
@@ -105,7 +105,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsTrue_WhenCurrentUserIsFollower()
     {
-        var follows = new List<Follows>
+        var follows = new List<AppUserFollows.LeaderReference>
         {
             new()
             {
@@ -127,7 +127,7 @@ public class ProfileControllerTest
     public async Task Index_ShouldSetCurrentUserFollowsIsFalse_WhenCurrentUserIsNotFollower()
     {
         _appUserFollowsQueriesMock.Setup(f => f.GetFollows(_currentUser.Id!))
-            .ReturnsAsync(new List<Follows>());
+            .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
 
         var result = await _profileController.Index("user");
 

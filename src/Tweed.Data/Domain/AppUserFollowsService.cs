@@ -11,7 +11,7 @@ public interface IAppUserFollowsService
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
     Task<int> GetFollowerCount(string userId);
-    Task<List<Follows>> GetFollows(string userId);
+    Task<List<AppUserFollows.LeaderReference>> GetFollows(string userId);
 }
 
 public class AppUserFollowsService : IAppUserFollowsService
@@ -30,7 +30,7 @@ public class AppUserFollowsService : IAppUserFollowsService
         if (appUserFollows.Follows.Any(f => f.LeaderId == leaderId))
             return;
 
-        appUserFollows.Follows.Add(new Follows
+        appUserFollows.Follows.Add(new AppUserFollows.LeaderReference
         {
             LeaderId = leaderId,
             CreatedAt = createdAt
@@ -53,7 +53,7 @@ public class AppUserFollowsService : IAppUserFollowsService
         return result?.FollowerCount ?? 0;
     }
 
-    public async Task<List<Follows>> GetFollows(string followerId)
+    public async Task<List<AppUserFollows.LeaderReference>> GetFollows(string followerId)
     {
         var follower = await GetOrCreateAppUserFollower(followerId);
         return follower.Follows;

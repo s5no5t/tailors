@@ -13,10 +13,10 @@ public class AppUserLikes
         ArgumentNullException.ThrowIfNull(appUserId);
         return $"{appUserId}/Likes";
     }
-}
 
-public class TweedLike
-{
-    public string? TweedId { get; set; }
-    public ZonedDateTime? CreatedAt { get; set; }
+    public class TweedLike
+    {
+        public string? TweedId { get; set; }
+        public ZonedDateTime? CreatedAt { get; set; }
+    }
 }
