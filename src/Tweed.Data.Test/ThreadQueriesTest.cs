@@ -28,6 +28,7 @@ public class ThreadQueriesTest
         var thread = await session.LoadAsync<TweedThread>("threadId");
         Assert.Equal("threadId", thread.Id);
         Assert.Equal("rootTweedId", thread.Root.TweedId);
+        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
     [Fact]
@@ -77,6 +78,6 @@ public class ThreadQueriesTest
 
         await session.LoadAsync<TweedThread>("threadId");
 
-        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
+        Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
     }
 }

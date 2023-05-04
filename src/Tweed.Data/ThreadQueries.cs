@@ -16,8 +16,19 @@ public class ThreadQueries
     {
         var thread = await LoadOrCreateThread(threadId);
 
-        var threadContainsTweed = thread.Replies.Any(r => r.TweedId == tweedId);
-        if (!threadContainsTweed) thread.Replies.Add(new TweedReference { TweedId = tweedId });
+        if (thread.Root.TweedId is null)
+        {
+            thread.Root.TweedId = parentTweedId;
+            thread.Root.Replies.Add(new TweedReference
+            {
+                TweedId = tweedId
+            });
+            return;
+        }
+
+        var threadContainsTweed = thread.Root.TweedId == tweedId ||
+                                  thread.Root.Replies.Any(r => r.TweedId == tweedId);
+        if (!threadContainsTweed) thread.Root.Replies.Add(new TweedReference { TweedId = tweedId });
     }
 
     private async Task<TweedThread> LoadOrCreateThread(string threadId)
