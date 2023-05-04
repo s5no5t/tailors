@@ -84,4 +84,9 @@ public class ThreadQueries
         await _session.StoreAsync(newThread);
         return newThread;
     }
+
+    public async Task StoreThread(TweedThread thread)
+    {
+        await _session.StoreAsync(thread);
+    }
 }
