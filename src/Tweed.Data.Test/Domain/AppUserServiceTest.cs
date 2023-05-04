@@ -2,16 +2,17 @@ using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Data.Domain;
 using Tweed.Data.Model;
+using Tweed.Data.Test.Helper;
 using Xunit;
 
-namespace Tweed.Data.Test;
+namespace Tweed.Data.Test.Domain;
 
 [Collection("RavenDb Collection")]
-public class AppUserQueriesTest
+public class AppUserServiceTest
 {
     private readonly IDocumentStore _store;
 
-    public AppUserQueriesTest(RavenTestDbFixture ravenDb)
+    public AppUserServiceTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -25,9 +26,9 @@ public class AppUserQueriesTest
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserQueries queries = new(session);
+        AppUserService service = new(session);
 
-        var results = await queries.Search("noresults");
+        var results = await service.Search("noresults");
 
         Assert.Empty(results);
     }
@@ -42,9 +43,9 @@ public class AppUserQueriesTest
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserQueries queries = new(session);
+        AppUserService service = new(session);
 
-        var results = await queries.Search("UserName");
+        var results = await service.Search("UserName");
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
@@ -59,9 +60,9 @@ public class AppUserQueriesTest
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserQueries queries = new(session);
+        AppUserService service = new(session);
 
-        var results = await queries.Search("Use");
+        var results = await service.Search("Use");
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
@@ -80,9 +81,9 @@ public class AppUserQueriesTest
             await session.SaveChangesAsync();
         }
 
-        AppUserQueries queries = new(session);
+        AppUserService service = new(session);
 
-        var results = await queries.Search("User");
+        var results = await service.Search("User");
 
         Assert.Equal(20, results.Count);
     }

@@ -18,7 +18,7 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly Mock<IAppUserFollowsQueries> _appUserFollowsQueriesMock = new();
+    private readonly Mock<IAppUserFollowsService> _appUserFollowsQueriesMock = new();
 
     private readonly AppUser _currentUser = new()
     {
@@ -32,7 +32,7 @@ public class ProfileControllerTest
         Id = "user"
     };
 
-    private readonly Mock<ITweedQueries> _tweedQueriesMock;
+    private readonly Mock<ITweedService> _tweedQueriesMock;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
 
@@ -49,7 +49,7 @@ public class ProfileControllerTest
         _appUserFollowsQueriesMock.Setup(u => u.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<Follows>());
 
-        _tweedQueriesMock = new Mock<ITweedQueries>();
+        _tweedQueriesMock = new Mock<ITweedService>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
             .ReturnsAsync(new List<Data.Model.Tweed>());
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);

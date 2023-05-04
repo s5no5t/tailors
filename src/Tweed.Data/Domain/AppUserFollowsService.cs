@@ -6,7 +6,7 @@ using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
-public interface IAppUserFollowsQueries
+public interface IAppUserFollowsService
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
@@ -14,11 +14,11 @@ public interface IAppUserFollowsQueries
     Task<List<Follows>> GetFollows(string userId);
 }
 
-public class AppUserFollowsQueries : IAppUserFollowsQueries
+public class AppUserFollowsService : IAppUserFollowsService
 {
     private readonly IAsyncDocumentSession _session;
 
-    public AppUserFollowsQueries(IAsyncDocumentSession session)
+    public AppUserFollowsService(IAsyncDocumentSession session)
     {
         _session = session;
     }

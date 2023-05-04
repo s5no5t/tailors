@@ -5,12 +5,13 @@ using NodaTime;
 using Raven.Client.Documents;
 using Tweed.Data.Domain;
 using Tweed.Data.Model;
+using Tweed.Data.Test.Helper;
 using Xunit;
 
-namespace Tweed.Data.Test;
+namespace Tweed.Data.Test.Domain;
 
 [Collection("RavenDb Collection")]
-public class FeedBuilderTest : IAsyncLifetime
+public class FeedBuilderServiceTest : IAsyncLifetime
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
@@ -19,7 +20,7 @@ public class FeedBuilderTest : IAsyncLifetime
 
     private readonly IDocumentStore _store;
 
-    public FeedBuilderTest(RavenTestDbFixture ravenDb)
+    public FeedBuilderServiceTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -30,7 +31,7 @@ public class FeedBuilderTest : IAsyncLifetime
 
         for (var i = 0; i < 5; i++)
         {
-            Model.Tweed currentUserTweed = new()
+            Data.Model.Tweed currentUserTweed = new()
             {
                 Text = "test",
                 AuthorId = _currentUser.Id!,
@@ -48,7 +49,7 @@ public class FeedBuilderTest : IAsyncLifetime
 
             for (var j = 0; j < 20; j++)
             {
-                Model.Tweed otherUserTweed = new()
+                Data.Model.Tweed otherUserTweed = new()
                 {
                     Text = "test",
                     AuthorId = otherUser.Id!,
@@ -83,7 +84,7 @@ public class FeedBuilderTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        Model.Tweed currentUserTweed = new()
+        Data.Model.Tweed currentUserTweed = new()
         {
             Text = "test",
             AuthorId = _currentUser.Id!,
@@ -92,8 +93,8 @@ public class FeedBuilderTest : IAsyncLifetime
         await session.StoreAsync(currentUserTweed);
 
         await session.SaveChangesAsync();
-        AppUserFollowsQueries appUserFollowsQueries = new(session);
-        var queries = new FeedBuilder(session, appUserFollowsQueries);
+        AppUserFollowsService appUserFollowsService = new(session);
+        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
 
         var tweeds = await queries.GetFeed(_currentUser.Id!, 0);
 
@@ -122,7 +123,7 @@ public class FeedBuilderTest : IAsyncLifetime
         };
         await session.StoreAsync(currentUserFollows);
 
-        Model.Tweed followedUserTweed = new()
+        Data.Model.Tweed followedUserTweed = new()
         {
             Text = "test",
             AuthorId = followedUser.Id!,
@@ -131,8 +132,8 @@ public class FeedBuilderTest : IAsyncLifetime
         await session.StoreAsync(followedUserTweed);
 
         await session.SaveChangesAsync();
-        AppUserFollowsQueries appUserFollowsQueries = new(session);
-        var queries = new FeedBuilder(session, appUserFollowsQueries);
+        AppUserFollowsService appUserFollowsService = new(session);
+        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
 
         var tweeds = await queries.GetFeed(_currentUser.Id!, 0);
 
@@ -148,8 +149,8 @@ public class FeedBuilderTest : IAsyncLifetime
         };
         using var session = _store.OpenAsyncSession();
 
-        AppUserFollowsQueries appUserFollowsQueries = new(session);
-        var queries = new FeedBuilder(session, appUserFollowsQueries);
+        AppUserFollowsService appUserFollowsService = new(session);
+        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
 
         var tweeds = (await queries.GetFeed(_currentUser.Id!, 0)).ToList();
 
@@ -165,7 +166,7 @@ public class FeedBuilderTest : IAsyncLifetime
 
         for (var i = 0; i < 25; i++)
         {
-            Model.Tweed tweed = new()
+            Data.Model.Tweed tweed = new()
             {
                 Text = "test",
                 AuthorId = _currentUser.Id!,
@@ -175,12 +176,12 @@ public class FeedBuilderTest : IAsyncLifetime
         }
 
         await session.SaveChangesAsync();
-        AppUserFollowsQueries appUserFollowsQueries = new(session);
-        var queries = new FeedBuilder(session, appUserFollowsQueries);
+        AppUserFollowsService appUserFollowsService = new(session);
+        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
 
         var feed = (await queries.GetFeed(_currentUser.Id!, 0)).ToList();
 
-        Assert.Equal(FeedBuilder.PageSize, feed.Count);
+        Assert.Equal(FeedBuilderServiceService.PageSize, feed.Count);
     }
 
     [Fact]
@@ -189,8 +190,8 @@ public class FeedBuilderTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        AppUserFollowsQueries appUserFollowsQueries = new(session);
-        var queries = new FeedBuilder(session, appUserFollowsQueries);
+        AppUserFollowsService appUserFollowsService = new(session);
+        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
 
         var page0Feed = (await queries.GetFeed(_currentUser.Id!, 0)).ToList();
         var page1Feed = (await queries.GetFeed(_currentUser.Id!, 1)).ToList();

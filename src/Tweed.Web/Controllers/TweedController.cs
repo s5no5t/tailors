@@ -13,22 +13,22 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly IAppUserLikesQueries _appUserLikesQueries;
-    private readonly IAppUserQueries _appUserQueries;
+    private readonly IAppUserLikesService _appUserLikesService;
+    private readonly IAppUserService _appUserService;
     private readonly INotificationManager _notificationManager;
-    private readonly ITweedQueries _tweedQueries;
+    private readonly ITweedService _tweedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public TweedController(ITweedQueries tweedQueries, UserManager<AppUser> userManager,
-        INotificationManager notificationManager, IAppUserQueries appUserQueries,
-        IAppUserLikesQueries appUserLikesQueries, IViewModelFactory viewModelFactory)
+    public TweedController(ITweedService tweedService, UserManager<AppUser> userManager,
+        INotificationManager notificationManager, IAppUserService appUserService,
+        IAppUserLikesService appUserLikesService, IViewModelFactory viewModelFactory)
     {
-        _tweedQueries = tweedQueries;
+        _tweedService = tweedService;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _appUserQueries = appUserQueries;
-        _appUserLikesQueries = appUserLikesQueries;
+        _appUserService = appUserService;
+        _appUserLikesService = appUserLikesService;
         _viewModelFactory = viewModelFactory;
     }
 
@@ -38,7 +38,7 @@ public class TweedController : Controller
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var tweed = await _tweedQueries.GetById(decodedTweedId);
+        var tweed = await _tweedService.GetById(decodedTweedId);
         if (tweed == null)
             return NotFound();
 
@@ -74,7 +74,7 @@ public class TweedController : Controller
             AuthorId = currentUserId,
             Text = viewModel.Text
         };
-        await _tweedQueries.StoreTweed(tweed);
+        await _tweedService.StoreTweed(tweed);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -90,7 +90,7 @@ public class TweedController : Controller
         if (viewModel.ParentTweedId is null)
             return BadRequest();
 
-        var parentTweed = await _tweedQueries.GetById(viewModel.ParentTweedId);
+        var parentTweed = await _tweedService.GetById(viewModel.ParentTweedId);
         if (parentTweed is null)
             return BadRequest();
 
@@ -104,7 +104,7 @@ public class TweedController : Controller
             AuthorId = currentUserId,
             Text = viewModel.Text
         };
-        await _tweedQueries.StoreTweed(tweed);
+        await _tweedService.StoreTweed(tweed);
 
         _notificationManager.AppendSuccess("Reply Posted");
 
@@ -118,13 +118,13 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Like(string tweedId)
     {
-        var tweed = await _tweedQueries.GetById(tweedId);
+        var tweed = await _tweedService.GetById(tweedId);
         if (tweed == null)
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserLikesQueries.AddLike(tweedId, currentUserId!, now);
+        await _appUserLikesService.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
@@ -133,12 +133,12 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Unlike(string tweedId)
     {
-        var tweed = await _tweedQueries.GetById(tweedId);
+        var tweed = await _tweedService.GetById(tweedId);
         if (tweed == null)
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _appUserLikesQueries.RemoveLike(tweedId, currentUserId!);
+        await _appUserLikesService.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);

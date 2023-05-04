@@ -5,16 +5,16 @@ using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
-public interface IAppUserQueries
+public interface IAppUserService
 {
     Task<List<AppUser>> Search(string term);
 }
 
-public class AppUserQueries : IAppUserQueries
+public class AppUserService : IAppUserService
 {
     private readonly IAsyncDocumentSession _session;
 
-    public AppUserQueries(IAsyncDocumentSession session)
+    public AppUserService(IAsyncDocumentSession session)
     {
         _session = session;
     }

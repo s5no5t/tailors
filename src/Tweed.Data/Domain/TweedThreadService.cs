@@ -3,11 +3,11 @@ using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
-public class ThreadQueries
+public class TweedThreadService
 {
     private readonly IAsyncDocumentSession _session;
 
-    public ThreadQueries(IAsyncDocumentSession session)
+    public TweedThreadService(IAsyncDocumentSession session)
     {
         _session = session;
     }

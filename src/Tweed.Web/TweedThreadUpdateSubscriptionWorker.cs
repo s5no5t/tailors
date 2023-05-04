@@ -104,9 +104,9 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
     private async Task ProcessTweed(Data.Model.Tweed tweed, IAsyncDocumentSession session)
     {
-        ThreadQueries threadQueries = new(session);
+        TweedThreadService tweedThreadService = new(session);
 
-        var thread = await threadQueries.FindOrCreateThreadForTweed(tweed.Id!);
-        await threadQueries.AddReplyToThread(thread.Id!, tweed.Id!, tweed.ParentTweedId!);
+        var thread = await tweedThreadService.FindOrCreateThreadForTweed(tweed.Id!);
+        await tweedThreadService.AddReplyToThread(thread.Id!, tweed.Id!, tweed.ParentTweedId!);
     }
 }

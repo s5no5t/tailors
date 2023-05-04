@@ -20,7 +20,7 @@ namespace Tweed.Web.Test.Controllers;
 public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly Mock<IFeedBuilder> _feedBuilderMock = new();
+    private readonly Mock<IFeedBuilderService> _feedBuilderMock = new();
     private readonly HomeController _homeController;
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
