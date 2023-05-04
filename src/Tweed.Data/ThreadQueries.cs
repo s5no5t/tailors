@@ -16,6 +16,7 @@ public class ThreadQueries
     {
         var thread = await LoadOrCreateThread(threadId);
 
+        // There is no Thread yet
         if (thread.Root.TweedId is null)
         {
             thread.Root.TweedId = parentTweedId;
@@ -26,9 +27,49 @@ public class ThreadQueries
             return;
         }
 
-        var threadContainsTweed = thread.Root.TweedId == tweedId ||
-                                  thread.Root.Replies.Any(r => r.TweedId == tweedId);
-        if (!threadContainsTweed) thread.Root.Replies.Add(new TweedReference { TweedId = tweedId });
+        // This is a reply to the root Tweed
+        if (thread.Root.TweedId == parentTweedId)
+        {
+            thread.Root.Replies.Add(new TweedReference
+            {
+                TweedId = tweedId
+            });
+            return;
+        }
+
+        // This is a reply to a reply
+        var parentTweedReference = FindTweedReference(thread.Root, parentTweedId);
+        if (parentTweedReference is null)
+            thread.Root.Replies.Add(new TweedReference
+            {
+                TweedId = parentTweedId,
+                Replies = new List<TweedReference>
+                {
+                    new()
+                    {
+                        TweedId = tweedId
+                    }
+                }
+            });
+        else
+            parentTweedReference.Replies.Add(new TweedReference
+            {
+                TweedId = tweedId
+            });
+    }
+
+    private TweedReference? FindTweedReference(TweedReference currentReference, string tweedId)
+    {
+        if (currentReference.TweedId == tweedId) return currentReference;
+
+        foreach (var reply in currentReference.Replies)
+        {
+            var reference = FindTweedReference(reply, tweedId);
+            if (reference is not null)
+                return reference;
+        }
+
+        return null;
     }
 
     private async Task<TweedThread> LoadOrCreateThread(string threadId)
