@@ -12,6 +12,7 @@ namespace Tweed.Data;
 
 public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 {
+    private const string SubscriptionName = "TweedThreadUpdateSubscription";
     private readonly ILogger<TweedThreadUpdateSubscriptionWorker> _logger;
     private readonly IDocumentStore _store;
 
@@ -24,17 +25,12 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        SubscriptionCreationOptions options = new()
-        {
-            Name = "TweedThreadUpdateSubscription"
-        };
-        var subscriptionName = await _store.Subscriptions.CreateAsync<Model.Tweed>(
-            t => !ReferenceEquals(t.ParentTweedId, null), options, token: stoppingToken);
+        await EnsureSubScriptionExists(stoppingToken);
 
         while (true)
         {
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<Model.Tweed>(subscriptionName);
+                _store.Subscriptions.GetSubscriptionWorker<Model.Tweed>(SubscriptionName);
 
             try
             {
@@ -42,7 +38,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 subscriptionWorker.OnSubscriptionConnectionRetry += exception =>
                 {
                     _logger.LogError(
-                        "Error during subscription processing: " + subscriptionName, exception);
+                        "Error during subscription processing: " + SubscriptionName, exception);
                 };
 
                 await subscriptionWorker.Run(async batch =>
@@ -57,7 +53,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             }
             catch (Exception e)
             {
-                _logger.LogError("Failure in subscription: " + subscriptionName, e);
+                _logger.LogError("Failure in subscription: " + SubscriptionName, e);
 
                 if (e is DatabaseDoesNotExistException ||
                     e is SubscriptionDoesNotExistException ||
@@ -87,6 +83,24 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             {
                 await subscriptionWorker.DisposeAsync();
             }
+        }
+    }
+
+    private async Task EnsureSubScriptionExists(CancellationToken stoppingToken)
+    {
+        try
+        {
+            await _store.Subscriptions.GetSubscriptionStateAsync(SubscriptionName, null,
+                stoppingToken);
+        }
+        catch (SubscriptionDoesNotExistException)
+        {
+            SubscriptionCreationOptions options = new()
+            {
+                Name = SubscriptionName
+            };
+            await _store.Subscriptions.CreateAsync<Model.Tweed>(
+                t => !ReferenceEquals(t.ParentTweedId, null), options, token: stoppingToken);
         }
     }
 
