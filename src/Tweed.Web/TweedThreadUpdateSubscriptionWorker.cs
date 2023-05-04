@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Subscriptions;
@@ -9,7 +7,7 @@ using Raven.Client.Exceptions.Security;
 using Tweed.Data.Domain;
 using Tweed.Data.Model;
 
-namespace Tweed.Data;
+namespace Tweed.Web;
 
 public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 {
@@ -31,7 +29,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         while (true)
         {
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<Model.Tweed>(SubscriptionName);
+                _store.Subscriptions.GetSubscriptionWorker<Data.Model.Tweed>(SubscriptionName);
 
             try
             {
@@ -100,12 +98,12 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             {
                 Name = SubscriptionName
             };
-            await _store.Subscriptions.CreateAsync<Model.Tweed>(
+            await _store.Subscriptions.CreateAsync<Data.Model.Tweed>(
                 t => !ReferenceEquals(t.ParentTweedId, null), options, token: stoppingToken);
         }
     }
 
-    private async Task ProcessTweed(Model.Tweed tweed, IAsyncDocumentSession session)
+    private async Task ProcessTweed(Data.Model.Tweed tweed, IAsyncDocumentSession session)
     {
         ThreadQueries threadQueries = new(session);
 
