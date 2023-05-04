@@ -42,6 +42,9 @@ public class TweedThreadService
 
     private Task<TweedThread> FindThreadForTweed(string tweedId)
     {
+        // query index that maps all tweed ids to thread ids they belong to
+        // if no thead is found, that's an error
+        // should we maybe store a thread reference when creating the Tweed?
         throw new NotImplementedException();
     }
 
