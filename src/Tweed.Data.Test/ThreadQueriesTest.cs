@@ -23,7 +23,7 @@ public class ThreadQueriesTest
         using var session = _store.OpenAsyncSession();
         ThreadQueries queries = new(session);
 
-        await queries.AddReplyToThread("tweedId", "rootTweedId", "threadId");
+        await queries.AddReplyToThread("threadId", "tweedId", "rootTweedId");
 
         var thread = await session.LoadAsync<TweedThread>("threadId");
         Assert.Equal("threadId", thread.Id);
@@ -46,7 +46,7 @@ public class ThreadQueriesTest
         await session.StoreAsync(thread);
         ThreadQueries queries = new(session);
 
-        await queries.AddReplyToThread("tweedId", "rootTweedId", "threadId");
+        await queries.AddReplyToThread("threadId", "tweedId", "rootTweedId");
 
         await session.LoadAsync<TweedThread>("threadId");
         Assert.Contains("tweedId", thread.Root.Replies.Select(r => r.TweedId));
@@ -74,7 +74,7 @@ public class ThreadQueriesTest
         await session.StoreAsync(thread);
         ThreadQueries queries = new(session);
 
-        await queries.AddReplyToThread("tweedId", "replyTweedId", "threadId");
+        await queries.AddReplyToThread("threadId", "tweedId", "replyTweedId");
 
         await session.LoadAsync<TweedThread>("threadId");
 

@@ -12,7 +12,7 @@ public class ThreadQueries
         _session = session;
     }
 
-    public async Task AddReplyToThread(string tweedId, string parentTweedId, string threadId)
+    public async Task AddReplyToThread(string threadId, string tweedId, string parentTweedId)
     {
         var thread = await LoadOrCreateThread(threadId);
 
