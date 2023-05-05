@@ -50,6 +50,7 @@ builder.Services.AddScoped<IAppUserService, AppUserService>();
 builder.Services.AddScoped<IAppUserFollowsService, AppUserFollowsService>();
 builder.Services.AddScoped<IAppUserLikesService, AppUserLikesService>();
 builder.Services.AddScoped<IFeedBuilderService, FeedBuilderServiceService>();
+builder.Services.AddScoped<ITweedThreadService, TweedThreadService>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
 builder.Services.Configure<IdentityOptions>(options =>
