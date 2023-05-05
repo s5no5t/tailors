@@ -93,12 +93,11 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
         catch (SubscriptionDoesNotExistException)
         {
-            SubscriptionCreationOptions options = new()
+            SubscriptionCreationOptions<Data.Model.Tweed> options = new()
             {
                 Name = SubscriptionName
             };
-            await _store.Subscriptions.CreateAsync<Data.Model.Tweed>(
-                t => !ReferenceEquals(t.ParentTweedId, null), options, token: stoppingToken);
+            await _store.Subscriptions.CreateAsync(options, token: stoppingToken);
         }
     }
 
