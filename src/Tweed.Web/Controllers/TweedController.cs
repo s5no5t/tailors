@@ -111,7 +111,8 @@ public class TweedController : Controller
             ParentTweedId = viewModel.ParentTweedId,
             CreatedAt = now,
             AuthorId = currentUserId,
-            Text = viewModel.Text
+            Text = viewModel.Text,
+            ThreadId = parentTweed.ThreadId
         };
         await _tweedService.StoreTweed(tweed);
 
