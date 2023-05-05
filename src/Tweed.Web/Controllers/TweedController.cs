@@ -16,13 +16,15 @@ public class TweedController : Controller
     private readonly IAppUserLikesService _appUserLikesService;
     private readonly IAppUserService _appUserService;
     private readonly INotificationManager _notificationManager;
+    private readonly ITweedThreadService _threadService;
     private readonly ITweedService _tweedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedService tweedService, UserManager<AppUser> userManager,
         INotificationManager notificationManager, IAppUserService appUserService,
-        IAppUserLikesService appUserLikesService, IViewModelFactory viewModelFactory)
+        IAppUserLikesService appUserLikesService, IViewModelFactory viewModelFactory,
+        ITweedThreadService threadService)
     {
         _tweedService = tweedService;
         _userManager = userManager;
@@ -30,6 +32,7 @@ public class TweedController : Controller
         _appUserService = appUserService;
         _appUserLikesService = appUserLikesService;
         _viewModelFactory = viewModelFactory;
+        _threadService = threadService;
     }
 
     [HttpGet("Tweed/{tweedId}")]
@@ -68,13 +71,19 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
+        TweedThread thread = new();
+        await _threadService.StoreThread(thread);
+
         Data.Model.Tweed tweed = new()
         {
             CreatedAt = now,
             AuthorId = currentUserId,
-            Text = viewModel.Text
+            Text = viewModel.Text,
+            ThreadId = thread.Id
         };
         await _tweedService.StoreTweed(tweed);
+
+        thread.Root.TweedId = tweed.Id;
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
