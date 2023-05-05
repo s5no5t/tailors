@@ -23,12 +23,17 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation($"Starting worker for subscription {SubscriptionName}");
         await EnsureSubScriptionExists(stoppingToken);
 
         while (true)
         {
+            SubscriptionWorkerOptions options = new(SubscriptionName)
+            {
+                MaxDocsPerBatch = 20
+            };
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<Data.Model.Tweed>(SubscriptionName);
+                _store.Subscriptions.GetSubscriptionWorker<Data.Model.Tweed>(options);
 
             try
             {
@@ -41,10 +46,12 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
                 await subscriptionWorker.Run(async batch =>
                 {
+                    _logger.LogInformation($"Processing batch of {batch.Items.Count} items");
                     using var session = batch.OpenAsyncSession();
-                    // TODO: Insert tweeds into threads
-                    // foreach (var item in batch.Items) await ProcessTweed(item.Result, session);
+                    foreach (var item in batch.Items)
+                        await ProcessTweed(item.Result, session);
                     await session.SaveChangesAsync(stoppingToken);
+                    _logger.LogInformation("Finished processing batch");
                 }, stoppingToken);
 
                 return;
@@ -79,6 +86,8 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             }
             finally
             {
+                _logger.LogInformation(
+                    $"Stopping worker {subscriptionWorker.WorkerId} for subscription {SubscriptionName}");
                 await subscriptionWorker.DisposeAsync();
             }
         }
@@ -105,7 +114,10 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
     {
         TweedThreadService tweedThreadService = new(session);
 
-        var thread = await tweedThreadService.LoadThread(tweed.ThreadId!);
+        if (tweed.ThreadId is null)
+            throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
+
+        var thread = await tweedThreadService.LoadThread(tweed.ThreadId);
         tweedThreadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
     }
 }
