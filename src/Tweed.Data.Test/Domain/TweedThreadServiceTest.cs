@@ -20,21 +20,19 @@ public class TweedThreadServiceTest
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldCreateThread_IfItDoesntExist()
+    public void AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
         using var session = _store.OpenAsyncSession();
+        TweedThread thread = new();
         TweedThreadService service = new(session);
+        
+        service.AddTweedToThread(thread, "tweedId", null);
 
-        await service.AddReplyToThread("threadId", "tweedId", "rootTweedId");
-
-        var thread = await session.LoadAsync<TweedThread>("threadId");
-        Assert.Equal("threadId", thread.Id);
-        Assert.Equal("rootTweedId", thread.Root.TweedId);
-        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
+        Assert.Equal("tweedId", thread.Root.TweedId);
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
+    public void AddTweedToThread_ShouldInsertReplyToRootTweed()
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new()
@@ -45,17 +43,15 @@ public class TweedThreadServiceTest
                 TweedId = "rootTweedId"
             }
         };
-        await session.StoreAsync(thread);
         TweedThreadService service = new(session);
 
-        await service.AddReplyToThread("threadId", "tweedId", "rootTweedId");
+        service.AddTweedToThread(thread, "tweedId", "rootTweedId");
 
-        await session.LoadAsync<TweedThread>("threadId");
-        Assert.Contains("tweedId", thread.Root.Replies.Select(r => r.TweedId));
+        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
+    public void AddTweedToThread_ShouldInsertReplyToReplyTweed()
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new()
@@ -73,12 +69,9 @@ public class TweedThreadServiceTest
                 }
             }
         };
-        await session.StoreAsync(thread);
         TweedThreadService service = new(session);
 
-        await service.AddReplyToThread("threadId", "tweedId", "replyTweedId");
-
-        await session.LoadAsync<TweedThread>("threadId");
+        service.AddTweedToThread(thread, "tweedId", "replyTweedId");
 
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
     }
