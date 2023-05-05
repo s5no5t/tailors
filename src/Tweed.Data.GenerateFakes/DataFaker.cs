@@ -56,10 +56,17 @@ internal class DataFaker
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
+        var threadFaker = new Faker<TweedThread>();
+
+        var numThreads = _settings.NumberOfTweeds;
+        var threads = threadFaker.Generate(numThreads);
+        foreach (var thread in threads) await bulkInsert.StoreAsync(thread);
+
         var tweedFaker = new Faker<Model.Tweed>()
             .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
             .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
-            .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id);
+            .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id)
+            .RuleFor(t => t.ThreadId, f => threads[f.IndexFaker].Id);
 
         var numTweeds = _settings.NumberOfTweeds;
         var tweeds = tweedFaker.Generate(numTweeds);
