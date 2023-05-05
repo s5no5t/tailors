@@ -25,6 +25,7 @@ public class TweedControllerTest
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
     private readonly Mock<ITweedService> _tweedQueriesMock = new();
+    private readonly Mock<ITweedThreadService> _tweedTheadServiceMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
@@ -38,8 +39,8 @@ public class TweedControllerTest
         _tweedQueriesMock.Setup(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object, _appUserQueriesMock.Object,
-            _appUserLikesQueriesMock.Object,
-            _viewModelFactoryMock.Object)
+            _appUserLikesQueriesMock.Object, _viewModelFactoryMock.Object,
+            _tweedTheadServiceMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
             Url = new Mock<IUrlHelper>().Object
@@ -107,6 +108,18 @@ public class TweedControllerTest
         await _tweedController.Create(viewModel);
 
         _tweedQueriesMock.Verify(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
+    }
+
+    [Fact]
+    public async Task Create_ShouldSaveThread()
+    {
+        CreateTweedViewModel viewModel = new()
+        {
+            Text = "test"
+        };
+        await _tweedController.Create(viewModel);
+
+        _tweedTheadServiceMock.Verify(t => t.StoreThread(It.IsAny<TweedThread>()));
     }
 
     [Fact]

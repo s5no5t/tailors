@@ -3,13 +3,23 @@ using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
-public class TweedThreadService
+public interface ITweedThreadService
+{
+    Task StoreThread(TweedThread thread);
+}
+
+public class TweedThreadService : ITweedThreadService
 {
     private readonly IAsyncDocumentSession _session;
 
     public TweedThreadService(IAsyncDocumentSession session)
     {
         _session = session;
+    }
+
+    public async Task StoreThread(TweedThread thread)
+    {
+        await _session.StoreAsync(thread);
     }
 
     public async Task AddReplyToThread(string threadId, string tweedId, string parentTweedId)
@@ -58,7 +68,8 @@ public class TweedThreadService
             });
     }
 
-    private TweedThread.TweedReference? FindTweedReference(TweedThread.TweedReference currentReference, string tweedId)
+    private TweedThread.TweedReference? FindTweedReference(
+        TweedThread.TweedReference currentReference, string tweedId)
     {
         if (currentReference.TweedId == tweedId) return currentReference;
 
@@ -83,11 +94,6 @@ public class TweedThreadService
         };
         await _session.StoreAsync(newThread);
         return newThread;
-    }
-
-    public async Task StoreThread(TweedThread thread)
-    {
-        await _session.StoreAsync(thread);
     }
 
     public Task<TweedThread> FindOrCreateThreadForTweed(string tweedId)
