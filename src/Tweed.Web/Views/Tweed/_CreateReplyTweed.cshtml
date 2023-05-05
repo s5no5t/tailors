@@ -1,7 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model Tweed.Web.Views.Tweed.CreateTweedViewModel
+@model Tweed.Web.Views.Tweed.CreateReplyTweedViewModel
 
-<form method="post" action="@Url.Action("Create")">
+<form method="post" action="@Url.Action("CreateReply")">
     <div class="mb-3">
         <label for="text" class="form-label">Text</label>
 
@@ -20,6 +20,8 @@
                 id="text" value="@Model.Text" name="Text"></textarea>
         }
     </div>
+
+    <input type="hidden" name="ParentTweedId" value="@Model.ParentTweedId"/>
 
     <button type="submit" class="btn btn-primary">
         Submit

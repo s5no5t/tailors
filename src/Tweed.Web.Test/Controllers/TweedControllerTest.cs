@@ -95,7 +95,7 @@ public class TweedControllerTest
         };
         var result = await _tweedController.Create(viewModel);
 
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<RedirectToActionResult>(result);
     }
 
     [Fact]
@@ -142,14 +142,14 @@ public class TweedControllerTest
         _tweedQueriesMock.Setup(t => t.GetById("rootTweedId"))
             .ReturnsAsync(new Data.Model.Tweed());
 
-        CreateTweedViewModel viewModel = new()
+        CreateReplyTweedViewModel viewModel = new()
         {
             Text = "test",
             ParentTweedId = "parentTweedId"
         };
         var result = await _tweedController.CreateReply(viewModel);
 
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<RedirectResult>(result);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class TweedControllerTest
         _tweedQueriesMock.Setup(t => t.GetById("rootTweedId"))
             .ReturnsAsync(new Data.Model.Tweed());
 
-        CreateTweedViewModel viewModel = new()
+        CreateReplyTweedViewModel viewModel = new()
         {
             Text = "text",
             ParentTweedId = "parentTweedId"
@@ -178,7 +178,7 @@ public class TweedControllerTest
         _tweedQueriesMock.Setup(t => t.GetById("rootTweedId"))
             .ReturnsAsync(new Data.Model.Tweed());
 
-        CreateTweedViewModel viewModel = new()
+        CreateReplyTweedViewModel viewModel = new()
         {
             Text = "test",
             ParentTweedId = "parentTweedId"
@@ -191,7 +191,7 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldReturnBadRequest_WhenParentTweedIdIsMissing()
     {
-        CreateTweedViewModel viewModel = new()
+        CreateReplyTweedViewModel viewModel = new()
         {
             Text = "test"
         };
@@ -203,7 +203,7 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldReturnBadRequest_WhenParentTweedDoesntExist()
     {
-        CreateTweedViewModel viewModel = new()
+        CreateReplyTweedViewModel viewModel = new()
         {
             Text = "test",
             ParentTweedId = "nonExistingTweed"
