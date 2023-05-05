@@ -48,7 +48,7 @@ public class TweedController : Controller
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         GetByIdViewModel viewModel = new(tweedViewModel)
         {
-            CreateTweed = new CreateTweedViewModel
+            CreateTweed = new CreateReplyTweedViewModel
             {
                 ParentTweedId = decodedTweedId
             }
@@ -87,14 +87,13 @@ public class TweedController : Controller
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
-        HttpContext.Response.Headers.Add("HX-Redirect", Url.Action("Index", "Home"));
-        return Ok();
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReply(CreateTweedViewModel viewModel)
+    public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel)
     {
-        if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
+        if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
         if (viewModel.ParentTweedId is null)
             return BadRequest();
@@ -118,11 +117,10 @@ public class TweedController : Controller
 
         _notificationManager.AppendSuccess("Reply Posted");
 
-        HttpContext.Response.Headers.Add("HX-Redirect", Url.Action("GetById", new
+        return RedirectToAction("GetById", new
         {
             tweedId = tweed.Id
-        }));
-        return Ok();
+        });
     }
 
     [HttpPost]
