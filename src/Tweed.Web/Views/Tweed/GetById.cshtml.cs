@@ -4,12 +4,7 @@ namespace Tweed.Web.Views.Tweed;
 
 public class GetByIdViewModel
 {
-    public GetByIdViewModel(TweedViewModel tweed)
-    {
-        Tweed = tweed;
-    }
-
-    public TweedViewModel Tweed { get; set; }
-
-    public CreateTweedViewModel CreateTweed { get; set; } = new();
+    public List<TweedViewModel> LeadingTweeds { get; set; } = new();
+    public TweedViewModel Tweed { get; set; } = new();
+    public CreateReplyTweedViewModel CreateTweed { get; set; } = new();
 }

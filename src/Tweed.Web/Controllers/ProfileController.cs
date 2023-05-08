@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Profile;
 using Tweed.Web.Views.Shared;
@@ -19,8 +19,7 @@ public class ProfileController : Controller
     private readonly IViewModelFactory _viewModelFactory;
 
     public ProfileController(ITweedService tweedService, UserManager<AppUser> userManager,
-        IViewModelFactory viewModelFactory,
-        IAppUserFollowsService appUserFollowsService)
+        IViewModelFactory viewModelFactory, IAppUserFollowsService appUserFollowsService)
     {
         _tweedService = tweedService;
         _userManager = userManager;

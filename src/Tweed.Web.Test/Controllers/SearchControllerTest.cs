@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;
 using Xunit;
@@ -14,20 +14,18 @@ namespace Tweed.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
-    private readonly Mock<IAppUserService> _appUserQueriesMock;
+    private readonly Mock<ISearchService> _appUserQueriesMock;
     private readonly SearchController _searchController;
-    private readonly Mock<ITweedService> _tweedQueriesMock;
 
     public SearchControllerTest()
     {
-        _appUserQueriesMock = new Mock<IAppUserService>();
-        _appUserQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
+        _appUserQueriesMock = new Mock<ISearchService>();
+        _appUserQueriesMock.Setup(u => u.SearchAppUsers(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _tweedQueriesMock = new Mock<ITweedService>();
-        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<Data.Model.Tweed>());
+        _appUserQueriesMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed>());
         _searchController =
-            new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
+            new SearchController(_appUserQueriesMock.Object);
     }
 
     [Fact]
@@ -53,7 +51,8 @@ public class SearchControllerTest
         {
             Id = "userId"
         };
-        _appUserQueriesMock.Setup(u => u.Search("userId")).ReturnsAsync(new List<AppUser> { user });
+        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId"))
+            .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -72,7 +71,8 @@ public class SearchControllerTest
             Id = "userId",
             UserName = "UserName"
         };
-        _appUserQueriesMock.Setup(u => u.Search("userId")).ReturnsAsync(new List<AppUser> { user });
+        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId"))
+            .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -86,13 +86,14 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _tweedQueriesMock.Setup(u => u.Search("term")).ReturnsAsync(new List<Data.Model.Tweed>
-        {
-            new()
+        _appUserQueriesMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
+            new List<Domain.Model.Tweed>
             {
-                Id = "tweedId"
-            }
-        });
+                new()
+                {
+                    Id = "tweedId"
+                }
+            });
 
         var result = await _searchController.Results("term");
 

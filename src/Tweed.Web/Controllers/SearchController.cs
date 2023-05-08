@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Data.Domain;
+using Tweed.Domain;
 using Tweed.Web.Views.Search;
 
 namespace Tweed.Web.Controllers;
@@ -9,13 +9,11 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class SearchController : Controller
 {
-    private readonly IAppUserService _appUserService;
-    private readonly ITweedService _tweedService;
+    private readonly ISearchService _searchService;
 
-    public SearchController(IAppUserService appUserService, ITweedService tweedService)
+    public SearchController(ISearchService searchService)
     {
-        _appUserService = appUserService;
-        _tweedService = tweedService;
+        _searchService = searchService;
     }
 
     public IActionResult Index()
@@ -35,8 +33,8 @@ public class SearchController : Controller
             return View("Index",
                 new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
 
-        var users = await _appUserService.Search(term);
-        var tweeds = await _tweedService.Search(term);
+        var users = await _searchService.SearchAppUsers(term);
+        var tweeds = await _searchService.SearchTweeds(term);
         IndexViewModel viewModel = new(
             term,
             users.Select(u => new UserViewModel(u.Id!, u.UserName!)).ToList(),

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Home;
 using Tweed.Web.Views.Shared;
@@ -13,14 +13,14 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class HomeController : Controller
 {
-    private readonly IFeedBuilderService _feedBuilderService;
+    private readonly IFeedService _feedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public HomeController(IFeedBuilderService feedBuilderService, UserManager<AppUser> userManager,
+    public HomeController(IFeedService feedService, UserManager<AppUser> userManager,
         IViewModelFactory viewModelFactory)
     {
-        _feedBuilderService = feedBuilderService;
+        _feedService = feedService;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
     }
@@ -47,7 +47,7 @@ public class HomeController : Controller
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
-        var feed = await _feedBuilderService.GetFeed(currentUserId, page);
+        var feed = await _feedService.GetFeed(currentUserId, page);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)
@@ -60,7 +60,7 @@ public class HomeController : Controller
         {
             Page = page,
             Tweeds = tweedViewModels,
-            NextPageExists = feed.Count == FeedBuilderServiceService.PageSize
+            NextPageExists = feed.Count == FeedService.PageSize
         };
         return viewModel;
     }
