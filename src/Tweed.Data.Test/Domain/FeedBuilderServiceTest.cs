@@ -94,7 +94,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         await session.SaveChangesAsync();
         AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedBuilderService(session, appUserFollowsService);
+        var service = new FeedService(session, appUserFollowsService);
 
         var tweeds = await service.GetFeed(_currentUser.Id!, 0);
 
@@ -133,7 +133,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         await session.SaveChangesAsync();
         AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedBuilderService(session, appUserFollowsService);
+        var service = new FeedService(session, appUserFollowsService);
 
         var tweeds = await service.GetFeed(_currentUser.Id!, 0);
 
@@ -150,7 +150,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
 
         AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedBuilderService(session, appUserFollowsService);
+        var service = new FeedService(session, appUserFollowsService);
 
         var tweeds = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
 
@@ -177,11 +177,11 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         await session.SaveChangesAsync();
         AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedBuilderService(session, appUserFollowsService);
+        var service = new FeedService(session, appUserFollowsService);
 
         var feed = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
 
-        Assert.Equal(FeedBuilderService.PageSize, feed.Count);
+        Assert.Equal(FeedService.PageSize, feed.Count);
     }
 
     [Fact]
@@ -191,7 +191,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
         AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedBuilderService(session, appUserFollowsService);
+        var service = new FeedService(session, appUserFollowsService);
 
         var page0Feed = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
         var page1Feed = (await service.GetFeed(_currentUser.Id!, 1)).ToList();
