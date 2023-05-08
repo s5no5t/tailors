@@ -112,6 +112,16 @@ public class TweedControllerTest
         Assert.Empty(resultViewModel.LeadingTweeds);
     }
 
+    [Fact(Skip = "TODO")]
+    public async Task GetById_ShouldReturnLeadingTweeds_WhenTweedIsNotRoot()
+    {
+    }
+    
+    [Fact(Skip = "TODO")]
+    public async Task GetById_ShouldReturnReplies()
+    {
+    }
+
     [Fact]
     public async Task GetById_ShouldSetParentTweedId()
     {
