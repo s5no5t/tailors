@@ -10,12 +10,10 @@ namespace Tweed.Web.Controllers;
 public class SearchController : Controller
 {
     private readonly ISearchService _searchService;
-    private readonly ITweedService _tweedService;
 
-    public SearchController(ISearchService searchService, ITweedService tweedService)
+    public SearchController(ISearchService searchService)
     {
         _searchService = searchService;
-        _tweedService = tweedService;
     }
 
     public IActionResult Index()

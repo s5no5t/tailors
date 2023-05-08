@@ -21,7 +21,6 @@ namespace Tweed.Web.Test.Controllers;
 public class TweedControllerTest
 {
     private readonly Mock<IAppUserLikesService> _appUserLikesQueriesMock = new();
-    private readonly Mock<ISearchService> _appUserQueriesMock = new();
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
@@ -39,7 +38,7 @@ public class TweedControllerTest
         _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _tweedQueriesMock.Setup(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
-            _notificationManagerMock.Object, _appUserQueriesMock.Object,
+            _notificationManagerMock.Object,
             _appUserLikesQueriesMock.Object, _viewModelFactoryMock.Object,
             _tweedTheadServiceMock.Object)
         {
@@ -116,7 +115,7 @@ public class TweedControllerTest
     public async Task GetById_ShouldReturnLeadingTweeds_WhenTweedIsNotRoot()
     {
     }
-    
+
     [Fact(Skip = "TODO")]
     public async Task GetById_ShouldReturnReplies()
     {
