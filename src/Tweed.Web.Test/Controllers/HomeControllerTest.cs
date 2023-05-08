@@ -22,10 +22,7 @@ public class HomeControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<IFeedService> _feedServiceMock = new();
     private readonly HomeController _homeController;
-
-    private readonly Mock<UserManager<AppUser>> _userManagerMock =
-        UserManagerMockHelper.MockUserManager<AppUser>();
-
+    private readonly Mock<UserManager<AppUser>> _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
 
     public HomeControllerTest()
