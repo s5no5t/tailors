@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Tweed.Data\Tweed.Data.csproj" />
+        <ProjectReference Include="..\Tweed.Domain\Tweed.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

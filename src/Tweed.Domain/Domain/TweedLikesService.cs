@@ -1,8 +1,8 @@
 using NodaTime;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Model;
+using Tweed.Domain.Model;
 
-namespace Tweed.Data.Domain;
+namespace Tweed.Domain.Domain;
 
 public interface ITweedLikesService
 {

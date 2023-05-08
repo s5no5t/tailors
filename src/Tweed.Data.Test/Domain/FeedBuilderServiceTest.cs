@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
 using Tweed.Data.Test.Helper;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Xunit;
 
 namespace Tweed.Data.Test.Domain;
@@ -31,7 +31,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         for (var i = 0; i < 5; i++)
         {
-            Data.Model.Tweed currentUserTweed = new()
+            Tweed.Domain.Model.Tweed currentUserTweed = new()
             {
                 Text = "test",
                 AuthorId = _currentUser.Id!,
@@ -49,7 +49,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
             for (var j = 0; j < 20; j++)
             {
-                Data.Model.Tweed otherUserTweed = new()
+                Tweed.Domain.Model.Tweed otherUserTweed = new()
                 {
                     Text = "test",
                     AuthorId = otherUser.Id!,
@@ -84,7 +84,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        Data.Model.Tweed currentUserTweed = new()
+        Tweed.Domain.Model.Tweed currentUserTweed = new()
         {
             Text = "test",
             AuthorId = _currentUser.Id!,
@@ -123,7 +123,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         };
         await session.StoreAsync(currentUserFollows);
 
-        Data.Model.Tweed followedUserTweed = new()
+        Tweed.Domain.Model.Tweed followedUserTweed = new()
         {
             Text = "test",
             AuthorId = followedUser.Id!,
@@ -166,7 +166,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         for (var i = 0; i < 25; i++)
         {
-            Data.Model.Tweed tweed = new()
+            Tweed.Domain.Model.Tweed tweed = new()
             {
                 Text = "test",
                 AuthorId = _currentUser.Id!,

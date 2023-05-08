@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Indexes;
+using Tweed.Domain.Indexes;
 
-namespace Tweed.Data.Domain;
+namespace Tweed.Domain.Domain;
 
 public interface IFeedService
 {

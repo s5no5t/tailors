@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Data.Test.Helper;
 using Xunit;
 
@@ -31,7 +31,7 @@ public class TweedLikesServiceTest
             AppUserId = "currentUser"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Data.Model.Tweed
+        var tweed = new Tweed.Domain.Model.Tweed
         {
             Id = "tweedId"
         };
@@ -53,7 +53,7 @@ public class TweedLikesServiceTest
             AppUserId = "currentUser"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Data.Model.Tweed
+        var tweed = new Tweed.Domain.Model.Tweed
         {
             Id = "tweedId"
         };
@@ -108,7 +108,7 @@ public class TweedLikesServiceTest
             }
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Data.Model.Tweed
+        var tweed = new Tweed.Domain.Model.Tweed
         {
             Id = "tweedId"
         };
@@ -130,7 +130,7 @@ public class TweedLikesServiceTest
             AppUserId = "userId"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Data.Model.Tweed
+        var tweed = new Tweed.Domain.Model.Tweed
         {
             Id = "tweedId"
         };
@@ -156,7 +156,7 @@ public class TweedLikesServiceTest
             AppUserId = "userId"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Data.Model.Tweed
+        var tweed = new Tweed.Domain.Model.Tweed
         {
             Id = "tweedId"
         };
@@ -173,7 +173,7 @@ public class TweedLikesServiceTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Data.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime

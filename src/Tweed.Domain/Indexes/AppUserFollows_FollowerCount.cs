@@ -1,7 +1,7 @@
 using Raven.Client.Documents.Indexes;
-using Tweed.Data.Model;
+using Tweed.Domain.Model;
 
-namespace Tweed.Data.Indexes;
+namespace Tweed.Domain.Indexes;
 
 public class
     AppUserFollows_FollowerCount : AbstractIndexCreationTask<AppUserFollows, AppUserFollows_FollowerCount.Result>

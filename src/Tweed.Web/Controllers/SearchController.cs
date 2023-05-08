@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Data.Domain;
+using Tweed.Domain.Domain;
 using Tweed.Web.Views.Search;
 
 namespace Tweed.Web.Controllers;

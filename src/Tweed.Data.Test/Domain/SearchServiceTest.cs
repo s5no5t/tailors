@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Raven.Client.Documents;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Data.Test.Helper;
 using Xunit;
 
@@ -104,7 +104,7 @@ public class SearchServiceTest
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Data.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             Id = "tweedId",
             Text = "Here is a word included."

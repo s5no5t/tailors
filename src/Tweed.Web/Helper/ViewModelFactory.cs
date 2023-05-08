@@ -1,15 +1,15 @@
 using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Helper;
 
 public interface IViewModelFactory
 {
-    Task<TweedViewModel> BuildTweedViewModel(Data.Model.Tweed tweed);
+    Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed);
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -26,7 +26,7 @@ public class ViewModelFactory : IViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> BuildTweedViewModel(Data.Model.Tweed tweed)
+    public async Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed)
     {
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);

@@ -3,8 +3,8 @@ using Moq;
 using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Data.Test.Helper;
 using Xunit;
 
@@ -29,9 +29,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.CreateTweed(new Data.Model.Tweed());
+        await service.CreateTweed(new Tweed.Domain.Model.Tweed());
 
-        session.Verify(s => s.StoreAsync(It.IsAny<Data.Model.Tweed>(), default));
+        session.Verify(s => s.StoreAsync(It.IsAny<Tweed.Domain.Model.Tweed>(), default));
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.CreateTweed(new Data.Model.Tweed());
+        await service.CreateTweed(new Tweed.Domain.Model.Tweed());
 
         session.Verify(s => s.StoreAsync(It.IsAny<TweedThread>(), default));
     }
@@ -51,13 +51,13 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         var session = _store.OpenAsyncSession();
         var service = new TweedService(session);
 
-        Data.Model.Tweed parentTweed = new()
+        Tweed.Domain.Model.Tweed parentTweed = new()
         {
             Id = "parentTweedId",
             ThreadId = "threadId"
         };
         await session.StoreAsync(parentTweed);
-        Data.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             ParentTweedId = "parentTweedId"
         };
@@ -70,7 +70,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Data.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
@@ -100,7 +100,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Data.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             AuthorId = "user"
@@ -119,7 +119,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Data.Model.Tweed olderTweed = new()
+        Tweed.Domain.Model.Tweed olderTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedZonedDateTime,
@@ -127,7 +127,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Data.Model.Tweed recentTweed = new()
+        Tweed.Domain.Model.Tweed recentTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent,
@@ -150,7 +150,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Data.Model.Tweed tweed = new()
+            Tweed.Domain.Model.Tweed tweed = new()
             {
                 Text = "test",
                 CreatedAt = FixedZonedDateTime,
@@ -172,7 +172,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Data.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
