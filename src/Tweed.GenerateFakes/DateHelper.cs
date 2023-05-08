@@ -1,6 +1,6 @@
 using NodaTime;
 
-namespace Tweed.Data.GenerateFakes;
+namespace Tweed.GenerateFakes;
 
 internal static class DateHelper
 {

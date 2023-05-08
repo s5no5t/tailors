@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Domain", "src\Tweed.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Domain.Test", "src\Tweed.Domain.Test\Tweed.Domain.Test.csproj", "{3CD15B19-9E32-4D4A-A466-13A2D7617804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data.GenerateFakes", "src\Tweed.Data.GenerateFakes\Tweed.Data.GenerateFakes.csproj", "{A580B502-4FC4-4BA4-9088-667B24EA73C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.GenerateFakes", "src\Tweed.GenerateFakes\Tweed.GenerateFakes.csproj", "{A580B502-4FC4-4BA4-9088-667B24EA73C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Infrastructure", "Tweed.Infrastructure\Tweed.Infrastructure.csproj", "{A1CFAF21-1EAE-41ED-A1E8-AE5C57C1DA2B}"
 EndProject
