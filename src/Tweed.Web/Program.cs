@@ -46,7 +46,7 @@ builder.Services.ConfigureApplicationCookie(
 
 builder.Services.AddScoped<ITweedService, TweedService>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
-builder.Services.AddScoped<IAppUserService, AppUserService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IAppUserFollowsService, AppUserFollowsService>();
 builder.Services.AddScoped<IAppUserLikesService, AppUserLikesService>();
 builder.Services.AddScoped<IFeedBuilderService, FeedBuilderServiceService>();

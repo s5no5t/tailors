@@ -26,9 +26,9 @@ public class AppUserServiceTest
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserService service = new(session);
+        SearchService service = new(session);
 
-        var results = await service.Search("noresults");
+        var results = await service.SearchAppUsers("noresults");
 
         Assert.Empty(results);
     }
@@ -43,9 +43,9 @@ public class AppUserServiceTest
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserService service = new(session);
+        SearchService service = new(session);
 
-        var results = await service.Search("UserName");
+        var results = await service.SearchAppUsers("UserName");
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
@@ -60,9 +60,9 @@ public class AppUserServiceTest
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserService service = new(session);
+        SearchService service = new(session);
 
-        var results = await service.Search("Use");
+        var results = await service.SearchAppUsers("Use");
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
@@ -81,9 +81,9 @@ public class AppUserServiceTest
             await session.SaveChangesAsync();
         }
 
-        AppUserService service = new(session);
+        SearchService service = new(session);
 
-        var results = await service.Search("User");
+        var results = await service.SearchAppUsers("User");
 
         Assert.Equal(20, results.Count);
     }

@@ -5,21 +5,21 @@ using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
-public interface IAppUserService
+public interface ISearchService
 {
-    Task<List<AppUser>> Search(string term);
+    Task<List<AppUser>> SearchAppUsers(string term);
 }
 
-public class AppUserService : IAppUserService
+public class SearchService : ISearchService
 {
     private readonly IAsyncDocumentSession _session;
 
-    public AppUserService(IAsyncDocumentSession session)
+    public SearchService(IAsyncDocumentSession session)
     {
         _session = session;
     }
 
-    public async Task<List<AppUser>> Search(string term)
+    public async Task<List<AppUser>> SearchAppUsers(string term)
     {
         return await _session.Query<AppUser, AppUsers_ByUserName>()
             .Search(u => u.UserName, $"{term}*")
