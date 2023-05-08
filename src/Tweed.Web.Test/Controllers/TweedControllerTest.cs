@@ -25,7 +25,6 @@ public class TweedControllerTest
     private readonly TweedController _tweedController;
     private readonly Mock<ITweedLikesService> _tweedLikesServiceMock = new();
     private readonly Mock<ITweedService> _tweedServiceMock = new();
-    private readonly Mock<ITweedThreadService> _tweedTheadServiceMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
@@ -38,8 +37,7 @@ public class TweedControllerTest
         _tweedServiceMock.Setup(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
         _tweedController = new TweedController(_tweedServiceMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object,
-            _tweedLikesServiceMock.Object, _viewModelFactoryMock.Object,
-            _tweedTheadServiceMock.Object)
+            _tweedLikesServiceMock.Object, _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
             Url = new Mock<IUrlHelper>().Object
