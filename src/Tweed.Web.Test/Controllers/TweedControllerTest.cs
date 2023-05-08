@@ -12,6 +12,7 @@ using Tweed.Data.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
+using Tweed.Web.Views.Shared;
 using Tweed.Web.Views.Tweed;
 using Xunit;
 
@@ -69,6 +70,46 @@ public class TweedControllerTest
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
         Assert.IsType<GetByIdViewModel>(resultAsView.Model);
+    }
+
+    [Fact]
+    public async Task GetById_ShouldReturnCurrentTweed()
+    {
+        Data.Model.Tweed tweed = new()
+        {
+            Id = "tweedId"
+        };
+        _tweedQueriesMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
+            new TweedViewModel
+            {
+                Id = tweed.Id
+            });
+
+        var result = await _tweedController.GetById("tweedId");
+
+        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
+        Assert.Equal(tweed.Id, resultViewModel.Tweed.Id);
+    }
+
+    [Fact]
+    public async Task GetById_ShouldReturnEmptyLeadingTweeds_WhenTweedIsRoot()
+    {
+        Data.Model.Tweed tweed = new()
+        {
+            Id = "tweedId"
+        };
+        _tweedQueriesMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
+            new TweedViewModel
+            {
+                Id = tweed.Id
+            });
+
+        var result = await _tweedController.GetById("tweedId");
+
+        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
+        Assert.Empty(resultViewModel.LeadingTweeds);
     }
 
     [Fact]
