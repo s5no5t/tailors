@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Domain.Domain;
 using Tweed.Domain.Model;
-using Tweed.Data.Test.Helper;
+using Tweed.Domain.Test.Helper;
 using Xunit;
 
-namespace Tweed.Data.Test.Domain;
+namespace Tweed.Domain.Test.Domain;
 
 [Collection("RavenDb Collection")]
 public class TweedThreadServiceTest

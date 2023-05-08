@@ -5,10 +5,10 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tweed.Domain.Domain;
 using Tweed.Domain.Model;
-using Tweed.Data.Test.Helper;
+using Tweed.Domain.Test.Helper;
 using Xunit;
 
-namespace Tweed.Data.Test.Domain;
+namespace Tweed.Domain.Test.Domain;
 
 [Collection("RavenDb Collection")]
 public class TweedServiceTest : IClassFixture<RavenTestDbFixture>

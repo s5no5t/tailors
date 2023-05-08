@@ -3,7 +3,7 @@ using Raven.TestDriver;
 using Tweed.Domain;
 using Xunit;
 
-namespace Tweed.Data.Test.Helper;
+namespace Tweed.Domain.Test.Helper;
 
 public class RavenTestDbFixture : RavenTestDriver
 {
