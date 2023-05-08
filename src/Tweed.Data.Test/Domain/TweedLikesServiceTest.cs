@@ -10,14 +10,14 @@ using Xunit;
 namespace Tweed.Data.Test.Domain;
 
 [Collection("RavenDb Collection")]
-public class AppUserLikesQueriesTest
+public class TweedLikesServiceTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     private readonly IDocumentStore _store;
 
-    public AppUserLikesQueriesTest(RavenTestDbFixture ravenDb)
+    public TweedLikesServiceTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -37,7 +37,7 @@ public class AppUserLikesQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new AppUserLikesService(session);
+        var queries = new TweedLikesService(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
@@ -59,7 +59,7 @@ public class AppUserLikesQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new AppUserLikesService(session);
+        var queries = new TweedLikesService(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
         await session.SaveChangesAsync();
@@ -85,7 +85,7 @@ public class AppUserLikesQueriesTest
         };
         await session.StoreAsync(appUserLikes);
         await session.SaveChangesAsync();
-        var queries = new AppUserLikesService(session);
+        var queries = new TweedLikesService(session);
 
         await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
@@ -114,7 +114,7 @@ public class AppUserLikesQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new AppUserLikesService(session);
+        var queries = new TweedLikesService(session);
 
         await queries.RemoveLike("tweedId", "currentUser");
 
@@ -138,7 +138,7 @@ public class AppUserLikesQueriesTest
         await session.SaveChangesAsync();
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var queries = new AppUserLikesService(session);
+        var queries = new TweedLikesService(session);
 
         await queries.RemoveLike(tweed.Id, "userId");
         await session.SaveChangesAsync();
@@ -162,7 +162,7 @@ public class AppUserLikesQueriesTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new AppUserLikesService(session);
+        var queries = new TweedLikesService(session);
 
         await queries.RemoveLike("tweedId", "userId");
 

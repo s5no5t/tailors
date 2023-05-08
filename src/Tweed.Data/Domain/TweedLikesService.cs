@@ -4,18 +4,18 @@ using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
-public interface IAppUserLikesService
+public interface ITweedLikesService
 {
     Task<List<AppUserLikes.TweedLike>> GetLikes(string userId);
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
 }
 
-public class AppUserLikesService : IAppUserLikesService
+public class TweedLikesService : ITweedLikesService
 {
     private readonly IAsyncDocumentSession _session;
 
-    public AppUserLikesService(IAsyncDocumentSession session)
+    public TweedLikesService(IAsyncDocumentSession session)
     {
         _session = session;
     }

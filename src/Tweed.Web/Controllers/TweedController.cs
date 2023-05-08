@@ -14,7 +14,7 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly IAppUserLikesService _appUserLikesService;
+    private readonly ITweedLikesService _tweedLikesService;
     private readonly INotificationManager _notificationManager;
     private readonly ITweedThreadService _threadService;
     private readonly ITweedService _tweedService;
@@ -22,13 +22,13 @@ public class TweedController : Controller
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedService tweedService, UserManager<AppUser> userManager,
-        INotificationManager notificationManager, IAppUserLikesService appUserLikesService,
+        INotificationManager notificationManager, ITweedLikesService tweedLikesService,
         IViewModelFactory viewModelFactory, ITweedThreadService threadService)
     {
         _tweedService = tweedService;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _appUserLikesService = appUserLikesService;
+        _tweedLikesService = tweedLikesService;
         _viewModelFactory = viewModelFactory;
         _threadService = threadService;
     }
@@ -132,7 +132,7 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserLikesService.AddLike(tweedId, currentUserId!, now);
+        await _tweedLikesService.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
@@ -146,7 +146,7 @@ public class TweedController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _appUserLikesService.RemoveLike(tweedId, currentUserId!);
+        await _tweedLikesService.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);

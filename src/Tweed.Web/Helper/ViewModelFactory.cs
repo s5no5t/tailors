@@ -14,17 +14,17 @@ public interface IViewModelFactory
 
 public class ViewModelFactory : IViewModelFactory
 {
-    private readonly IAppUserLikesService _appUserLikesService;
+    private readonly ITweedLikesService _tweedLikesService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITweedService _tweedService;
     private readonly UserManager<AppUser> _userManager;
 
     public ViewModelFactory(
-        IAppUserLikesService appUserLikesService,
+        ITweedLikesService tweedLikesService,
         ITweedService tweedService, UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
-        _appUserLikesService = appUserLikesService;
+        _tweedLikesService = tweedLikesService;
         _tweedService = tweedService;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
@@ -38,7 +38,7 @@ public class ViewModelFactory : IViewModelFactory
         var likesCount = await _tweedService.GetLikesCount(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
-        var currentUserLikes = await _appUserLikesService.GetLikes(currentUserId!);
+        var currentUserLikes = await _tweedLikesService.GetLikes(currentUserId!);
 
         TweedViewModel viewModel = new()
         {
