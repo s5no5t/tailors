@@ -5,19 +5,19 @@ using Tweed.Data.Indexes;
 
 namespace Tweed.Data.Domain;
 
-public interface IFeedBuilderService
+public interface IFeedService
 {
     Task<List<Model.Tweed>> GetFeed(string appUserId, int page);
 }
 
-public class FeedBuilderService : IFeedBuilderService
+public class FeedService : IFeedService
 {
     public const int PageSize = 20;
     private const int FeedSize = 100;
     private readonly IAppUserFollowsService _appUserFollowsService;
     private readonly IAsyncDocumentSession _session;
 
-    public FeedBuilderService(IAsyncDocumentSession session, IAppUserFollowsService appUserFollowsService)
+    public FeedService(IAsyncDocumentSession session, IAppUserFollowsService appUserFollowsService)
     {
         _session = session;
         _appUserFollowsService = appUserFollowsService;

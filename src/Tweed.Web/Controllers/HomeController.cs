@@ -13,14 +13,14 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class HomeController : Controller
 {
-    private readonly IFeedBuilderService _feedBuilderService;
+    private readonly IFeedService _feedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public HomeController(IFeedBuilderService feedBuilderService, UserManager<AppUser> userManager,
+    public HomeController(IFeedService feedService, UserManager<AppUser> userManager,
         IViewModelFactory viewModelFactory)
     {
-        _feedBuilderService = feedBuilderService;
+        _feedService = feedService;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
     }
@@ -47,7 +47,7 @@ public class HomeController : Controller
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
-        var feed = await _feedBuilderService.GetFeed(currentUserId, page);
+        var feed = await _feedService.GetFeed(currentUserId, page);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)
@@ -60,7 +60,7 @@ public class HomeController : Controller
         {
             Page = page,
             Tweeds = tweedViewModels,
-            NextPageExists = feed.Count == FeedBuilderService.PageSize
+            NextPageExists = feed.Count == FeedService.PageSize
         };
         return viewModel;
     }

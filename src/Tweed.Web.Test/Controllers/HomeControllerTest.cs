@@ -20,7 +20,7 @@ namespace Tweed.Web.Test.Controllers;
 public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly Mock<IFeedBuilderService> _feedBuilderMock = new();
+    private readonly Mock<IFeedService> _feedServiceMock = new();
     private readonly HomeController _homeController;
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
@@ -40,12 +40,12 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        _feedBuilderMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>()))
+        _feedServiceMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>()))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel());
 
-        _homeController = new HomeController(_feedBuilderMock.Object, _userManagerMock.Object,
+        _homeController = new HomeController(_feedServiceMock.Object, _userManagerMock.Object,
             _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
@@ -87,7 +87,7 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        _feedBuilderMock.Setup(t => t.GetFeed("currentUser", 0))
+        _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel
@@ -129,7 +129,7 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        _feedBuilderMock.Setup(t => t.GetFeed("currentUser", 0))
+        _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0))
             .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel
