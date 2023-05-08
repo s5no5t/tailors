@@ -2,6 +2,7 @@
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Indexes;
+using Tweed.Data.Model;
 
 namespace Tweed.Data.Domain;
 
@@ -9,7 +10,7 @@ public interface ITweedService
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
-    Task StoreTweed(Model.Tweed tweed);
+    Task CreateTweed(Model.Tweed tweed);
 }
 
 public sealed class TweedService : ITweedService
@@ -35,8 +36,28 @@ public sealed class TweedService : ITweedService
         return _session.LoadAsync<Model.Tweed>(id)!;
     }
 
-    public async Task StoreTweed(Model.Tweed tweed)
+    public async Task CreateTweed(Model.Tweed tweed)
     {
+        string threadId;
+        if (tweed.ParentTweedId is null)
+        {
+            TweedThread thread = new()
+            {
+                Root =
+                {
+                    TweedId = tweed.Id
+                }
+            };
+            await _session.StoreAsync(thread);
+            threadId = thread.Id!;
+        }
+        else
+        {
+            var parentTweed = await _session.LoadAsync<Model.Tweed>(tweed.ParentTweedId);
+            threadId = parentTweed.ThreadId!;
+        }
+
+        tweed.ThreadId = threadId;
         await _session.StoreAsync(tweed);
     }
 }

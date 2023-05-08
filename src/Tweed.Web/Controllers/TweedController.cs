@@ -14,9 +14,9 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly ITweedLikesService _tweedLikesService;
     private readonly INotificationManager _notificationManager;
     private readonly ITweedThreadService _threadService;
+    private readonly ITweedLikesService _tweedLikesService;
     private readonly ITweedService _tweedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
@@ -71,19 +71,13 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        TweedThread thread = new();
-        await _threadService.StoreThread(thread);
-
         Data.Model.Tweed tweed = new()
         {
             CreatedAt = now,
             AuthorId = currentUserId,
-            Text = viewModel.Text,
-            ThreadId = thread.Id
+            Text = viewModel.Text
         };
-        await _tweedService.StoreTweed(tweed);
-
-        thread.Root.TweedId = tweed.Id;
+        await _tweedService.CreateTweed(tweed);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -111,9 +105,8 @@ public class TweedController : Controller
             CreatedAt = now,
             AuthorId = currentUserId,
             Text = viewModel.Text,
-            ThreadId = parentTweed.ThreadId
         };
-        await _tweedService.StoreTweed(tweed);
+        await _tweedService.CreateTweed(tweed);
 
         _notificationManager.AppendSuccess("Reply Posted");
 
