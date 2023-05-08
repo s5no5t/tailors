@@ -34,7 +34,7 @@ public class ViewModelFactory : IViewModelFactory
         var likesCount = await _tweedLikesService.GetLikesCount(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
-        var currentUserLikes = await _tweedLikesService.GetLikes(currentUserId!);
+        var currentUserLikesTweed = await _tweedLikesService.DoesUserLikeTweed(tweed.Id!, currentUserId!);
 
         TweedViewModel viewModel = new()
         {
@@ -43,7 +43,7 @@ public class ViewModelFactory : IViewModelFactory
             CreatedAt = humanizedCreatedAt,
             AuthorId = tweed.AuthorId,
             LikesCount = likesCount,
-            LikedByCurrentUser = currentUserLikes.Any(lb => lb.TweedId == tweed.Id),
+            LikedByCurrentUser = currentUserLikesTweed,
             Author = author!.UserName
         };
         return viewModel;
