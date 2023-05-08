@@ -187,7 +187,7 @@ public class TweedControllerTest
         };
         var result = await _tweedController.CreateReply(viewModel);
 
-        Assert.IsType<RedirectResult>(result);
+        Assert.IsType<RedirectToActionResult>(result);
     }
 
     [Fact]
