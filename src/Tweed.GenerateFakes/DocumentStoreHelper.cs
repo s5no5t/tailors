@@ -2,7 +2,7 @@ using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Tweed.Infrastructure.Setup;
 
-namespace Tweed.Data.GenerateFakes;
+namespace Tweed.GenerateFakes;
 
 internal static class DocumentStoreHelper
 {

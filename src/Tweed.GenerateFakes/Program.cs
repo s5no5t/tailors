@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Raven.DependencyInjection;
-using Tweed.Data.GenerateFakes;
+using Tweed.GenerateFakes;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")

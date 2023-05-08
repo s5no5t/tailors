@@ -2,7 +2,7 @@ using Bogus;
 using Raven.Client.Documents;
 using Tweed.Domain.Model;
 
-namespace Tweed.Data.GenerateFakes;
+namespace Tweed.GenerateFakes;
 
 internal class DataFaker
 {
