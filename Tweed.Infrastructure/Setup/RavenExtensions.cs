@@ -8,7 +8,7 @@ using Raven.Client.ServerWide.Operations;
 using Tweed.Domain.Indexes;
 using Tweed.Domain.Model;
 
-namespace Tweed.Domain.Setup;
+namespace Tweed.Infrastructure.Setup;
 
 public static class RavenExtensions
 {
