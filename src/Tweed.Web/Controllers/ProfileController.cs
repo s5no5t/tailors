@@ -19,8 +19,7 @@ public class ProfileController : Controller
     private readonly IViewModelFactory _viewModelFactory;
 
     public ProfileController(ITweedService tweedService, UserManager<AppUser> userManager,
-        IViewModelFactory viewModelFactory,
-        IAppUserFollowsService appUserFollowsService)
+        IViewModelFactory viewModelFactory, IAppUserFollowsService appUserFollowsService)
     {
         _tweedService = tweedService;
         _userManager = userManager;

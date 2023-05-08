@@ -15,7 +15,6 @@ namespace Tweed.Web.Controllers;
 public class TweedController : Controller
 {
     private readonly IAppUserLikesService _appUserLikesService;
-    private readonly ISearchService _searchService;
     private readonly INotificationManager _notificationManager;
     private readonly ITweedThreadService _threadService;
     private readonly ITweedService _tweedService;
@@ -23,14 +22,12 @@ public class TweedController : Controller
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedService tweedService, UserManager<AppUser> userManager,
-        INotificationManager notificationManager, ISearchService searchService,
-        IAppUserLikesService appUserLikesService, IViewModelFactory viewModelFactory,
-        ITweedThreadService threadService)
+        INotificationManager notificationManager, IAppUserLikesService appUserLikesService,
+        IViewModelFactory viewModelFactory, ITweedThreadService threadService)
     {
         _tweedService = tweedService;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _searchService = searchService;
         _appUserLikesService = appUserLikesService;
         _viewModelFactory = viewModelFactory;
         _threadService = threadService;

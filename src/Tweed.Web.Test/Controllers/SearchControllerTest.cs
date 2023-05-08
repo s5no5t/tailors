@@ -16,7 +16,6 @@ public class SearchControllerTest
 {
     private readonly Mock<ISearchService> _appUserQueriesMock;
     private readonly SearchController _searchController;
-    private readonly Mock<ITweedService> _tweedQueriesMock;
 
     public SearchControllerTest()
     {
@@ -25,9 +24,8 @@ public class SearchControllerTest
             .ReturnsAsync(new List<AppUser>());
         _appUserQueriesMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
             .ReturnsAsync(new List<Data.Model.Tweed>());
-        _tweedQueriesMock = new Mock<ITweedService>();
         _searchController =
-            new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
+            new SearchController(_appUserQueriesMock.Object);
     }
 
     [Fact]
@@ -53,7 +51,8 @@ public class SearchControllerTest
         {
             Id = "userId"
         };
-        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId")).ReturnsAsync(new List<AppUser> { user });
+        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId"))
+            .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -72,7 +71,8 @@ public class SearchControllerTest
             Id = "userId",
             UserName = "UserName"
         };
-        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId")).ReturnsAsync(new List<AppUser> { user });
+        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId"))
+            .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -86,13 +86,14 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _appUserQueriesMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(new List<Data.Model.Tweed>
-        {
-            new()
+        _appUserQueriesMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
+            new List<Data.Model.Tweed>
             {
-                Id = "tweedId"
-            }
-        });
+                new()
+                {
+                    Id = "tweedId"
+                }
+            });
 
         var result = await _searchController.Results("term");
 
