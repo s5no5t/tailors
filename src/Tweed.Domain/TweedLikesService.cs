@@ -23,13 +23,15 @@ public class TweedLikesService : ITweedLikesService
 
     public async Task<List<AppUserLikes.TweedLike>> GetLikes(string userId)
     {
-        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        var appUserLikes = await GetOrBuildAppUserLikes(userId);
         return appUserLikes.Likes;
     }
 
     public async Task AddLike(string tweedId, string userId, ZonedDateTime likedAt)
     {
-        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        var appUserLikes = await GetOrBuildAppUserLikes(userId);
+        await _session.StoreAsync(appUserLikes);
+
         if (appUserLikes.Likes.Any(l => l.TweedId == tweedId))
             return;
         appUserLikes.Likes.Add(new AppUserLikes.TweedLike
@@ -43,7 +45,7 @@ public class TweedLikesService : ITweedLikesService
 
     public async Task RemoveLike(string tweedId, string userId)
     {
-        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        var appUserLikes = await GetOrBuildAppUserLikes(userId);
         appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
         var tweed = await _session.LoadAsync<Model.Tweed>(tweedId);
         _session.CountersFor(tweed).Increment(Model.Tweed.LikesCounterName, -1);
@@ -56,15 +58,13 @@ public class TweedLikesService : ITweedLikesService
         return likesCounter ?? 0L;
     }
 
-    private async Task<AppUserLikes> GetOrCreateAppUserLikes(string userId)
+    private async Task<AppUserLikes> GetOrBuildAppUserLikes(string userId)
     {
         var appUserLikesId = AppUserLikes.BuildId(userId);
-        var appUserLikes = await _session.LoadAsync<AppUserLikes>(appUserLikesId) ??
-                           new AppUserLikes
-                           {
-                               AppUserId = userId
-                           };
-        await _session.StoreAsync(appUserLikes);
-        return appUserLikes;
+        return await _session.LoadAsync<AppUserLikes>(appUserLikesId) ??
+               new AppUserLikes
+               {
+                   AppUserId = userId
+               };
     }
 }
