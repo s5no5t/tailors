@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using Tweed.Domain.Domain;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Shared;

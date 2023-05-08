@@ -1,6 +1,7 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
 using Tweed.Domain;
+using Tweed.Domain.Setup;
 using Xunit;
 
 namespace Tweed.Domain.Test.Helper;

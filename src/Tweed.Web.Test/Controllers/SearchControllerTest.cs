@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Domain.Domain;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;

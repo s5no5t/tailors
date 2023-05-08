@@ -1,7 +1,7 @@
 using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Tweed.Domain.Domain;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Views.Shared;
 

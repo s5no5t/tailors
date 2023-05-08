@@ -4,7 +4,7 @@ using Raven.Client.Documents.Session;
 using Tweed.Domain.Indexes;
 using Tweed.Domain.Model;
 
-namespace Tweed.Domain.Domain;
+namespace Tweed.Domain;
 
 public interface IAppUserFollowsService
 {

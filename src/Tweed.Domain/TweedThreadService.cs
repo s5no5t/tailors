@@ -1,7 +1,7 @@
 using Raven.Client.Documents.Session;
 using Tweed.Domain.Model;
 
-namespace Tweed.Domain.Domain;
+namespace Tweed.Domain;
 
 public interface ITweedThreadService
 {

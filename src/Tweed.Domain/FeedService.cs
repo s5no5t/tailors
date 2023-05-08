@@ -3,7 +3,7 @@ using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Domain.Indexes;
 
-namespace Tweed.Domain.Domain;
+namespace Tweed.Domain;
 
 public interface IFeedService
 {
