@@ -8,17 +8,17 @@ using Xunit;
 namespace Tweed.Data.Test.Domain;
 
 [Collection("RavenDb Collection")]
-public class AppUserServiceTest
+public class SearchServiceTest
 {
     private readonly IDocumentStore _store;
 
-    public AppUserServiceTest(RavenTestDbFixture ravenDb)
+    public SearchServiceTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
 
     [Fact]
-    public async Task Search_ShouldReturnEmptyList_WhenNoResults()
+    public async Task SearchAppUsers_ShouldReturnEmptyList_WhenNoResults()
     {
         using var session = _store.OpenAsyncSession();
         await session.StoreAsync(new AppUser
@@ -34,7 +34,7 @@ public class AppUserServiceTest
     }
 
     [Fact]
-    public async Task Search_ShouldFindMatchingAppUser()
+    public async Task SearchAppUsers_ShouldFindMatchingAppUser()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -51,7 +51,7 @@ public class AppUserServiceTest
     }
 
     [Fact]
-    public async Task Search_ShouldFindMatchingAppUser_WhenUserNamePrefixGiven()
+    public async Task SearchAppUsers_ShouldFindMatchingAppUser_WhenUserNamePrefixGiven()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -68,7 +68,7 @@ public class AppUserServiceTest
     }
 
     [Fact]
-    public async Task Search_ShouldReturn20Users()
+    public async Task SearchAppUsers_ShouldReturn20Users()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -86,5 +86,35 @@ public class AppUserServiceTest
         var results = await service.SearchAppUsers("User");
 
         Assert.Equal(20, results.Count);
+    }
+    
+    [Fact]
+    public async Task Search_ShouldReturnEmptyList_WhenNoResults()
+    {
+        using var session = _store.OpenAsyncSession();
+        var queries = new SearchService(session);
+
+        var tweeds = await queries.SearchTweeds("noresults");
+
+        Assert.Empty(tweeds);
+    }
+
+    [Fact]
+    public async Task Search_ShouldReturnResult_WhenTermIsFound()
+    {
+        using var session = _store.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+        Data.Model.Tweed tweed = new()
+        {
+            Id = "tweedId",
+            Text = "Here is a word included."
+        };
+        await session.StoreAsync(tweed);
+        await session.SaveChangesAsync();
+        var queries = new SearchService(session);
+
+        var tweeds = await queries.SearchTweeds("word");
+
+        Assert.Equal("tweedId", tweeds[0].Id);
     }
 }

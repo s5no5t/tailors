@@ -8,6 +8,7 @@ namespace Tweed.Data.Domain;
 public interface ISearchService
 {
     Task<List<AppUser>> SearchAppUsers(string term);
+    Task<List<Model.Tweed>> SearchTweeds(string term);
 }
 
 public class SearchService : ISearchService
@@ -23,6 +24,13 @@ public class SearchService : ISearchService
     {
         return await _session.Query<AppUser, AppUsers_ByUserName>()
             .Search(u => u.UserName, $"{term}*")
+            .Take(20).ToListAsync();
+    }
+    
+    public async Task<List<Model.Tweed>> SearchTweeds(string term)
+    {
+        return await _session.Query<Model.Tweed, Tweeds_ByText>()
+            .Search(t => t.Text, term)
             .Take(20).ToListAsync();
     }
 }
