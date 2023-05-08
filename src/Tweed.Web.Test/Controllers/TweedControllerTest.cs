@@ -20,10 +20,10 @@ namespace Tweed.Web.Test.Controllers;
 
 public class TweedControllerTest
 {
-    private readonly Mock<ITweedLikesService> _tweedLikesServiceMock = new();
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
+    private readonly Mock<ITweedLikesService> _tweedLikesServiceMock = new();
     private readonly Mock<ITweedService> _tweedQueriesMock = new();
     private readonly Mock<ITweedThreadService> _tweedTheadServiceMock = new();
 
@@ -35,7 +35,6 @@ public class TweedControllerTest
     public TweedControllerTest()
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
-        _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
         _tweedQueriesMock.Setup(t => t.StoreTweed(It.IsAny<Data.Model.Tweed>()));
         _tweedController = new TweedController(_tweedQueriesMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object,

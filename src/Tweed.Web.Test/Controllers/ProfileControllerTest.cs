@@ -52,7 +52,6 @@ public class ProfileControllerTest
         _tweedQueriesMock = new Mock<ITweedService>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
             .ReturnsAsync(new List<Data.Model.Tweed>());
-        _tweedQueriesMock.Setup(t => t.GetLikesCount(It.IsAny<string>())).ReturnsAsync(0);
 
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,

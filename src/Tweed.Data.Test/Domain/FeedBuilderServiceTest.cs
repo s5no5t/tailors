@@ -94,9 +94,9 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         await session.SaveChangesAsync();
         AppUserFollowsService appUserFollowsService = new(session);
-        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
+        var service = new FeedBuilderService(session, appUserFollowsService);
 
-        var tweeds = await queries.GetFeed(_currentUser.Id!, 0);
+        var tweeds = await service.GetFeed(_currentUser.Id!, 0);
 
         Assert.Contains(currentUserTweed.Id, tweeds.Select(t => t.Id));
     }
@@ -133,9 +133,9 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         await session.SaveChangesAsync();
         AppUserFollowsService appUserFollowsService = new(session);
-        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
+        var service = new FeedBuilderService(session, appUserFollowsService);
 
-        var tweeds = await queries.GetFeed(_currentUser.Id!, 0);
+        var tweeds = await service.GetFeed(_currentUser.Id!, 0);
 
         Assert.Contains(tweeds, t => t.Id == followedUserTweed.Id);
     }
@@ -150,9 +150,9 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
 
         AppUserFollowsService appUserFollowsService = new(session);
-        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
+        var service = new FeedBuilderService(session, appUserFollowsService);
 
-        var tweeds = (await queries.GetFeed(_currentUser.Id!, 0)).ToList();
+        var tweeds = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
 
         var anyDuplicateTweed = tweeds.GroupBy(x => x.Id).Any(g => g.Count() > 1);
         Assert.False(anyDuplicateTweed);
@@ -177,11 +177,11 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         await session.SaveChangesAsync();
         AppUserFollowsService appUserFollowsService = new(session);
-        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
+        var service = new FeedBuilderService(session, appUserFollowsService);
 
-        var feed = (await queries.GetFeed(_currentUser.Id!, 0)).ToList();
+        var feed = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
 
-        Assert.Equal(FeedBuilderServiceService.PageSize, feed.Count);
+        Assert.Equal(FeedBuilderService.PageSize, feed.Count);
     }
 
     [Fact]
@@ -191,10 +191,10 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
         AppUserFollowsService appUserFollowsService = new(session);
-        var queries = new FeedBuilderServiceService(session, appUserFollowsService);
+        var service = new FeedBuilderService(session, appUserFollowsService);
 
-        var page0Feed = (await queries.GetFeed(_currentUser.Id!, 0)).ToList();
-        var page1Feed = (await queries.GetFeed(_currentUser.Id!, 1)).ToList();
+        var page0Feed = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
+        var page1Feed = (await service.GetFeed(_currentUser.Id!, 1)).ToList();
 
         Assert.NotEqual(page0Feed[0].Id, page1Feed[1].Id);
     }

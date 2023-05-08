@@ -60,7 +60,7 @@ public class HomeController : Controller
         {
             Page = page,
             Tweeds = tweedViewModels,
-            NextPageExists = feed.Count == FeedBuilderServiceService.PageSize
+            NextPageExists = feed.Count == FeedBuilderService.PageSize
         };
         return viewModel;
     }

@@ -37,9 +37,9 @@ public class TweedLikesServiceTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedLikesService(session);
+        var service = new TweedLikesService(session);
 
-        await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+        await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
         Assert.Single(appUserLikes.Likes);
     }
@@ -59,9 +59,9 @@ public class TweedLikesServiceTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedLikesService(session);
+        var service = new TweedLikesService(session);
 
-        await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+        await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
         await session.SaveChangesAsync();
 
         var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
@@ -85,9 +85,9 @@ public class TweedLikesServiceTest
         };
         await session.StoreAsync(appUserLikes);
         await session.SaveChangesAsync();
-        var queries = new TweedLikesService(session);
+        var service = new TweedLikesService(session);
 
-        await queries.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+        await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
         Assert.Single(appUserLikes.Likes);
     }
@@ -114,9 +114,9 @@ public class TweedLikesServiceTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedLikesService(session);
+        var service = new TweedLikesService(session);
 
-        await queries.RemoveLike("tweedId", "currentUser");
+        await service.RemoveLike("tweedId", "currentUser");
 
         Assert.Empty(appUserLikes.Likes);
     }
@@ -138,9 +138,9 @@ public class TweedLikesServiceTest
         await session.SaveChangesAsync();
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var queries = new TweedLikesService(session);
+        var service = new TweedLikesService(session);
 
-        await queries.RemoveLike(tweed.Id, "userId");
+        await service.RemoveLike(tweed.Id, "userId");
         await session.SaveChangesAsync();
 
         var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
@@ -162,10 +162,29 @@ public class TweedLikesServiceTest
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedLikesService(session);
+        var service = new TweedLikesService(session);
 
-        await queries.RemoveLike("tweedId", "userId");
+        await service.RemoveLike("tweedId", "userId");
 
         Assert.Empty(appUserLikes.Likes);
+    }
+
+    [Fact]
+    public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
+    {
+        using var session = _store.OpenAsyncSession();
+        Data.Model.Tweed tweed = new()
+        {
+            Text = "test",
+            CreatedAt = FixedZonedDateTime
+        };
+        await session.StoreAsync(tweed);
+        session.CountersFor(tweed.Id).Increment("Likes");
+        await session.SaveChangesAsync();
+        var service = new TweedLikesService(session);
+
+        var likesCount = await service.GetLikesCount(tweed.Id!);
+
+        Assert.Equal(1, likesCount);
     }
 }

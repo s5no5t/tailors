@@ -26,9 +26,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     public async Task StoreTweed_SavesTweed()
     {
         var session = new Mock<IAsyncDocumentSession>();
-        var queries = new TweedService(session.Object);
+        var service = new TweedService(session.Object);
 
-        await queries.StoreTweed(new Data.Model.Tweed());
+        await service.StoreTweed(new Data.Model.Tweed());
 
         session.Verify(s => s.StoreAsync(It.IsAny<Data.Model.Tweed>(), default));
     }
@@ -44,9 +44,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedService(session);
+        var service = new TweedService(session);
 
-        var tweed2 = await queries.GetById(tweed.Id!);
+        var tweed2 = await service.GetById(tweed.Id!);
 
         Assert.Equal(tweed.Id, tweed2?.Id);
     }
@@ -55,9 +55,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_WithInvalidId_ShouldReturnNull()
     {
         using var session = _store.OpenAsyncSession();
-        var queries = new TweedService(session);
+        var service = new TweedService(session);
 
-        var tweed = await queries.GetById("invalid");
+        var tweed = await service.GetById("invalid");
 
         Assert.Null(tweed);
     }
@@ -74,9 +74,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedService(session);
+        var service = new TweedService(session);
 
-        var tweeds = await queries.GetTweedsForUser("user");
+        var tweeds = await service.GetTweedsForUser("user");
 
         Assert.NotEmpty(tweeds);
     }
@@ -102,9 +102,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(recentTweed);
         await session.SaveChangesAsync();
-        var queries = new TweedService(session);
+        var service = new TweedService(session);
 
-        var tweeds = await queries.GetTweedsForUser("user1");
+        var tweeds = await service.GetTweedsForUser("user1");
 
         Assert.Equal(recentTweed, tweeds[0]);
         Assert.Equal(olderTweed, tweeds[1]);
@@ -127,9 +127,9 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         }
 
         await session.SaveChangesAsync();
-        var queries = new TweedService(session);
+        var service = new TweedService(session);
 
-        var tweeds = await queries.GetTweedsForUser("user1");
+        var tweeds = await service.GetTweedsForUser("user1");
 
         Assert.Equal(20, tweeds.Count);
     }
@@ -147,29 +147,10 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var queries = new TweedService(session);
+        var service = new TweedService(session);
 
-        var tweeds = await queries.GetTweedsForUser("user1");
+        var tweeds = await service.GetTweedsForUser("user1");
 
         Assert.Empty(tweeds);
-    }
-
-    [Fact]
-    public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
-    {
-        using var session = _store.OpenAsyncSession();
-        Data.Model.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime
-        };
-        await session.StoreAsync(tweed);
-        session.CountersFor(tweed.Id).Increment("Likes");
-        await session.SaveChangesAsync();
-        var queries = new TweedService(session);
-
-        var likesCount = await queries.GetLikesCount(tweed.Id!);
-
-        Assert.Equal(1, likesCount);
     }
 }

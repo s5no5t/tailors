@@ -10,7 +10,6 @@ public interface ITweedService
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
     Task StoreTweed(Model.Tweed tweed);
-    Task<long> GetLikesCount(string tweedId);
 }
 
 public sealed class TweedService : ITweedService
@@ -39,12 +38,5 @@ public sealed class TweedService : ITweedService
     public async Task StoreTweed(Model.Tweed tweed)
     {
         await _session.StoreAsync(tweed);
-    }
-
-    public async Task<long> GetLikesCount(string tweedId)
-    {
-        var likesCounter =
-            await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
-        return likesCounter ?? 0L;
     }
 }

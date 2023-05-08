@@ -49,7 +49,7 @@ builder.Services.AddScoped<INotificationManager, NotificationManager>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IAppUserFollowsService, AppUserFollowsService>();
 builder.Services.AddScoped<ITweedLikesService, TweedLikesService>();
-builder.Services.AddScoped<IFeedBuilderService, FeedBuilderServiceService>();
+builder.Services.AddScoped<IFeedBuilderService, FeedBuilderService>();
 builder.Services.AddScoped<ITweedThreadService, TweedThreadService>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
