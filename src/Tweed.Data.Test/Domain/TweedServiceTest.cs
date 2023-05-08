@@ -172,34 +172,4 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
 
         Assert.Equal(1, likesCount);
     }
-
-    [Fact]
-    public async Task Search_ShouldReturnEmptyList_WhenNoResults()
-    {
-        using var session = _store.OpenAsyncSession();
-        var queries = new TweedService(session);
-
-        var tweeds = await queries.Search("noresults");
-
-        Assert.Empty(tweeds);
-    }
-
-    [Fact]
-    public async Task Search_ShouldReturnResult_WhenTermIsFound()
-    {
-        using var session = _store.OpenAsyncSession();
-        session.Advanced.WaitForIndexesAfterSaveChanges();
-        Data.Model.Tweed tweed = new()
-        {
-            Id = "tweedId",
-            Text = "Here is a word included."
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var queries = new TweedService(session);
-
-        var tweeds = await queries.Search("word");
-
-        Assert.Equal("tweedId", tweeds[0].Id);
-    }
 }

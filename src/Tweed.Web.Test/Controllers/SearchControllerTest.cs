@@ -23,9 +23,9 @@ public class SearchControllerTest
         _appUserQueriesMock = new Mock<ISearchService>();
         _appUserQueriesMock.Setup(u => u.SearchAppUsers(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _tweedQueriesMock = new Mock<ITweedService>();
-        _tweedQueriesMock.Setup(u => u.Search(It.IsAny<string>()))
+        _appUserQueriesMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
             .ReturnsAsync(new List<Data.Model.Tweed>());
+        _tweedQueriesMock = new Mock<ITweedService>();
         _searchController =
             new SearchController(_appUserQueriesMock.Object, _tweedQueriesMock.Object);
     }
@@ -86,7 +86,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _tweedQueriesMock.Setup(u => u.Search("term")).ReturnsAsync(new List<Data.Model.Tweed>
+        _appUserQueriesMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(new List<Data.Model.Tweed>
         {
             new()
             {
