@@ -6,10 +6,10 @@ namespace Tweed.Domain;
 
 public interface ITweedLikesService
 {
-    Task<List<AppUserLikes.TweedLike>> GetLikes(string userId);
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
     Task<long> GetLikesCount(string tweedId);
+    Task<bool> DoesUserLikeTweed(string tweedId, string userId);
 }
 
 public class TweedLikesService : ITweedLikesService
@@ -19,12 +19,6 @@ public class TweedLikesService : ITweedLikesService
     public TweedLikesService(IAsyncDocumentSession session)
     {
         _session = session;
-    }
-
-    public async Task<List<AppUserLikes.TweedLike>> GetLikes(string userId)
-    {
-        var appUserLikes = await GetOrBuildAppUserLikes(userId);
-        return appUserLikes.Likes;
     }
 
     public async Task AddLike(string tweedId, string userId, ZonedDateTime likedAt)
@@ -56,6 +50,12 @@ public class TweedLikesService : ITweedLikesService
         var likesCounter =
             await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
         return likesCounter ?? 0L;
+    }
+
+    public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
+    {
+        var appUserLikes = await GetOrBuildAppUserLikes(userId);
+        return appUserLikes.Likes.Any(lb => lb.TweedId == tweedId);
     }
 
     private async Task<AppUserLikes> GetOrBuildAppUserLikes(string userId)
