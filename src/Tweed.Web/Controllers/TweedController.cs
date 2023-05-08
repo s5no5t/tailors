@@ -6,6 +6,7 @@ using NodaTime;
 using Tweed.Data.Domain;
 using Tweed.Data.Model;
 using Tweed.Web.Helper;
+using Tweed.Web.Views.Shared;
 using Tweed.Web.Views.Tweed;
 
 namespace Tweed.Web.Controllers;
@@ -46,8 +47,10 @@ public class TweedController : Controller
             return NotFound();
 
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
-        GetByIdViewModel viewModel = new(tweedViewModel)
+        GetByIdViewModel viewModel = new()
         {
+            LeadingTweeds = new List<TweedViewModel>(),
+            Tweed = tweedViewModel,
             CreateTweed = new CreateReplyTweedViewModel
             {
                 ParentTweedId = decodedTweedId
