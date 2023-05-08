@@ -5,7 +5,6 @@ namespace Tweed.Data.Domain;
 
 public interface ITweedThreadService
 {
-    Task StoreThread(TweedThread thread);
 }
 
 public class TweedThreadService : ITweedThreadService
@@ -15,11 +14,6 @@ public class TweedThreadService : ITweedThreadService
     public TweedThreadService(IAsyncDocumentSession session)
     {
         _session = session;
-    }
-
-    public async Task StoreThread(TweedThread thread)
-    {
-        await _session.StoreAsync(thread);
     }
 
     public async Task<TweedThread> LoadThread(string threadId)

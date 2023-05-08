@@ -4,6 +4,7 @@ using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tweed.Data.Domain;
+using Tweed.Data.Model;
 using Tweed.Data.Test.Helper;
 using Xunit;
 
@@ -28,9 +29,41 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.StoreTweed(new Data.Model.Tweed());
+        await service.CreateTweed(new Data.Model.Tweed());
 
         session.Verify(s => s.StoreAsync(It.IsAny<Data.Model.Tweed>(), default));
+    }
+
+    [Fact]
+    public async Task StoreTweed_CreatesThread_WhenTweedIsRoot()
+    {
+        var session = new Mock<IAsyncDocumentSession>();
+        var service = new TweedService(session.Object);
+
+        await service.CreateTweed(new Data.Model.Tweed());
+
+        session.Verify(s => s.StoreAsync(It.IsAny<TweedThread>(), default));
+    }
+
+    [Fact]
+    public async Task StoreTweed_UpdatesThreadId_WhenTweedHasParent()
+    {
+        var session = _store.OpenAsyncSession();
+        var service = new TweedService(session);
+
+        Data.Model.Tweed parentTweed = new()
+        {
+            Id = "parentTweedId",
+            ThreadId = "threadId"
+        };
+        await session.StoreAsync(parentTweed);
+        Data.Model.Tweed tweed = new()
+        {
+            ParentTweedId = "parentTweedId"
+        };
+        await service.CreateTweed(tweed);
+
+        Assert.Equal(parentTweed.ThreadId, tweed.ThreadId);
     }
 
     [Fact]
