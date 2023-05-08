@@ -1,44 +1,40 @@
 using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Helper;
 
 public interface IViewModelFactory
 {
-    Task<TweedViewModel> BuildTweedViewModel(Data.Model.Tweed tweed);
+    Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed);
 }
 
 public class ViewModelFactory : IViewModelFactory
 {
-    private readonly IAppUserLikesService _appUserLikesService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ITweedService _tweedService;
+    private readonly ITweedLikesService _tweedLikesService;
     private readonly UserManager<AppUser> _userManager;
 
-    public ViewModelFactory(
-        IAppUserLikesService appUserLikesService,
-        ITweedService tweedService, UserManager<AppUser> userManager,
+    public ViewModelFactory(ITweedLikesService tweedLikesService, UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
-        _appUserLikesService = appUserLikesService;
-        _tweedService = tweedService;
+        _tweedLikesService = tweedLikesService;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> BuildTweedViewModel(Data.Model.Tweed tweed)
+    public async Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed)
     {
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
-        var likesCount = await _tweedService.GetLikesCount(tweed.Id!);
+        var likesCount = await _tweedLikesService.GetLikesCount(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
-        var currentUserLikes = await _appUserLikesService.GetLikes(currentUserId!);
+        var currentUserLikes = await _tweedLikesService.GetLikes(currentUserId!);
 
         TweedViewModel viewModel = new()
         {

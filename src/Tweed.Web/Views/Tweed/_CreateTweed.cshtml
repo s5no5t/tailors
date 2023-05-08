@@ -1,7 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @model Tweed.Web.Views.Tweed.CreateTweedViewModel
 
-<form method="post">
+<form method="post" action="@Url.Action("Create")">
     <div class="mb-3">
         <label for="text" class="form-label">Text</label>
 
@@ -21,23 +21,7 @@
         }
     </div>
 
-    @if (Model.ParentTweedId is null)
-    {
-        <button type="submit" class="btn btn-primary"
-                hx-post="@Url.Action("Create")"
-                hx-target="closest form"
-                hx-swap="outerHTML">
-            Submit
-        </button>
-    }
-    else
-    {
-        <input type="hidden" name="ParentTweedId" value="@Model.ParentTweedId"/>
-        <button type="submit" class="btn btn-primary"
-                hx-post="@Url.Action("CreateReply")"
-                hx-target="closest form"
-                hx-swap="outerHTML">
-            Submit
-        </button>
-    }
+    <button type="submit" class="btn btn-primary">
+        Submit
+    </button>
 </form>

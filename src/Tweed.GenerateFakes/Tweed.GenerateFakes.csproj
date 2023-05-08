@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+        <PackageReference Include="NodaTime" Version="3.1.9" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Tweed.Infrastructure\Tweed.Infrastructure.csproj" />
+        <ProjectReference Include="..\Tweed.Domain\Tweed.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="appsettings.Development.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>

@@ -3,9 +3,9 @@ using OpenTelemetry.Trace;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tweed.Data;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain;
+using Tweed.Domain.Model;
+using Tweed.Infrastructure.Setup;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
@@ -46,10 +46,11 @@ builder.Services.ConfigureApplicationCookie(
 
 builder.Services.AddScoped<ITweedService, TweedService>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
-builder.Services.AddScoped<IAppUserService, AppUserService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IAppUserFollowsService, AppUserFollowsService>();
-builder.Services.AddScoped<IAppUserLikesService, AppUserLikesService>();
-builder.Services.AddScoped<IFeedBuilderService, FeedBuilderServiceService>();
+builder.Services.AddScoped<ITweedLikesService, TweedLikesService>();
+builder.Services.AddScoped<IFeedService, FeedService>();
+builder.Services.AddScoped<ITweedThreadService, TweedThreadService>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
 builder.Services.Configure<IdentityOptions>(options =>

@@ -4,7 +4,7 @@ using Raven.Client.Documents.Subscriptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
-using Tweed.Data.Domain;
+using Tweed.Domain;
 
 namespace Tweed.Web;
 
@@ -23,12 +23,17 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation($"Starting worker for subscription {SubscriptionName}");
         await EnsureSubScriptionExists(stoppingToken);
 
         while (true)
         {
+            SubscriptionWorkerOptions options = new(SubscriptionName)
+            {
+                MaxDocsPerBatch = 20
+            };
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<Data.Model.Tweed>(SubscriptionName);
+                _store.Subscriptions.GetSubscriptionWorker<Domain.Model.Tweed>(options);
 
             try
             {
@@ -41,10 +46,12 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
                 await subscriptionWorker.Run(async batch =>
                 {
+                    _logger.LogInformation($"Processing batch of {batch.Items.Count} items");
                     using var session = batch.OpenAsyncSession();
-                    // TODO: Insert tweeds into threads
-                    // foreach (var item in batch.Items) await ProcessTweed(item.Result, session);
+                    foreach (var item in batch.Items)
+                        await ProcessTweed(item.Result, session);
                     await session.SaveChangesAsync(stoppingToken);
+                    _logger.LogInformation("Finished processing batch");
                 }, stoppingToken);
 
                 return;
@@ -79,6 +86,8 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             }
             finally
             {
+                _logger.LogInformation(
+                    $"Stopping worker {subscriptionWorker.WorkerId} for subscription {SubscriptionName}");
                 await subscriptionWorker.DisposeAsync();
             }
         }
@@ -93,7 +102,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
         catch (SubscriptionDoesNotExistException)
         {
-            SubscriptionCreationOptions<Data.Model.Tweed> options = new()
+            SubscriptionCreationOptions<Domain.Model.Tweed> options = new()
             {
                 Name = SubscriptionName
             };
@@ -101,9 +110,14 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
     }
 
-    private async Task ProcessTweed(Data.Model.Tweed tweed, IAsyncDocumentSession session)
+    private async Task ProcessTweed(Domain.Model.Tweed tweed, IAsyncDocumentSession session)
     {
         TweedThreadService tweedThreadService = new(session);
-        await tweedThreadService.InsertTweedIntoThread(tweed.Id!, tweed.ParentTweedId);
+
+        if (tweed.ThreadId is null)
+            throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
+
+        var thread = await tweedThreadService.LoadThread(tweed.ThreadId);
+        tweedThreadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
     }
 }
