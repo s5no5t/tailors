@@ -1,10 +1,10 @@
 using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.Data.Indexes;
-using Tweed.Data.Model;
+using Tweed.Domain.Indexes;
+using Tweed.Domain.Model;
 
-namespace Tweed.Data.Domain;
+namespace Tweed.Domain.Domain;
 
 public interface IAppUserFollowsService
 {

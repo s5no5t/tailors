@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -35,13 +35,13 @@ public class HomeControllerTest
             Id = "currentUser"
         };
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(appUser.Id);
-        var tweed = new Data.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId",
             AuthorId = "author"
         };
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>()))
-            .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
+            .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel());
 
@@ -82,13 +82,13 @@ public class HomeControllerTest
     [Fact]
     public async Task Index_ShouldReturnTweeds()
     {
-        var tweed = new Data.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId",
             AuthorId = "author"
         };
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0))
-            .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
+            .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel
             {
@@ -124,13 +124,13 @@ public class HomeControllerTest
     [Fact]
     public async Task Feed_ShouldReturnTweeds()
     {
-        var tweed = new Data.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId",
             AuthorId = "author"
         };
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0))
-            .ReturnsAsync(new List<Data.Model.Tweed> { tweed });
+            .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
             .ReturnsAsync(new TweedViewModel
             {

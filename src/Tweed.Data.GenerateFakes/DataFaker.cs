@@ -1,6 +1,6 @@
 using Bogus;
 using Raven.Client.Documents;
-using Tweed.Data.Model;
+using Tweed.Domain.Model;
 
 namespace Tweed.Data.GenerateFakes;
 
@@ -52,7 +52,7 @@ internal class DataFaker
         Console.WriteLine("{0} AppUserFollows created", appUsers.Count);
     }
 
-    internal async Task<List<Model.Tweed>> CreateFakeTweeds(List<AppUser> appUsers)
+    internal async Task<List<Domain.Model.Tweed>> CreateFakeTweeds(List<AppUser> appUsers)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
@@ -62,7 +62,7 @@ internal class DataFaker
         var threads = threadFaker.Generate(numThreads);
         foreach (var thread in threads) await bulkInsert.StoreAsync(thread);
 
-        var tweedFaker = new Faker<Model.Tweed>()
+        var tweedFaker = new Faker<Domain.Model.Tweed>()
             .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
             .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
             .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id)
@@ -76,7 +76,7 @@ internal class DataFaker
         return tweeds;
     }
 
-    internal async Task CreateFakeLikes(List<AppUser> appUsers, List<Model.Tweed> tweeds)
+    internal async Task CreateFakeLikes(List<AppUser> appUsers, List<Domain.Model.Tweed> tweeds)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 

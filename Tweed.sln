@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Web", "src\Tweed.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Web.Test", "src\Tweed.Web.Test\Tweed.Web.Test.csproj", "{C07E8FBB-1A17-47FB-82C1-A9653A244B08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data", "src\Tweed.Data\Tweed.Data.csproj", "{6604811C-10A5-494A-AA1A-B0E98CD3EECF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Domain", "src\Tweed.Domain\Tweed.Domain.csproj", "{6604811C-10A5-494A-AA1A-B0E98CD3EECF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Data.Test", "src\Tweed.Data.Test\Tweed.Data.Test.csproj", "{3CD15B19-9E32-4D4A-A466-13A2D7617804}"
 EndProject

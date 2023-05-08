@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
 using Tweed.Data.Test.Helper;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Xunit;
 
 namespace Tweed.Data.Test.Domain;

@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -51,7 +51,7 @@ public class ProfileControllerTest
 
         _tweedQueriesMock = new Mock<ITweedService>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
-            .ReturnsAsync(new List<Data.Model.Tweed>());
+            .ReturnsAsync(new List<Domain.Model.Tweed>());
 
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,

@@ -5,10 +5,10 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.NodaTime;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
-using Tweed.Data.Indexes;
-using Tweed.Data.Model;
+using Tweed.Domain.Indexes;
+using Tweed.Domain.Model;
 
-namespace Tweed.Data;
+namespace Tweed.Domain;
 
 public static class RavenExtensions
 {

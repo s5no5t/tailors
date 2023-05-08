@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Shared;
 using Tweed.Web.Views.Tweed;
@@ -71,7 +71,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             CreatedAt = now,
             AuthorId = currentUserId,
@@ -99,7 +99,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             ParentTweedId = viewModel.ParentTweedId,
             CreatedAt = now,

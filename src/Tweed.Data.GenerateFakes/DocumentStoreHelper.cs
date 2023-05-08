@@ -1,5 +1,6 @@
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
+using Tweed.Domain;
 
 namespace Tweed.Data.GenerateFakes;
 

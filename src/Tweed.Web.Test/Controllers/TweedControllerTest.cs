@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
-using Tweed.Data.Domain;
-using Tweed.Data.Model;
+using Tweed.Domain.Domain;
+using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -35,7 +35,7 @@ public class TweedControllerTest
     public TweedControllerTest()
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
-        _tweedServiceMock.Setup(t => t.CreateTweed(It.IsAny<Data.Model.Tweed>()));
+        _tweedServiceMock.Setup(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
         _tweedController = new TweedController(_tweedServiceMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object,
             _tweedLikesServiceMock.Object, _viewModelFactoryMock.Object,
@@ -57,7 +57,7 @@ public class TweedControllerTest
     [Fact]
     public async Task GetById_ShouldReturnGetByIdViewResult()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Id = "tweedId"
         };
@@ -73,7 +73,7 @@ public class TweedControllerTest
     [Fact]
     public async Task GetById_ShouldReturnCurrentTweed()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Id = "tweedId"
         };
@@ -93,7 +93,7 @@ public class TweedControllerTest
     [Fact]
     public async Task GetById_ShouldReturnEmptyLeadingTweeds_WhenTweedIsRoot()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Id = "tweedId"
         };
@@ -123,7 +123,7 @@ public class TweedControllerTest
     [Fact]
     public async Task GetById_ShouldSetParentTweedId()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Id = "tweeds/1"
         };
@@ -156,7 +156,7 @@ public class TweedControllerTest
         };
         await _tweedController.Create(viewModel);
 
-        _tweedServiceMock.Verify(t => t.CreateTweed(It.IsAny<Data.Model.Tweed>()));
+        _tweedServiceMock.Verify(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
     }
 
 
@@ -176,9 +176,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldReturnRedirect()
     {
         _tweedServiceMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Data.Model.Tweed());
+            .ReturnsAsync(new Domain.Model.Tweed());
         _tweedServiceMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Data.Model.Tweed());
+            .ReturnsAsync(new Domain.Model.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -194,9 +194,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSaveTweed()
     {
         _tweedServiceMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Data.Model.Tweed());
+            .ReturnsAsync(new Domain.Model.Tweed());
         _tweedServiceMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Data.Model.Tweed());
+            .ReturnsAsync(new Domain.Model.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -205,16 +205,16 @@ public class TweedControllerTest
         };
         await _tweedController.CreateReply(viewModel);
 
-        _tweedServiceMock.Verify(t => t.CreateTweed(It.IsAny<Data.Model.Tweed>()));
+        _tweedServiceMock.Verify(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
     }
 
     [Fact]
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
         _tweedServiceMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Data.Model.Tweed());
+            .ReturnsAsync(new Domain.Model.Tweed());
         _tweedServiceMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Data.Model.Tweed());
+            .ReturnsAsync(new Domain.Model.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -254,7 +254,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -269,7 +269,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -284,7 +284,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -298,7 +298,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Data.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             AuthorId = "author"
         };
