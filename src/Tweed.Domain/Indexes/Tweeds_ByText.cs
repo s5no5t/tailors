@@ -2,7 +2,7 @@ using Raven.Client.Documents.Indexes;
 
 namespace Tweed.Domain.Indexes;
 
-public class Tweeds_ByText : AbstractIndexCreationTask<Model.Tweed>
+public class Tweeds_ByText : AbstractIndexCreationTask<Domain.Model.Tweed>
 {
     public Tweeds_ByText()
     {
