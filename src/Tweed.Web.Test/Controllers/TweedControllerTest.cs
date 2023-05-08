@@ -21,7 +21,7 @@ namespace Tweed.Web.Test.Controllers;
 public class TweedControllerTest
 {
     private readonly Mock<IAppUserLikesService> _appUserLikesQueriesMock = new();
-    private readonly Mock<IAppUserService> _appUserQueriesMock = new();
+    private readonly Mock<ISearchService> _appUserQueriesMock = new();
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;

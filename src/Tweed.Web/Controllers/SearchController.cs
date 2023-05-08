@@ -9,12 +9,12 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class SearchController : Controller
 {
-    private readonly IAppUserService _appUserService;
+    private readonly ISearchService _searchService;
     private readonly ITweedService _tweedService;
 
-    public SearchController(IAppUserService appUserService, ITweedService tweedService)
+    public SearchController(ISearchService searchService, ITweedService tweedService)
     {
-        _appUserService = appUserService;
+        _searchService = searchService;
         _tweedService = tweedService;
     }
 
@@ -35,7 +35,7 @@ public class SearchController : Controller
             return View("Index",
                 new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
 
-        var users = await _appUserService.Search(term);
+        var users = await _searchService.SearchAppUsers(term);
         var tweeds = await _tweedService.Search(term);
         IndexViewModel viewModel = new(
             term,
