@@ -9,6 +9,7 @@ public interface ITweedLikesService
     Task<List<AppUserLikes.TweedLike>> GetLikes(string userId);
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
+    Task<long> GetLikesCount(string tweedId);
 }
 
 public class TweedLikesService : ITweedLikesService
@@ -46,6 +47,13 @@ public class TweedLikesService : ITweedLikesService
         appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
         var tweed = await _session.LoadAsync<Model.Tweed>(tweedId);
         _session.CountersFor(tweed).Increment(Model.Tweed.LikesCounterName, -1);
+    }
+
+    public async Task<long> GetLikesCount(string tweedId)
+    {
+        var likesCounter =
+            await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
+        return likesCounter ?? 0L;
     }
 
     private async Task<AppUserLikes> GetOrCreateAppUserLikes(string userId)

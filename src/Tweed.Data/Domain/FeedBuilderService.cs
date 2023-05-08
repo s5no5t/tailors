@@ -10,14 +10,14 @@ public interface IFeedBuilderService
     Task<List<Model.Tweed>> GetFeed(string appUserId, int page);
 }
 
-public class FeedBuilderServiceService : IFeedBuilderService
+public class FeedBuilderService : IFeedBuilderService
 {
     public const int PageSize = 20;
     private const int FeedSize = 100;
     private readonly IAppUserFollowsService _appUserFollowsService;
     private readonly IAsyncDocumentSession _session;
 
-    public FeedBuilderServiceService(IAsyncDocumentSession session, IAppUserFollowsService appUserFollowsService)
+    public FeedBuilderService(IAsyncDocumentSession session, IAppUserFollowsService appUserFollowsService)
     {
         _session = session;
         _appUserFollowsService = appUserFollowsService;
