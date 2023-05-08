@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Domain.Domain;
 using Tweed.Domain.Model;
 using Tweed.Domain.Test.Helper;
 using Xunit;
 
-namespace Tweed.Domain.Test.Domain;
+namespace Tweed.Domain.Test;
 
 [Collection("RavenDb Collection")]
 public class AppUserFollowsServiceTest

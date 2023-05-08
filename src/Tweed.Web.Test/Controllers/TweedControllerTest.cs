@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
-using Tweed.Domain.Domain;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
