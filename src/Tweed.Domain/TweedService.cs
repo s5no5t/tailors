@@ -10,8 +10,8 @@ namespace Tweed.Domain;
 public interface ITweedService
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
-    Task<Model.Tweed?> GetById(string id);
-    Task<Model.Tweed> CreateTweed(string authorId, string text, ZonedDateTime createdAt);
+    Task<Model.Tweed?> GetTweedById(string id);
+    Task<Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
     Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
         string parentTweedId);
 }
@@ -34,12 +34,12 @@ public sealed class TweedService : ITweedService
             .ToListAsync();
     }
 
-    public Task<Model.Tweed?> GetById(string id)
+    public Task<Model.Tweed?> GetTweedById(string id)
     {
         return _session.LoadAsync<Model.Tweed>(id)!;
     }
 
-    public async Task<Model.Tweed> CreateTweed(string authorId, string text,
+    public async Task<Model.Tweed> CreateRootTweed(string authorId, string text,
         ZonedDateTime createdAt)
     {
         Model.Tweed tweed = new()

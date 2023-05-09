@@ -37,7 +37,7 @@ public class TweedController : Controller
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var tweed = await _tweedService.GetById(decodedTweedId);
+        var tweed = await _tweedService.GetTweedById(decodedTweedId);
         if (tweed == null)
             return NotFound();
 
@@ -69,7 +69,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _tweedService.CreateTweed(currentUserId!, viewModel.Text, now);
+        await _tweedService.CreateRootTweed(currentUserId!, viewModel.Text, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -84,7 +84,7 @@ public class TweedController : Controller
         if (viewModel.ParentTweedId is null)
             return BadRequest();
 
-        var parentTweed = await _tweedService.GetById(viewModel.ParentTweedId);
+        var parentTweed = await _tweedService.GetTweedById(viewModel.ParentTweedId);
         if (parentTweed is null)
             return BadRequest();
 
@@ -105,7 +105,7 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Like(string tweedId)
     {
-        var tweed = await _tweedService.GetById(tweedId);
+        var tweed = await _tweedService.GetTweedById(tweedId);
         if (tweed == null)
             return NotFound();
 
@@ -120,7 +120,7 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Unlike(string tweedId)
     {
-        var tweed = await _tweedService.GetById(tweedId);
+        var tweed = await _tweedService.GetTweedById(tweedId);
         if (tweed == null)
             return NotFound();
 
