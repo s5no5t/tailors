@@ -23,23 +23,23 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task CreateTweed_SavesTweed()
+    public async Task CreateRootTweed_SavesTweed()
     {
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.CreateTweed("authorId", "text", FixedZonedDateTime);
+        await service.CreateRootTweed("authorId", "text", FixedZonedDateTime);
 
         session.Verify(s => s.StoreAsync(It.IsAny<Domain.Model.Tweed>(), default));
     }
 
     [Fact]
-    public async Task CreateTweed_CreatesThread()
+    public async Task CreateRootTweed_CreatesThread()
     {
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.CreateTweed("authorId", "text", FixedZonedDateTime);
+        await service.CreateRootTweed("authorId", "text", FixedZonedDateTime);
 
         session.Verify(s => s.StoreAsync(It.IsAny<TweedThread>(), default));
     }
@@ -83,7 +83,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnTweed()
+    public async Task GetTweedById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
         Domain.Model.Tweed tweed = new()
@@ -95,18 +95,18 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var service = new TweedService(session);
 
-        var tweed2 = await service.GetById(tweed.Id!);
+        var tweed2 = await service.GetTweedById(tweed.Id!);
 
         Assert.Equal(tweed.Id, tweed2?.Id);
     }
 
     [Fact]
-    public async Task GetById_WithInvalidId_ShouldReturnNull()
+    public async Task GetTweedById_WithInvalidId_ShouldReturnNull()
     {
         using var session = _store.OpenAsyncSession();
         var service = new TweedService(session);
 
-        var tweed = await service.GetById("invalid");
+        var tweed = await service.GetTweedById("invalid");
 
         Assert.Null(tweed);
     }
