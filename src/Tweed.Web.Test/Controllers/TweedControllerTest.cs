@@ -82,7 +82,7 @@ public class TweedControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<GetByIdViewModel>(resultAsView.Model);
+        Assert.IsType<ShowThreadForTweedViewModel>(resultAsView.Model);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class TweedControllerTest
 
         var result = await _tweedController.ShowThreadForTweed("tweedId");
 
-        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
+        var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal(tweed.Id, resultViewModel.Tweed.Id);
     }
 
@@ -140,7 +140,7 @@ public class TweedControllerTest
 
         var result = await _tweedController.ShowThreadForTweed("tweedId");
 
-        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
+        var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal(resultViewModel.LeadingTweeds[0].Id, rootTweed.Id);
     }
 
@@ -160,7 +160,7 @@ public class TweedControllerTest
 
         var result = await _tweedController.ShowThreadForTweed(HttpUtility.UrlEncode(tweed.Id));
 
-        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
+        var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal(tweed.Id, resultViewModel.CreateTweed.ParentTweedId);
     }
 
