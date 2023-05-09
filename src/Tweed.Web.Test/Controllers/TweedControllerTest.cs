@@ -144,9 +144,28 @@ public class TweedControllerTest
         Assert.Equal(resultViewModel.LeadingTweeds[0].Id, rootTweed.Id);
     }
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task ShowThreadForTweed_ShouldReturnReplies()
     {
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId"
+        };
+        Domain.Model.Tweed replyTweed = new()
+        {
+            Id = "replyTweedId"
+        };
+        _tweedServiceMock.Setup(t => t.GetTweedById(tweed.Id)).ReturnsAsync(tweed);
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
+            new TweedViewModel
+            {
+                Id = tweed.Id
+            });
+
+        var result = await _tweedController.ShowThreadForTweed("tweedId");
+
+        var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
+        Assert.Equal(resultViewModel.ReplyTweeds[0].Id, replyTweed.Id);
     }
 
     [Fact]

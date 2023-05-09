@@ -48,19 +48,27 @@ public class TweedController : Controller
         var leadingTweedsRef =
             await _tweedThreadService.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
         if (leadingTweedsRef is not null)
-        {
             foreach (var leadingTweedRef in leadingTweedsRef)
             {
                 var leadingTweed = await _tweedService.GetTweedById(leadingTweedRef.TweedId!);
-                leadingTweedViewModels.Add(await _viewModelFactory.BuildTweedViewModel(leadingTweed!));
+                leadingTweedViewModels.Add(
+                    await _viewModelFactory.BuildTweedViewModel(leadingTweed!));
             }
-        }
+
+        List<TweedViewModel> replyTweedViewModels = new() // TODO
+        {
+            new TweedViewModel
+            {
+                Id = "replyTweedId"
+            }
+        };
 
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         ShowThreadForTweedViewModel viewModel = new()
         {
             LeadingTweeds = leadingTweedViewModels,
             Tweed = tweedViewModel,
+            ReplyTweeds = replyTweedViewModels,
             CreateTweed = new CreateReplyTweedViewModel
             {
                 ParentTweedId = decodedTweedId
