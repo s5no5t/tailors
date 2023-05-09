@@ -20,6 +20,9 @@ public class TweedThreadService : ITweedThreadService
     public async Task<List<Model.Tweed>> GetLeadingTweeds(string threadId, string tweedId)
     {
         var thread = await _session.LoadAsync<TweedThread>(threadId);
+        
+        // find tweed id chain that leads up to tweedId
+        
 
         //var leadingThreadIds = FindTweedReference(thread.Root, tweedId);
 
