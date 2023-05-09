@@ -32,7 +32,7 @@ public class TweedController : Controller
     }
 
     [HttpGet("Tweed/{tweedId}")]
-    public async Task<ActionResult> GetById(string tweedId)
+    public async Task<ActionResult> ShowThreadForTweed(string tweedId)
     {
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
@@ -96,7 +96,7 @@ public class TweedController : Controller
 
         _notificationManager.AppendSuccess("Reply Posted");
 
-        return RedirectToAction("GetById", new
+        return RedirectToAction("ShowThreadForTweed", new
         {
             tweedId = tweed.Id
         });
