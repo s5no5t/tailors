@@ -12,7 +12,7 @@
     <div class="mt-1">
         <small class="text-muted">
             <i class="bi bi-heart-fill" style="font-size: 1em"></i> @Model.LikesCount
-            <a asp-controller="Tweed" asp-action="GetById" asp-route-tweedId="@Model.Id">More</a>
+            <a asp-controller="Tweed" asp-action="ShowThreadForTweed" asp-route-tweedId="@Model.Id">More</a>
         </small>
     </div>
     <form method="post">

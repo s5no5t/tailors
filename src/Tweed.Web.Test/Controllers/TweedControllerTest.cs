@@ -62,7 +62,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnGetByIdViewResult()
+    public async Task ShowThreadForTweed_ShouldReturnGetByIdViewResult()
     {
         global::Tweed.Domain.Model.Tweed tweed = new()
         {
@@ -70,7 +70,7 @@ public class TweedControllerTest
         };
         _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
 
-        var result = await _tweedController.GetById("tweedId");
+        var result = await _tweedController.ShowThreadForTweed("tweedId");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -78,7 +78,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnCurrentTweed()
+    public async Task ShowThreadForTweed_ShouldReturnCurrentTweed()
     {
         Domain.Model.Tweed tweed = new()
         {
@@ -91,14 +91,14 @@ public class TweedControllerTest
                 Id = tweed.Id
             });
 
-        var result = await _tweedController.GetById("tweedId");
+        var result = await _tweedController.ShowThreadForTweed("tweedId");
 
         var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
         Assert.Equal(tweed.Id, resultViewModel.Tweed.Id);
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnEmptyLeadingTweeds_WhenTweedIsRoot()
+    public async Task ShowThreadForTweed_ShouldReturnEmptyLeadingTweeds_WhenTweedIsRoot()
     {
         Domain.Model.Tweed tweed = new()
         {
@@ -111,24 +111,24 @@ public class TweedControllerTest
                 Id = tweed.Id
             });
 
-        var result = await _tweedController.GetById("tweedId");
+        var result = await _tweedController.ShowThreadForTweed("tweedId");
 
         var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
         Assert.Empty(resultViewModel.LeadingTweeds);
     }
 
     [Fact(Skip = "TODO")]
-    public async Task GetById_ShouldReturnLeadingTweeds_WhenTweedIsNotRoot()
+    public async Task ShowThreadForTweed_ShouldReturnLeadingTweeds_WhenTweedIsNotRoot()
     {
     }
 
     [Fact(Skip = "TODO")]
-    public async Task GetById_ShouldReturnReplies()
+    public async Task ShowThreadForTweed_ShouldReturnReplies()
     {
     }
 
     [Fact]
-    public async Task GetById_ShouldSetParentTweedId()
+    public async Task ShowThreadForTweed_ShouldSetParentTweedId()
     {
         Domain.Model.Tweed tweed = new()
         {
@@ -136,7 +136,7 @@ public class TweedControllerTest
         };
         _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
 
-        var result = await _tweedController.GetById(HttpUtility.UrlEncode(tweed.Id));
+        var result = await _tweedController.ShowThreadForTweed(HttpUtility.UrlEncode(tweed.Id));
 
         var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
         Assert.Equal(tweed.Id, resultViewModel.CreateTweed.ParentTweedId);
