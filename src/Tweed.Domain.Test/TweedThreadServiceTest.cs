@@ -16,6 +16,26 @@ public class TweedThreadServiceTest
     {
         _store = ravenDb.CreateDocumentStore();
     }
+    
+    [Fact]
+    public async Task GetLeadingTweeds_ShouldReturnNull_WhenTweedIsntFound()
+    {
+        using var session = _store.OpenAsyncSession();
+        TweedThread thread = new()
+        {
+            Id = "threadId",
+            Root = new TweedThread.TweedReference
+            {
+                TweedId = "rootTweedId"
+            }
+        };
+        await session.StoreAsync(thread);
+        TweedThreadService service = new(session);
+
+        var leadingTweeds = await service.GetLeadingTweeds("threadId", "unknownTweedId");
+
+        Assert.Null(leadingTweeds);
+    }
 
     [Fact]
     public async Task GetLeadingTweeds_ShouldReturnEmptyList_WhenThereIsOnlyRoot()

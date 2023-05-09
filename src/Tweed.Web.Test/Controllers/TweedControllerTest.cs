@@ -50,7 +50,7 @@ public class TweedControllerTest
         });
         _tweedThreadServiceMock
             .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(new List<Domain.Model.Tweed>());
+            .ReturnsAsync(new List<TweedThread.TweedReference>());
         _tweedController = new TweedController(_tweedServiceMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object,
             _tweedLikesServiceMock.Object, _tweedThreadServiceMock.Object,
@@ -106,49 +106,32 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task ShowThreadForTweed_ShouldReturnEmptyLeadingTweeds_WhenTweedIsRoot()
-    {
-        Domain.Model.Tweed tweed = new()
-        {
-            Id = "tweedId"
-        };
-        _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
-            new TweedViewModel
-            {
-                Id = tweed.Id
-            });
-
-        var result = await _tweedController.ShowThreadForTweed("tweedId");
-
-        var resultViewModel = (GetByIdViewModel)((ViewResult)result).Model!;
-        Assert.Empty(resultViewModel.LeadingTweeds);
-    }
-
-    [Fact(Skip = "TODO")]
-    public async Task ShowThreadForTweed_ShouldReturnLeadingTweeds_WhenTweedIsNotRoot()
+    public async Task ShowThreadForTweed_ShouldReturnLeadingTweeds()
     {
         Domain.Model.Tweed rootTweed = new()
         {
             Id = "rootTweedId"
         };
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId"
+        };
         _tweedThreadServiceMock
-            .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
-                new List<Domain.Model.Tweed>
+            .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), tweed.Id)).ReturnsAsync(
+                new List<TweedThread.TweedReference>
                 {
-                    rootTweed
+                    new()
+                    {
+                        TweedId = rootTweed.Id
+                    }
                 });
+        _tweedServiceMock.Setup(t => t.GetTweedById(rootTweed.Id)).ReturnsAsync(rootTweed);
+        _tweedServiceMock.Setup(t => t.GetTweedById(tweed.Id)).ReturnsAsync(tweed);
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(rootTweed)).ReturnsAsync(
             new TweedViewModel
             {
                 Id = rootTweed.Id
             });
-
-        Domain.Model.Tweed tweed = new()
-        {
-            Id = "tweedId"
-        };
-        _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
             new TweedViewModel
             {
