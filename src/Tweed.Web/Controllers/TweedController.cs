@@ -17,17 +17,20 @@ public class TweedController : Controller
     private readonly INotificationManager _notificationManager;
     private readonly ITweedLikesService _tweedLikesService;
     private readonly ITweedService _tweedService;
+    private readonly ITweedThreadService _tweedThreadService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedService tweedService, UserManager<AppUser> userManager,
         INotificationManager notificationManager, ITweedLikesService tweedLikesService,
+        ITweedThreadService tweedThreadService,
         IViewModelFactory viewModelFactory)
     {
         _tweedService = tweedService;
         _userManager = userManager;
         _notificationManager = notificationManager;
         _tweedLikesService = tweedLikesService;
+        _tweedThreadService = tweedThreadService;
         _viewModelFactory = viewModelFactory;
     }
 
@@ -40,6 +43,8 @@ public class TweedController : Controller
         var tweed = await _tweedService.GetTweedById(decodedTweedId);
         if (tweed == null)
             return NotFound();
+
+        //var leadingTweeds = await _tweedThreadService.GetLeadingTweeds(tweed.ThreadId);
 
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         GetByIdViewModel viewModel = new()
