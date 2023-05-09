@@ -57,7 +57,7 @@ public class TweedController : Controller
         }
 
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
-        GetByIdViewModel viewModel = new()
+        ShowThreadForTweedViewModel viewModel = new()
         {
             LeadingTweeds = leadingTweedViewModels,
             Tweed = tweedViewModel,
