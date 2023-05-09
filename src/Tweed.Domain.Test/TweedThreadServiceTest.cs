@@ -17,23 +17,93 @@ public class TweedThreadServiceTest
         _store = ravenDb.CreateDocumentStore();
     }
 
-    [Fact(Skip = "TODO")]
-    public async Task GetLeadingTweeds_ShouldReturnLeadingTweeds()
+    [Fact]
+    public async Task GetLeadingTweeds_ShouldReturnEmptyList_WhenThereIsOnlyRoot()
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new()
         {
             Id = "threadId",
-            Root = new TweedThread.TweedReference()
+            Root = new TweedThread.TweedReference
             {
                 TweedId = "rootTweedId"
             }
         };
+        await session.StoreAsync(thread);
+        TweedThreadService service = new(session);
+
+        var leadingTweeds = await service.GetLeadingTweeds("threadId", "rootTweedId");
+
+        Assert.NotNull(leadingTweeds);
+        Assert.Empty(leadingTweeds);
+    }
+
+    [Fact]
+    public async Task GetLeadingTweeds_ShouldReturnLeadingTweed_WhenThereIsOneLeadingTweed()
+    {
+        using var session = _store.OpenAsyncSession();
+        TweedThread thread = new()
+        {
+            Id = "threadId",
+            Root = new TweedThread.TweedReference
+            {
+                TweedId = "rootTweedId",
+                Replies = new List<TweedThread.TweedReference>
+                {
+                    new()
+                    {
+                        TweedId = "tweedId"
+                    }
+                }
+            }
+        };
+        await session.StoreAsync(thread);
         TweedThreadService service = new(session);
 
         var leadingTweeds = await service.GetLeadingTweeds("threadId", "tweedId");
 
-        Assert.Equal("leadingTweedId", leadingTweeds[0].Id);
+        Assert.NotNull(leadingTweeds);
+        Assert.Equal("rootTweedId", leadingTweeds[0].TweedId);
+    }
+
+    [Fact]
+    public async Task GetLeadingTweeds_ShouldReturnLeadingTweeds_WhenThereIsAnotherBranch()
+    {
+        using var session = _store.OpenAsyncSession();
+        TweedThread thread = new()
+        {
+            Id = "threadId",
+            Root = new TweedThread.TweedReference
+            {
+                TweedId = "rootTweedId",
+                Replies = new List<TweedThread.TweedReference>
+                {
+                    new()
+                    {
+                        TweedId = "parentTweedId",
+                        Replies = new List<TweedThread.TweedReference>
+                        {
+                            new()
+                            {
+                                TweedId = "tweedId"
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TweedId = "otherTweedId"
+                    }
+                }
+            }
+        };
+        await session.StoreAsync(thread);
+        TweedThreadService service = new(session);
+
+        var leadingTweeds = await service.GetLeadingTweeds("threadId", "tweedId");
+
+        Assert.NotNull(leadingTweeds);
+        Assert.Equal("rootTweedId", leadingTweeds[0].TweedId);
+        Assert.Equal("parentTweedId", leadingTweeds[1].TweedId);
     }
 
     [Fact]
