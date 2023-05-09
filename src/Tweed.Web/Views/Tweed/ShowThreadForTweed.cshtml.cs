@@ -6,5 +6,6 @@ public class ShowThreadForTweedViewModel
 {
     public List<TweedViewModel> LeadingTweeds { get; set; } = new();
     public TweedViewModel Tweed { get; set; } = new();
+    public List<TweedViewModel> ReplyTweeds { get; set; } = new();
     public CreateReplyTweedViewModel CreateTweed { get; set; } = new();
 }
