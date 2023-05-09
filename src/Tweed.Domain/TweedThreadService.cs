@@ -5,7 +5,7 @@ namespace Tweed.Domain;
 
 public interface ITweedThreadService
 {
-    Task<List<Model.Tweed>> GetLeadingTweeds(string threadId, string tweedId);
+    Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
 }
 
 public class TweedThreadService : ITweedThreadService
@@ -17,16 +17,43 @@ public class TweedThreadService : ITweedThreadService
         _session = session;
     }
 
-    public async Task<List<Model.Tweed>> GetLeadingTweeds(string threadId, string tweedId)
+    public async Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId,
+        string tweedId)
+    {
+        var path = await FindTweedInThread(threadId, tweedId);
+        if (path is null)
+            return null;
+        path.RemoveAt(path.Count - 1);
+        return path;
+    }
+
+    private async Task<List<TweedThread.TweedReference>?> FindTweedInThread(string threadId,
+        string tweedId)
     {
         var thread = await _session.LoadAsync<TweedThread>(threadId);
-        
-        // find tweed id chain that leads up to tweedId
-        
 
-        //var leadingThreadIds = FindTweedReference(thread.Root, tweedId);
+        Queue<List<TweedThread.TweedReference>> queue = new();
+        queue.Enqueue(new List<TweedThread.TweedReference>
+        {
+            thread.Root
+        });
 
-        throw new NotImplementedException();
+        while (queue.Count > 0)
+        {
+            var currentPath = queue.Dequeue();
+            var currentRef = currentPath.Last();
+
+            if (currentRef.TweedId == tweedId)
+                return currentPath;
+
+            foreach (var reply in currentRef.Replies)
+            {
+                var replyPath = new List<TweedThread.TweedReference>(currentPath) { reply };
+                queue.Enqueue(replyPath);
+            }
+        }
+
+        return null;
     }
 
     public async Task<TweedThread> LoadThread(string threadId)
