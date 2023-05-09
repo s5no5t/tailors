@@ -38,26 +38,26 @@ public sealed class TweedService : ITweedService
 
     public async Task CreateTweed(Model.Tweed tweed)
     {
-        string threadId;
-        if (tweed.ParentTweedId is null)
+        var threadId = tweed.ParentTweedId switch
         {
-            TweedThread thread = new()
-            {
-                Root =
-                {
-                    TweedId = tweed.Id
-                }
-            };
-            await _session.StoreAsync(thread);
-            threadId = thread.Id!;
-        }
-        else
-        {
-            var parentTweed = await _session.LoadAsync<Model.Tweed>(tweed.ParentTweedId);
-            threadId = parentTweed.ThreadId!;
-        }
-
+            null => (await CreateThread(tweed.Id!)).Id,
+            not null => (await _session.LoadAsync<Model.Tweed>(tweed.ParentTweedId)).ThreadId
+        };
         tweed.ThreadId = threadId;
+
         await _session.StoreAsync(tweed);
+    }
+
+    private async Task<TweedThread> CreateThread(string tweedId)
+    {
+        TweedThread thread = new()
+        {
+            Root =
+            {
+                TweedId = tweedId
+            }
+        };
+        await _session.StoreAsync(thread);
+        return thread;
     }
 }
