@@ -69,13 +69,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        Domain.Model.Tweed tweed = new()
-        {
-            CreatedAt = now,
-            AuthorId = currentUserId,
-            Text = viewModel.Text
-        };
-        await _tweedService.CreateTweed(tweed);
+        await _tweedService.CreateTweed(currentUserId!, viewModel.Text, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -97,14 +91,8 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        Domain.Model.Tweed tweed = new()
-        {
-            ParentTweedId = viewModel.ParentTweedId,
-            CreatedAt = now,
-            AuthorId = currentUserId,
-            Text = viewModel.Text,
-        };
-        await _tweedService.CreateTweed(tweed);
+        var tweed = await _tweedService.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+            viewModel.ParentTweedId);
 
         _notificationManager.AppendSuccess("Reply Posted");
 

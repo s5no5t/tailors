@@ -34,7 +34,16 @@ public class TweedControllerTest
     public TweedControllerTest()
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
-        _tweedServiceMock.Setup(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
+        _tweedServiceMock.Setup(t =>
+            t.CreateTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>())).ReturnsAsync(new Domain.Model.Tweed()
+        {
+            Id = "tweedId"
+        });
+        _tweedServiceMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<ZonedDateTime>(), It.IsAny<string>())).ReturnsAsync(new global::Tweed.Domain.Model.Tweed()
+        {
+            Id = "tweedId"
+        });
         _tweedController = new TweedController(_tweedServiceMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object,
             _tweedLikesServiceMock.Object, _viewModelFactoryMock.Object)
@@ -55,7 +64,7 @@ public class TweedControllerTest
     [Fact]
     public async Task GetById_ShouldReturnGetByIdViewResult()
     {
-        Domain.Model.Tweed tweed = new()
+        global::Tweed.Domain.Model.Tweed tweed = new()
         {
             Id = "tweedId"
         };
@@ -154,7 +163,8 @@ public class TweedControllerTest
         };
         await _tweedController.Create(viewModel);
 
-        _tweedServiceMock.Verify(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
+        _tweedServiceMock.Verify(t =>
+            t.CreateTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>()));
     }
 
 
@@ -189,7 +199,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task CreateReply_ShouldSaveTweed()
+    public async Task CreateReply_ShouldSaveReplyTweed()
     {
         _tweedServiceMock.Setup(t => t.GetById("parentTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
@@ -203,7 +213,8 @@ public class TweedControllerTest
         };
         await _tweedController.CreateReply(viewModel);
 
-        _tweedServiceMock.Verify(t => t.CreateTweed(It.IsAny<Domain.Model.Tweed>()));
+        _tweedServiceMock.Verify(t => t.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
+            It.IsAny<ZonedDateTime>(), It.IsAny<string>()));
     }
 
     [Fact]

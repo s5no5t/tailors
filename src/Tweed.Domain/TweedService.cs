@@ -1,4 +1,5 @@
-﻿using Raven.Client.Documents;
+﻿using NodaTime;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Domain.Indexes;
@@ -10,7 +11,9 @@ public interface ITweedService
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
-    Task CreateTweed(Model.Tweed tweed);
+    Task<Model.Tweed> CreateTweed(string authorId, string text, ZonedDateTime createdAt);
+    Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
+        string parentTweedId);
 }
 
 public sealed class TweedService : ITweedService
@@ -36,16 +39,36 @@ public sealed class TweedService : ITweedService
         return _session.LoadAsync<Model.Tweed>(id)!;
     }
 
-    public async Task CreateTweed(Model.Tweed tweed)
+    public async Task<Model.Tweed> CreateTweed(string authorId, string text,
+        ZonedDateTime createdAt)
     {
-        var threadId = tweed.ParentTweedId switch
+        Model.Tweed tweed = new()
         {
-            null => (await CreateThread(tweed.Id!)).Id,
-            not null => (await _session.LoadAsync<Model.Tweed>(tweed.ParentTweedId)).ThreadId
+            AuthorId = authorId,
+            Text = text,
+            CreatedAt = createdAt
         };
-        tweed.ThreadId = threadId;
-
         await _session.StoreAsync(tweed);
+
+        var thread = await CreateThread(tweed.Id!);
+        tweed.ThreadId = thread.Id;
+        return tweed;
+    }
+
+    public async Task<Model.Tweed> CreateReplyTweed(string authorId, string text,
+        ZonedDateTime createdAt, string parentTweedId)
+    {
+        var threadId = (await _session.LoadAsync<Model.Tweed>(parentTweedId)).ThreadId;
+        Model.Tweed tweed = new()
+        {
+            AuthorId = authorId,
+            Text = text,
+            ParentTweedId = parentTweedId,
+            ThreadId = threadId,
+            CreatedAt = createdAt
+        };
+        await _session.StoreAsync(tweed);
+        return tweed;
     }
 
     private async Task<TweedThread> CreateThread(string tweedId)

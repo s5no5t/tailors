@@ -23,44 +23,61 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task StoreTweed_SavesTweed()
+    public async Task CreateTweed_SavesTweed()
     {
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.CreateTweed(new Tweed.Domain.Model.Tweed());
+        await service.CreateTweed("authorId", "text", FixedZonedDateTime);
 
-        session.Verify(s => s.StoreAsync(It.IsAny<Tweed.Domain.Model.Tweed>(), default));
+        session.Verify(s => s.StoreAsync(It.IsAny<Domain.Model.Tweed>(), default));
     }
 
     [Fact]
-    public async Task StoreTweed_CreatesThread_WhenTweedIsRoot()
+    public async Task CreateTweed_CreatesThread()
     {
         var session = new Mock<IAsyncDocumentSession>();
         var service = new TweedService(session.Object);
 
-        await service.CreateTweed(new Tweed.Domain.Model.Tweed());
+        await service.CreateTweed("authorId", "text", FixedZonedDateTime);
 
         session.Verify(s => s.StoreAsync(It.IsAny<TweedThread>(), default));
     }
 
     [Fact]
-    public async Task StoreTweed_UpdatesThreadId_WhenTweedHasParent()
+    public async Task CreateReplyTweed_SavesTweed()
     {
         var session = _store.OpenAsyncSession();
         var service = new TweedService(session);
 
-        Tweed.Domain.Model.Tweed parentTweed = new()
+        Domain.Model.Tweed parentTweed = new()
         {
             Id = "parentTweedId",
             ThreadId = "threadId"
         };
         await session.StoreAsync(parentTweed);
-        Tweed.Domain.Model.Tweed tweed = new()
+
+        var tweed =
+            await service.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
+
+        Assert.NotNull(tweed.Id);
+    }
+
+    [Fact]
+    public async Task CreateReplyTweed_SetsThreadId()
+    {
+        var session = _store.OpenAsyncSession();
+        var service = new TweedService(session);
+
+        Domain.Model.Tweed parentTweed = new()
         {
-            ParentTweedId = "parentTweedId"
+            Id = "parentTweedId",
+            ThreadId = "threadId"
         };
-        await service.CreateTweed(tweed);
+        await session.StoreAsync(parentTweed);
+
+        var tweed =
+            await service.CreateReplyTweed("authorId", "text", FixedZonedDateTime, "parentTweedId");
 
         Assert.Equal(parentTweed.ThreadId, tweed.ThreadId);
     }
@@ -69,7 +86,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Tweed.Domain.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
@@ -99,7 +116,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed.Domain.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             AuthorId = "user"
@@ -118,7 +135,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed.Domain.Model.Tweed olderTweed = new()
+        Domain.Model.Tweed olderTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedZonedDateTime,
@@ -126,7 +143,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Tweed.Domain.Model.Tweed recentTweed = new()
+        Domain.Model.Tweed recentTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent,
@@ -149,7 +166,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Tweed.Domain.Model.Tweed tweed = new()
+            Domain.Model.Tweed tweed = new()
             {
                 Text = "test",
                 CreatedAt = FixedZonedDateTime,
@@ -171,7 +188,7 @@ public class TweedServiceTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed.Domain.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
