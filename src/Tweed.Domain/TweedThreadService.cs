@@ -5,7 +5,7 @@ namespace Tweed.Domain;
 
 public interface ITweedThreadService
 {
-    Task<List<Model.Tweed>> GetLeadingTweeds(string? tweedThreadId);
+    Task<List<Model.Tweed>> GetLeadingTweeds(string threadId, string tweedId);
 }
 
 public class TweedThreadService : ITweedThreadService
@@ -17,8 +17,12 @@ public class TweedThreadService : ITweedThreadService
         _session = session;
     }
 
-    public Task<List<Model.Tweed>> GetLeadingTweeds(string? tweedThreadId)
+    public async Task<List<Model.Tweed>> GetLeadingTweeds(string threadId, string tweedId)
     {
+        var thread = await _session.LoadAsync<TweedThread>(threadId);
+
+        //var leadingThreadIds = FindTweedReference(thread.Root, tweedId);
+
         throw new NotImplementedException();
     }
 

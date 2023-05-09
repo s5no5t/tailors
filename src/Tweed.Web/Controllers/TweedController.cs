@@ -44,12 +44,15 @@ public class TweedController : Controller
         if (tweed == null)
             return NotFound();
 
-        //var leadingTweeds = await _tweedThreadService.GetLeadingTweeds(tweed.ThreadId);
+        List<TweedViewModel> leadingTweedViewModels = new();
+        var leadingTweeds = await _tweedThreadService.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
+        foreach (var leadingTweed in leadingTweeds)
+            leadingTweedViewModels.Add(await _viewModelFactory.BuildTweedViewModel(leadingTweed));
 
         var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         GetByIdViewModel viewModel = new()
         {
-            LeadingTweeds = new List<TweedViewModel>(),
+            LeadingTweeds = leadingTweedViewModels,
             Tweed = tweedViewModel,
             CreateTweed = new CreateReplyTweedViewModel
             {

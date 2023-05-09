@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Domain.Model;
 using Tweed.Domain.Test.Helper;
@@ -17,12 +18,24 @@ public class TweedThreadServiceTest
     }
 
     [Fact]
+    public async Task GetLeadingTweeds_ShouldReturnLeadingTweeds()
+    {
+        using var session = _store.OpenAsyncSession();
+        TweedThread thread = new();
+        TweedThreadService service = new(session);
+
+        var leadingTweeds = await service.GetLeadingTweeds("threadId", "tweedId");
+
+        Assert.Equal("leadingTweedId", leadingTweeds[0].Id);
+    }
+
+    [Fact]
     public void AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new();
         TweedThreadService service = new(session);
-        
+
         service.AddTweedToThread(thread, "tweedId", null);
 
         Assert.Equal("tweedId", thread.Root.TweedId);
