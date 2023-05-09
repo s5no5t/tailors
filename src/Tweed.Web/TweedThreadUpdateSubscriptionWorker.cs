@@ -118,6 +118,11 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
 
         var thread = await tweedThreadService.LoadThread(tweed.ThreadId);
+        if (thread is null)
+        {
+            _logger.LogWarning($"Thread {tweed.ThreadId} referenced by Tweed {tweed.Id} not found, skipping");
+            return;
+        }
         tweedThreadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
     }
 }

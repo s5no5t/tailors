@@ -28,7 +28,7 @@ public class TweedThreadService : ITweedThreadService
         return path;
     }
 
-    public async Task<TweedThread> LoadThread(string threadId)
+    public async Task<TweedThread?> LoadThread(string threadId)
     {
         return await _session.LoadAsync<TweedThread>(threadId);
     }
