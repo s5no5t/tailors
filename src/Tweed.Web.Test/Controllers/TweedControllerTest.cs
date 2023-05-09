@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -47,6 +48,9 @@ public class TweedControllerTest
         {
             Id = "tweedId"
         });
+        _tweedThreadServiceMock
+            .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed>());
         _tweedController = new TweedController(_tweedServiceMock.Object, _userManagerMock.Object,
             _notificationManagerMock.Object,
             _tweedLikesServiceMock.Object, _tweedThreadServiceMock.Object,
@@ -121,14 +125,24 @@ public class TweedControllerTest
         Assert.Empty(resultViewModel.LeadingTweeds);
     }
 
-    [Fact(Skip = "Leading tweeds not implemented yet")]
+    [Fact]
     public async Task ShowThreadForTweed_ShouldReturnLeadingTweeds_WhenTweedIsNotRoot()
     {
         Domain.Model.Tweed rootTweed = new()
         {
             Id = "rootTweedId"
         };
-        //_tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
+        _tweedThreadServiceMock
+            .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
+                new List<Domain.Model.Tweed>
+                {
+                    rootTweed
+                });
+        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(rootTweed)).ReturnsAsync(
+            new TweedViewModel
+            {
+                Id = rootTweed.Id
+            });
 
         Domain.Model.Tweed tweed = new()
         {
