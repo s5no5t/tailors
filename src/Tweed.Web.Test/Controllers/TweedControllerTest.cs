@@ -10,7 +10,6 @@ using Moq;
 using NodaTime;
 using Tweed.Domain;
 using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -25,9 +24,9 @@ public class TweedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
-    private readonly Mock<ITweedLikesService> _tweedLikesServiceMock = new();
-    private readonly Mock<ITweedService> _tweedServiceMock = new();
-    private readonly Mock<ITweedThreadService> _tweedThreadServiceMock = new();
+    private readonly Mock<ITweedLikesRepository> _tweedLikesServiceMock = new();
+    private readonly Mock<ITweedRepository> _tweedServiceMock = new();
+    private readonly Mock<ITweedThreadRepository> _tweedThreadServiceMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();

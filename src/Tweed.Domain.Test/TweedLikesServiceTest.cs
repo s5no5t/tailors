@@ -31,13 +31,13 @@ public class TweedLikesServiceTest
             AppUserId = "currentUser"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Tweed.Domain.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
@@ -53,13 +53,13 @@ public class TweedLikesServiceTest
             AppUserId = "currentUser"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Tweed.Domain.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
         await session.SaveChangesAsync();
@@ -85,7 +85,7 @@ public class TweedLikesServiceTest
         };
         await session.StoreAsync(appUserLikes);
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
 
@@ -108,13 +108,13 @@ public class TweedLikesServiceTest
             }
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Tweed.Domain.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         await service.RemoveLike("tweedId", "currentUser");
 
@@ -130,7 +130,7 @@ public class TweedLikesServiceTest
             AppUserId = "userId"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Tweed.Domain.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId"
         };
@@ -138,7 +138,7 @@ public class TweedLikesServiceTest
         await session.SaveChangesAsync();
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         await service.RemoveLike(tweed.Id, "userId");
         await session.SaveChangesAsync();
@@ -156,13 +156,13 @@ public class TweedLikesServiceTest
             AppUserId = "userId"
         };
         await session.StoreAsync(appUserLikes);
-        var tweed = new Tweed.Domain.Model.Tweed
+        var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId"
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         await service.RemoveLike("tweedId", "userId");
 
@@ -173,7 +173,7 @@ public class TweedLikesServiceTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Tweed.Domain.Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
@@ -181,7 +181,7 @@ public class TweedLikesServiceTest
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var service = new TweedLikesService(session);
+        var service = new TweedLikesRepository(session);
 
         var likesCount = await service.GetLikesCount(tweed.Id!);
 

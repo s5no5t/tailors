@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 using Tweed.Domain;
 using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Shared;
 using Tweed.Web.Views.Tweed;
@@ -16,22 +15,22 @@ namespace Tweed.Web.Controllers;
 public class TweedController : Controller
 {
     private readonly INotificationManager _notificationManager;
-    private readonly ITweedLikesService _tweedLikesService;
-    private readonly ITweedService _tweedService;
-    private readonly ITweedThreadService _tweedThreadService;
+    private readonly ITweedLikesRepository _tweedLikesRepository;
+    private readonly ITweedRepository _tweedRepository;
+    private readonly ITweedThreadRepository _tweedThreadRepository;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public TweedController(ITweedService tweedService, UserManager<AppUser> userManager,
-        INotificationManager notificationManager, ITweedLikesService tweedLikesService,
-        ITweedThreadService tweedThreadService,
+    public TweedController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
+        INotificationManager notificationManager, ITweedLikesRepository tweedLikesRepository,
+        ITweedThreadRepository tweedThreadRepository,
         IViewModelFactory viewModelFactory)
     {
-        _tweedService = tweedService;
+        _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _tweedLikesService = tweedLikesService;
-        _tweedThreadService = tweedThreadService;
+        _tweedLikesRepository = tweedLikesRepository;
+        _tweedThreadRepository = tweedThreadRepository;
         _viewModelFactory = viewModelFactory;
     }
 
@@ -41,17 +40,17 @@ public class TweedController : Controller
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var tweed = await _tweedService.GetTweedById(decodedTweedId);
+        var tweed = await _tweedRepository.GetTweedById(decodedTweedId);
         if (tweed == null)
             return NotFound();
 
         List<TweedViewModel> leadingTweedViewModels = new();
         var leadingTweedsRef =
-            await _tweedThreadService.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
+            await _tweedThreadRepository.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
         if (leadingTweedsRef is not null)
             foreach (var leadingTweedRef in leadingTweedsRef)
             {
-                var leadingTweed = await _tweedService.GetTweedById(leadingTweedRef.TweedId!);
+                var leadingTweed = await _tweedRepository.GetTweedById(leadingTweedRef.TweedId!);
                 leadingTweedViewModels.Add(
                     await _viewModelFactory.BuildTweedViewModel(leadingTweed!));
             }
@@ -93,7 +92,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _tweedService.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        await _tweedRepository.CreateRootTweed(currentUserId!, viewModel.Text, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -108,14 +107,14 @@ public class TweedController : Controller
         if (viewModel.ParentTweedId is null)
             return BadRequest();
 
-        var parentTweed = await _tweedService.GetTweedById(viewModel.ParentTweedId);
+        var parentTweed = await _tweedRepository.GetTweedById(viewModel.ParentTweedId);
         if (parentTweed is null)
             return BadRequest();
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var tweed = await _tweedService.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+        var tweed = await _tweedRepository.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
 
         _notificationManager.AppendSuccess("Reply Posted");
@@ -129,13 +128,13 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Like(string tweedId)
     {
-        var tweed = await _tweedService.GetTweedById(tweedId);
+        var tweed = await _tweedRepository.GetTweedById(tweedId);
         if (tweed == null)
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _tweedLikesService.AddLike(tweedId, currentUserId!, now);
+        await _tweedLikesRepository.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
@@ -144,12 +143,12 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Unlike(string tweedId)
     {
-        var tweed = await _tweedService.GetTweedById(tweedId);
+        var tweed = await _tweedRepository.GetTweedById(tweedId);
         if (tweed == null)
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _tweedLikesService.RemoveLike(tweedId, currentUserId!);
+        await _tweedLikesRepository.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);

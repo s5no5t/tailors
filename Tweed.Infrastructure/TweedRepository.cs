@@ -8,11 +8,11 @@ using Tweed.Infrastructure.Indexes;
 
 namespace Tweed.Infrastructure;
 
-public sealed class TweedService : ITweedService
+public sealed class TweedRepository : ITweedRepository
 {
     private readonly IAsyncDocumentSession _session;
 
-    public TweedService(IAsyncDocumentSession session)
+    public TweedRepository(IAsyncDocumentSession session)
     {
         _session = session;
     }

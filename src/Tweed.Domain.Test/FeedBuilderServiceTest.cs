@@ -31,7 +31,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         for (var i = 0; i < 5; i++)
         {
-            Tweed.Domain.Model.Tweed currentUserTweed = new()
+            Domain.Model.Tweed currentUserTweed = new()
             {
                 Text = "test",
                 AuthorId = _currentUser.Id!,
@@ -49,7 +49,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
             for (var j = 0; j < 20; j++)
             {
-                Tweed.Domain.Model.Tweed otherUserTweed = new()
+                Domain.Model.Tweed otherUserTweed = new()
                 {
                     Text = "test",
                     AuthorId = otherUser.Id!,
@@ -84,7 +84,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        Tweed.Domain.Model.Tweed currentUserTweed = new()
+        Domain.Model.Tweed currentUserTweed = new()
         {
             Text = "test",
             AuthorId = _currentUser.Id!,
@@ -93,8 +93,8 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         await session.StoreAsync(currentUserTweed);
 
         await session.SaveChangesAsync();
-        AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedService(session, appUserFollowsService);
+        AppUserFollowsRepository appUserFollowsRepository = new(session);
+        var service = new FeedService(session, appUserFollowsRepository);
 
         var tweeds = await service.GetFeed(_currentUser.Id!, 0);
 
@@ -123,7 +123,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         };
         await session.StoreAsync(currentUserFollows);
 
-        Tweed.Domain.Model.Tweed followedUserTweed = new()
+        Domain.Model.Tweed followedUserTweed = new()
         {
             Text = "test",
             AuthorId = followedUser.Id!,
@@ -132,8 +132,8 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         await session.StoreAsync(followedUserTweed);
 
         await session.SaveChangesAsync();
-        AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedService(session, appUserFollowsService);
+        AppUserFollowsRepository appUserFollowsRepository = new(session);
+        var service = new FeedService(session, appUserFollowsRepository);
 
         var tweeds = await service.GetFeed(_currentUser.Id!, 0);
 
@@ -149,8 +149,8 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         };
         using var session = _store.OpenAsyncSession();
 
-        AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedService(session, appUserFollowsService);
+        AppUserFollowsRepository appUserFollowsRepository = new(session);
+        var service = new FeedService(session, appUserFollowsRepository);
 
         var tweeds = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
 
@@ -166,7 +166,7 @@ public class FeedBuilderServiceTest : IAsyncLifetime
 
         for (var i = 0; i < 25; i++)
         {
-            Tweed.Domain.Model.Tweed tweed = new()
+            Domain.Model.Tweed tweed = new()
             {
                 Text = "test",
                 AuthorId = _currentUser.Id!,
@@ -176,8 +176,8 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         }
 
         await session.SaveChangesAsync();
-        AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedService(session, appUserFollowsService);
+        AppUserFollowsRepository appUserFollowsRepository = new(session);
+        var service = new FeedService(session, appUserFollowsRepository);
 
         var feed = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
 
@@ -190,8 +190,8 @@ public class FeedBuilderServiceTest : IAsyncLifetime
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        AppUserFollowsService appUserFollowsService = new(session);
-        var service = new FeedService(session, appUserFollowsService);
+        AppUserFollowsRepository appUserFollowsRepository = new(session);
+        var service = new FeedService(session, appUserFollowsRepository);
 
         var page0Feed = (await service.GetFeed(_currentUser.Id!, 0)).ToList();
         var page1Feed = (await service.GetFeed(_currentUser.Id!, 1)).ToList();

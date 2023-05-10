@@ -4,7 +4,6 @@ using Raven.Client.Documents.Subscriptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
-using Tweed.Domain;
 using Tweed.Infrastructure;
 
 namespace Tweed.Web;
@@ -113,17 +112,19 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
     private async Task ProcessTweed(Domain.Model.Tweed tweed, IAsyncDocumentSession session)
     {
-        TweedThreadService tweedThreadService = new(session);
+        TweedThreadRepository tweedThreadRepository = new(session);
 
         if (tweed.ThreadId is null)
             throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
 
-        var thread = await tweedThreadService.LoadThread(tweed.ThreadId);
+        var thread = await tweedThreadRepository.LoadThread(tweed.ThreadId);
         if (thread is null)
         {
-            _logger.LogWarning($"Thread {tweed.ThreadId} referenced by Tweed {tweed.Id} not found, skipping");
+            _logger.LogWarning(
+                $"Thread {tweed.ThreadId} referenced by Tweed {tweed.Id} not found, skipping");
             return;
         }
-        tweedThreadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
+
+        tweedThreadRepository.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
     }
 }

@@ -17,7 +17,7 @@ public class TweedThreadServiceTest
     {
         _store = ravenDb.CreateDocumentStore();
     }
-    
+
     [Fact]
     public async Task GetLeadingTweeds_ShouldReturnNull_WhenTweedIsntFound()
     {
@@ -31,9 +31,9 @@ public class TweedThreadServiceTest
             }
         };
         await session.StoreAsync(thread);
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        var leadingTweeds = await service.GetLeadingTweeds("threadId", "unknownTweedId");
+        var leadingTweeds = await repository.GetLeadingTweeds("threadId", "unknownTweedId");
 
         Assert.Null(leadingTweeds);
     }
@@ -51,9 +51,9 @@ public class TweedThreadServiceTest
             }
         };
         await session.StoreAsync(thread);
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        var leadingTweeds = await service.GetLeadingTweeds("threadId", "rootTweedId");
+        var leadingTweeds = await repository.GetLeadingTweeds("threadId", "rootTweedId");
 
         Assert.NotNull(leadingTweeds);
         Assert.Empty(leadingTweeds);
@@ -79,9 +79,9 @@ public class TweedThreadServiceTest
             }
         };
         await session.StoreAsync(thread);
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        var leadingTweeds = await service.GetLeadingTweeds("threadId", "tweedId");
+        var leadingTweeds = await repository.GetLeadingTweeds("threadId", "tweedId");
 
         Assert.NotNull(leadingTweeds);
         Assert.Equal("rootTweedId", leadingTweeds[0].TweedId);
@@ -118,9 +118,9 @@ public class TweedThreadServiceTest
             }
         };
         await session.StoreAsync(thread);
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        var leadingTweeds = await service.GetLeadingTweeds("threadId", "tweedId");
+        var leadingTweeds = await repository.GetLeadingTweeds("threadId", "tweedId");
 
         Assert.NotNull(leadingTweeds);
         Assert.Equal("rootTweedId", leadingTweeds[0].TweedId);
@@ -132,9 +132,9 @@ public class TweedThreadServiceTest
     {
         using var session = _store.OpenAsyncSession();
         TweedThread thread = new();
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        service.AddTweedToThread(thread, "tweedId", null);
+        repository.AddTweedToThread(thread, "tweedId", null);
 
         Assert.Equal("tweedId", thread.Root.TweedId);
     }
@@ -151,9 +151,9 @@ public class TweedThreadServiceTest
                 TweedId = "rootTweedId"
             }
         };
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        service.AddTweedToThread(thread, "tweedId", "rootTweedId");
+        repository.AddTweedToThread(thread, "tweedId", "rootTweedId");
 
         Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
@@ -177,9 +177,9 @@ public class TweedThreadServiceTest
                 }
             }
         };
-        TweedThreadService service = new(session);
+        TweedThreadRepository repository = new(session);
 
-        service.AddTweedToThread(thread, "tweedId", "replyTweedId");
+        repository.AddTweedToThread(thread, "tweedId", "replyTweedId");
 
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
     }
