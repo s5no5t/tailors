@@ -1,16 +1,11 @@
 using NodaTime;
 using Raven.Client.Documents.Session;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 
-namespace Tweed.Domain;
+namespace Tweed.Infrastructure;
 
-public interface ITweedLikesService
-{
-    Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
-    Task RemoveLike(string tweedId, string userId);
-    Task<long> GetLikesCount(string tweedId);
-    Task<bool> DoesUserLikeTweed(string tweedId, string userId);
-}
+
 
 public class TweedLikesService : ITweedLikesService
 {
@@ -33,22 +28,22 @@ public class TweedLikesService : ITweedLikesService
             TweedId = tweedId,
             CreatedAt = likedAt
         });
-        var tweed = await _session.LoadAsync<Model.Tweed>(tweedId);
-        _session.CountersFor(tweed).Increment(Model.Tweed.LikesCounterName);
+        var tweed = await _session.LoadAsync<Domain.Model.Tweed>(tweedId);
+        _session.CountersFor(tweed).Increment(Domain.Model.Tweed.LikesCounterName);
     }
 
     public async Task RemoveLike(string tweedId, string userId)
     {
         var appUserLikes = await GetOrBuildAppUserLikes(userId);
         appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
-        var tweed = await _session.LoadAsync<Model.Tweed>(tweedId);
-        _session.CountersFor(tweed).Increment(Model.Tweed.LikesCounterName, -1);
+        var tweed = await _session.LoadAsync<Domain.Model.Tweed>(tweedId);
+        _session.CountersFor(tweed).Increment(Domain.Model.Tweed.LikesCounterName, -1);
     }
 
     public async Task<long> GetLikesCount(string tweedId)
     {
         var likesCounter =
-            await _session.CountersFor(tweedId).GetAsync(Model.Tweed.LikesCounterName);
+            await _session.CountersFor(tweedId).GetAsync(Domain.Model.Tweed.LikesCounterName);
         return likesCounter ?? 0L;
     }
 

@@ -5,6 +5,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tweed.Domain.Model;
 using Tweed.Domain.Test.Helper;
+using Tweed.Infrastructure;
 using Xunit;
 
 namespace Tweed.Domain.Test;

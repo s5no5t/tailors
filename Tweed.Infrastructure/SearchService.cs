@@ -1,15 +1,10 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.Domain.Indexes;
+using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Infrastructure.Indexes;
 
-namespace Tweed.Domain;
-
-public interface ISearchService
-{
-    Task<List<AppUser>> SearchAppUsers(string term);
-    Task<List<Model.Tweed>> SearchTweeds(string term);
-}
+namespace Tweed.Infrastructure;
 
 public class SearchService : ISearchService
 {
@@ -27,9 +22,9 @@ public class SearchService : ISearchService
             .Take(20).ToListAsync();
     }
     
-    public async Task<List<Model.Tweed>> SearchTweeds(string term)
+    public async Task<List<Domain.Model.Tweed>> SearchTweeds(string term)
     {
-        return await _session.Query<Model.Tweed, Tweeds_ByText>()
+        return await _session.Query<Domain.Model.Tweed, Tweeds_ByText>()
             .Search(t => t.Text, term)
             .Take(20).ToListAsync();
     }

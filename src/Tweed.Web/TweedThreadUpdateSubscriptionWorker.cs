@@ -5,6 +5,7 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
 using Tweed.Domain;
+using Tweed.Infrastructure;
 
 namespace Tweed.Web;
 

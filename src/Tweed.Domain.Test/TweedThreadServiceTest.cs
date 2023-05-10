@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tweed.Domain.Model;
 using Tweed.Domain.Test.Helper;
+using Tweed.Infrastructure;
 using Xunit;
 
 namespace Tweed.Domain.Test;
