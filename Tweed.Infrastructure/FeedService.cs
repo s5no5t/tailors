@@ -1,14 +1,12 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Tweed.Domain.Indexes;
+using Tweed.Domain;
+using Tweed.Infrastructure.Indexes;
 
-namespace Tweed.Domain;
+namespace Tweed.Infrastructure;
 
-public interface IFeedService
-{
-    Task<List<Model.Tweed>> GetFeed(string appUserId, int page);
-}
+
 
 public class FeedService : IFeedService
 {
@@ -23,9 +21,9 @@ public class FeedService : IFeedService
         _appUserFollowsService = appUserFollowsService;
     }
 
-    public async Task<List<Model.Tweed>> GetFeed(string appUserId, int page)
+    public async Task<List<Domain.Model.Tweed>> GetFeed(string appUserId, int page)
     {
-        var ownTweeds = await _session.Query<Model.Tweed>()
+        var ownTweeds = await _session.Query<Domain.Model.Tweed>()
             .Where(t => t.AuthorId == appUserId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(FeedSize)
@@ -35,7 +33,7 @@ public class FeedService : IFeedService
         var follows = await _appUserFollowsService.GetFollows(appUserId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
 
-        var followerTweeds = await _session.Query<Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        var followerTweeds = await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(FeedSize)
@@ -43,7 +41,7 @@ public class FeedService : IFeedService
             .ToListAsync();
 
         var numExtraTweeds = FeedSize - ownTweeds.Count - followerTweeds.Count;
-        var extraTweeds = await _session.Query<Model.Tweed>()
+        var extraTweeds = await _session.Query<Domain.Model.Tweed>()
             .Where(t =>
                 !t.Id.In(ownTweeds.Select(f => f.Id)
                     .ToList())) // not my own Tweeds
@@ -55,7 +53,7 @@ public class FeedService : IFeedService
             .Include(t => t.AuthorId)
             .ToListAsync();
 
-        var tweeds = new List<Model.Tweed>();
+        var tweeds = new List<Domain.Model.Tweed>();
         tweeds.AddRange(ownTweeds);
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);

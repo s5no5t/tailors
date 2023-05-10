@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Infrastructure;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;
 using Xunit;

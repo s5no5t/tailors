@@ -1,12 +1,8 @@
 using Raven.Client.Documents.Session;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 
-namespace Tweed.Domain;
-
-public interface ITweedThreadService
-{
-    Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
-}
+namespace Tweed.Infrastructure;
 
 public class TweedThreadService : ITweedThreadService
 {

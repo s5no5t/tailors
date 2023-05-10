@@ -2,19 +2,11 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Tweed.Domain.Indexes;
+using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Infrastructure.Indexes;
 
-namespace Tweed.Domain;
-
-public interface ITweedService
-{
-    Task<List<Model.Tweed>> GetTweedsForUser(string userId);
-    Task<Model.Tweed?> GetTweedById(string id);
-    Task<Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
-    Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
-        string parentTweedId);
-}
+namespace Tweed.Infrastructure;
 
 public sealed class TweedService : ITweedService
 {
@@ -25,24 +17,24 @@ public sealed class TweedService : ITweedService
         _session = session;
     }
 
-    public async Task<List<Model.Tweed>> GetTweedsForUser(string userId)
+    public async Task<List<Domain.Model.Tweed>> GetTweedsForUser(string userId)
     {
-        return await _session.Query<Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == userId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(20)
             .ToListAsync();
     }
 
-    public Task<Model.Tweed?> GetTweedById(string id)
+    public Task<Domain.Model.Tweed?> GetTweedById(string id)
     {
-        return _session.LoadAsync<Model.Tweed>(id)!;
+        return _session.LoadAsync<Domain.Model.Tweed>(id)!;
     }
 
-    public async Task<Model.Tweed> CreateRootTweed(string authorId, string text,
+    public async Task<Domain.Model.Tweed> CreateRootTweed(string authorId, string text,
         ZonedDateTime createdAt)
     {
-        Model.Tweed tweed = new()
+        Domain.Model.Tweed tweed = new()
         {
             AuthorId = authorId,
             Text = text,
@@ -55,11 +47,11 @@ public sealed class TweedService : ITweedService
         return tweed;
     }
 
-    public async Task<Model.Tweed> CreateReplyTweed(string authorId, string text,
+    public async Task<Domain.Model.Tweed> CreateReplyTweed(string authorId, string text,
         ZonedDateTime createdAt, string parentTweedId)
     {
-        var threadId = (await _session.LoadAsync<Model.Tweed>(parentTweedId)).ThreadId;
-        Model.Tweed tweed = new()
+        var threadId = (await _session.LoadAsync<Domain.Model.Tweed>(parentTweedId)).ThreadId;
+        Domain.Model.Tweed tweed = new()
         {
             AuthorId = authorId,
             Text = text,
