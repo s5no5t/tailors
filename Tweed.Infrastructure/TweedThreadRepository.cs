@@ -4,11 +4,11 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Infrastructure;
 
-public class TweedThreadService : ITweedThreadService
+public class TweedThreadRepository : ITweedThreadRepository
 {
     private readonly IAsyncDocumentSession _session;
 
-    public TweedThreadService(IAsyncDocumentSession session)
+    public TweedThreadRepository(IAsyncDocumentSession session)
     {
         _session = session;
     }

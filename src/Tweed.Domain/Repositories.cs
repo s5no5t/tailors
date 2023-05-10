@@ -3,7 +3,7 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface IAppUserFollowsService
+public interface IAppUserFollowsRepository
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
@@ -11,18 +11,7 @@ public interface IAppUserFollowsService
     Task<List<AppUserFollows.LeaderReference>> GetFollows(string userId);
 }
 
-public interface IFeedService
-{
-    Task<List<Domain.Model.Tweed>> GetFeed(string appUserId, int page);
-}
-
-public interface ISearchService
-{
-    Task<List<AppUser>> SearchAppUsers(string term);
-    Task<List<Domain.Model.Tweed>> SearchTweeds(string term);
-}
-
-public interface ITweedLikesService
+public interface ITweedLikesRepository
 {
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
@@ -30,16 +19,17 @@ public interface ITweedLikesService
     Task<bool> DoesUserLikeTweed(string tweedId, string userId);
 }
 
-public interface ITweedService
+public interface ITweedRepository
 {
-    Task<List<Domain.Model.Tweed>> GetTweedsForUser(string userId);
-    Task<Domain.Model.Tweed?> GetTweedById(string id);
-    Task<Domain.Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
-    Task<Domain.Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
+    Task<List<Model.Tweed>> GetTweedsForUser(string userId);
+    Task<Model.Tweed?> GetTweedById(string id);
+    Task<Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
+
+    Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
         string parentTweedId);
 }
 
-public interface ITweedThreadService
+public interface ITweedThreadRepository
 {
     Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
 }

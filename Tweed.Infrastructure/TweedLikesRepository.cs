@@ -5,13 +5,11 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Infrastructure;
 
-
-
-public class TweedLikesService : ITweedLikesService
+public class TweedLikesRepository : ITweedLikesRepository
 {
     private readonly IAsyncDocumentSession _session;
 
-    public TweedLikesService(IAsyncDocumentSession session)
+    public TweedLikesRepository(IAsyncDocumentSession session)
     {
         _session = session;
     }

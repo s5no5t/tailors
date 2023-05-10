@@ -6,19 +6,18 @@ using Tweed.Infrastructure.Indexes;
 
 namespace Tweed.Infrastructure;
 
-
-
 public class FeedService : IFeedService
 {
     public const int PageSize = 20;
     private const int FeedSize = 100;
-    private readonly IAppUserFollowsService _appUserFollowsService;
+    private readonly IAppUserFollowsRepository _appUserFollowsRepository;
     private readonly IAsyncDocumentSession _session;
 
-    public FeedService(IAsyncDocumentSession session, IAppUserFollowsService appUserFollowsService)
+    public FeedService(IAsyncDocumentSession session,
+        IAppUserFollowsRepository appUserFollowsRepository)
     {
         _session = session;
-        _appUserFollowsService = appUserFollowsService;
+        _appUserFollowsRepository = appUserFollowsRepository;
     }
 
     public async Task<List<Domain.Model.Tweed>> GetFeed(string appUserId, int page)
@@ -30,10 +29,11 @@ public class FeedService : IFeedService
             .Include(t => t.AuthorId)
             .ToListAsync();
 
-        var follows = await _appUserFollowsService.GetFollows(appUserId);
+        var follows = await _appUserFollowsRepository.GetFollows(appUserId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
 
-        var followerTweeds = await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        var followerTweeds = await _session
+            .Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(FeedSize)
