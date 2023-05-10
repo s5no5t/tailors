@@ -5,8 +5,8 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.NodaTime;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
-using Tweed.Domain.Indexes;
 using Tweed.Domain.Model;
+using Tweed.Infrastructure.Indexes;
 
 namespace Tweed.Infrastructure.Setup;
 

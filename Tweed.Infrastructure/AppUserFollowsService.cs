@@ -1,18 +1,11 @@
 using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.Domain.Indexes;
+using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Infrastructure.Indexes;
 
-namespace Tweed.Domain;
-
-public interface IAppUserFollowsService
-{
-    Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
-    Task RemoveFollower(string leaderId, string followerId);
-    Task<int> GetFollowerCount(string userId);
-    Task<List<AppUserFollows.LeaderReference>> GetFollows(string userId);
-}
+namespace Tweed.Infrastructure;
 
 public class AppUserFollowsService : IAppUserFollowsService
 {

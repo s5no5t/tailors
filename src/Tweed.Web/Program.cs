@@ -5,6 +5,7 @@ using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;

@@ -1,6 +1,6 @@
 using Raven.Client.Documents.Indexes;
 
-namespace Tweed.Domain.Indexes;
+namespace Tweed.Infrastructure.Indexes;
 
 public class Tweeds_ByText : AbstractIndexCreationTask<Domain.Model.Tweed>
 {
