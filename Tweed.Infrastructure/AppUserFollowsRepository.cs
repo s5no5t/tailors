@@ -7,11 +7,11 @@ using Tweed.Infrastructure.Indexes;
 
 namespace Tweed.Infrastructure;
 
-public class AppUserFollowsService : IAppUserFollowsService
+public class AppUserFollowsRepository : IAppUserFollowsRepository
 {
     private readonly IAsyncDocumentSession _session;
 
-    public AppUserFollowsService(IAsyncDocumentSession session)
+    public AppUserFollowsRepository(IAsyncDocumentSession session)
     {
         _session = session;
     }

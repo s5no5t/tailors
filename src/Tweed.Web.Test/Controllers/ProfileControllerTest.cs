@@ -8,7 +8,6 @@ using Moq;
 using NodaTime;
 using Tweed.Domain;
 using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -19,7 +18,7 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly Mock<IAppUserFollowsService> _appUserFollowsQueriesMock = new();
+    private readonly Mock<IAppUserFollowsRepository> _appUserFollowsQueriesMock = new();
 
     private readonly AppUser _currentUser = new()
     {
@@ -33,7 +32,7 @@ public class ProfileControllerTest
         Id = "user"
     };
 
-    private readonly Mock<ITweedService> _tweedQueriesMock;
+    private readonly Mock<ITweedRepository> _tweedQueriesMock;
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
 
@@ -50,7 +49,7 @@ public class ProfileControllerTest
         _appUserFollowsQueriesMock.Setup(u => u.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
 
-        _tweedQueriesMock = new Mock<ITweedService>();
+        _tweedQueriesMock = new Mock<ITweedRepository>();
         _tweedQueriesMock.Setup(t => t.GetTweedsForUser("user"))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
 

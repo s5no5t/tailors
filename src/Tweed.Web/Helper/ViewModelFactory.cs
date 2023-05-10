@@ -3,7 +3,6 @@ using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Tweed.Domain;
 using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Helper;
@@ -16,13 +15,14 @@ public interface IViewModelFactory
 public class ViewModelFactory : IViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ITweedLikesService _tweedLikesService;
+    private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly UserManager<AppUser> _userManager;
 
-    public ViewModelFactory(ITweedLikesService tweedLikesService, UserManager<AppUser> userManager,
+    public ViewModelFactory(ITweedLikesRepository tweedLikesRepository,
+        UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
-        _tweedLikesService = tweedLikesService;
+        _tweedLikesRepository = tweedLikesRepository;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -32,10 +32,11 @@ public class ViewModelFactory : IViewModelFactory
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
-        var likesCount = await _tweedLikesService.GetLikesCount(tweed.Id!);
+        var likesCount = await _tweedLikesRepository.GetLikesCount(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
-        var currentUserLikesTweed = await _tweedLikesService.DoesUserLikeTweed(tweed.Id!, currentUserId!);
+        var currentUserLikesTweed =
+            await _tweedLikesRepository.DoesUserLikeTweed(tweed.Id!, currentUserId!);
 
         TweedViewModel viewModel = new()
         {

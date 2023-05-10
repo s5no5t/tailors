@@ -37,9 +37,9 @@ public class AppUserFollowsServiceTest
         };
         await session.StoreAsync(appUserFollows);
         await session.SaveChangesAsync();
-        AppUserFollowsService service = new(session);
+        AppUserFollowsRepository repository = new(session);
 
-        await service.AddFollower("leaderId", "userId", FixedZonedDateTime);
+        await repository.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
         Assert.Equal("leaderId", appUserFollows.Follows[0].LeaderId);
     }
@@ -66,9 +66,9 @@ public class AppUserFollowsServiceTest
         };
         await session.StoreAsync(appUserFollows);
         await session.SaveChangesAsync();
-        AppUserFollowsService service = new(session);
+        AppUserFollowsRepository repository = new(session);
 
-        await service.AddFollower("leaderId", "userId", FixedZonedDateTime);
+        await repository.AddFollower("leaderId", "userId", FixedZonedDateTime);
 
         Assert.Single(appUserFollows.Follows);
     }
@@ -95,8 +95,8 @@ public class AppUserFollowsServiceTest
         };
         await session.StoreAsync(appUserFollows);
 
-        AppUserFollowsService service = new(session);
-        await service.RemoveFollower("leaderId", "userId");
+        AppUserFollowsRepository repository = new(session);
+        await repository.RemoveFollower("leaderId", "userId");
 
         var userAfterQuery =
             await session.LoadAsync<AppUserFollows>(AppUserFollows.BuildId("userId"));
@@ -139,9 +139,9 @@ public class AppUserFollowsServiceTest
         }
 
         await session.SaveChangesAsync();
-        AppUserFollowsService service = new(session);
+        AppUserFollowsRepository repository = new(session);
 
-        var followerCount = await service.GetFollowerCount("leaderId");
+        var followerCount = await repository.GetFollowerCount("leaderId");
 
         Assert.Equal(givenFollowerCount, followerCount);
     }
