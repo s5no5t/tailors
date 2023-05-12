@@ -7,6 +7,7 @@ public interface ITweedLikesService
 {
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
+    Task<bool> DoesUserLikeTweed(string tweedId, string userId);
 }
 
 public class TweedLikesService : ITweedLikesService
@@ -39,6 +40,12 @@ public class TweedLikesService : ITweedLikesService
         appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
 
         _tweedLikesRepository.DecreaseLikesCounter(tweedId);
+    }
+    
+    public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
+    {
+        var appUserLikes = await GetOrBuildAppUserLikes(userId);
+        return appUserLikes.Likes.Any(lb => lb.TweedId == tweedId);
     }
 
     private async Task<AppUserLikes> GetOrBuildAppUserLikes(string userId)
