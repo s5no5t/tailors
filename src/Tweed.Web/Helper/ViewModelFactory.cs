@@ -34,7 +34,7 @@ public class ViewModelFactory : IViewModelFactory
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
-        var likesCount = await _tweedLikesRepository.GetLikesCount(tweed.Id!);
+        var likesCount = await _tweedLikesRepository.GetLikesCounter(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
         var currentUserLikesTweed =
