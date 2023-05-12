@@ -32,7 +32,7 @@ public class TweedLikesRepositoryTest
         await session.SaveChangesAsync();
         var service = new TweedLikesRepository(session);
 
-        var likesCount = await service.GetLikesCount(tweed.Id!);
+        var likesCount = await service.GetLikesCounter(tweed.Id!);
 
         Assert.Equal(1, likesCount);
     }

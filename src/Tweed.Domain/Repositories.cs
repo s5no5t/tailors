@@ -13,9 +13,9 @@ public interface IAppUserFollowsRepository
 
 public interface ITweedLikesRepository
 {
-    Task<long> GetLikesCount(string tweedId);
     Task<AppUserLikes?> Get(string appUserLikesId);
     Task Create(AppUserLikes appUserLikes);
+    Task<long> GetLikesCounter(string tweedId);
     void IncreaseLikesCounter(string tweedId);
     void DecreaseLikesCounter(string tweedId);
 }

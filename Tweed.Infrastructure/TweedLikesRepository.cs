@@ -13,13 +13,6 @@ public class TweedLikesRepository : ITweedLikesRepository
         _session = session;
     }
 
-    public async Task<long> GetLikesCount(string tweedId)
-    {
-        var likesCounter =
-            await _session.CountersFor(tweedId).GetAsync(Domain.Model.Tweed.LikesCounterName);
-        return likesCounter ?? 0L;
-    }
-
     public async Task<AppUserLikes?> Get(string appUserLikesId)
     {
         return await _session.LoadAsync<AppUserLikes>(appUserLikesId);
@@ -28,6 +21,13 @@ public class TweedLikesRepository : ITweedLikesRepository
     public async Task Create(AppUserLikes appUserLikes)
     {
         await _session.StoreAsync(appUserLikes);
+    }
+
+    public async Task<long> GetLikesCounter(string tweedId)
+    {
+        var likesCounter =
+            await _session.CountersFor(tweedId).GetAsync(Domain.Model.Tweed.LikesCounterName);
+        return likesCounter ?? 0L;
     }
 
     public void IncreaseLikesCounter(string tweedId)
