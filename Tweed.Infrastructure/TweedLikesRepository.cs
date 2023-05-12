@@ -1,4 +1,3 @@
-using NodaTime;
 using Raven.Client.Documents.Session;
 using Tweed.Domain;
 using Tweed.Domain.Model;
@@ -14,30 +13,6 @@ public class TweedLikesRepository : ITweedLikesRepository
         _session = session;
     }
 
-    public async Task AddLike(string tweedId, string userId, ZonedDateTime likedAt)
-    {
-        var appUserLikes = await GetOrBuildAppUserLikes(userId);
-        await _session.StoreAsync(appUserLikes);
-
-        if (appUserLikes.Likes.Any(l => l.TweedId == tweedId))
-            return;
-        appUserLikes.Likes.Add(new AppUserLikes.TweedLike
-        {
-            TweedId = tweedId,
-            CreatedAt = likedAt
-        });
-        var tweed = await _session.LoadAsync<Domain.Model.Tweed>(tweedId);
-        _session.CountersFor(tweed).Increment(Domain.Model.Tweed.LikesCounterName);
-    }
-
-    public async Task RemoveLike(string tweedId, string userId)
-    {
-        var appUserLikes = await GetOrBuildAppUserLikes(userId);
-        appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
-        var tweed = await _session.LoadAsync<Domain.Model.Tweed>(tweedId);
-        _session.CountersFor(tweed).Increment(Domain.Model.Tweed.LikesCounterName, -1);
-    }
-
     public async Task<long> GetLikesCount(string tweedId)
     {
         var likesCounter =
@@ -49,6 +24,26 @@ public class TweedLikesRepository : ITweedLikesRepository
     {
         var appUserLikes = await GetOrBuildAppUserLikes(userId);
         return appUserLikes.Likes.Any(lb => lb.TweedId == tweedId);
+    }
+
+    public Task<AppUserLikes?> Get(string userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task Create(AppUserLikes appUserLikes)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void IncreaseLikesCounter(string tweedId)
+    {
+        _session.CountersFor(tweedId).Increment(Domain.Model.Tweed.LikesCounterName);
+    }
+
+    public void DecreaseLikesCounter(string tweedId)
+    {
+        _session.CountersFor(tweedId).Increment(Domain.Model.Tweed.LikesCounterName, -1);
     }
 
     private async Task<AppUserLikes> GetOrBuildAppUserLikes(string userId)

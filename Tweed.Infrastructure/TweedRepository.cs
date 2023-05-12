@@ -63,6 +63,11 @@ public sealed class TweedRepository : ITweedRepository
         return tweed;
     }
 
+    public Task<Domain.Model.Tweed?> Get(string tweedId)
+    {
+        throw new NotImplementedException();
+    }
+
     private async Task<TweedThread> CreateThread(string tweedId)
     {
         TweedThread thread = new()

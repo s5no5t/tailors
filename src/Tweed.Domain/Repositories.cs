@@ -13,10 +13,12 @@ public interface IAppUserFollowsRepository
 
 public interface ITweedLikesRepository
 {
-    Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
-    Task RemoveLike(string tweedId, string userId);
     Task<long> GetLikesCount(string tweedId);
     Task<bool> DoesUserLikeTweed(string tweedId, string userId);
+    Task<AppUserLikes?> Get(string userId);
+    Task Create(AppUserLikes appUserLikes);
+    void IncreaseLikesCounter(string tweedId);
+    void DecreaseLikesCounter(string tweedId);
 }
 
 public interface ITweedRepository
@@ -27,6 +29,8 @@ public interface ITweedRepository
 
     Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
         string parentTweedId);
+
+    Task<Model.Tweed?> Get(string tweedId);
 }
 
 public interface ITweedThreadRepository
