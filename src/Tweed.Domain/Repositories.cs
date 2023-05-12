@@ -14,7 +14,6 @@ public interface IAppUserFollowsRepository
 public interface ITweedLikesRepository
 {
     Task<long> GetLikesCount(string tweedId);
-    Task<bool> DoesUserLikeTweed(string tweedId, string userId);
     Task<AppUserLikes?> Get(string appUserLikesId);
     Task Create(AppUserLikes appUserLikes);
     void IncreaseLikesCounter(string tweedId);

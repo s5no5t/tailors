@@ -20,13 +20,6 @@ public class TweedLikesRepository : ITweedLikesRepository
         return likesCounter ?? 0L;
     }
 
-    // TODO: Move to service
-    public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
-    {
-        var appUserLikes = await GetOrBuildAppUserLikes(userId);
-        return appUserLikes.Likes.Any(lb => lb.TweedId == tweedId);
-    }
-
     public async Task<AppUserLikes?> Get(string appUserLikesId)
     {
         return await _session.LoadAsync<AppUserLikes>(appUserLikesId);
@@ -45,15 +38,5 @@ public class TweedLikesRepository : ITweedLikesRepository
     public void DecreaseLikesCounter(string tweedId)
     {
         _session.CountersFor(tweedId).Increment(Domain.Model.Tweed.LikesCounterName, -1);
-    }
-
-    private async Task<AppUserLikes> GetOrBuildAppUserLikes(string userId)
-    {
-        var appUserLikesId = AppUserLikes.BuildId(userId);
-        return await _session.LoadAsync<AppUserLikes>(appUserLikesId) ??
-               new AppUserLikes
-               {
-                   AppUserId = userId
-               };
     }
 }

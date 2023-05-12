@@ -16,13 +16,15 @@ public class ViewModelFactory : IViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITweedLikesRepository _tweedLikesRepository;
+    private readonly ITweedLikesService _tweedLikesService;
     private readonly UserManager<AppUser> _userManager;
 
-    public ViewModelFactory(ITweedLikesRepository tweedLikesRepository,
+    public ViewModelFactory(ITweedLikesRepository tweedLikesRepository, ITweedLikesService tweedLikesService,
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
         _tweedLikesRepository = tweedLikesRepository;
+        _tweedLikesService = tweedLikesService;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -36,7 +38,7 @@ public class ViewModelFactory : IViewModelFactory
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
         var currentUserLikesTweed =
-            await _tweedLikesRepository.DoesUserLikeTweed(tweed.Id!, currentUserId!);
+            await _tweedLikesService.DoesUserLikeTweed(tweed.Id!, currentUserId!);
 
         TweedViewModel viewModel = new()
         {
