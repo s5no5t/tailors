@@ -20,20 +20,21 @@ public class TweedLikesRepository : ITweedLikesRepository
         return likesCounter ?? 0L;
     }
 
+    // TODO: Move to service
     public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
     {
         var appUserLikes = await GetOrBuildAppUserLikes(userId);
         return appUserLikes.Likes.Any(lb => lb.TweedId == tweedId);
     }
 
-    public Task<AppUserLikes?> Get(string userId)
+    public async Task<AppUserLikes?> Get(string appUserLikesId)
     {
-        throw new NotImplementedException();
+        return await _session.LoadAsync<AppUserLikes>(appUserLikesId);
     }
 
-    public Task Create(AppUserLikes appUserLikes)
+    public async Task Create(AppUserLikes appUserLikes)
     {
-        throw new NotImplementedException();
+        await _session.StoreAsync(appUserLikes);
     }
 
     public void IncreaseLikesCounter(string tweedId)

@@ -43,7 +43,8 @@ public class TweedLikesService : ITweedLikesService
 
     private async Task<AppUserLikes> GetOrBuildAppUserLikes(string userId)
     {
-        var appUserLikes = await _tweedLikesRepository.Get(userId);
+        var appUserLikesId = AppUserLikes.BuildId(userId);
+        var appUserLikes = await _tweedLikesRepository.Get(appUserLikesId);
         if (appUserLikes is null)
         {
             appUserLikes = new AppUserLikes
