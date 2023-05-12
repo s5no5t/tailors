@@ -15,21 +15,21 @@ namespace Tweed.Web.Controllers;
 public class TweedController : Controller
 {
     private readonly INotificationManager _notificationManager;
-    private readonly ITweedLikesRepository _tweedLikesRepository;
+    private readonly ITweedLikesService _tweedLikesService;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedThreadRepository _tweedThreadRepository;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
-        INotificationManager notificationManager, ITweedLikesRepository tweedLikesRepository,
+        INotificationManager notificationManager, ITweedLikesService tweedLikesService,
         ITweedThreadRepository tweedThreadRepository,
         IViewModelFactory viewModelFactory)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _tweedLikesRepository = tweedLikesRepository;
+        _tweedLikesService = tweedLikesService;
         _tweedThreadRepository = tweedThreadRepository;
         _viewModelFactory = viewModelFactory;
     }
@@ -134,7 +134,7 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _tweedLikesRepository.AddLike(tweedId, currentUserId!, now);
+        await _tweedLikesService.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
@@ -148,7 +148,7 @@ public class TweedController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _tweedLikesRepository.RemoveLike(tweedId, currentUserId!);
+        await _tweedLikesService.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         return PartialView("_Tweed", viewModel);
