@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.GenerateFakes", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Infrastructure", "Tweed.Infrastructure\Tweed.Infrastructure.csproj", "{A1CFAF21-1EAE-41ED-A1E8-AE5C57C1DA2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Infrastructure.Test", "Tweed.Infrastructure.Test\Tweed.Infrastructure.Test.csproj", "{66447071-218E-46D0-87D6-E8E638A2BD33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{A1CFAF21-1EAE-41ED-A1E8-AE5C57C1DA2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1CFAF21-1EAE-41ED-A1E8-AE5C57C1DA2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1CFAF21-1EAE-41ED-A1E8-AE5C57C1DA2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66447071-218E-46D0-87D6-E8E638A2BD33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66447071-218E-46D0-87D6-E8E638A2BD33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66447071-218E-46D0-87D6-E8E638A2BD33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66447071-218E-46D0-87D6-E8E638A2BD33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

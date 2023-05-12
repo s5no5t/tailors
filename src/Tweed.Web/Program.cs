@@ -53,6 +53,7 @@ builder.Services.AddScoped<ITweedLikesRepository, TweedLikesRepository>();
 builder.Services.AddScoped<IFeedService, FeedService>();
 builder.Services.AddScoped<ITweedThreadRepository, TweedThreadRepository>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
+builder.Services.AddScoped<ITweedLikesService, TweedLikesService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

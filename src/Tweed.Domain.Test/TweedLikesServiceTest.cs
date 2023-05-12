@@ -1,45 +1,36 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Moq;
 using NodaTime;
-using Raven.Client.Documents;
 using Tweed.Domain.Model;
-using Tweed.Domain.Test.Helper;
-using Tweed.Infrastructure;
 using Xunit;
 
 namespace Tweed.Domain.Test;
 
-[Collection("RavenDb Collection")]
 public class TweedLikesServiceTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
-    private readonly IDocumentStore _store;
+    private readonly TweedLikesService _service;
 
-    public TweedLikesServiceTest(RavenTestDbFixture ravenDb)
+    private readonly Mock<ITweedLikesRepository> _tweedLikesRepositoryMock = new();
+
+    public TweedLikesServiceTest()
     {
-        _store = ravenDb.CreateDocumentStore();
+        _service = new TweedLikesService(_tweedLikesRepositoryMock.Object);
     }
 
     [Fact]
     public async Task AddLike_ShouldIncreaseLikes()
     {
-        using var session = _store.OpenAsyncSession();
         var appUserLikes = new AppUserLikes
         {
-            AppUserId = "currentUser"
+            AppUserId = "userId"
         };
-        await session.StoreAsync(appUserLikes);
-        var tweed = new Domain.Model.Tweed
-        {
-            Id = "tweedId"
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
+        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
 
-        await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+        await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
         Assert.Single(appUserLikes.Likes);
     }
@@ -47,34 +38,22 @@ public class TweedLikesServiceTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        using var session = _store.OpenAsyncSession();
-        var appUserLikes = new AppUserLikes
-        {
-            AppUserId = "currentUser"
-        };
-        await session.StoreAsync(appUserLikes);
         var tweed = new Domain.Model.Tweed
         {
             Id = "tweedId"
         };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
 
-        await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
-        await session.SaveChangesAsync();
+        await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
-        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
-        Assert.Equal(1, likesCounter);
+        _tweedLikesRepositoryMock.Verify(t => t.IncreaseLikesCounter(tweed.Id), Times.Once);
     }
 
     [Fact]
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
-        using var session = _store.OpenAsyncSession();
         var appUserLikes = new AppUserLikes
         {
-            AppUserId = "currentUser",
+            AppUserId = "userId",
             Likes = new List<AppUserLikes.TweedLike>
             {
                 new()
@@ -83,11 +62,9 @@ public class TweedLikesServiceTest
                 }
             }
         };
-        await session.StoreAsync(appUserLikes);
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
+        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
 
-        await service.AddLike("tweedId", "currentUser", FixedZonedDateTime);
+        await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
         Assert.Single(appUserLikes.Likes);
     }
@@ -95,10 +72,9 @@ public class TweedLikesServiceTest
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikes()
     {
-        using var session = _store.OpenAsyncSession();
         var appUserLikes = new AppUserLikes
         {
-            AppUserId = "currentUser",
+            AppUserId = "userId",
             Likes = new List<AppUserLikes.TweedLike>
             {
                 new()
@@ -107,16 +83,9 @@ public class TweedLikesServiceTest
                 }
             }
         };
-        await session.StoreAsync(appUserLikes);
-        var tweed = new Domain.Model.Tweed
-        {
-            Id = "tweedId"
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
+        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
 
-        await service.RemoveLike("tweedId", "currentUser");
+        await _service.RemoveLike("tweedId", "userId");
 
         Assert.Empty(appUserLikes.Likes);
     }
@@ -124,67 +93,28 @@ public class TweedLikesServiceTest
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikesCounter()
     {
-        using var session = _store.OpenAsyncSession();
         var appUserLikes = new AppUserLikes
         {
             AppUserId = "userId"
         };
-        await session.StoreAsync(appUserLikes);
-        var tweed = new Domain.Model.Tweed
-        {
-            Id = "tweedId"
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        session.CountersFor(tweed.Id).Increment("Likes");
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
+        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
 
-        await service.RemoveLike(tweed.Id, "userId");
-        await session.SaveChangesAsync();
+        await _service.RemoveLike("tweedId", "userId");
 
-        var likesCounter = await session.CountersFor(tweed.Id).GetAsync("Likes");
-        Assert.Equal(0, likesCounter);
+        _tweedLikesRepositoryMock.Verify(t => t.DecreaseLikesCounter("tweedId"), Times.Once);
     }
 
     [Fact]
     public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
     {
-        using var session = _store.OpenAsyncSession();
         var appUserLikes = new AppUserLikes
         {
             AppUserId = "userId"
         };
-        await session.StoreAsync(appUserLikes);
-        var tweed = new Domain.Model.Tweed
-        {
-            Id = "tweedId"
-        };
-        await session.StoreAsync(tweed);
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
+        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
 
-        await service.RemoveLike("tweedId", "userId");
+        await _service.RemoveLike("tweedId", "userId");
 
         Assert.Empty(appUserLikes.Likes);
-    }
-
-    [Fact]
-    public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
-    {
-        using var session = _store.OpenAsyncSession();
-        Domain.Model.Tweed tweed = new()
-        {
-            Text = "test",
-            CreatedAt = FixedZonedDateTime
-        };
-        await session.StoreAsync(tweed);
-        session.CountersFor(tweed.Id).Increment("Likes");
-        await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
-
-        var likesCount = await service.GetLikesCount(tweed.Id!);
-
-        Assert.Equal(1, likesCount);
     }
 }
