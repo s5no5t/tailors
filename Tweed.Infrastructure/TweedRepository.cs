@@ -68,6 +68,13 @@ public sealed class TweedRepository : ITweedRepository
         throw new NotImplementedException();
     }
 
+    public async Task<List<Domain.Model.Tweed>> SearchTweeds(string term)
+    {
+        return await _session.Query<Domain.Model.Tweed, Tweeds_ByText>()
+            .Search(t => t.Text, term)
+            .Take(20).ToListAsync();
+    }
+
     private async Task<TweedThread> CreateThread(string tweedId)
     {
         TweedThread thread = new()
