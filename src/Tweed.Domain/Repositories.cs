@@ -3,6 +3,11 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
+public interface IAppUserRepository
+{
+    Task<List<AppUser>> SearchAppUsers(string term);
+}
+
 public interface IAppUserFollowsRepository
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
