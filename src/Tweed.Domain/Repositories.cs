@@ -31,13 +31,13 @@ public interface ITweedRepository
     Task<Model.Tweed?> GetTweedById(string id);
     Task<List<Model.Tweed>> SearchTweeds(string term);
     Task Create(Model.Tweed tweed);
-    Task<List<Model.Tweed>> GetExtraTweeds(List<Domain.Model.Tweed> ownTweeds, List<Domain.Model.Tweed> followerTweeds, int count);
+    Task<List<Model.Tweed>> GetExtraTweeds(List<Model.Tweed> ownTweeds, List<Model.Tweed> followerTweeds, int count);
     Task<List<Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds, int count);
     Task<List<Model.Tweed>> GetTweedsForAuthorId(string authorId, int count);
 }
 
 public interface ITweedThreadRepository
 {
-    Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
+    Task<TweedThread?> GetById(string threadId);
     Task Create(TweedThread thread);
 }

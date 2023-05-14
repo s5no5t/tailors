@@ -52,6 +52,7 @@ builder.Services.AddScoped<ITweedThreadRepository, TweedThreadRepository>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 builder.Services.AddScoped<ITweedLikesService, TweedLikesService>();
 builder.Services.AddScoped<ITweedService, TweedService>();
+builder.Services.AddScoped<IThreadService, ThreadService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
