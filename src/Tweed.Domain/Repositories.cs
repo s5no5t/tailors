@@ -35,6 +35,7 @@ public interface ITweedRepository
         string parentTweedId);
 
     Task<Model.Tweed?> Get(string tweedId);
+    Task<List<Model.Tweed>> SearchTweeds(string term);
 }
 
 public interface ITweedThreadRepository

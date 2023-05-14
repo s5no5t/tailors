@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tweed.Domain;
-using Tweed.Infrastructure;
 using Tweed.Web.Views.Search;
 
 namespace Tweed.Web.Controllers;
@@ -10,12 +9,12 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class SearchController : Controller
 {
-    private readonly ISearchService _searchService;
     private readonly IAppUserRepository _appUserRepository;
+    private readonly ITweedRepository _tweedRepository;
 
-    public SearchController(ISearchService searchService, IAppUserRepository appUserRepository)
+    public SearchController(ITweedRepository tweedRepository, IAppUserRepository appUserRepository)
     {
-        _searchService = searchService;
+        _tweedRepository = tweedRepository;
         _appUserRepository = appUserRepository;
     }
 
@@ -26,10 +25,7 @@ public class SearchController : Controller
     }
 
     public async Task<IActionResult> Results(
-        [FromQuery]
-        [Required]
-        [StringLength(50, MinimumLength = 3)]
-        [RegularExpression(@"^[\w\s]*$")]
+        [FromQuery] [Required] [StringLength(50, MinimumLength = 3)] [RegularExpression(@"^[\w\s]*$")]
         string term)
     {
         if (!ModelState.IsValid)
@@ -37,7 +33,7 @@ public class SearchController : Controller
                 new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
 
         var users = await _appUserRepository.SearchAppUsers(term);
-        var tweeds = await _searchService.SearchTweeds(term);
+        var tweeds = await _tweedRepository.SearchTweeds(term);
         IndexViewModel viewModel = new(
             term,
             users.Select(u => new UserViewModel(u.Id!, u.UserName!)).ToList(),

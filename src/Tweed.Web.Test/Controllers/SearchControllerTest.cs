@@ -15,7 +15,7 @@ namespace Tweed.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
-    private readonly Mock<ISearchService> _searchServiceMock = new();
+    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<IAppUserRepository> _appUserRepositoryMock = new();
     private readonly SearchController _searchController;
 
@@ -23,10 +23,10 @@ public class SearchControllerTest
     {
         _appUserRepositoryMock.Setup(u => u.SearchAppUsers(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _searchServiceMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
+        _tweedRepositoryMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _searchController =
-            new SearchController(_searchServiceMock.Object, _appUserRepositoryMock.Object);
+            new SearchController(_tweedRepositoryMock.Object, _appUserRepositoryMock.Object);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _searchServiceMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
+        _tweedRepositoryMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
             new List<Domain.Model.Tweed>
             {
                 new()
