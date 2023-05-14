@@ -17,6 +17,7 @@ public class HomeController : Controller
     private readonly IFeedService _feedService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
+    private const int PageSize = 20;
 
     public HomeController(IFeedService feedService, UserManager<AppUser> userManager,
         IViewModelFactory viewModelFactory)
@@ -48,7 +49,7 @@ public class HomeController : Controller
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
-        var feed = await _feedService.GetFeed(currentUserId, page);
+        var feed = await _feedService.GetFeed(currentUserId, page, PageSize);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in feed)
@@ -61,7 +62,7 @@ public class HomeController : Controller
         {
             Page = page,
             Tweeds = tweedViewModels,
-            NextPageExists = feed.Count == FeedService.PageSize
+            NextPageExists = feed.Count == PageSize
         };
         return viewModel;
     }

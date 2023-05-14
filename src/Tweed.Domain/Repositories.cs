@@ -31,6 +31,9 @@ public interface ITweedRepository
     Task<Model.Tweed?> GetTweedById(string id);
     Task<List<Model.Tweed>> SearchTweeds(string term);
     Task Create(Model.Tweed tweed);
+    Task<List<Model.Tweed>> GetExtraTweeds(List<Domain.Model.Tweed> ownTweeds, List<Domain.Model.Tweed> followerTweeds, int count);
+    Task<List<Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds, int count);
+    Task<List<Model.Tweed>> GetTweedsForAuthorId(string authorId, int count);
 }
 
 public interface ITweedThreadRepository
