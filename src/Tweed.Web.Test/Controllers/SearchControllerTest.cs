@@ -15,18 +15,18 @@ namespace Tweed.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
-    private readonly Mock<ISearchService> _appUserQueriesMock;
+    private readonly Mock<ISearchService> _searchServiceMock = new();
+    private readonly Mock<IAppUserRepository> _appUserRepositoryMock = new();
     private readonly SearchController _searchController;
 
     public SearchControllerTest()
     {
-        _appUserQueriesMock = new Mock<ISearchService>();
-        _appUserQueriesMock.Setup(u => u.SearchAppUsers(It.IsAny<string>()))
+        _appUserRepositoryMock.Setup(u => u.SearchAppUsers(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _appUserQueriesMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
+        _searchServiceMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _searchController =
-            new SearchController(_appUserQueriesMock.Object);
+            new SearchController(_searchServiceMock.Object, _appUserRepositoryMock.Object);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class SearchControllerTest
         {
             Id = "userId"
         };
-        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId"))
+        _appUserRepositoryMock.Setup(u => u.SearchAppUsers("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
@@ -72,7 +72,7 @@ public class SearchControllerTest
             Id = "userId",
             UserName = "UserName"
         };
-        _appUserQueriesMock.Setup(u => u.SearchAppUsers("userId"))
+        _appUserRepositoryMock.Setup(u => u.SearchAppUsers("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
@@ -87,7 +87,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _appUserQueriesMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
+        _searchServiceMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
             new List<Domain.Model.Tweed>
             {
                 new()
