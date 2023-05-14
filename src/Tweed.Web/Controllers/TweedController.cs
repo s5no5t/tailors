@@ -17,15 +17,18 @@ public class TweedController : Controller
     private readonly INotificationManager _notificationManager;
     private readonly ITweedLikesService _tweedLikesService;
     private readonly ITweedRepository _tweedRepository;
+    private readonly ITweedService _tweedService;
     private readonly ITweedThreadRepository _tweedThreadRepository;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public TweedController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
+    public TweedController(ITweedService tweedService, ITweedRepository tweedRepository,
+        UserManager<AppUser> userManager,
         INotificationManager notificationManager, ITweedLikesService tweedLikesService,
         ITweedThreadRepository tweedThreadRepository,
         IViewModelFactory viewModelFactory)
     {
+        _tweedService = tweedService;
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
@@ -92,7 +95,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _tweedRepository.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        await _tweedService.CreateRootTweed(currentUserId!, viewModel.Text, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -114,7 +117,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var tweed = await _tweedRepository.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+        var tweed = await _tweedService.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
 
         _notificationManager.AppendSuccess("Reply Posted");

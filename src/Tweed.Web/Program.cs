@@ -21,10 +21,7 @@ builder.Services.AddRazorPages()
 
 builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
 
-builder.Services.AddRavenDbDocStore(options =>
-{
-    options.BeforeInitializeDocStore = store => store.PreInitialize();
-});
+builder.Services.AddRavenDbDocStore(options => { options.BeforeInitializeDocStore = store => store.PreInitialize(); });
 builder.Services.AddRavenDbAsyncSession();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -54,6 +51,7 @@ builder.Services.AddScoped<IFeedService, FeedService>();
 builder.Services.AddScoped<ITweedThreadRepository, TweedThreadRepository>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
 builder.Services.AddScoped<ITweedLikesService, TweedLikesService>();
+builder.Services.AddScoped<ITweedService, TweedService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

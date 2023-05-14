@@ -24,6 +24,11 @@ public class TweedThreadRepository : ITweedThreadRepository
         return path;
     }
 
+    public async Task Create(TweedThread thread)
+    {
+        await _session.StoreAsync(thread);
+    }
+
     public async Task<TweedThread?> LoadThread(string threadId)
     {
         return await _session.LoadAsync<TweedThread>(threadId);

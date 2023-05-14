@@ -29,15 +29,12 @@ public interface ITweedRepository
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetTweedById(string id);
-    Task<Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
-
-    Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
-        string parentTweedId);
-
     Task<List<Model.Tweed>> SearchTweeds(string term);
+    Task Create(Model.Tweed tweed);
 }
 
 public interface ITweedThreadRepository
 {
     Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
+    Task Create(TweedThread thread);
 }
