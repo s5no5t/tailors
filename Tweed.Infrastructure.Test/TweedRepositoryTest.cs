@@ -1,8 +1,5 @@
-using Moq;
 using NodaTime;
 using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
-using Tweed.Domain.Model;
 using Tweed.Domain.Test.Helper;
 using Xunit;
 
@@ -19,66 +16,6 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     public TweedRepositoryTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
-    }
-
-    [Fact]
-    public async Task CreateRootTweed_SavesTweed()
-    {
-        var session = new Mock<IAsyncDocumentSession>();
-        var repository = new TweedRepository(session.Object);
-
-        await repository.CreateRootTweed("authorId", "text", FixedZonedDateTime);
-
-        session.Verify(s => s.StoreAsync(It.IsAny<Domain.Model.Tweed>(), default));
-    }
-
-    [Fact]
-    public async Task CreateRootTweed_CreatesThread()
-    {
-        var session = new Mock<IAsyncDocumentSession>();
-        var repository = new TweedRepository(session.Object);
-
-        await repository.CreateRootTweed("authorId", "text", FixedZonedDateTime);
-
-        session.Verify(s => s.StoreAsync(It.IsAny<TweedThread>(), default));
-    }
-
-    [Fact]
-    public async Task CreateReplyTweed_SavesTweed()
-    {
-        var session = _store.OpenAsyncSession();
-        var repository = new TweedRepository(session);
-
-        Domain.Model.Tweed parentTweed = new()
-        {
-            Id = "parentTweedId",
-            ThreadId = "threadId"
-        };
-        await session.StoreAsync(parentTweed);
-
-        var tweed =
-            await repository.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
-
-        Assert.NotNull(tweed.Id);
-    }
-
-    [Fact]
-    public async Task CreateReplyTweed_SetsThreadId()
-    {
-        var session = _store.OpenAsyncSession();
-        var repository = new TweedRepository(session);
-
-        Domain.Model.Tweed parentTweed = new()
-        {
-            Id = "parentTweedId",
-            ThreadId = "threadId"
-        };
-        await session.StoreAsync(parentTweed);
-
-        var tweed =
-            await repository.CreateReplyTweed("authorId", "text", FixedZonedDateTime, "parentTweedId");
-
-        Assert.Equal(parentTweed.ThreadId, tweed.ThreadId);
     }
 
     [Fact]

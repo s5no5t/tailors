@@ -25,7 +25,8 @@ public class TweedControllerTest
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
     private readonly Mock<ITweedLikesService> _tweedLikesServiceMock = new();
-    private readonly Mock<ITweedRepository> _tweedServiceMock = new();
+    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
+    private readonly Mock<ITweedService> _tweedServiceMock = new();
     private readonly Mock<ITweedThreadRepository> _tweedThreadServiceMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
@@ -51,7 +52,8 @@ public class TweedControllerTest
         _tweedThreadServiceMock
             .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(new List<TweedThread.TweedReference>());
-        _tweedController = new TweedController(_tweedServiceMock.Object, _userManagerMock.Object,
+        _tweedController = new TweedController(_tweedServiceMock.Object, _tweedRepositoryMock.Object,
+            _userManagerMock.Object,
             _notificationManagerMock.Object,
             _tweedLikesServiceMock.Object, _tweedThreadServiceMock.Object,
             _viewModelFactoryMock.Object)
@@ -76,7 +78,7 @@ public class TweedControllerTest
         {
             Id = "tweedId"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
 
         var result = await _tweedController.ShowThreadForTweed("tweedId");
 
@@ -92,7 +94,7 @@ public class TweedControllerTest
         {
             Id = "tweedId"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
             new TweedViewModel
             {
@@ -125,8 +127,8 @@ public class TweedControllerTest
                         TweedId = rootTweed.Id
                     }
                 });
-        _tweedServiceMock.Setup(t => t.GetTweedById(rootTweed.Id)).ReturnsAsync(rootTweed);
-        _tweedServiceMock.Setup(t => t.GetTweedById(tweed.Id)).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById(rootTweed.Id)).ReturnsAsync(rootTweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById(tweed.Id)).ReturnsAsync(tweed);
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(rootTweed)).ReturnsAsync(
             new TweedViewModel
             {
@@ -155,7 +157,7 @@ public class TweedControllerTest
         {
             Id = "replyTweedId"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById(tweed.Id)).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById(tweed.Id)).ReturnsAsync(tweed);
         _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
             new TweedViewModel
             {
@@ -175,7 +177,7 @@ public class TweedControllerTest
         {
             Id = "tweeds/1"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById(It.IsAny<string>())).ReturnsAsync(tweed);
 
         var result = await _tweedController.ShowThreadForTweed(HttpUtility.UrlEncode(tweed.Id));
 
@@ -224,9 +226,9 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldReturnRedirect()
     {
-        _tweedServiceMock.Setup(t => t.GetTweedById("parentTweedId"))
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("parentTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
-        _tweedServiceMock.Setup(t => t.GetTweedById("rootTweedId"))
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("rootTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
@@ -242,9 +244,9 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldSaveReplyTweed()
     {
-        _tweedServiceMock.Setup(t => t.GetTweedById("parentTweedId"))
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("parentTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
-        _tweedServiceMock.Setup(t => t.GetTweedById("rootTweedId"))
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("rootTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
@@ -261,9 +263,9 @@ public class TweedControllerTest
     [Fact]
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
-        _tweedServiceMock.Setup(t => t.GetTweedById("parentTweedId"))
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("parentTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
-        _tweedServiceMock.Setup(t => t.GetTweedById("rootTweedId"))
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("rootTweedId"))
             .ReturnsAsync(new Domain.Model.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
@@ -308,7 +310,7 @@ public class TweedControllerTest
         {
             AuthorId = "author"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
 
         await _tweedController.Like("123");
 
@@ -323,7 +325,7 @@ public class TweedControllerTest
         {
             AuthorId = "author"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _tweedController.Like("123");
@@ -338,7 +340,7 @@ public class TweedControllerTest
         {
             AuthorId = "author"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
 
         await _tweedController.Unlike("123");
 
@@ -352,7 +354,7 @@ public class TweedControllerTest
         {
             AuthorId = "author"
         };
-        _tweedServiceMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
+        _tweedRepositoryMock.Setup(t => t.GetTweedById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _tweedController.Unlike("123");
