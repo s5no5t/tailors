@@ -34,7 +34,6 @@ public interface ITweedRepository
     Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
         string parentTweedId);
 
-    Task<Model.Tweed?> Get(string tweedId);
     Task<List<Model.Tweed>> SearchTweeds(string term);
 }
 

@@ -63,11 +63,6 @@ public sealed class TweedRepository : ITweedRepository
         return tweed;
     }
 
-    public Task<Domain.Model.Tweed?> Get(string tweedId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<List<Domain.Model.Tweed>> SearchTweeds(string term)
     {
         return await _session.Query<Domain.Model.Tweed, Tweeds_ByText>()
