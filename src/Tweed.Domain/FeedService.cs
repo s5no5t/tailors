@@ -27,17 +27,18 @@ public class FeedService : IFeedService
         var followerTweeds = await _tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
 
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
-        var tweedsToIgnore = ownTweeds.Select(t => t.Id!).Concat(followerTweeds.Select(t => t.Id!))
-            .ToList();
-        var extraTweeds = await _tweedRepository.GetRecentTweeds(tweedsToIgnore, numExtraTweeds);
+        var extraTweeds = await _tweedRepository.GetRecentTweeds(numExtraTweeds);
 
         var tweeds = new List<Model.Tweed>();
         tweeds.AddRange(ownTweeds);
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);
-        tweeds = tweeds.OrderByDescending(t => t.CreatedAt?.LocalDateTime).ToList();
 
-        var feed = tweeds.Take(pageSize).ToList();
+        var feed = tweeds
+            .DistinctBy(t => t.Id)
+            .OrderByDescending(t => t.CreatedAt?.LocalDateTime)
+            .Take(pageSize)
+            .ToList();
 
         return feed;
     }

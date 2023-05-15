@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NodaTime;
@@ -23,10 +24,10 @@ public class FeedServiceTest
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _tweedRepositoryMock
-            .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string?>>(), It.IsAny<int>()))
+            .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _tweedRepositoryMock
-            .Setup(m => m.GetRecentTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
+            .Setup(m => m.GetRecentTweeds(It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _sut = new FeedService(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
@@ -122,14 +123,24 @@ public class FeedServiceTest
         Assert.Contains(followedUserTweed, tweeds);
     }
 
-    // [Fact]
-    // public async Task GetFeed_ShouldNotReturnTheSameTweedTwice()
-    // {
-    //     var tweeds = await _sut.GetFeed(_currentUser.Id!, 0);
-    //
-    //     var anyDuplicateTweed = tweeds.GroupBy(x => x.Id).Any(g => g.Count() > 1);
-    //     Assert.False(anyDuplicateTweed);
-    // }
+    [Fact]
+    public async Task GetFeed_ShouldNotReturnTheSameTweedTwice()
+    {
+        Domain.Model.Tweed currentUserTweed = new()
+        {
+            Text = "test",
+            AuthorId = "userId",
+            CreatedAt = FixedZonedDateTime.PlusHours(1)
+        };
+        _tweedRepositoryMock
+            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed> { currentUserTweed, currentUserTweed });
+
+        var tweeds = await _sut.GetFeed("userId", 0, 20);
+
+        var anyDuplicateTweed = tweeds.GroupBy(x => x.Id).Any(g => g.Count() > 1);
+        Assert.False(anyDuplicateTweed);
+    }
 
     /*[Fact]
     public async Task GetFeed_ShouldReturn20TweedsPerPage()

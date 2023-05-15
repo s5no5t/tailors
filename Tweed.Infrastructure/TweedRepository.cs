@@ -54,14 +54,9 @@ public sealed class TweedRepository : ITweedRepository
         return followerTweeds;
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetRecentTweeds(List<string> ignoreTweedIds,
-        int count)
+    public async Task<List<Domain.Model.Tweed>> GetRecentTweeds(int count)
     {
         return await _session.Query<Domain.Model.Tweed>()
-            .Where(t =>
-                !t.Id.In(ignoreTweedIds)) // not my own Tweeds
-            .Where(t =>
-                !t.Id.In(ignoreTweedIds)) // not Tweeds from users I follow
             .OrderByDescending(t => t.CreatedAt)
             .Take(count)
             .Include(t => t.AuthorId)
