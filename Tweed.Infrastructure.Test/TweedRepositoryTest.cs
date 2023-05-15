@@ -61,7 +61,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetByAuthorId("user");
+        var tweeds = await repository.GetAllByAuthorId("user");
 
         Assert.NotEmpty(tweeds);
     }
@@ -89,7 +89,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetByAuthorId("user1");
+        var tweeds = await repository.GetAllByAuthorId("user1");
 
         Assert.Equal(recentTweed, tweeds[0]);
         Assert.Equal(olderTweed, tweeds[1]);
@@ -114,7 +114,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetByAuthorId("user1");
+        var tweeds = await repository.GetAllByAuthorId("user1");
 
         Assert.Equal(20, tweeds.Count);
     }
@@ -134,7 +134,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetByAuthorId("user1");
+        var tweeds = await repository.GetAllByAuthorId("user1");
 
         Assert.Empty(tweeds);
     }

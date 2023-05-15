@@ -15,15 +15,6 @@ public sealed class TweedRepository : ITweedRepository
         _session = session;
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetByAuthorId(string authorId, int feedSize = 20)
-    {
-        return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
-            .Where(t => t.AuthorId == authorId)
-            .OrderByDescending(t => t.CreatedAt)
-            .Take(feedSize)
-            .Include(t => t.AuthorId).ToListAsync();
-    }
-
     public Task<Domain.Model.Tweed?> GetById(string id)
     {
         return _session.LoadAsync<Domain.Model.Tweed>(id)!;
@@ -32,6 +23,15 @@ public sealed class TweedRepository : ITweedRepository
     public async Task Create(Domain.Model.Tweed tweed)
     {
         await _session.StoreAsync(tweed);
+    }
+
+    public async Task<List<Domain.Model.Tweed>> GetAllByAuthorId(string authorId, int count = 20)
+    {
+        return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+            .Where(t => t.AuthorId == authorId)
+            .OrderByDescending(t => t.CreatedAt)
+            .Take(count)
+            .Include(t => t.AuthorId).ToListAsync();
     }
 
     public async Task<List<Domain.Model.Tweed>> Search(string term)
