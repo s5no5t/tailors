@@ -25,7 +25,7 @@ public sealed class TweedRepository : ITweedRepository
         await _session.StoreAsync(tweed);
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetAllByAuthorId(string authorId, int count = 20)
+    public async Task<List<Domain.Model.Tweed>> GetAllByAuthorId(string authorId, int count)
     {
         return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == authorId)
