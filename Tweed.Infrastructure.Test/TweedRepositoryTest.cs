@@ -1,6 +1,6 @@
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Domain.Test.Helper;
+using Tweed.Infrastructure.Test.Helper;
 using Xunit;
 
 namespace Tweed.Infrastructure.Test;
