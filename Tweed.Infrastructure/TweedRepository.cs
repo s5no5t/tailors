@@ -24,7 +24,7 @@ public sealed class TweedRepository : ITweedRepository
             .ToListAsync();
     }
 
-    public Task<Domain.Model.Tweed?> GetTweedById(string id)
+    public Task<Domain.Model.Tweed?> GetById(string id)
     {
         return _session.LoadAsync<Domain.Model.Tweed>(id)!;
     }
