@@ -24,10 +24,10 @@ public class TweedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
-    private readonly Mock<ITweedLikesService> _tweedLikesServiceMock = new();
+    private readonly Mock<ILikesService> _tweedLikesServiceMock = new();
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<ITweedService> _tweedServiceMock = new();
-    private readonly Mock<ITweedThreadService> _tweedThreadServiceMock = new();
+    private readonly Mock<IThreadService> _tweedThreadServiceMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();

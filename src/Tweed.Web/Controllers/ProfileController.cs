@@ -14,17 +14,20 @@ namespace Tweed.Web.Controllers;
 public class ProfileController : Controller
 {
     private readonly IAppUserFollowsRepository _appUserFollowsRepository;
+    private readonly IFollowsService _followsService;
     private readonly ITweedRepository _tweedRepository;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
-        IViewModelFactory viewModelFactory, IAppUserFollowsRepository appUserFollowsRepository)
+        IViewModelFactory viewModelFactory, IAppUserFollowsRepository appUserFollowsRepository,
+        IFollowsService followsService)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
         _appUserFollowsRepository = appUserFollowsRepository;
+        _followsService = followsService;
     }
 
     public async Task<IActionResult> Index(string userId)
@@ -36,7 +39,7 @@ public class ProfileController : Controller
         var userTweeds = await _tweedRepository.GetTweedsForUser(userId);
 
         var currentUserId = _userManager.GetUserId(User);
-        var currentUserFollows = await _appUserFollowsRepository.GetFollows(currentUserId!);
+        var currentUserFollows = await _followsService.GetFollows(currentUserId!);
 
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in userTweeds)
@@ -68,7 +71,7 @@ public class ProfileController : Controller
             return BadRequest("Following yourself isn't allowed");
 
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _appUserFollowsRepository.AddFollower(userId, currentUserId!, now);
+        await _followsService.AddFollower(userId, currentUserId!, now);
 
         return RedirectToAction("Index", new
         {
@@ -85,7 +88,7 @@ public class ProfileController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
 
-        await _appUserFollowsRepository.RemoveFollower(userId, currentUserId!);
+        await _followsService.RemoveFollower(userId, currentUserId!);
 
         return RedirectToAction("Index", new
         {

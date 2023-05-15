@@ -114,7 +114,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
     private async Task ProcessTweed(Domain.Model.Tweed tweed, IAsyncDocumentSession session)
     {
         TweedThreadRepository repository = new(session);
-        TweedThreadService tweedThreadService = new(repository);
+        ThreadService threadService = new(repository);
 
         if (tweed.ThreadId is null)
             throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
@@ -127,6 +127,6 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             return;
         }
 
-        tweedThreadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
+        threadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
     }
 }

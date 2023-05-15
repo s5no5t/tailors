@@ -53,9 +53,10 @@ builder.Services.AddScoped<ITweedLikesRepository, TweedLikesRepository>();
 builder.Services.AddScoped<IFeedService, FeedService>();
 builder.Services.AddScoped<ITweedThreadRepository, TweedThreadRepository>();
 builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
-builder.Services.AddScoped<ITweedLikesService, TweedLikesService>();
+builder.Services.AddScoped<ILikesService, LikesService>();
 builder.Services.AddScoped<ITweedService, TweedService>();
-builder.Services.AddScoped<ITweedThreadService, TweedThreadService>();
+builder.Services.AddScoped<IThreadService, ThreadService>();
+builder.Services.AddScoped<IFollowsService, FollowsService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

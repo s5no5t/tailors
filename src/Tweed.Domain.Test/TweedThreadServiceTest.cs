@@ -8,12 +8,12 @@ namespace Tweed.Domain.Test;
 
 public class TweedThreadServiceTest
 {
-    private readonly TweedThreadService _sut;
+    private readonly ThreadService _sut;
     private readonly Mock<ITweedThreadRepository> _tweedThreadRepositoryMock = new();
 
     public TweedThreadServiceTest()
     {
-        _sut = new TweedThreadService(_tweedThreadRepositoryMock.Object);
+        _sut = new ThreadService(_tweedThreadRepositoryMock.Object);
     }
 
     [Fact]
