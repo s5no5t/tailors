@@ -1,5 +1,9 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NodaTime;
+using Tweed.Domain.Model;
+using Xunit;
 
 namespace Tweed.Domain.Test;
 
@@ -8,13 +12,22 @@ public class FeedServiceTest
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
-    private readonly Mock<IFollowsService> _followsServiceMock = new(MockBehavior.Strict);
-
+    private readonly Mock<IFollowsService> _followsServiceMock = new();
     private readonly FeedService _sut;
-    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
 
     public FeedServiceTest()
     {
+        _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
+            .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
+        _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed>());
+        _tweedRepositoryMock
+            .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string?>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed>());
+        _tweedRepositoryMock
+            .Setup(m => m.GetRecentTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed>());
         _sut = new FeedService(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
 
@@ -71,7 +84,7 @@ public class FeedServiceTest
         return Task.CompletedTask;
     }*/
 
-    /*[Fact]
+    [Fact]
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
         Domain.Model.Tweed currentUserTweed = new()
@@ -80,12 +93,13 @@ public class FeedServiceTest
             AuthorId = "userId",
             CreatedAt = FixedZonedDateTime.PlusHours(1)
         };
-        _tweedRepositoryMock.Setup(t => t.GetTweedsForAuthorId("userId", )
+        _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed> { currentUserTweed });
 
-        var tweeds = await _sut.GetFeed("userId", 0);
+        var tweeds = await _sut.GetFeed("userId", 0, 20);
 
-        Assert.Contains(currentUserTweed.Id, tweeds.Select(t => t.Id));
-    }*/
+        Assert.Contains(currentUserTweed, tweeds);
+    }
 
     /*[Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()

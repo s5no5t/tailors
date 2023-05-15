@@ -2,7 +2,7 @@ namespace Tweed.Domain;
 
 public interface IFeedService
 {
-    Task<List<Model.Tweed>> GetFeed(string appUserId, int page, int pageSize);
+    Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize);
 }
 
 public class FeedService : IFeedService
@@ -16,19 +16,19 @@ public class FeedService : IFeedService
         _followsService = followsService;
     }
 
-    public async Task<List<Model.Tweed>> GetFeed(string appUserId, int page, int pageSize)
+    public async Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 
-        var ownTweeds = await _tweedRepository.GetAllByAuthorId(appUserId, feedSize);
+        var ownTweeds = await _tweedRepository.GetAllByAuthorId(userId, feedSize);
 
-        var follows = await _followsService.GetFollows(appUserId);
+        var follows = await _followsService.GetFollows(userId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
-
         var followerTweeds = await _tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
 
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
-        var tweedsToIgnore = ownTweeds.Select(t => t.Id!).Concat(followerTweeds.Select(t => t.Id!)).ToList();
+        var tweedsToIgnore = ownTweeds.Select(t => t.Id!).Concat(followerTweeds.Select(t => t.Id!))
+            .ToList();
         var extraTweeds = await _tweedRepository.GetRecentTweeds(tweedsToIgnore, numExtraTweeds);
 
         var tweeds = new List<Model.Tweed>();
