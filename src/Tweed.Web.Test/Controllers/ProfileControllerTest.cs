@@ -25,6 +25,8 @@ public class ProfileControllerTest
         Id = "currentUser"
     };
 
+    private readonly Mock<IFollowsService> _followsServiceMock = new();
+
     private readonly ProfileController _profileController;
 
     private readonly AppUser _profileUser = new()
@@ -46,7 +48,7 @@ public class ProfileControllerTest
 
         _appUserFollowsQueriesMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
             .ReturnsAsync(0);
-        _appUserFollowsQueriesMock.Setup(u => u.GetFollows(It.IsAny<string>()))
+        _followsServiceMock.Setup(u => u.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
 
         _tweedQueriesMock = new Mock<ITweedRepository>();
@@ -55,7 +57,7 @@ public class ProfileControllerTest
 
         _profileController = new ProfileController(_tweedQueriesMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,
-            _appUserFollowsQueriesMock.Object)
+            _appUserFollowsQueriesMock.Object, _followsServiceMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -111,7 +113,7 @@ public class ProfileControllerTest
                 LeaderId = _profileUser.Id
             }
         };
-        _appUserFollowsQueriesMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
+        _followsServiceMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
 
         var result = await _profileController.Index("user");
 
@@ -125,7 +127,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsFalse_WhenCurrentUserIsNotFollower()
     {
-        _appUserFollowsQueriesMock.Setup(f => f.GetFollows(_currentUser.Id!))
+        _followsServiceMock.Setup(f => f.GetFollows(_currentUser.Id!))
             .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
 
         var result = await _profileController.Index("user");
@@ -189,7 +191,7 @@ public class ProfileControllerTest
     {
         await _profileController.Follow("user");
 
-        _appUserFollowsQueriesMock.Verify(t =>
+        _followsServiceMock.Verify(t =>
             t.AddFollower("user", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
@@ -214,7 +216,7 @@ public class ProfileControllerTest
     {
         await _profileController.Unfollow("user");
 
-        _appUserFollowsQueriesMock.Verify(t =>
+        _followsServiceMock.Verify(t =>
             t.RemoveFollower("user", "currentUser"));
     }
 

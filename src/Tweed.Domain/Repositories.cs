@@ -1,4 +1,3 @@
-using NodaTime;
 using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
@@ -10,10 +9,9 @@ public interface IAppUserRepository
 
 public interface IAppUserFollowsRepository
 {
-    Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
-    Task RemoveFollower(string leaderId, string followerId);
     Task<int> GetFollowerCount(string userId);
-    Task<List<AppUserFollows.LeaderReference>> GetFollows(string userId);
+    Task<AppUserFollows?> GetById(string appUserFollowsId);
+    Task Create(AppUserFollows appUserFollows);
 }
 
 public interface ITweedLikesRepository
@@ -31,7 +29,10 @@ public interface ITweedRepository
     Task<Model.Tweed?> GetTweedById(string id);
     Task<List<Model.Tweed>> SearchTweeds(string term);
     Task Create(Model.Tweed tweed);
-    Task<List<Model.Tweed>> GetExtraTweeds(List<Model.Tweed> ownTweeds, List<Model.Tweed> followerTweeds, int count);
+
+    Task<List<Model.Tweed>> GetExtraTweeds(List<Model.Tweed> ownTweeds,
+        List<Model.Tweed> followerTweeds, int count);
+
     Task<List<Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds, int count);
     Task<List<Model.Tweed>> GetTweedsForAuthorId(string authorId, int count);
 }

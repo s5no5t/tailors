@@ -7,18 +7,18 @@ using Xunit;
 
 namespace Tweed.Domain.Test;
 
-public class TweedLikesServiceTest
+public class LikesServiceTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
-    private readonly TweedLikesService _service;
+    private readonly LikesService _service;
 
     private readonly Mock<ITweedLikesRepository> _tweedLikesRepositoryMock = new();
 
-    public TweedLikesServiceTest()
+    public LikesServiceTest()
     {
-        _service = new TweedLikesService(_tweedLikesRepositoryMock.Object);
+        _service = new LikesService(_tweedLikesRepositoryMock.Object);
     }
 
     [Fact]

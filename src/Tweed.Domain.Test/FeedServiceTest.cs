@@ -1,10 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Moq;
 using NodaTime;
-using Tweed.Domain.Model;
-using Xunit;
 
 namespace Tweed.Domain.Test;
 
@@ -13,13 +8,14 @@ public class FeedServiceTest
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
+    private readonly Mock<IFollowsService> _followsServiceMock = new(MockBehavior.Strict);
+
     private readonly FeedService _sut;
-    private readonly Mock<ITweedRepository>_tweedRepositoryMock = new(MockBehavior.Strict);
-    private readonly Mock<IAppUserFollowsRepository> _appUserFollowsRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new(MockBehavior.Strict);
 
     public FeedServiceTest()
     {
-        _sut = new FeedService(_tweedRepositoryMock.Object, _appUserFollowsRepositoryMock.Object);
+        _sut = new FeedService(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
 
     /*public async Task InitializeAsync()

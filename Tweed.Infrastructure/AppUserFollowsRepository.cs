@@ -1,4 +1,3 @@
-using NodaTime;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tweed.Domain;
@@ -16,26 +15,6 @@ public class AppUserFollowsRepository : IAppUserFollowsRepository
         _session = session;
     }
 
-    public async Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt)
-    {
-        var appUserFollows = await GetOrCreateAppUserFollower(followerId);
-
-        if (appUserFollows.Follows.Any(f => f.LeaderId == leaderId))
-            return;
-
-        appUserFollows.Follows.Add(new AppUserFollows.LeaderReference
-        {
-            LeaderId = leaderId,
-            CreatedAt = createdAt
-        });
-    }
-
-    public async Task RemoveFollower(string leaderId, string followerId)
-    {
-        var follower = await GetOrCreateAppUserFollower(followerId);
-        follower.Follows.RemoveAll(f => f.LeaderId == leaderId);
-    }
-
     public async Task<int> GetFollowerCount(string userId)
     {
         var result = await _session
@@ -46,21 +25,13 @@ public class AppUserFollowsRepository : IAppUserFollowsRepository
         return result?.FollowerCount ?? 0;
     }
 
-    public async Task<List<AppUserFollows.LeaderReference>> GetFollows(string followerId)
+    public async Task<AppUserFollows?> GetById(string appUserFollowsId)
     {
-        var follower = await GetOrCreateAppUserFollower(followerId);
-        return follower.Follows;
+        return await _session.LoadAsync<AppUserFollows>(appUserFollowsId);
     }
 
-    private async Task<AppUserFollows> GetOrCreateAppUserFollower(string userId)
+    public async Task Create(AppUserFollows appUserFollows)
     {
-        var appUserFollowsId = AppUserFollows.BuildId(userId);
-        var appUserFollows = await _session.LoadAsync<AppUserFollows>(appUserFollowsId) ??
-                             new AppUserFollows
-                             {
-                                 AppUserId = userId
-                             };
         await _session.StoreAsync(appUserFollows);
-        return appUserFollows;
     }
 }
