@@ -32,59 +32,6 @@ public class FeedServiceTest
         _sut = new FeedService(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
 
-    /*public async Task InitializeAsync()
-    {
-        await using var bulkInsert = _store.BulkInsert();
-
-        for (var i = 0; i < 5; i++)
-        {
-            Domain.Model.Tweed currentUserTweed = new()
-            {
-                Text = "test",
-                AuthorId = _currentUser.Id!,
-                CreatedAt = FixedZonedDateTime.PlusHours(-100)
-            };
-            await bulkInsert.StoreAsync(currentUserTweed);
-        }
-
-        List<AppUser> otherUsers = new();
-        for (var i = 0; i < 5; i++)
-        {
-            AppUser otherUser = new();
-            await bulkInsert.StoreAsync(otherUser);
-            otherUsers.Add(otherUser);
-
-            for (var j = 0; j < 20; j++)
-            {
-                Domain.Model.Tweed otherUserTweed = new()
-                {
-                    Text = "test",
-                    AuthorId = otherUser.Id!,
-                    CreatedAt = FixedZonedDateTime.PlusHours(-100)
-                };
-                await bulkInsert.StoreAsync(otherUserTweed);
-            }
-        }
-
-        await bulkInsert.StoreAsync(_currentUser);
-
-        AppUserFollows currentUserFollows = new()
-        {
-            AppUserId = _currentUser.Id,
-            Follows = otherUsers.Take(3).Select(u => new AppUserFollows.LeaderReference
-            {
-                LeaderId = u.Id,
-                CreatedAt = FixedZonedDateTime.PlusHours(-100)
-            }).ToList()
-        };
-        await bulkInsert.StoreAsync(currentUserFollows);
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }*/
-
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
