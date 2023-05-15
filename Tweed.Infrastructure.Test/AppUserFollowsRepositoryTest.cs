@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Tweed.Infrastructure.Test;
 
-[Collection("RavenDb Collection")]
+[Collection("RavenDB")]
 public class AppUserFollowsRepositoryTest
 {
     private readonly IDocumentStore _store;
