@@ -118,17 +118,18 @@ public class TweedThreadServiceTest
     }
 
     [Fact]
-    public void AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
+    public async Task AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
         TweedThread thread = new();
+        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
-        _sut.AddTweedToThread(thread, "tweedId", null);
+        await _sut.AddTweedToThread("threadId", "tweedId", null);
 
         Assert.Equal("tweedId", thread.Root.TweedId);
     }
 
     [Fact]
-    public void AddTweedToThread_ShouldInsertReplyToRootTweed()
+    public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
     {
         TweedThread thread = new()
         {
@@ -138,14 +139,15 @@ public class TweedThreadServiceTest
                 TweedId = "rootTweedId"
             }
         };
+        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
-        _sut.AddTweedToThread(thread, "tweedId", "rootTweedId");
+        await _sut.AddTweedToThread("threadId", "tweedId", "rootTweedId");
 
         Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
     [Fact]
-    public void AddTweedToThread_ShouldInsertReplyToReplyTweed()
+    public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
     {
         TweedThread thread = new()
         {
@@ -162,8 +164,9 @@ public class TweedThreadServiceTest
                 }
             }
         };
+        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
-        _sut.AddTweedToThread(thread, "tweedId", "replyTweedId");
+        await _sut.AddTweedToThread("threadId", "tweedId", "replyTweedId");
 
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
     }

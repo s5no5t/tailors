@@ -19,18 +19,20 @@ public class ThreadService : IThreadService
     public async Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId,
         string tweedId)
     {
-        var thread = await _tweedThreadRepository.GetById(threadId);
-        if (thread is null)
-            throw new Exception($"Thread {threadId} not found");
+        var thread = await GetOrCreateThread(threadId);
+
         var path = FindTweedInThread(thread, tweedId);
         if (path is null)
             return null;
+
         path.RemoveAt(path.Count - 1);
         return path;
     }
 
-    public void AddTweedToThread(TweedThread thread, string tweedId, string? parentTweedId)
+    public async Task AddTweedToThread(string threadId, string tweedId, string? parentTweedId)
     {
+        var thread = await GetOrCreateThread(threadId);
+
         // This is a root Tweed
         if (parentTweedId is null)
         {
@@ -74,5 +76,15 @@ public class ThreadService : IThreadService
         }
 
         return null;
+    }
+
+    private async Task<TweedThread> GetOrCreateThread(string threadId)
+    {
+        var tweedThread = await _tweedThreadRepository.GetById(threadId);
+        if (tweedThread is not null) return tweedThread;
+
+        tweedThread = new TweedThread();
+        await _tweedThreadRepository.Create(tweedThread);
+        return tweedThread;
     }
 }
