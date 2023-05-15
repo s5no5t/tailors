@@ -26,7 +26,7 @@ public interface ITweedLikesRepository
 public interface ITweedRepository
 {
     Task<Model.Tweed?> GetById(string id);
-    Task<List<Model.Tweed>> GetByAuthorId(string authorId, int feedSize = 20);
+    Task<List<Model.Tweed>> GetAllByAuthorId(string authorId, int count = 20);
     Task Create(Model.Tweed tweed);
     Task<List<Model.Tweed>> Search(string term);
     Task<List<Model.Tweed>> GetRecentTweeds(List<string> ignoreTweedIds, int count);
