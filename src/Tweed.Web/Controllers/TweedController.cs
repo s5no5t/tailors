@@ -15,17 +15,17 @@ namespace Tweed.Web.Controllers;
 public class TweedController : Controller
 {
     private readonly INotificationManager _notificationManager;
-    private readonly IThreadService _threadService;
     private readonly ITweedLikesService _tweedLikesService;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedService _tweedService;
+    private readonly ITweedThreadService _tweedThreadService;
     private readonly UserManager<AppUser> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedService tweedService, ITweedRepository tweedRepository,
         UserManager<AppUser> userManager,
         INotificationManager notificationManager, ITweedLikesService tweedLikesService,
-        IThreadService threadService,
+        ITweedThreadService tweedThreadService,
         IViewModelFactory viewModelFactory)
     {
         _tweedService = tweedService;
@@ -33,7 +33,7 @@ public class TweedController : Controller
         _userManager = userManager;
         _notificationManager = notificationManager;
         _tweedLikesService = tweedLikesService;
-        _threadService = threadService;
+        _tweedThreadService = tweedThreadService;
         _viewModelFactory = viewModelFactory;
     }
 
@@ -49,7 +49,7 @@ public class TweedController : Controller
 
         List<TweedViewModel> leadingTweedViewModels = new();
         var leadingTweedsRef =
-            await _threadService.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
+            await _tweedThreadService.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
         if (leadingTweedsRef is not null)
             foreach (var leadingTweedRef in leadingTweedsRef)
             {
