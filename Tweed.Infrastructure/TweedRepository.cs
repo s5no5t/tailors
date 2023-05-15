@@ -15,7 +15,7 @@ public sealed class TweedRepository : ITweedRepository
         _session = session;
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetTweedsForUser(string userId)
+    public async Task<List<Domain.Model.Tweed>> GetByUserId(string userId)
     {
         return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == userId)

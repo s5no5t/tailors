@@ -9,9 +9,9 @@ public interface IAppUserRepository
 
 public interface IAppUserFollowsRepository
 {
-    Task<int> GetFollowerCount(string userId);
     Task<AppUserFollows?> GetById(string appUserFollowsId);
     Task Create(AppUserFollows appUserFollows);
+    Task<int> GetFollowerCount(string userId);
 }
 
 public interface ITweedLikesRepository
@@ -25,10 +25,10 @@ public interface ITweedLikesRepository
 
 public interface ITweedRepository
 {
-    Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
-    Task<List<Model.Tweed>> Search(string term);
+    Task<List<Model.Tweed>> GetByUserId(string userId);
     Task Create(Model.Tweed tweed);
+    Task<List<Model.Tweed>> Search(string term);
 
     Task<List<Model.Tweed>> GetExtraTweeds(List<Model.Tweed> ownTweeds,
         List<Model.Tweed> followerTweeds, int count);
