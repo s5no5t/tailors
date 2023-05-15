@@ -52,7 +52,7 @@ public class ProfileControllerTest
             .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
 
         _tweedQueriesMock = new Mock<ITweedRepository>();
-        _tweedQueriesMock.Setup(t => t.GetByUserId("user"))
+        _tweedQueriesMock.Setup(t => t.GetByAuthorId("user", It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
 
         _profileController = new ProfileController(_tweedQueriesMock.Object,
@@ -76,7 +76,7 @@ public class ProfileControllerTest
     {
         await _profileController.Index("user");
 
-        _tweedQueriesMock.Verify(t => t.GetByUserId("user"));
+        _tweedQueriesMock.Verify(t => t.GetByAuthorId("user", It.IsAny<int>()));
     }
 
     [Fact]

@@ -20,7 +20,7 @@ public class FeedService : IFeedService
     {
         const int feedSize = 100;
 
-        var ownTweeds = await _tweedRepository.GetTweedsForAuthorId(appUserId, feedSize);
+        var ownTweeds = await _tweedRepository.GetByAuthorId(appUserId, feedSize);
 
         var follows = await _followsService.GetFollows(appUserId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();

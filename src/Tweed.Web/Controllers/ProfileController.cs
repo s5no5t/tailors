@@ -36,7 +36,7 @@ public class ProfileController : Controller
         if (user == null)
             return NotFound();
 
-        var userTweeds = await _tweedRepository.GetByUserId(userId);
+        var userTweeds = await _tweedRepository.GetByAuthorId(userId);
 
         var currentUserId = _userManager.GetUserId(User);
         var currentUserFollows = await _followsService.GetFollows(currentUserId!);

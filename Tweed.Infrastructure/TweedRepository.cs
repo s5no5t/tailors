@@ -15,13 +15,13 @@ public sealed class TweedRepository : ITweedRepository
         _session = session;
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetByUserId(string userId)
+    public async Task<List<Domain.Model.Tweed>> GetByAuthorId(string authorId, int feedSize = 20)
     {
         return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
-            .Where(t => t.AuthorId == userId)
+            .Where(t => t.AuthorId == authorId)
             .OrderByDescending(t => t.CreatedAt)
-            .Take(20)
-            .ToListAsync();
+            .Take(feedSize)
+            .Include(t => t.AuthorId).ToListAsync();
     }
 
     public Task<Domain.Model.Tweed?> GetById(string id)
@@ -67,16 +67,5 @@ public sealed class TweedRepository : ITweedRepository
             .Include(t => t.AuthorId)
             .ToListAsync();
         return followerTweeds;
-    }
-
-    public async Task<List<Domain.Model.Tweed>> GetTweedsForAuthorId(string authorId, int count)
-    {
-        var ownTweeds = await _session.Query<Domain.Model.Tweed>()
-            .Where(t => t.AuthorId == authorId)
-            .OrderByDescending(t => t.CreatedAt)
-            .Take(count)
-            .Include(t => t.AuthorId)
-            .ToListAsync();
-        return ownTweeds;
     }
 }
