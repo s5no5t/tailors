@@ -13,6 +13,7 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class ProfileController : Controller
 {
+    private const int PageSize = 100;
     private readonly IAppUserFollowsRepository _appUserFollowsRepository;
     private readonly IFollowsService _followsService;
     private readonly ITweedRepository _tweedRepository;
@@ -36,7 +37,7 @@ public class ProfileController : Controller
         if (user == null)
             return NotFound();
 
-        var userTweeds = await _tweedRepository.GetAllByAuthorId(userId);
+        var userTweeds = await _tweedRepository.GetAllByAuthorId(userId, PageSize);
 
         var currentUserId = _userManager.GetUserId(User);
         var currentUserFollows = await _followsService.GetFollows(currentUserId!);
