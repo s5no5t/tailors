@@ -30,7 +30,7 @@ public interface ITweedRepository
     Task Create(Model.Tweed tweed);
     Task<List<Model.Tweed>> Search(string term);
     Task<List<Model.Tweed>> GetRecentTweeds(List<string> ignoreTweedIds, int count);
-    Task<List<Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds, int count);
+    Task<List<Model.Tweed>> GetFollowerTweeds(List<string> followedUserIds, int count);
 }
 
 public interface ITweedThreadRepository
