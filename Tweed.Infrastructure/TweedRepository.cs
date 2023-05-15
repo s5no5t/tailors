@@ -34,7 +34,7 @@ public sealed class TweedRepository : ITweedRepository
         await _session.StoreAsync(tweed);
     }
 
-    public async Task<List<Domain.Model.Tweed>> SearchTweeds(string term)
+    public async Task<List<Domain.Model.Tweed>> Search(string term)
     {
         return await _session.Query<Domain.Model.Tweed, Tweeds_ByText>()
             .Search(t => t.Text, term)

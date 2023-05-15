@@ -32,8 +32,8 @@ public class SearchController : Controller
             return View("Index",
                 new IndexViewModel(term, new List<UserViewModel>(), new List<TweedViewModel>()));
 
-        var users = await _appUserRepository.SearchAppUsers(term);
-        var tweeds = await _tweedRepository.SearchTweeds(term);
+        var users = await _appUserRepository.Search(term);
+        var tweeds = await _tweedRepository.Search(term);
         IndexViewModel viewModel = new(
             term,
             users.Select(u => new UserViewModel(u.Id!, u.UserName!)).ToList(),
