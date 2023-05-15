@@ -28,7 +28,7 @@ public class LikesServiceTest
         {
             AppUserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.Get("userId/Likes")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(appUserLikes);
 
         await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
@@ -62,7 +62,7 @@ public class LikesServiceTest
                 }
             }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(appUserLikes);
 
         await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
@@ -83,7 +83,7 @@ public class LikesServiceTest
                 }
             }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.Get("userId/Likes")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(appUserLikes);
 
         await _service.RemoveLike("tweedId", "userId");
 
@@ -97,7 +97,7 @@ public class LikesServiceTest
         {
             AppUserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(appUserLikes);
 
         await _service.RemoveLike("tweedId", "userId");
 
@@ -111,7 +111,7 @@ public class LikesServiceTest
         {
             AppUserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.Get("userId")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(appUserLikes);
 
         await _service.RemoveLike("tweedId", "userId");
 

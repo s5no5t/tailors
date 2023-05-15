@@ -13,7 +13,7 @@ public class TweedLikesRepository : ITweedLikesRepository
         _session = session;
     }
 
-    public async Task<AppUserLikes?> Get(string appUserLikesId)
+    public async Task<AppUserLikes?> GetById(string appUserLikesId)
     {
         return await _session.LoadAsync<AppUserLikes>(appUserLikesId);
     }
