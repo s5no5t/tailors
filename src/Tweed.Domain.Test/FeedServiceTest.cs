@@ -93,7 +93,8 @@ public class FeedServiceTest
             AuthorId = "userId",
             CreatedAt = FixedZonedDateTime.PlusHours(1)
         };
-        _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
+        _tweedRepositoryMock
+            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
@@ -101,22 +102,10 @@ public class FeedServiceTest
         Assert.Contains(currentUserTweed, tweeds);
     }
 
-    /*[Fact]
+    [Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
     {
         var followedUser = new AppUser();
-
-        AppUserFollows currentUserFollows = new()
-        {
-            AppUserId = _currentUser.Id,
-            Follows = new List<AppUserFollows.LeaderReference>
-            {
-                new()
-                {
-                    LeaderId = followedUser.Id!
-                }
-            }
-        };
 
         Domain.Model.Tweed followedUserTweed = new()
         {
@@ -124,11 +113,14 @@ public class FeedServiceTest
             AuthorId = followedUser.Id!,
             CreatedAt = FixedZonedDateTime.PlusHours(1)
         };
+        _tweedRepositoryMock
+            .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<Domain.Model.Tweed> { followedUserTweed });
 
-        var tweeds = await _sut.GetFeed(_currentUser.Id!, 0);
+        var tweeds = await _sut.GetFeed("userId", 0, 20);
 
-        Assert.Contains(tweeds, t => t.Id == followedUserTweed.Id);
-    }*/
+        Assert.Contains(followedUserTweed, tweeds);
+    }
 
     // [Fact]
     // public async Task GetFeed_ShouldNotReturnTheSameTweedTwice()

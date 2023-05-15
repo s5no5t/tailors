@@ -41,7 +41,7 @@ public sealed class TweedRepository : ITweedRepository
             .Take(20).ToListAsync();
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds,
+    public async Task<List<Domain.Model.Tweed>> GetFollowerTweeds(List<string> followedUserIds,
         int count)
     {
         var followerTweeds = await _session

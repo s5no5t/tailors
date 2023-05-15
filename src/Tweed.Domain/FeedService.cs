@@ -23,7 +23,7 @@ public class FeedService : IFeedService
         var ownTweeds = await _tweedRepository.GetAllByAuthorId(userId, feedSize);
 
         var follows = await _followsService.GetFollows(userId);
-        var followedUserIds = follows.Select(f => f.LeaderId).ToList();
+        var followedUserIds = follows.Select(f => f.LeaderId!).ToList();
         var followerTweeds = await _tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
 
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
