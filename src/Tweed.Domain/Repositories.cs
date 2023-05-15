@@ -4,7 +4,7 @@ namespace Tweed.Domain;
 
 public interface IAppUserRepository
 {
-    Task<List<AppUser>> SearchAppUsers(string term);
+    Task<List<AppUser>> Search(string term);
 }
 
 public interface IAppUserFollowsRepository
@@ -27,7 +27,7 @@ public interface ITweedRepository
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
     Task<Model.Tweed?> GetById(string id);
-    Task<List<Model.Tweed>> SearchTweeds(string term);
+    Task<List<Model.Tweed>> Search(string term);
     Task Create(Model.Tweed tweed);
 
     Task<List<Model.Tweed>> GetExtraTweeds(List<Model.Tweed> ownTweeds,

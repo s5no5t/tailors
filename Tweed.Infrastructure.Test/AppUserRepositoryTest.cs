@@ -26,7 +26,7 @@ public class AppUserRepositoryTest
         await session.SaveChangesAsync();
         AppUserRepository repository = new(session);
 
-        var results = await repository.SearchAppUsers("noresults");
+        var results = await repository.Search("noresults");
 
         Assert.Empty(results);
     }
@@ -43,7 +43,7 @@ public class AppUserRepositoryTest
         await session.SaveChangesAsync();
         AppUserRepository repository = new(session);
 
-        var results = await repository.SearchAppUsers("UserName");
+        var results = await repository.Search("UserName");
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
@@ -60,7 +60,7 @@ public class AppUserRepositoryTest
         await session.SaveChangesAsync();
         AppUserRepository repository = new(session);
 
-        var results = await repository.SearchAppUsers("Use");
+        var results = await repository.Search("Use");
 
         Assert.Contains(results, u => u.UserName == "UserName");
     }
@@ -81,7 +81,7 @@ public class AppUserRepositoryTest
 
         AppUserRepository repository = new(session);
 
-        var results = await repository.SearchAppUsers("User");
+        var results = await repository.Search("User");
 
         Assert.Equal(20, results.Count);
     }

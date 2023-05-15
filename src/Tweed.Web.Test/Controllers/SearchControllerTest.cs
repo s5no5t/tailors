@@ -21,9 +21,9 @@ public class SearchControllerTest
 
     public SearchControllerTest()
     {
-        _appUserRepositoryMock.Setup(u => u.SearchAppUsers(It.IsAny<string>()))
+        _appUserRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _tweedRepositoryMock.Setup(u => u.SearchTweeds(It.IsAny<string>()))
+        _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _searchController =
             new SearchController(_tweedRepositoryMock.Object, _appUserRepositoryMock.Object);
@@ -52,7 +52,7 @@ public class SearchControllerTest
         {
             Id = "userId"
         };
-        _appUserRepositoryMock.Setup(u => u.SearchAppUsers("userId"))
+        _appUserRepositoryMock.Setup(u => u.Search("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
@@ -72,7 +72,7 @@ public class SearchControllerTest
             Id = "userId",
             UserName = "UserName"
         };
-        _appUserRepositoryMock.Setup(u => u.SearchAppUsers("userId"))
+        _appUserRepositoryMock.Setup(u => u.Search("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
@@ -87,7 +87,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _tweedRepositoryMock.Setup(u => u.SearchTweeds("term")).ReturnsAsync(
+        _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
             new List<Domain.Model.Tweed>
             {
                 new()

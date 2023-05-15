@@ -15,7 +15,7 @@ public class AppUserRepository : IAppUserRepository
         _session = session;
     }
 
-    public async Task<List<AppUser>> SearchAppUsers(string term)
+    public async Task<List<AppUser>> Search(string term)
     {
         return await _session.Query<AppUser, AppUsers_ByUserName>()
             .Search(u => u.UserName, $"{term}*")

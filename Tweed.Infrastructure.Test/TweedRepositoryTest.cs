@@ -145,7 +145,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         using var session = _store.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.SearchTweeds("noresults");
+        var tweeds = await repository.Search("noresults");
 
         Assert.Empty(tweeds);
     }
@@ -164,7 +164,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.SearchTweeds("word");
+        var tweeds = await repository.Search("word");
 
         Assert.Equal("tweedId", tweeds[0].Id);
     }
