@@ -51,7 +51,7 @@ public class LikesService : ILikesService
     private async Task<AppUserLikes> GetOrCreateAppUserLikes(string userId)
     {
         var appUserLikesId = AppUserLikes.BuildId(userId);
-        var appUserLikes = await _tweedLikesRepository.Get(appUserLikesId);
+        var appUserLikes = await _tweedLikesRepository.GetById(appUserLikesId);
         if (appUserLikes is null)
         {
             appUserLikes = new AppUserLikes
