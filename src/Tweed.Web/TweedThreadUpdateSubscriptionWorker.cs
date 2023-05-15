@@ -119,14 +119,6 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         if (tweed.ThreadId is null)
             throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
 
-        var thread = await repository.GetById(tweed.ThreadId);
-        if (thread is null)
-        {
-            _logger.LogWarning(
-                $"Thread {tweed.ThreadId} referenced by Tweed {tweed.Id} not found, skipping");
-            return;
-        }
-
-        threadService.AddTweedToThread(thread, tweed.Id!, tweed.ParentTweedId);
+        await threadService.AddTweedToThread(tweed.ThreadId, tweed.Id!, tweed.ParentTweedId);
     }
 }
