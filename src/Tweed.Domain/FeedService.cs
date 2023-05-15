@@ -37,6 +37,7 @@ public class FeedService : IFeedService
         var feed = tweeds
             .DistinctBy(t => t.Id)
             .OrderByDescending(t => t.CreatedAt?.LocalDateTime)
+            .Skip(pageSize * page)
             .Take(pageSize)
             .ToList();
 
