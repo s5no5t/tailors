@@ -28,8 +28,8 @@ public class FeedService : IFeedService
         var followerTweeds = await _tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
 
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
-        var extraTweeds =
-            await _tweedRepository.GetExtraTweeds(ownTweeds, followerTweeds, numExtraTweeds);
+        var tweedsToIgnore = ownTweeds.Select(t => t.Id!).Concat(followerTweeds.Select(t => t.Id!)).ToList();
+        var extraTweeds = await _tweedRepository.GetRecentTweeds(tweedsToIgnore, numExtraTweeds);
 
         var tweeds = new List<Model.Tweed>();
         tweeds.AddRange(ownTweeds);

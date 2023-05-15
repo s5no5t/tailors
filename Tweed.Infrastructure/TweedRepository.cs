@@ -41,23 +41,8 @@ public sealed class TweedRepository : ITweedRepository
             .Take(20).ToListAsync();
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetExtraTweeds(List<Domain.Model.Tweed> ownTweeds, List<Domain.Model.Tweed> followerTweeds, int count)
-    {
-        var extraTweeds = await _session.Query<Domain.Model.Tweed>()
-            .Where(t =>
-                !t.Id.In(ownTweeds.Select(f => f.Id)
-                    .ToList())) // not my own Tweeds
-            .Where(t =>
-                !t.Id.In(followerTweeds.Select(f => f.Id)
-                    .ToList())) // not Tweeds from users I follow
-            .OrderByDescending(t => t.CreatedAt)
-            .Take(count)
-            .Include(t => t.AuthorId)
-            .ToListAsync();
-        return extraTweeds;
-    }
-
-    public async Task<List<Domain.Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds, int count)
+    public async Task<List<Domain.Model.Tweed>> GetFollowerTweeds(List<string?> followedUserIds,
+        int count)
     {
         var followerTweeds = await _session
             .Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
@@ -67,5 +52,19 @@ public sealed class TweedRepository : ITweedRepository
             .Include(t => t.AuthorId)
             .ToListAsync();
         return followerTweeds;
+    }
+
+    public async Task<List<Domain.Model.Tweed>> GetRecentTweeds(List<string> ignoreTweedIds,
+        int count)
+    {
+        return await _session.Query<Domain.Model.Tweed>()
+            .Where(t =>
+                !t.Id.In(ignoreTweedIds)) // not my own Tweeds
+            .Where(t =>
+                !t.Id.In(ignoreTweedIds)) // not Tweeds from users I follow
+            .OrderByDescending(t => t.CreatedAt)
+            .Take(count)
+            .Include(t => t.AuthorId)
+            .ToListAsync();
     }
 }
