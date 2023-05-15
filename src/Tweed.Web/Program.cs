@@ -3,14 +3,12 @@ using OpenTelemetry.Trace;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
-using Tweed.Web.Helper;
 using IdentityRole = Raven.Identity.IdentityRole;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,18 +43,12 @@ builder.Services
 builder.Services.ConfigureApplicationCookie(
     options => options.LoginPath = "/Identity/Account/login");
 
-builder.Services.AddScoped<ITweedRepository, TweedRepository>();
-builder.Services.AddScoped<INotificationManager, NotificationManager>();
-builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
-builder.Services.AddScoped<IAppUserFollowsRepository, AppUserFollowsRepository>();
-builder.Services.AddScoped<ITweedLikesRepository, TweedLikesRepository>();
-builder.Services.AddScoped<IFeedService, FeedService>();
-builder.Services.AddScoped<ITweedThreadRepository, TweedThreadRepository>();
-builder.Services.AddScoped<IViewModelFactory, ViewModelFactory>();
-builder.Services.AddScoped<ILikesService, LikesService>();
-builder.Services.AddScoped<ITweedService, TweedService>();
-builder.Services.AddScoped<IThreadService, ThreadService>();
-builder.Services.AddScoped<IFollowsService, FollowsService>();
+builder.Services.Scan(scan =>
+{
+    scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(AppUserRepository)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(AppUser)).AddClasses().AsMatchingInterface();
+});
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
