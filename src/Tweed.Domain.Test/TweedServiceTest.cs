@@ -44,7 +44,7 @@ public class TweedServiceTest
             Id = "parentTweedId",
             ThreadId = "threadId"
         };
-        _tweedRepositoryMock.Setup(t => t.GetTweedById(parentTweed.Id)).ReturnsAsync(parentTweed);
+        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
         var tweed = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
 
@@ -59,7 +59,7 @@ public class TweedServiceTest
             Id = "parentTweedId",
             ThreadId = "threadId"
         };
-        _tweedRepositoryMock.Setup(t => t.GetTweedById(parentTweed.Id)).ReturnsAsync(parentTweed);
+        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
         var tweed = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, "parentTweedId");
 

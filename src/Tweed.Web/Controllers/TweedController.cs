@@ -43,7 +43,7 @@ public class TweedController : Controller
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var tweed = await _tweedRepository.GetTweedById(decodedTweedId);
+        var tweed = await _tweedRepository.GetById(decodedTweedId);
         if (tweed == null)
             return NotFound();
 
@@ -53,7 +53,7 @@ public class TweedController : Controller
         if (leadingTweedsRef is not null)
             foreach (var leadingTweedRef in leadingTweedsRef)
             {
-                var leadingTweed = await _tweedRepository.GetTweedById(leadingTweedRef.TweedId!);
+                var leadingTweed = await _tweedRepository.GetById(leadingTweedRef.TweedId!);
                 leadingTweedViewModels.Add(
                     await _viewModelFactory.BuildTweedViewModel(leadingTweed!));
             }
@@ -110,7 +110,7 @@ public class TweedController : Controller
         if (viewModel.ParentTweedId is null)
             return BadRequest();
 
-        var parentTweed = await _tweedRepository.GetTweedById(viewModel.ParentTweedId);
+        var parentTweed = await _tweedRepository.GetById(viewModel.ParentTweedId);
         if (parentTweed is null)
             return BadRequest();
 
@@ -131,7 +131,7 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Like(string tweedId)
     {
-        var tweed = await _tweedRepository.GetTweedById(tweedId);
+        var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed == null)
             return NotFound();
 
@@ -146,7 +146,7 @@ public class TweedController : Controller
     [HttpPost]
     public async Task<IActionResult> Unlike(string tweedId)
     {
-        var tweed = await _tweedRepository.GetTweedById(tweedId);
+        var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed == null)
             return NotFound();
 

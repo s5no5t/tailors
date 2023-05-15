@@ -26,7 +26,7 @@ public interface ITweedLikesRepository
 public interface ITweedRepository
 {
     Task<List<Model.Tweed>> GetTweedsForUser(string userId);
-    Task<Model.Tweed?> GetTweedById(string id);
+    Task<Model.Tweed?> GetById(string id);
     Task<List<Model.Tweed>> SearchTweeds(string term);
     Task Create(Model.Tweed tweed);
 

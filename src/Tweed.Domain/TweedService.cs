@@ -41,7 +41,7 @@ public class TweedService : ITweedService
     public async Task<Model.Tweed> CreateReplyTweed(string authorId, string text,
         ZonedDateTime createdAt, string parentTweedId)
     {
-        var parentTweed = await _tweedRepository.GetTweedById(parentTweedId);
+        var parentTweed = await _tweedRepository.GetById(parentTweedId);
         if (parentTweed is null)
             throw new Exception($"Parent Tweed {parentTweedId} not found");
         var threadId = parentTweed.ThreadId;

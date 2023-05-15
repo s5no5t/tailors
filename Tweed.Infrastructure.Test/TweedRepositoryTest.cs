@@ -19,7 +19,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task GetTweedById_ShouldReturnTweed()
+    public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
         Domain.Model.Tweed tweed = new()
@@ -31,18 +31,18 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweed2 = await repository.GetTweedById(tweed.Id!);
+        var tweed2 = await repository.GetById(tweed.Id!);
 
         Assert.Equal(tweed.Id, tweed2?.Id);
     }
 
     [Fact]
-    public async Task GetTweedById_WithInvalidId_ShouldReturnNull()
+    public async Task GetById_WithInvalidId_ShouldReturnNull()
     {
         using var session = _store.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
-        var tweed = await repository.GetTweedById("invalid");
+        var tweed = await repository.GetById("invalid");
 
         Assert.Null(tweed);
     }
