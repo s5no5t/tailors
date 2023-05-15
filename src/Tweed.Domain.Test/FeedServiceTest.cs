@@ -165,12 +165,27 @@ public class FeedServiceTest
         Assert.Equal(20, feed.Count);
     }
 
-    // [Fact]
-    // public async Task GetFeed_ShouldRespectPage()
-    // {
-    //     var page0Feed = await _sut.GetFeed(_currentUser.Id!, 0);
-    //     var page1Feed = await _sut.GetFeed(_currentUser.Id!, 1);
-    //
-    //     Assert.NotEqual(page0Feed[0].Id, page1Feed[1].Id);
-    // }
+    [Fact]
+    public async Task GetFeed_ShouldRespectPage()
+    {
+        var ownTweeds = Enumerable.Range(0, 25).Select(i =>
+        {
+            Domain.Model.Tweed tweed = new()
+            {
+                Id = $"tweeds/{i}",
+                Text = "test",
+                AuthorId = "userId",
+                CreatedAt = FixedZonedDateTime
+            };
+            return tweed;
+        }).ToList();
+        _tweedRepositoryMock
+            .Setup(m => m.GetAllByAuthorId("userId", It.IsAny<int>()))
+            .ReturnsAsync(ownTweeds);
+
+        var page0Feed = await _sut.GetFeed("userId", 0, 10);
+        var page1Feed = await _sut.GetFeed("userId", 1, 10);
+
+        Assert.NotEqual(page0Feed[0].Id, page1Feed[0].Id);
+    }
 }
