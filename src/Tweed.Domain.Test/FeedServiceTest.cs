@@ -142,26 +142,28 @@ public class FeedServiceTest
         Assert.False(anyDuplicateTweed);
     }
 
-    /*[Fact]
-    public async Task GetFeed_ShouldReturn20TweedsPerPage()
+    [Fact]
+    public async Task GetFeed_ShouldReturnPageSizeTweeds()
     {
-        var ownTweeds = Enumerable.Repeat(0, 25).Select(_ =>
+        var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
             Domain.Model.Tweed tweed = new()
             {
+                Id = $"tweeds/{i}",
                 Text = "test",
-                AuthorId = _currentUser.Id!,
+                AuthorId = "userId",
                 CreatedAt = FixedZonedDateTime
             };
             return tweed;
         }).ToList();
+        _tweedRepositoryMock
+            .Setup(m => m.GetAllByAuthorId("userId", It.IsAny<int>()))
+            .ReturnsAsync(ownTweeds);
 
-        _tweedRepositoryMock.Setup(t => t.GetTweedsForAuthorId("userId", 20)).ReturnsAsync(ownTweeds);
-
-        var feed = await _sut.GetFeed(_currentUser.Id!, 0);
+        var feed = await _sut.GetFeed("userId", 0, 20);
 
         Assert.Equal(20, feed.Count);
-    }*/
+    }
 
     // [Fact]
     // public async Task GetFeed_ShouldRespectPage()
