@@ -36,7 +36,7 @@ public class ProfileControllerTest
 
     private readonly Mock<ITweedRepository> _tweedQueriesMock;
     private readonly Mock<UserManager<User>> _userManagerMock;
-    private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
+    private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     public ProfileControllerTest()
     {

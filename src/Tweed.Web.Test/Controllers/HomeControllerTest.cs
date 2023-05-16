@@ -21,7 +21,7 @@ public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<IFeedService> _feedServiceMock = new();
-    private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
+    private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     private readonly Mock<UserManager<User>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<User>();
@@ -42,7 +42,7 @@ public class HomeControllerTest
         };
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
+        _viewModelFactoryMock.Setup(v => v.Create(tweed))
             .ReturnsAsync(new TweedViewModel());
 
         _homeController = new HomeController(_feedServiceMock.Object, _userManagerMock.Object,
@@ -90,7 +90,7 @@ public class HomeControllerTest
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock
-            .Setup(v => v.BuildTweedViewModels(It.IsAny<List<Domain.Model.Tweed>>()))
+            .Setup(v => v.Create(It.IsAny<List<Domain.Model.Tweed>>()))
             .ReturnsAsync(new List<TweedViewModel>
             {
                 new()
@@ -136,7 +136,7 @@ public class HomeControllerTest
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock
-            .Setup(v => v.BuildTweedViewModels(It.IsAny<List<Domain.Model.Tweed>>()))
+            .Setup(v => v.Create(It.IsAny<List<Domain.Model.Tweed>>()))
             .ReturnsAsync(new List<TweedViewModel>
             {
                 new()

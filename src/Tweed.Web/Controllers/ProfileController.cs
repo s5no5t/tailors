@@ -17,15 +17,15 @@ public class ProfileController : Controller
     private readonly ITweedRepository _tweedRepository;
     private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly UserManager<User> _userManager;
-    private readonly IViewModelFactory _viewModelFactory;
+    private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
     public ProfileController(ITweedRepository tweedRepository, UserManager<User> userManager,
-        IViewModelFactory viewModelFactory, IUserFollowsRepository userFollowsRepository,
+        ITweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
         IFollowsService followsService)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
-        _viewModelFactory = viewModelFactory;
+        _tweedViewModelFactory = tweedViewModelFactory;
         _userFollowsRepository = userFollowsRepository;
         _followsService = followsService;
     }
@@ -44,7 +44,7 @@ public class ProfileController : Controller
         var viewModel = new IndexViewModel(
             userId,
             user.UserName,
-            await _viewModelFactory.BuildTweedViewModels(userTweeds),
+            await _tweedViewModelFactory.Create(userTweeds),
             currentUserFollows.Any(f => f.LeaderId == user.Id),
             await _userFollowsRepository.GetFollowerCount(userId)
         );

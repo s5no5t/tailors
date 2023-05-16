@@ -20,13 +20,13 @@ public class TweedController : Controller
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedService _tweedService;
     private readonly UserManager<User> _userManager;
-    private readonly IViewModelFactory _viewModelFactory;
+    private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
     public TweedController(ITweedService tweedService, ITweedRepository tweedRepository,
         UserManager<User> userManager,
         INotificationManager notificationManager, ILikesService likesService,
         IThreadService threadService,
-        IViewModelFactory viewModelFactory)
+        ITweedViewModelFactory tweedViewModelFactory)
     {
         _tweedService = tweedService;
         _tweedRepository = tweedRepository;
@@ -34,7 +34,7 @@ public class TweedController : Controller
         _notificationManager = notificationManager;
         _likesService = likesService;
         _threadService = threadService;
-        _viewModelFactory = viewModelFactory;
+        _tweedViewModelFactory = tweedViewModelFactory;
     }
 
     [HttpGet("Tweed/{tweedId}")]
@@ -55,7 +55,7 @@ public class TweedController : Controller
             {
                 var leadingTweed = await _tweedRepository.GetById(leadingTweedRef.TweedId!);
                 leadingTweedViewModels.Add(
-                    await _viewModelFactory.BuildTweedViewModel(leadingTweed!));
+                    await _tweedViewModelFactory.Create(leadingTweed!));
             }
 
         List<TweedViewModel> replyTweedViewModels = new() // TODO
@@ -69,7 +69,7 @@ public class TweedController : Controller
         ShowThreadForTweedViewModel viewModel = new()
         {
             LeadingTweeds = leadingTweedViewModels,
-            Tweed = await _viewModelFactory.BuildTweedViewModel(tweed),
+            Tweed = await _tweedViewModelFactory.Create(tweed),
             ReplyTweeds = replyTweedViewModels,
             CreateTweed = new CreateReplyTweedViewModel
             {
@@ -138,7 +138,7 @@ public class TweedController : Controller
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
         await _likesService.AddLike(tweedId, currentUserId!, now);
 
-        var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
+        var viewModel = await _tweedViewModelFactory.Create(tweed);
         return PartialView("_Tweed", viewModel);
     }
 
@@ -152,7 +152,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         await _likesService.RemoveLike(tweedId, currentUserId!);
 
-        var viewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
+        var viewModel = await _tweedViewModelFactory.Create(tweed);
         return PartialView("_Tweed", viewModel);
     }
 }
