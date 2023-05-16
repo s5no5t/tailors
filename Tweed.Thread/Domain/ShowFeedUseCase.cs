@@ -1,8 +1,6 @@
-using Tweed.Thread.Domain;
-using Tweed.User;
 using Tweed.User.Domain;
 
-namespace Tweed.Feed.Domain;
+namespace Tweed.Thread.Domain;
 
 public interface IShowFeedUseCase
 {
