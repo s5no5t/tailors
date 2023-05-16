@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using Tweed.User;
 using Tweed.Like.Domain;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
@@ -16,7 +15,6 @@ namespace Tweed.Web.Controllers;
 public class TweedController : Controller
 {
     private readonly INotificationManager _notificationManager;
-    private readonly IThreadOfTweedsUseCase _threadOfTweedsUseCase;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
     private readonly UserManager<AppUser> _userManager;
@@ -24,23 +22,21 @@ public class TweedController : Controller
     public TweedController(ITweedRepository tweedRepository,
         UserManager<AppUser> userManager,
         INotificationManager notificationManager,
-        IThreadOfTweedsUseCase threadOfTweedsUseCase,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _threadOfTweedsUseCase = threadOfTweedsUseCase;
         _tweedViewModelFactory = tweedViewModelFactory;
     }
 
     [HttpGet("Tweed/{tweedId}")]
-    public async Task<ActionResult> ShowThreadForTweed(string tweedId)
+    public async Task<ActionResult> ShowThreadForTweed(string tweedId, [FromServices] IThreadOfTweedsUseCase threadOfTweedsUseCase)
     {
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var threadTweeds = await _threadOfTweedsUseCase.GetThreadTweedsForTweed(decodedTweedId);
+        var threadTweeds = await threadOfTweedsUseCase.GetThreadTweedsForTweed(decodedTweedId);
         if (threadTweeds.IsFailed)
             return NotFound();
 
@@ -94,7 +90,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+        await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
 
         _notificationManager.AppendSuccess("Reply Posted");
