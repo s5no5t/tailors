@@ -8,6 +8,7 @@ using Tweed.Domain.Model;
 using Tweed.Feed.Domain;
 using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
+using Tweed.Like.Domain;
 using Tweed.Like.Infrastructure;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;
@@ -60,7 +61,8 @@ builder.Services.Scan(scan =>
     scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(UserRepository)).AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(User)).AddClasses().AsMatchingInterface();
-    scan.FromAssembliesOf(typeof(ShowFeedUseCase));
+    scan.FromAssembliesOf(typeof(ShowFeedUseCase)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(UserLikes)).AddClasses().AsMatchingInterface();
 });
 
 builder.Services.Configure<IdentityOptions>(options =>
