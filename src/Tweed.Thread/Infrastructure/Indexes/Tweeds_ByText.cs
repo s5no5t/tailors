@@ -1,5 +1,4 @@
 using Raven.Client.Documents.Indexes;
-using Tweed.Thread.Domain;
 
 namespace Tweed.Thread.Infrastructure.Indexes;
 

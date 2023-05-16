@@ -1,7 +1,6 @@
 using Moq;
 using NodaTime;
 using Tweed.Like.Domain;
-using Tweed.Thread.Domain;
 using Xunit;
 
 namespace Tweed.Like.Test.Domain;

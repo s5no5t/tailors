@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentResults" Version="3.15.2" />
-      <PackageReference Include="NodaTime" Version="3.1.9" />
-      <PackageReference Include="RavenDB.Client" Version="5.4.104" />
+        <PackageReference Include="NodaTime" Version="3.1.9"/>
+        <PackageReference Include="RavenDB.Client" Version="5.4.104"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Tweed.User\Tweed.User.csproj" />
+        <ProjectReference Include="..\Tweed.Thread\Tweed.Thread.csproj"/>
     </ItemGroup>
 
 </Project>
