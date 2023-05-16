@@ -10,13 +10,14 @@ namespace Tweed.Web.Helper;
 public interface IViewModelFactory
 {
     Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed);
+    Task<List<TweedViewModel>> BuildTweedViewModels(List<Domain.Model.Tweed> tweeds);
 }
 
 public class ViewModelFactory : IViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly ILikesService _likesService;
+    private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly UserManager<User> _userManager;
 
     public ViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikesService likesService,
@@ -51,5 +52,17 @@ public class ViewModelFactory : IViewModelFactory
             Author = author!.UserName
         };
         return viewModel;
+    }
+
+    public async Task<List<TweedViewModel>> BuildTweedViewModels(List<Domain.Model.Tweed> tweeds)
+    {
+        List<TweedViewModel> tweedViewModels = new();
+        foreach (var tweed in tweeds)
+        {
+            var tweedViewModel = await BuildTweedViewModel(tweed);
+            tweedViewModels.Add(tweedViewModel);
+        }
+
+        return tweedViewModels;
     }
 }

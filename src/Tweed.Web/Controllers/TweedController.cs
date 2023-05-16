@@ -14,11 +14,11 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly INotificationManager _notificationManager;
     private readonly ILikesService _likesService;
+    private readonly INotificationManager _notificationManager;
+    private readonly IThreadService _threadService;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedService _tweedService;
-    private readonly IThreadService _threadService;
     private readonly UserManager<User> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
@@ -66,11 +66,10 @@ public class TweedController : Controller
             }
         };
 
-        var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
         ShowThreadForTweedViewModel viewModel = new()
         {
             LeadingTweeds = leadingTweedViewModels,
-            Tweed = tweedViewModel,
+            Tweed = await _viewModelFactory.BuildTweedViewModel(tweed),
             ReplyTweeds = replyTweedViewModels,
             CreateTweed = new CreateReplyTweedViewModel
             {

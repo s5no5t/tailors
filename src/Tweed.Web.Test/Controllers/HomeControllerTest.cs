@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Domain;
 using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -22,9 +21,12 @@ public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<IFeedService> _feedServiceMock = new();
-    private readonly HomeController _homeController;
-    private readonly Mock<UserManager<User>> _userManagerMock = UserManagerMockHelper.MockUserManager<User>();
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
+
+    private readonly Mock<UserManager<User>> _userManagerMock =
+        UserManagerMockHelper.MockUserManager<User>();
+
+    private readonly HomeController _homeController;
 
     public HomeControllerTest()
     {
@@ -87,10 +89,14 @@ public class HomeControllerTest
         };
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
-            .ReturnsAsync(new TweedViewModel
+        _viewModelFactoryMock
+            .Setup(v => v.BuildTweedViewModels(It.IsAny<List<Domain.Model.Tweed>>()))
+            .ReturnsAsync(new List<TweedViewModel>
             {
-                Id = tweed.Id
+                new()
+                {
+                    Id = tweed.Id
+                }
             });
 
         var result = await _homeController.Index();
@@ -129,10 +135,14 @@ public class HomeControllerTest
         };
         _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed))
-            .ReturnsAsync(new TweedViewModel
+        _viewModelFactoryMock
+            .Setup(v => v.BuildTweedViewModels(It.IsAny<List<Domain.Model.Tweed>>()))
+            .ReturnsAsync(new List<TweedViewModel>
             {
-                Id = tweed.Id
+                new()
+                {
+                    Id = tweed.Id
+                }
             });
 
         var result = await _homeController.Feed();

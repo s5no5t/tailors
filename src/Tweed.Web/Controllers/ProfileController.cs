@@ -6,7 +6,6 @@ using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Profile;
-using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Controllers;
 
@@ -14,9 +13,9 @@ namespace Tweed.Web.Controllers;
 public class ProfileController : Controller
 {
     private const int PageSize = 100;
-    private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly IFollowsService _followsService;
     private readonly ITweedRepository _tweedRepository;
+    private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly UserManager<User> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
@@ -42,17 +41,10 @@ public class ProfileController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var currentUserFollows = await _followsService.GetFollows(currentUserId!);
 
-        List<TweedViewModel> tweedViewModels = new();
-        foreach (var tweed in userTweeds)
-        {
-            var tweedViewModel = await _viewModelFactory.BuildTweedViewModel(tweed);
-            tweedViewModels.Add(tweedViewModel);
-        }
-
         var viewModel = new IndexViewModel(
             userId,
             user.UserName,
-            tweedViewModels,
+            await _viewModelFactory.BuildTweedViewModels(userTweeds),
             currentUserFollows.Any(f => f.LeaderId == user.Id),
             await _userFollowsRepository.GetFollowerCount(userId)
         );
