@@ -117,9 +117,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         TweedRepository tweedRepository = new(session);
         ShowThreadUseCase showThreadUseCase = new(threadRepository, tweedRepository);
 
-        if (tweed.ThreadId is null)
-            throw new Exception($"Tweed {tweed.Id} is missing a ThreadId");
-
-        await showThreadUseCase.AddTweedToThread(tweed.ThreadId, tweed.Id!, tweed.ParentTweedId);
+        var result = await showThreadUseCase.AddTweedToThread(tweed.Id!);
+        result.LogIfFailed();
     }
 }

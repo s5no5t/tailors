@@ -29,7 +29,9 @@ public class ShowThreadUseCase : IShowThreadUseCase
         if (tweed.ThreadId is null)
             return new List<Model.Tweed>();
 
-        var thread = await GetOrCreateThread(tweed.ThreadId!);
+        var thread = await _tweedThreadRepository.GetById(tweed.ThreadId!);
+        if (thread is null)
+            return Result.Fail($"Thread {tweed.ThreadId} not found");
 
         var path = FindTweedInThread(thread, tweedId);
         if (path is null)
@@ -40,26 +42,32 @@ public class ShowThreadUseCase : IShowThreadUseCase
         return tweeds;
     }
 
-    public async Task AddTweedToThread(string threadId, string tweedId, string? parentTweedId)
+    public async Task<Result> AddTweedToThread(string tweedId)
     {
-        var thread = await GetOrCreateThread(threadId);
+        var tweed = await _tweedRepository.GetById(tweedId);
+        if (tweed is null)
+            return Result.Fail($"Tweed {tweedId} not found");
+
+        var thread = await GetOrCreateThreadForTweed(tweed);
 
         // This is a root Tweed
-        if (parentTweedId is null)
+        if (tweed.ParentTweedId is null)
         {
-            thread.Root.TweedId = tweedId;
-            return;
+            thread!.Root.TweedId = tweedId;
+            return Result.Ok();
         }
 
         // This is a reply to a reply
-        var path = FindTweedInThread(thread, parentTweedId);
+        var path = FindTweedInThread(thread, tweed.ParentTweedId);
         if (path is null)
-            throw new Exception($"Parent Tweed {parentTweedId} not found in Thread {thread.Id}");
+            return Result.Fail(
+                $"Parent Tweed {tweed.ParentTweedId} not found in Thread {thread.Id}");
         var parentTweedRef = path.Last();
         parentTweedRef.Replies.Add(new TweedThread.TweedReference
         {
             TweedId = tweedId
         });
+        return Result.Ok();
     }
 
     private List<TweedThread.TweedReference>? FindTweedInThread(TweedThread thread,
@@ -89,13 +97,29 @@ public class ShowThreadUseCase : IShowThreadUseCase
         return null;
     }
 
-    private async Task<TweedThread> GetOrCreateThread(string threadId)
+    private async Task<TweedThread> GetOrCreateThreadForTweed(Model.Tweed tweed)
     {
-        var tweedThread = await _tweedThreadRepository.GetById(threadId);
-        if (tweedThread is not null) return tweedThread;
+        if (tweed.ThreadId is null)
+        {
+            var thread = new TweedThread();
+            await _tweedThreadRepository.Create(thread);
+            tweed.ThreadId = thread.Id;
+            return thread;
+        }
+        else
+        {
+            var thread = await _tweedThreadRepository.GetById(tweed.ThreadId);
+            if (thread is null)
+            {
+                thread = new TweedThread
+                {
+                    Id = tweed.ThreadId
+                };
+                await _tweedThreadRepository.Create(thread);
+                tweed.ThreadId = thread.Id;
+            }
 
-        tweedThread = new TweedThread();
-        await _tweedThreadRepository.Create(tweedThread);
-        return tweedThread;
+            return thread;
+        }
     }
 }
