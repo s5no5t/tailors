@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Tweed.Thread.Domain;
 using Tweed.User;
-using Tweed.Feed.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Feed;

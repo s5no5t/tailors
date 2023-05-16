@@ -1,11 +1,10 @@
 using Moq;
 using NodaTime;
-using Tweed.Feed.Domain;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
 using Xunit;
 
-namespace Tweed.Feed.Test.Domain;
+namespace Tweed.Thread.Test.Domain;
 
 public class ShowFeedUseCaseTest
 {

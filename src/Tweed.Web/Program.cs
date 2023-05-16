@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using OpenTelemetry.Trace;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tweed.Feed.Domain;
 using Tweed.Like.Domain;
 using Tweed.Like.Infrastructure;
 using Tweed.Thread.Domain;
