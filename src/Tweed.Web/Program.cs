@@ -3,6 +3,7 @@ using OpenTelemetry.Trace;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Raven.Identity;
+using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
@@ -48,6 +49,7 @@ builder.Services.Scan(scan =>
     scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(UserRepository)).AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(User)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(ShowFeedUseCase));
 });
 
 builder.Services.Configure<IdentityOptions>(options =>
