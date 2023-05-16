@@ -16,16 +16,16 @@ public interface ITweedViewModelFactory
 public class TweedViewModelFactory : ITweedViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILikesService _likesService;
+    private readonly ILikeTweedUseCase _likeTweedUseCase;
     private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly UserManager<User> _userManager;
 
-    public TweedViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikesService likesService,
+    public TweedViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikeTweedUseCase likeTweedUseCase,
         UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
         _tweedLikesRepository = tweedLikesRepository;
-        _likesService = likesService;
+        _likeTweedUseCase = likeTweedUseCase;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -39,7 +39,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
         var currentUserLikesTweed =
-            await _likesService.DoesUserLikeTweed(tweed.Id!, currentUserId!);
+            await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId!);
 
         TweedViewModel viewModel = new()
         {

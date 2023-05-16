@@ -1,19 +1,19 @@
 namespace Tweed.Domain;
 
-public interface IFeedService
+public interface IShowFeedUseCase
 {
     Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize);
 }
 
-public class FeedService : IFeedService
+public class ShowShowFeedUseCase : IShowFeedUseCase
 {
-    private readonly IFollowsService _followsService;
+    private readonly IFollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
 
-    public FeedService(ITweedRepository tweedRepository, IFollowsService followsService)
+    public ShowShowFeedUseCase(ITweedRepository tweedRepository, IFollowUserUseCase followUserUseCase)
     {
         _tweedRepository = tweedRepository;
-        _followsService = followsService;
+        _followUserUseCase = followUserUseCase;
     }
 
     public async Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize)
@@ -22,7 +22,7 @@ public class FeedService : IFeedService
 
         var ownTweeds = await _tweedRepository.GetAllByAuthorId(userId, feedSize);
 
-        var follows = await _followsService.GetFollows(userId);
+        var follows = await _followUserUseCase.GetFollows(userId);
         var followedUserIds = follows.Select(f => f.LeaderId!).ToList();
         var followerTweeds = await _tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
 

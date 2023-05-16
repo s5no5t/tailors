@@ -3,18 +3,18 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface IFollowsService
+public interface IFollowUserUseCase
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
     Task<List<UserFollows.LeaderReference>> GetFollows(string userId);
 }
 
-public class FollowsService : IFollowsService
+public class FollowUserUseCase : IFollowUserUseCase
 {
     private readonly IUserFollowsRepository _userFollowsRepository;
 
-    public FollowsService(IUserFollowsRepository userFollowsRepository)
+    public FollowUserUseCase(IUserFollowsRepository userFollowsRepository)
     {
         _userFollowsRepository = userFollowsRepository;
     }

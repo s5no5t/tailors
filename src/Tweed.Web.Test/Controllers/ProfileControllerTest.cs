@@ -25,7 +25,7 @@ public class ProfileControllerTest
         Id = "currentUser"
     };
 
-    private readonly Mock<IFollowsService> _followsServiceMock = new();
+    private readonly Mock<IFollowUserUseCase> _followUserUseCaseMock = new();
 
     private readonly ProfileController _profileController;
 
@@ -34,7 +34,7 @@ public class ProfileControllerTest
         Id = "user"
     };
 
-    private readonly Mock<ITweedRepository> _tweedQueriesMock;
+    private readonly Mock<ITweedRepository> _tweedRepositoryMock;
     private readonly Mock<UserManager<User>> _userManagerMock;
     private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
@@ -48,16 +48,16 @@ public class ProfileControllerTest
 
         _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
             .ReturnsAsync(0);
-        _followsServiceMock.Setup(u => u.GetFollows(It.IsAny<string>()))
+        _followUserUseCaseMock.Setup(u => u.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
 
-        _tweedQueriesMock = new Mock<ITweedRepository>();
-        _tweedQueriesMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
+        _tweedRepositoryMock = new Mock<ITweedRepository>();
+        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
 
-        _profileController = new ProfileController(_tweedQueriesMock.Object,
+        _profileController = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,
-            _userFollowsRepositoryMock.Object, _followsServiceMock.Object)
+            _userFollowsRepositoryMock.Object, _followUserUseCaseMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -76,7 +76,7 @@ public class ProfileControllerTest
     {
         await _profileController.Index("user");
 
-        _tweedQueriesMock.Verify(t => t.GetAllByAuthorId("user", It.IsAny<int>()));
+        _tweedRepositoryMock.Verify(t => t.GetAllByAuthorId("user", It.IsAny<int>()));
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class ProfileControllerTest
                 LeaderId = _profileUser.Id
             }
         };
-        _followsServiceMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
+        _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
 
         var result = await _profileController.Index("user");
 
@@ -127,7 +127,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsFalse_WhenCurrentUserIsNotFollower()
     {
-        _followsServiceMock.Setup(f => f.GetFollows(_currentUser.Id!))
+        _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
 
         var result = await _profileController.Index("user");
@@ -191,7 +191,7 @@ public class ProfileControllerTest
     {
         await _profileController.Follow("user");
 
-        _followsServiceMock.Verify(t =>
+        _followUserUseCaseMock.Verify(t =>
             t.AddFollower("user", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
@@ -216,7 +216,7 @@ public class ProfileControllerTest
     {
         await _profileController.Unfollow("user");
 
-        _followsServiceMock.Verify(t =>
+        _followUserUseCaseMock.Verify(t =>
             t.RemoveFollower("user", "currentUser"));
     }
 

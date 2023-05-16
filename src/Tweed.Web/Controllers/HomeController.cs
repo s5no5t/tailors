@@ -14,14 +14,14 @@ namespace Tweed.Web.Controllers;
 public class HomeController : Controller
 {
     private const int PageSize = 20;
-    private readonly IFeedService _feedService;
+    private readonly IShowFeedUseCase _showFeedUseCase;
     private readonly UserManager<User> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
-    public HomeController(IFeedService feedService, UserManager<User> userManager,
+    public HomeController(IShowFeedUseCase showFeedUseCase, UserManager<User> userManager,
         ITweedViewModelFactory tweedViewModelFactory)
     {
-        _feedService = feedService;
+        _showFeedUseCase = showFeedUseCase;
         _userManager = userManager;
         _tweedViewModelFactory = tweedViewModelFactory;
     }
@@ -48,7 +48,7 @@ public class HomeController : Controller
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
-        var feed = await _feedService.GetFeed(currentUserId, page, PageSize);
+        var feed = await _showFeedUseCase.GetFeed(currentUserId, page, PageSize);
         var viewModel = new FeedViewModel
         {
             Page = page,

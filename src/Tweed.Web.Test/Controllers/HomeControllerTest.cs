@@ -20,7 +20,7 @@ namespace Tweed.Web.Test.Controllers;
 public class HomeControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly Mock<IFeedService> _feedServiceMock = new();
+    private readonly Mock<IShowFeedUseCase> _showFeedUseCaseMock = new();
     private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     private readonly Mock<UserManager<User>> _userManagerMock =
@@ -40,12 +40,12 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        _feedServiceMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
+        _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.Create(tweed))
             .ReturnsAsync(new TweedViewModel());
 
-        _homeController = new HomeController(_feedServiceMock.Object, _userManagerMock.Object,
+        _homeController = new HomeController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
             _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
@@ -87,7 +87,7 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
+        _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock
             .Setup(v => v.Create(It.IsAny<List<Domain.Model.Tweed>>()))
@@ -133,7 +133,7 @@ public class HomeControllerTest
             Id = "tweedId",
             AuthorId = "author"
         };
-        _feedServiceMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
+        _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
         _viewModelFactoryMock
             .Setup(v => v.Create(It.IsAny<List<Domain.Model.Tweed>>()))

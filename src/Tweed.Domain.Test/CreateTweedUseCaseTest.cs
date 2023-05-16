@@ -6,18 +6,18 @@ using Xunit;
 
 namespace Tweed.Domain.Test;
 
-public class TweedServiceTest
+public class CreateTweedUseCaseTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
-    private readonly TweedService _sut;
+    private readonly CreateTweedUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<ITweedThreadRepository> _tweedThreadRepositoryMock = new();
 
-    public TweedServiceTest()
+    public CreateTweedUseCaseTest()
     {
-        _sut = new TweedService(_tweedRepositoryMock.Object, _tweedThreadRepositoryMock.Object);
+        _sut = new CreateTweedUseCase(_tweedRepositoryMock.Object, _tweedThreadRepositoryMock.Object);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class TweedServiceTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
-        var tweed = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
+        await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
 
         _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Domain.Model.Tweed>()));
     }
