@@ -2,6 +2,7 @@ using Bogus;
 using Raven.Client.Documents;
 using Tweed.Domain.Model;
 using Tweed.Like.Domain;
+using Tweed.Tweed.Domain;
 
 namespace Tweed.GenerateFakes;
 

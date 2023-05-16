@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Tweed.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Profile;
 

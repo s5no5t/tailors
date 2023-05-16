@@ -4,6 +4,7 @@ using Tweed.Domain.Model;
 using Tweed.Infrastructure;
 using Tweed.Like.Infrastructure;
 using Tweed.Like.Test.Helper;
+using Tweed.Tweed.Domain;
 using Xunit;
 
 namespace Tweed.Like.Test.Infrastructure;

@@ -1,10 +1,11 @@
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Domain.Model;
-using Tweed.Infrastructure.Test.Helper;
+using Tweed.Tweed.Domain;
+using Tweed.Tweed.Infrastructure;
+using Tweed.Tweed.Test.Helper;
 using Xunit;
 
-namespace Tweed.Infrastructure.Test;
+namespace Tweed.Tweed.Test.Infrastructure;
 
 [Collection("RavenDB")]
 public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>

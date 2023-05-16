@@ -4,7 +4,7 @@ using Tweed.Infrastructure.Setup;
 using Tweed.Tweed.Infrastructure;
 using Xunit;
 
-namespace Tweed.Infrastructure.Test.Helper;
+namespace Tweed.Tweed.Test.Helper;
 
 public class RavenTestDbFixture : RavenTestDriver
 {

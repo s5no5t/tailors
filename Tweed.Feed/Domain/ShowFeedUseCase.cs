@@ -1,5 +1,5 @@
 using Tweed.Domain;
-using Tweed.Domain.Model;
+using Tweed.Tweed.Domain;
 
 namespace Tweed.Feed.Domain;
 

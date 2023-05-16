@@ -3,6 +3,7 @@ using NodaTime;
 using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Feed.Domain;
+using Tweed.Tweed.Domain;
 using Xunit;
 
 namespace Tweed.Feed.Test.Domain;

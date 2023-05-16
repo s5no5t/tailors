@@ -8,6 +8,7 @@ using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
 using Tweed.Like.Domain;
 using Tweed.Like.Infrastructure;
+using Tweed.Tweed.Domain;
 using Tweed.Tweed.Infrastructure;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;

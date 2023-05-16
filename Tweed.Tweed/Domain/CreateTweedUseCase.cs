@@ -1,7 +1,6 @@
 using NodaTime;
-using Tweed.Domain.Model;
 
-namespace Tweed.Domain;
+namespace Tweed.Tweed.Domain;
 
 public interface ICreateTweedUseCase
 {

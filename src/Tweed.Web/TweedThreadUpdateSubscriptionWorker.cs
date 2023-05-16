@@ -7,6 +7,8 @@ using Raven.Client.Exceptions.Security;
 using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Infrastructure;
+using Tweed.Tweed.Domain;
+using Tweed.Tweed.Infrastructure;
 
 namespace Tweed.Web;
 
