@@ -3,17 +3,17 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface IShowThreadUseCase
+public interface IThreadOfTweedsUseCase
 {
     Task<Result<List<Model.Tweed>>> GetThreadTweedsForTweed(string tweedId);
 }
 
-public class ShowThreadUseCase : IShowThreadUseCase
+public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
 {
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedThreadRepository _tweedThreadRepository;
 
-    public ShowThreadUseCase(ITweedThreadRepository tweedThreadRepository,
+    public ThreadOfTweedsUseCase(ITweedThreadRepository tweedThreadRepository,
         ITweedRepository tweedRepository)
     {
         _tweedThreadRepository = tweedThreadRepository;
