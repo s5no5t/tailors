@@ -22,7 +22,16 @@ builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyn
 
 builder.Services.AddRavenDbDocStore(options =>
 {
-    options.BeforeInitializeDocStore = store => store.PreInitialize();
+    options.BeforeInitializeDocStore = store =>
+    {
+        store.PreInitialize();
+        store.PreInitializeLikes();
+    };
+    options.AfterInitializeDocStore = store =>
+    {
+        store.EnsureDatabaseExists();
+        store.DeployIndexes();
+    };
 });
 builder.Services.AddRavenDbAsyncSession();
 
@@ -80,13 +89,6 @@ builder.Services.AddOpenTelemetry().WithTracing(otelBuilder =>
 builder.Services.AddHostedService<TweedThreadUpdateSubscriptionWorker>();
 
 var app = builder.Build();
-
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    var documentStore = app.Services.GetRequiredService<IDocumentStore>();
-    documentStore.EnsureDatabaseExists();
-    documentStore.DeployIndexes();
-});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) app.UseExceptionHandler("/Error");

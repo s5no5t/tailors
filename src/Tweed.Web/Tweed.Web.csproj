@@ -22,6 +22,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Tweed.Feed\Tweed.Feed.csproj" />
         <ProjectReference Include="..\..\Tweed.Infrastructure\Tweed.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Tweed.Like\Tweed.Like.csproj" />
         <ProjectReference Include="..\Tweed.Domain\Tweed.Domain.csproj" />
     </ItemGroup>
 
