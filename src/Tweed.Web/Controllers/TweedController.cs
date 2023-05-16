@@ -18,17 +18,15 @@ public class TweedController : Controller
     private readonly INotificationManager _notificationManager;
     private readonly IShowThreadUseCase _showThreadUseCase;
     private readonly ITweedRepository _tweedRepository;
-    private readonly ICreateTweedUseCase _createTweedUseCase;
     private readonly UserManager<User> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
-    public TweedController(ICreateTweedUseCase createTweedUseCase, ITweedRepository tweedRepository,
+    public TweedController(ITweedRepository tweedRepository,
         UserManager<User> userManager,
         INotificationManager notificationManager, ILikeTweedUseCase likeTweedUseCase,
         IShowThreadUseCase showThreadUseCase,
         ITweedViewModelFactory tweedViewModelFactory)
     {
-        _createTweedUseCase = createTweedUseCase;
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
@@ -87,14 +85,14 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateTweedViewModel viewModel)
+    public async Task<IActionResult> Create(CreateTweedViewModel viewModel, [FromServices] ICreateTweedUseCase createTweedUseCase)
     {
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -102,7 +100,7 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel)
+    public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel, [FromServices] ICreateTweedUseCase createTweedUseCase)
     {
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
@@ -116,7 +114,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var tweed = await _createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+        var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
 
         _notificationManager.AppendSuccess("Reply Posted");
