@@ -1,6 +1,6 @@
 using NodaTime;
 
-namespace Tweed.Domain.Model;
+namespace Tweed.Like.Domain;
 
 public class UserLikes
 {

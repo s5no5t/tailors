@@ -1,9 +1,11 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
+using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
+using Tweed.Like.Infrastructure;
 using Xunit;
 
-namespace Tweed.Infrastructure.Test.Helper;
+namespace Tweed.Like.Test.Helper;
 
 public class RavenTestDbFixture : RavenTestDriver
 {

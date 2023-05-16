@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tweed.Domain;
 using Tweed.Domain.Model;
+using Tweed.Feed.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Feed;
 using Tweed.Web.Views.Shared;

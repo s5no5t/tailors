@@ -1,7 +1,7 @@
 using Raven.Client.Documents;
-using Tweed.Domain.Model;
+using Tweed.Like.Domain;
 
-namespace Tweed.Infrastructure;
+namespace Tweed.Like.Infrastructure;
 
 public static class RavenDbSetup
 {
