@@ -10,10 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.User.Test", "src\Twee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.GenerateFakes", "src\Tweed.GenerateFakes\Tweed.GenerateFakes.csproj", "{A580B502-4FC4-4BA4-9088-667B24EA73C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Feed", "Tweed.Feed\Tweed.Feed.csproj", "{2FDE367B-2B87-45F5-93DF-0A613B2587B8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Feed.Test", "Tweed.Feed.Test\Tweed.Feed.Test.csproj", "{54058B8F-33B6-4F74-A476-9F74E6525977}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Like", "Tweed.Like\Tweed.Like.csproj", "{3784BE3E-AE54-4636-B0DC-7EC86074A466}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Like.Test", "Tweed.Like.Test\Tweed.Like.Test.csproj", "{4DCA377F-043D-4479-ABB4-7513D0E38819}"
@@ -48,14 +44,6 @@ Global
 		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A580B502-4FC4-4BA4-9088-667B24EA73C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FDE367B-2B87-45F5-93DF-0A613B2587B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FDE367B-2B87-45F5-93DF-0A613B2587B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FDE367B-2B87-45F5-93DF-0A613B2587B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FDE367B-2B87-45F5-93DF-0A613B2587B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54058B8F-33B6-4F74-A476-9F74E6525977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54058B8F-33B6-4F74-A476-9F74E6525977}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54058B8F-33B6-4F74-A476-9F74E6525977}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54058B8F-33B6-4F74-A476-9F74E6525977}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3784BE3E-AE54-4636-B0DC-7EC86074A466}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3784BE3E-AE54-4636-B0DC-7EC86074A466}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3784BE3E-AE54-4636-B0DC-7EC86074A466}.Release|Any CPU.ActiveCfg = Release|Any CPU
