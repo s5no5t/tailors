@@ -16,14 +16,14 @@ public class HomeController : Controller
     private const int PageSize = 20;
     private readonly IFeedService _feedService;
     private readonly UserManager<User> _userManager;
-    private readonly IViewModelFactory _viewModelFactory;
+    private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
     public HomeController(IFeedService feedService, UserManager<User> userManager,
-        IViewModelFactory viewModelFactory)
+        ITweedViewModelFactory tweedViewModelFactory)
     {
         _feedService = feedService;
         _userManager = userManager;
-        _viewModelFactory = viewModelFactory;
+        _tweedViewModelFactory = tweedViewModelFactory;
     }
 
     public async Task<IActionResult> Index()
@@ -52,7 +52,7 @@ public class HomeController : Controller
         var viewModel = new FeedViewModel
         {
             Page = page,
-            Tweeds = await _viewModelFactory.BuildTweedViewModels(feed),
+            Tweeds = await _tweedViewModelFactory.Create(feed),
             NextPageExists = feed.Count == PageSize
         };
         return viewModel;

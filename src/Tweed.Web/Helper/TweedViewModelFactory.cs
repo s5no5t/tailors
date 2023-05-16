@@ -7,20 +7,20 @@ using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Helper;
 
-public interface IViewModelFactory
+public interface ITweedViewModelFactory
 {
-    Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed);
-    Task<List<TweedViewModel>> BuildTweedViewModels(List<Domain.Model.Tweed> tweeds);
+    Task<TweedViewModel> Create(Domain.Model.Tweed tweed);
+    Task<List<TweedViewModel>> Create(List<Domain.Model.Tweed> tweeds);
 }
 
-public class ViewModelFactory : IViewModelFactory
+public class TweedViewModelFactory : ITweedViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILikesService _likesService;
     private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly UserManager<User> _userManager;
 
-    public ViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikesService likesService,
+    public TweedViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikesService likesService,
         UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
@@ -30,7 +30,7 @@ public class ViewModelFactory : IViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> BuildTweedViewModel(Domain.Model.Tweed tweed)
+    public async Task<TweedViewModel> Create(Domain.Model.Tweed tweed)
     {
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
@@ -54,12 +54,12 @@ public class ViewModelFactory : IViewModelFactory
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> BuildTweedViewModels(List<Domain.Model.Tweed> tweeds)
+    public async Task<List<TweedViewModel>> Create(List<Domain.Model.Tweed> tweeds)
     {
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in tweeds)
         {
-            var tweedViewModel = await BuildTweedViewModel(tweed);
+            var tweedViewModel = await Create(tweed);
             tweedViewModels.Add(tweedViewModel);
         }
 

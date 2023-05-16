@@ -32,7 +32,7 @@ public class TweedControllerTest
     private readonly Mock<UserManager<User>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<User>();
 
-    private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
+    private readonly Mock<ITweedViewModelFactory> _tweedViewModelFactoryMock = new();
 
     public TweedControllerTest()
     {
@@ -57,7 +57,7 @@ public class TweedControllerTest
             _userManagerMock.Object,
             _notificationManagerMock.Object,
             _tweedLikesServiceMock.Object, _tweedThreadServiceMock.Object,
-            _viewModelFactoryMock.Object)
+            _tweedViewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
             Url = new Mock<IUrlHelper>().Object
@@ -96,7 +96,7 @@ public class TweedControllerTest
             Id = "tweedId"
         };
         _tweedRepositoryMock.Setup(t => t.GetById(It.IsAny<string>())).ReturnsAsync(tweed);
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
+        _tweedViewModelFactoryMock.Setup(v => v.Create(tweed)).ReturnsAsync(
             new TweedViewModel
             {
                 Id = tweed.Id
@@ -130,12 +130,12 @@ public class TweedControllerTest
                 });
         _tweedRepositoryMock.Setup(t => t.GetById(rootTweed.Id)).ReturnsAsync(rootTweed);
         _tweedRepositoryMock.Setup(t => t.GetById(tweed.Id)).ReturnsAsync(tweed);
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(rootTweed)).ReturnsAsync(
+        _tweedViewModelFactoryMock.Setup(v => v.Create(rootTweed)).ReturnsAsync(
             new TweedViewModel
             {
                 Id = rootTweed.Id
             });
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
+        _tweedViewModelFactoryMock.Setup(v => v.Create(tweed)).ReturnsAsync(
             new TweedViewModel
             {
                 Id = tweed.Id
@@ -159,7 +159,7 @@ public class TweedControllerTest
             Id = "replyTweedId"
         };
         _tweedRepositoryMock.Setup(t => t.GetById(tweed.Id)).ReturnsAsync(tweed);
-        _viewModelFactoryMock.Setup(v => v.BuildTweedViewModel(tweed)).ReturnsAsync(
+        _tweedViewModelFactoryMock.Setup(v => v.Create(tweed)).ReturnsAsync(
             new TweedViewModel
             {
                 Id = tweed.Id
