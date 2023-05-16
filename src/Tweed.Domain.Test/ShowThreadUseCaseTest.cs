@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using FluentResults.Extensions.FluentAssertions;
 using Moq;
 using Tweed.Domain.Model;
 using Xunit;
@@ -9,53 +11,60 @@ namespace Tweed.Domain.Test;
 public class ShowThreadUseCaseTest
 {
     private readonly ShowThreadUseCase _sut;
+    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<ITweedThreadRepository> _tweedThreadRepositoryMock = new();
 
     public ShowThreadUseCaseTest()
     {
-        _sut = new ShowThreadUseCase(_tweedThreadRepositoryMock.Object);
+        _sut = new ShowThreadUseCase(_tweedThreadRepositoryMock.Object,
+            _tweedRepositoryMock.Object);
     }
 
     [Fact]
-    public async Task GetLeadingTweeds_ShouldReturnNull_WhenTweedIsntFound()
+    public async Task GetThreadTweedsForTweed_ShouldReturnFail_WhenTweedIsntFound()
     {
+        var tweeds = await _sut.GetThreadTweedsForTweed("unknownTweedId");
+
+        tweeds.Should().BeFailure();
+    }
+
+    [Fact]
+    public async Task GetThreadTweedsForTweed_ShouldReturnRootTweed_WhenThereIsOnlyRoot()
+    {
+        Domain.Model.Tweed rootTweed = new()
+        {
+            Id = "rootTweedId"
+        };
         TweedThread thread = new()
         {
             Id = "threadId",
             Root = new TweedThread.TweedReference
             {
-                TweedId = "rootTweedId"
+                TweedId = rootTweed.Id
             }
         };
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
+        _tweedRepositoryMock.Setup(m => m.GetById("rootTweedId")).ReturnsAsync(rootTweed);
 
-        var leadingTweeds = await _sut.GetLeadingTweeds("threadId", "unknownTweedId");
+        var tweeds = await _sut.GetThreadTweedsForTweed("rootTweedId");
 
-        Assert.Null(leadingTweeds);
+        tweeds.Should().BeSuccess();
+        Assert.Empty(tweeds.Value);
     }
 
     [Fact]
-    public async Task GetLeadingTweeds_ShouldReturnEmptyList_WhenThereIsOnlyRoot()
+    public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsOneLeadingTweed()
     {
-        TweedThread thread = new()
+        Domain.Model.Tweed rootTweed = new()
         {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId"
-            }
+            Id = "rootTweedId"
         };
-        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
-
-        var leadingTweeds = await _sut.GetLeadingTweeds(thread.Id, "rootTweedId");
-
-        Assert.NotNull(leadingTweeds);
-        Assert.Empty(leadingTweeds);
-    }
-
-    [Fact]
-    public async Task GetLeadingTweeds_ShouldReturnLeadingTweed_WhenThereIsOneLeadingTweed()
-    {
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId",
+            ThreadId = "threadId"
+        };
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id)).ReturnsAsync(tweed);
         TweedThread thread = new()
         {
             Id = "threadId",
@@ -73,15 +82,46 @@ public class ShowThreadUseCaseTest
         };
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
 
-        var leadingTweeds = await _sut.GetLeadingTweeds("threadId", "tweedId");
+        _tweedRepositoryMock.Setup(m =>
+                m.GetByIds(CollectionMatcher(new[] { "rootTweedId", "tweedId" })))
+            .ReturnsAsync(
+                new Dictionary<string, Domain.Model.Tweed>
+                {
+                    { rootTweed.Id, rootTweed },
+                    { tweed.Id, tweed }
+                });
 
-        Assert.NotNull(leadingTweeds);
-        Assert.Equal("rootTweedId", leadingTweeds[0].TweedId);
+        var tweeds = await _sut.GetThreadTweedsForTweed("tweedId");
+
+        tweeds.Should().BeSuccess();
+        Assert.Equal("rootTweedId", tweeds.Value[0].Id);
+        Assert.Equal("tweedId", tweeds.Value[1].Id);
+    }
+
+    public static IEnumerable<T> CollectionMatcher<T>(IEnumerable<T> expectation)
+    {
+        return Match.Create((IEnumerable<T> inputCollection) =>
+            !expectation.Except(inputCollection).Any() &&
+            !inputCollection.Except(expectation).Any());
     }
 
     [Fact]
-    public async Task GetLeadingTweeds_ShouldReturnLeadingTweeds_WhenThereIsAnotherBranch()
+    public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsAnotherBranch()
     {
+        Domain.Model.Tweed rootTweed = new()
+        {
+            Id = "rootTweedId"
+        };
+        Domain.Model.Tweed parentTweed = new()
+        {
+            Id = "parentTweedId"
+        };
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId",
+            ThreadId = "threadId"
+        };
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id)).ReturnsAsync(tweed);
         TweedThread thread = new()
         {
             Id = "threadId",
@@ -109,12 +149,22 @@ public class ShowThreadUseCaseTest
             }
         };
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
+        _tweedRepositoryMock.Setup(m =>
+                m.GetByIds(CollectionMatcher(new[] { "rootTweedId", "parentTweedId", "tweedId" })))
+            .ReturnsAsync(
+                new Dictionary<string, Domain.Model.Tweed>
+                {
+                    { rootTweed.Id, rootTweed },
+                    { parentTweed.Id, parentTweed },
+                    { tweed.Id, tweed }
+                });
 
-        var leadingTweeds = await _sut.GetLeadingTweeds("threadId", "tweedId");
+        var tweeds = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        Assert.NotNull(leadingTweeds);
-        Assert.Equal("rootTweedId", leadingTweeds[0].TweedId);
-        Assert.Equal("parentTweedId", leadingTweeds[1].TweedId);
+        tweeds.Should().BeSuccess();
+        Assert.Equal("rootTweedId", tweeds.Value[0].Id);
+        Assert.Equal("parentTweedId", tweeds.Value[1].Id);
+        Assert.Equal("tweedId", tweeds.Value[2].Id);
     }
 
     [Fact]

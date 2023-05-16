@@ -4,11 +4,9 @@
     ViewData["Title"] = "Tweed";
 }
 
-@foreach (var leadingTweed in Model.LeadingTweeds)
+@foreach (var tweed in Model.Tweeds)
 {
-    <partial name="_Tweed" model="leadingTweed"/>
+    <partial name="_Tweed" model="tweed"/>
 }
 
-<partial name="_Tweed" model="@Model.Tweed"/>
-
-<partial name="_CreateReplyTweed" model="@Model.CreateTweed"/>
+<partial name="_CreateReplyTweed" model="@Model.CreateReplyTweed"/>

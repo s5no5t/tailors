@@ -6,7 +6,6 @@ using NodaTime;
 using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Helper;
-using Tweed.Web.Views.Shared;
 using Tweed.Web.Views.Tweed;
 
 namespace Tweed.Web.Controllers;
@@ -18,8 +17,8 @@ public class TweedController : Controller
     private readonly INotificationManager _notificationManager;
     private readonly IShowThreadUseCase _showThreadUseCase;
     private readonly ITweedRepository _tweedRepository;
-    private readonly UserManager<User> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
+    private readonly UserManager<User> _userManager;
 
     public TweedController(ITweedRepository tweedRepository,
         UserManager<User> userManager,
@@ -41,35 +40,14 @@ public class TweedController : Controller
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var tweed = await _tweedRepository.GetById(decodedTweedId);
-        if (tweed == null)
+        var threadTweeds = await _showThreadUseCase.GetThreadTweedsForTweed(decodedTweedId);
+        if (threadTweeds.IsFailed)
             return NotFound();
-
-        List<TweedViewModel> leadingTweedViewModels = new();
-        var leadingTweedsRef =
-            await _showThreadUseCase.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
-        if (leadingTweedsRef is not null)
-            foreach (var leadingTweedRef in leadingTweedsRef)
-            {
-                var leadingTweed = await _tweedRepository.GetById(leadingTweedRef.TweedId!);
-                leadingTweedViewModels.Add(
-                    await _tweedViewModelFactory.Create(leadingTweed!));
-            }
-
-        List<TweedViewModel> replyTweedViewModels = new() // TODO
-        {
-            new TweedViewModel
-            {
-                Id = "replyTweedId"
-            }
-        };
 
         ShowThreadForTweedViewModel viewModel = new()
         {
-            LeadingTweeds = leadingTweedViewModels,
-            Tweed = await _tweedViewModelFactory.Create(tweed),
-            ReplyTweeds = replyTweedViewModels,
-            CreateTweed = new CreateReplyTweedViewModel
+            Tweeds = await _tweedViewModelFactory.Create(threadTweeds.Value),
+            CreateReplyTweed = new CreateReplyTweedViewModel
             {
                 ParentTweedId = decodedTweedId
             }
@@ -85,7 +63,8 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateTweedViewModel viewModel, [FromServices] ICreateTweedUseCase createTweedUseCase)
+    public async Task<IActionResult> Create(CreateTweedViewModel viewModel,
+        [FromServices] ICreateTweedUseCase createTweedUseCase)
     {
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
 
@@ -100,7 +79,8 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel, [FromServices] ICreateTweedUseCase createTweedUseCase)
+    public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel,
+        [FromServices] ICreateTweedUseCase createTweedUseCase)
     {
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
