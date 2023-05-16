@@ -14,26 +14,26 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly ILikesService _likesService;
+    private readonly ILikeTweedUseCase _likeTweedUseCase;
     private readonly INotificationManager _notificationManager;
-    private readonly IThreadService _threadService;
+    private readonly IShowThreadUseCase _showThreadUseCase;
     private readonly ITweedRepository _tweedRepository;
-    private readonly ITweedService _tweedService;
+    private readonly ICreateTweedUseCase _createTweedUseCase;
     private readonly UserManager<User> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
-    public TweedController(ITweedService tweedService, ITweedRepository tweedRepository,
+    public TweedController(ICreateTweedUseCase createTweedUseCase, ITweedRepository tweedRepository,
         UserManager<User> userManager,
-        INotificationManager notificationManager, ILikesService likesService,
-        IThreadService threadService,
+        INotificationManager notificationManager, ILikeTweedUseCase likeTweedUseCase,
+        IShowThreadUseCase showThreadUseCase,
         ITweedViewModelFactory tweedViewModelFactory)
     {
-        _tweedService = tweedService;
+        _createTweedUseCase = createTweedUseCase;
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _likesService = likesService;
-        _threadService = threadService;
+        _likeTweedUseCase = likeTweedUseCase;
+        _showThreadUseCase = showThreadUseCase;
         _tweedViewModelFactory = tweedViewModelFactory;
     }
 
@@ -49,7 +49,7 @@ public class TweedController : Controller
 
         List<TweedViewModel> leadingTweedViewModels = new();
         var leadingTweedsRef =
-            await _threadService.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
+            await _showThreadUseCase.GetLeadingTweeds(tweed.ThreadId!, tweed.Id!);
         if (leadingTweedsRef is not null)
             foreach (var leadingTweedRef in leadingTweedsRef)
             {
@@ -94,7 +94,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await _tweedService.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        await _createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
@@ -116,7 +116,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var tweed = await _tweedService.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+        var tweed = await _createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
 
         _notificationManager.AppendSuccess("Reply Posted");
@@ -136,7 +136,7 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _likesService.AddLike(tweedId, currentUserId!, now);
+        await _likeTweedUseCase.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _tweedViewModelFactory.Create(tweed);
         return PartialView("_Tweed", viewModel);
@@ -150,7 +150,7 @@ public class TweedController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _likesService.RemoveLike(tweedId, currentUserId!);
+        await _likeTweedUseCase.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _tweedViewModelFactory.Create(tweed);
         return PartialView("_Tweed", viewModel);

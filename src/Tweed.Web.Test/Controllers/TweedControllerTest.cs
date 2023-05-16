@@ -24,10 +24,10 @@ public class TweedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _tweedController;
-    private readonly Mock<ILikesService> _tweedLikesServiceMock = new();
+    private readonly Mock<ILikeTweedUseCase> _likeTweedUseCaseMock = new();
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
-    private readonly Mock<ITweedService> _tweedServiceMock = new();
-    private readonly Mock<IThreadService> _tweedThreadServiceMock = new();
+    private readonly Mock<ICreateTweedUseCase> _createTweedUseCaseMock = new();
+    private readonly Mock<IShowThreadUseCase> _showThreadUseCaseMock = new();
 
     private readonly Mock<UserManager<User>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<User>();
@@ -37,26 +37,26 @@ public class TweedControllerTest
     public TweedControllerTest()
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
-        _tweedServiceMock.Setup(t =>
+        _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<ZonedDateTime>()))
             .ReturnsAsync(new Domain.Model.Tweed
             {
                 Id = "tweedId"
             });
-        _tweedServiceMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
+        _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<ZonedDateTime>(), It.IsAny<string>())).ReturnsAsync(new Domain.Model.Tweed
         {
             Id = "tweedId"
         });
-        _tweedThreadServiceMock
+        _showThreadUseCaseMock
             .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(new List<TweedThread.TweedReference>());
-        _tweedController = new TweedController(_tweedServiceMock.Object,
+        _tweedController = new TweedController(_createTweedUseCaseMock.Object,
             _tweedRepositoryMock.Object,
             _userManagerMock.Object,
             _notificationManagerMock.Object,
-            _tweedLikesServiceMock.Object, _tweedThreadServiceMock.Object,
+            _likeTweedUseCaseMock.Object, _showThreadUseCaseMock.Object,
             _tweedViewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
@@ -119,7 +119,7 @@ public class TweedControllerTest
         {
             Id = "tweedId"
         };
-        _tweedThreadServiceMock
+        _showThreadUseCaseMock
             .Setup(t => t.GetLeadingTweeds(It.IsAny<string>(), tweed.Id)).ReturnsAsync(
                 new List<TweedThread.TweedReference>
                 {
@@ -207,7 +207,7 @@ public class TweedControllerTest
         };
         await _tweedController.Create(viewModel);
 
-        _tweedServiceMock.Verify(t =>
+        _createTweedUseCaseMock.Verify(t =>
             t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>()));
     }
 
@@ -257,7 +257,7 @@ public class TweedControllerTest
         };
         await _tweedController.CreateReply(viewModel);
 
-        _tweedServiceMock.Verify(t => t.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
+        _createTweedUseCaseMock.Verify(t => t.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<ZonedDateTime>(), It.IsAny<string>()));
     }
 
@@ -315,7 +315,7 @@ public class TweedControllerTest
 
         await _tweedController.Like("123");
 
-        _tweedLikesServiceMock.Verify(u =>
+        _likeTweedUseCaseMock.Verify(u =>
             u.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
     }
 
@@ -345,7 +345,7 @@ public class TweedControllerTest
 
         await _tweedController.Unlike("123");
 
-        _tweedLikesServiceMock.Verify(u => u.RemoveLike("123", "currentUser"));
+        _likeTweedUseCaseMock.Verify(u => u.RemoveLike("123", "currentUser"));
     }
 
     [Fact]

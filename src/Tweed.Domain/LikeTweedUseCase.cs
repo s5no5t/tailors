@@ -3,18 +3,18 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface ILikesService
+public interface ILikeTweedUseCase
 {
     Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
     Task<bool> DoesUserLikeTweed(string tweedId, string userId);
 }
 
-public class LikesService : ILikesService
+public class LikeTweedUseCase : ILikeTweedUseCase
 {
     private readonly ITweedLikesRepository _tweedLikesRepository;
 
-    public LikesService(ITweedLikesRepository tweedLikesRepository)
+    public LikeTweedUseCase(ITweedLikesRepository tweedLikesRepository)
     {
         _tweedLikesRepository = tweedLikesRepository;
     }

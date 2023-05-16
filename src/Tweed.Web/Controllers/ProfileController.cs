@@ -13,7 +13,7 @@ namespace Tweed.Web.Controllers;
 public class ProfileController : Controller
 {
     private const int PageSize = 100;
-    private readonly IFollowsService _followsService;
+    private readonly IFollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
     private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly UserManager<User> _userManager;
@@ -21,13 +21,13 @@ public class ProfileController : Controller
 
     public ProfileController(ITweedRepository tweedRepository, UserManager<User> userManager,
         ITweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
-        IFollowsService followsService)
+        IFollowUserUseCase followUserUseCase)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _tweedViewModelFactory = tweedViewModelFactory;
         _userFollowsRepository = userFollowsRepository;
-        _followsService = followsService;
+        _followUserUseCase = followUserUseCase;
     }
 
     public async Task<IActionResult> Index(string userId)
@@ -39,7 +39,7 @@ public class ProfileController : Controller
         var userTweeds = await _tweedRepository.GetAllByAuthorId(userId, PageSize);
 
         var currentUserId = _userManager.GetUserId(User);
-        var currentUserFollows = await _followsService.GetFollows(currentUserId!);
+        var currentUserFollows = await _followUserUseCase.GetFollows(currentUserId!);
 
         var viewModel = new IndexViewModel(
             userId,
@@ -64,7 +64,7 @@ public class ProfileController : Controller
             return BadRequest("Following yourself isn't allowed");
 
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _followsService.AddFollower(userId, currentUserId!, now);
+        await _followUserUseCase.AddFollower(userId, currentUserId!, now);
 
         return RedirectToAction("Index", new
         {
@@ -81,7 +81,7 @@ public class ProfileController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
 
-        await _followsService.RemoveFollower(userId, currentUserId!);
+        await _followUserUseCase.RemoveFollower(userId, currentUserId!);
 
         return RedirectToAction("Index", new
         {

@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Tweed.Domain.Test;
 
-public class TweedThreadServiceTest
+public class ShowThreadUseCaseTest
 {
-    private readonly ThreadService _sut;
+    private readonly ShowThreadUseCase _sut;
     private readonly Mock<ITweedThreadRepository> _tweedThreadRepositoryMock = new();
 
-    public TweedThreadServiceTest()
+    public ShowThreadUseCaseTest()
     {
-        _sut = new ThreadService(_tweedThreadRepositoryMock.Object);
+        _sut = new ShowThreadUseCase(_tweedThreadRepositoryMock.Object);
     }
 
     [Fact]

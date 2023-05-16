@@ -3,7 +3,7 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface ITweedService
+public interface ICreateTweedUseCase
 {
     Task<Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
 
@@ -11,12 +11,12 @@ public interface ITweedService
         string parentTweedId);
 }
 
-public class TweedService : ITweedService
+public class CreateTweedUseCase : ICreateTweedUseCase
 {
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedThreadRepository _tweedThreadRepository;
 
-    public TweedService(ITweedRepository tweedRepository, ITweedThreadRepository tweedThreadRepository)
+    public CreateTweedUseCase(ITweedRepository tweedRepository, ITweedThreadRepository tweedThreadRepository)
     {
         _tweedRepository = tweedRepository;
         _tweedThreadRepository = tweedThreadRepository;

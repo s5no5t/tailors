@@ -7,18 +7,18 @@ using Xunit;
 
 namespace Tweed.Domain.Test;
 
-public class LikesServiceTest
+public class LikeTweedUseCaseTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
-    private readonly LikesService _service;
+    private readonly LikeTweedUseCase _sut;
 
     private readonly Mock<ITweedLikesRepository> _tweedLikesRepositoryMock = new();
 
-    public LikesServiceTest()
+    public LikeTweedUseCaseTest()
     {
-        _service = new LikesService(_tweedLikesRepositoryMock.Object);
+        _sut = new LikeTweedUseCase(_tweedLikesRepositoryMock.Object);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class LikesServiceTest
         };
         _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(userLikes);
 
-        await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
+        await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
 
         Assert.Single(userLikes.Likes);
     }
@@ -43,7 +43,7 @@ public class LikesServiceTest
             Id = "tweedId"
         };
 
-        await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
+        await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
 
         _tweedLikesRepositoryMock.Verify(t => t.IncreaseLikesCounter(tweed.Id), Times.Once);
     }
@@ -64,7 +64,7 @@ public class LikesServiceTest
         };
         _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
 
-        await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
+        await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
 
         Assert.Single(userLikes.Likes);
     }
@@ -85,7 +85,7 @@ public class LikesServiceTest
         };
         _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(userLikes);
 
-        await _service.RemoveLike("tweedId", "userId");
+        await _sut.RemoveLike("tweedId", "userId");
 
         Assert.Empty(userLikes.Likes);
     }
@@ -99,7 +99,7 @@ public class LikesServiceTest
         };
         _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
 
-        await _service.RemoveLike("tweedId", "userId");
+        await _sut.RemoveLike("tweedId", "userId");
 
         _tweedLikesRepositoryMock.Verify(t => t.DecreaseLikesCounter("tweedId"), Times.Once);
     }
@@ -113,7 +113,7 @@ public class LikesServiceTest
         };
         _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
 
-        await _service.RemoveLike("tweedId", "userId");
+        await _sut.RemoveLike("tweedId", "userId");
 
         Assert.Empty(userLikes.Likes);
     }

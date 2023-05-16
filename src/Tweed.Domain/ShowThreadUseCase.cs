@@ -2,16 +2,16 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface IThreadService
+public interface IShowThreadUseCase
 {
     Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
 }
 
-public class ThreadService : IThreadService
+public class ShowThreadUseCase : IShowThreadUseCase
 {
     private readonly ITweedThreadRepository _tweedThreadRepository;
 
-    public ThreadService(ITweedThreadRepository tweedThreadRepository)
+    public ShowThreadUseCase(ITweedThreadRepository tweedThreadRepository)
     {
         _tweedThreadRepository = tweedThreadRepository;
     }

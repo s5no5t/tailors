@@ -7,17 +7,17 @@ using Xunit;
 
 namespace Tweed.Domain.Test;
 
-public class FollowsServiceTest
+public class FollowUserUseCaseTest
 {
     private static readonly ZonedDateTime FixedZonedDateTime =
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
-    private readonly FollowsService _sut;
+    private readonly FollowUserUseCase _sut;
 
-    public FollowsServiceTest()
+    public FollowUserUseCaseTest()
     {
-        _sut = new FollowsService(_userFollowsRepositoryMock.Object);
+        _sut = new FollowUserUseCase(_userFollowsRepositoryMock.Object);
     }
 
     [Fact]
