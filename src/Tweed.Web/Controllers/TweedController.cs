@@ -99,10 +99,7 @@ public class TweedController : Controller
 
         _notificationManager.AppendSuccess("Reply Posted");
 
-        return RedirectToAction("ShowThreadForTweed", new
-        {
-            tweedId = tweed.Id
-        });
+        return RedirectToAction("Index", "Feed");
     }
 
     [HttpPost]
