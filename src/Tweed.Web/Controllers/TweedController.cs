@@ -14,19 +14,16 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly INotificationManager _notificationManager;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
     private readonly UserManager<AppUser> _userManager;
 
     public TweedController(ITweedRepository tweedRepository,
         UserManager<AppUser> userManager,
-        INotificationManager notificationManager,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
-        _notificationManager = notificationManager;
         _tweedViewModelFactory = tweedViewModelFactory;
     }
 
@@ -60,7 +57,8 @@ public class TweedController : Controller
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateTweedViewModel viewModel,
-        [FromServices] ICreateTweedUseCase createTweedUseCase)
+        [FromServices] ICreateTweedUseCase createTweedUseCase, 
+        [FromServices] INotificationManager notificationManager)
     {
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
 
@@ -69,14 +67,15 @@ public class TweedController : Controller
 
         await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
 
-        _notificationManager.AppendSuccess("Tweed Posted");
+        notificationManager.AppendSuccess("Tweed Posted");
 
         return RedirectToAction("Index", "Feed");
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel,
-        [FromServices] ICreateTweedUseCase createTweedUseCase)
+        [FromServices] ICreateTweedUseCase createTweedUseCase,
+        [FromServices] INotificationManager notificationManager)
     {
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
@@ -93,7 +92,7 @@ public class TweedController : Controller
         await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
 
-        _notificationManager.AppendSuccess("Reply Posted");
+        notificationManager.AppendSuccess("Reply Posted");
 
         return RedirectToAction("Index", "Feed");
     }
