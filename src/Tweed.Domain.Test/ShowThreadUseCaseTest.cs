@@ -170,17 +170,31 @@ public class ShowThreadUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId",
+            ThreadId = "threadId"
+        };
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id)).ReturnsAsync(tweed);
         TweedThread thread = new();
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
-        await _sut.AddTweedToThread("threadId", "tweedId", null);
+        var result = await _sut.AddTweedToThread("tweedId");
 
+        result.Should().BeSuccess();
         Assert.Equal("tweedId", thread.Root.TweedId);
     }
 
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
     {
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId",
+            ParentTweedId = "rootTweedId",
+            ThreadId = "threadId"
+        };
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id)).ReturnsAsync(tweed);
         TweedThread thread = new()
         {
             Id = "threadId",
@@ -191,14 +205,22 @@ public class ShowThreadUseCaseTest
         };
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
-        await _sut.AddTweedToThread("threadId", "tweedId", "rootTweedId");
+        var result = await _sut.AddTweedToThread("tweedId");
 
+        result.Should().BeSuccess();
         Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
     {
+        Domain.Model.Tweed tweed = new()
+        {
+            Id = "tweedId",
+            ParentTweedId = "replyTweedId",
+            ThreadId = "threadId"
+        };
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id)).ReturnsAsync(tweed);
         TweedThread thread = new()
         {
             Id = "threadId",
@@ -216,8 +238,9 @@ public class ShowThreadUseCaseTest
         };
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
-        await _sut.AddTweedToThread("threadId", "tweedId", "replyTweedId");
+        var result = await _sut.AddTweedToThread("tweedId");
 
+        result.Should().BeSuccess();
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
     }
 }
