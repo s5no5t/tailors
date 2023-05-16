@@ -5,6 +5,7 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
 using Tweed.Domain;
+using Tweed.Domain.Model;
 using Tweed.Infrastructure;
 
 namespace Tweed.Web;
@@ -34,7 +35,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 MaxDocsPerBatch = 20
             };
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<Domain.Model.Tweed>(options);
+                _store.Subscriptions.GetSubscriptionWorker<TheTweed>(options);
 
             try
             {
@@ -103,7 +104,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
         catch (SubscriptionDoesNotExistException)
         {
-            SubscriptionCreationOptions<Domain.Model.Tweed> options = new()
+            SubscriptionCreationOptions<TheTweed> options = new()
             {
                 Name = SubscriptionName
             };
@@ -111,13 +112,13 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
     }
 
-    private async Task ProcessTweed(Domain.Model.Tweed tweed, IAsyncDocumentSession session)
+    private async Task ProcessTweed(TheTweed theTweed, IAsyncDocumentSession session)
     {
         TweedThreadRepository threadRepository = new(session);
         TweedRepository tweedRepository = new(session);
         ThreadOfTweedsUseCase threadOfTweedsUseCase = new(threadRepository, tweedRepository);
 
-        var result = await threadOfTweedsUseCase.AddTweedToThread(tweed.Id!);
+        var result = await threadOfTweedsUseCase.AddTweedToThread(theTweed.Id!);
         result.LogIfFailed();
     }
 }

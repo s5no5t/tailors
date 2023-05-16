@@ -1,7 +1,6 @@
 using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Like.Domain;
 using Tweed.Web.Views.Shared;
@@ -10,8 +9,8 @@ namespace Tweed.Web.Helper;
 
 public interface ITweedViewModelFactory
 {
-    Task<TweedViewModel> Create(Domain.Model.Tweed tweed);
-    Task<List<TweedViewModel>> Create(List<Domain.Model.Tweed> tweeds);
+    Task<TweedViewModel> Create(TheTweed theTweed);
+    Task<List<TweedViewModel>> Create(List<TheTweed> tweeds);
 }
 
 public class TweedViewModelFactory : ITweedViewModelFactory
@@ -31,23 +30,23 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> Create(Domain.Model.Tweed tweed)
+    public async Task<TweedViewModel> Create(TheTweed theTweed)
     {
-        var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
+        var humanizedCreatedAt = theTweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
-        var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
-        var likesCount = await _tweedLikesRepository.GetLikesCounter(tweed.Id!);
+        var author = await _userManager.FindByIdAsync(theTweed.AuthorId!);
+        var likesCount = await _tweedLikesRepository.GetLikesCounter(theTweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
         var currentUserLikesTweed =
-            await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId!);
+            await _likeTweedUseCase.DoesUserLikeTweed(theTweed.Id!, currentUserId!);
 
         TweedViewModel viewModel = new()
         {
-            Id = tweed.Id,
-            Text = tweed.Text,
+            Id = theTweed.Id,
+            Text = theTweed.Text,
             CreatedAt = humanizedCreatedAt,
-            AuthorId = tweed.AuthorId,
+            AuthorId = theTweed.AuthorId,
             LikesCount = likesCount,
             LikedByCurrentUser = currentUserLikesTweed,
             Author = author!.UserName
@@ -55,7 +54,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Domain.Model.Tweed> tweeds)
+    public async Task<List<TweedViewModel>> Create(List<TheTweed> tweeds)
     {
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in tweeds)

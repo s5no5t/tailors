@@ -1,4 +1,5 @@
 using Raven.Client.Documents.Session;
+using Tweed.Domain.Model;
 using Tweed.Like.Domain;
 
 namespace Tweed.Like.Infrastructure;
@@ -25,17 +26,17 @@ public class TweedLikesRepository : ITweedLikesRepository
     public async Task<long> GetLikesCounter(string tweedId)
     {
         var likesCounter =
-            await _session.CountersFor(tweedId).GetAsync(Tweed.Domain.Model.Tweed.LikesCounterName);
+            await _session.CountersFor(tweedId).GetAsync(TheTweed.LikesCounterName);
         return likesCounter ?? 0L;
     }
 
     public void IncreaseLikesCounter(string tweedId)
     {
-        _session.CountersFor(tweedId).Increment(Tweed.Domain.Model.Tweed.LikesCounterName);
+        _session.CountersFor(tweedId).Increment(TheTweed.LikesCounterName);
     }
 
     public void DecreaseLikesCounter(string tweedId)
     {
-        _session.CountersFor(tweedId).Increment(Tweed.Domain.Model.Tweed.LikesCounterName, -1);
+        _session.CountersFor(tweedId).Increment(TheTweed.LikesCounterName, -1);
     }
 }

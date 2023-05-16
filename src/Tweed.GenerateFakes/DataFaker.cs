@@ -53,7 +53,7 @@ internal class DataFaker
         Console.WriteLine("{0} UserFollows created", users.Count);
     }
 
-    internal async Task<List<Domain.Model.Tweed>> CreateFakeTweeds(List<User> users)
+    internal async Task<List<TheTweed>> CreateFakeTweeds(List<User> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
@@ -63,7 +63,7 @@ internal class DataFaker
         var threads = threadFaker.Generate(numThreads);
         foreach (var thread in threads) await bulkInsert.StoreAsync(thread);
 
-        var tweedFaker = new Faker<Domain.Model.Tweed>()
+        var tweedFaker = new Faker<TheTweed>()
             .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
             .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
             .RuleFor(t => t.AuthorId, f => f.PickRandom(users).Id)
@@ -77,7 +77,7 @@ internal class DataFaker
         return tweeds;
     }
 
-    internal async Task CreateFakeLikes(List<User> users, List<Domain.Model.Tweed> tweeds)
+    internal async Task CreateFakeLikes(List<User> users, List<TheTweed> tweeds)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 

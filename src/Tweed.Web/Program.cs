@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using OpenTelemetry.Trace;
-using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Feed.Domain;
 using Tweed.Infrastructure;
 using Tweed.Infrastructure.Setup;
 using Tweed.Like.Domain;
 using Tweed.Like.Infrastructure;
+using Tweed.Tweed.Infrastructure;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
@@ -34,6 +33,7 @@ builder.Services.AddRavenDbDocStore(options =>
     {
         store.EnsureDatabaseExists();
         store.DeployIndexes();
+        store.DeployTweedIndexes();
     };
 });
 builder.Services.AddRavenDbAsyncSession();
@@ -63,6 +63,7 @@ builder.Services.Scan(scan =>
     scan.FromAssembliesOf(typeof(User)).AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(ShowFeedUseCase)).AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(UserLikes)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(TheTweed)).AddClasses().AsMatchingInterface();
 });
 
 builder.Services.Configure<IdentityOptions>(options =>

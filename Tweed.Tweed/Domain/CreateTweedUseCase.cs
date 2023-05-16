@@ -5,9 +5,9 @@ namespace Tweed.Domain;
 
 public interface ICreateTweedUseCase
 {
-    Task<Model.Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
+    Task<TheTweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
 
-    Task<Model.Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
+    Task<TheTweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
         string parentTweedId);
 }
 
@@ -22,30 +22,30 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         _tweedThreadRepository = tweedThreadRepository;
     }
 
-    public async Task<Model.Tweed> CreateRootTweed(string authorId, string text,
+    public async Task<TheTweed> CreateRootTweed(string authorId, string text,
         ZonedDateTime createdAt)
     {
-        Model.Tweed tweed = new()
+        TheTweed theTweed = new()
         {
             AuthorId = authorId,
             Text = text,
             CreatedAt = createdAt
         };
-        await _tweedRepository.Create(tweed);
+        await _tweedRepository.Create(theTweed);
 
-        var thread = await CreateThread(tweed.Id!);
-        tweed.ThreadId = thread.Id;
-        return tweed;
+        var thread = await CreateThread(theTweed.Id!);
+        theTweed.ThreadId = thread.Id;
+        return theTweed;
     }
 
-    public async Task<Model.Tweed> CreateReplyTweed(string authorId, string text,
+    public async Task<TheTweed> CreateReplyTweed(string authorId, string text,
         ZonedDateTime createdAt, string parentTweedId)
     {
         var parentTweed = await _tweedRepository.GetById(parentTweedId);
         if (parentTweed is null)
             throw new Exception($"Parent Tweed {parentTweedId} not found");
         var threadId = parentTweed.ThreadId;
-        Model.Tweed tweed = new()
+        TheTweed theTweed = new()
         {
             AuthorId = authorId,
             Text = text,
@@ -53,8 +53,8 @@ public class CreateTweedUseCase : ICreateTweedUseCase
             ThreadId = threadId,
             CreatedAt = createdAt
         };
-        await _tweedRepository.Create(tweed);
-        return tweed;
+        await _tweedRepository.Create(theTweed);
+        return theTweed;
     }
 
     private async Task<TweedThread> CreateThread(string tweedId)

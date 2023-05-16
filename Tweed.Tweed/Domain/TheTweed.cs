@@ -2,7 +2,7 @@ using NodaTime;
 
 namespace Tweed.Domain.Model;
 
-public class Tweed
+public class TheTweed
 {
     public static readonly string LikesCounterName = "Likes";
 
