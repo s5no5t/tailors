@@ -1,4 +1,4 @@
-namespace Tweed.Web.Views.Home;
+namespace Tweed.Web.Views.Feed;
 
 public class IndexViewModel
 {

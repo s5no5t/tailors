@@ -11,13 +11,13 @@ using Tweed.Domain.Model;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.Views.Home;
+using Tweed.Web.Views.Feed;
 using Tweed.Web.Views.Shared;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;
 
-public class HomeControllerTest
+public class FeedControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<IShowFeedUseCase> _showFeedUseCaseMock = new();
@@ -26,9 +26,9 @@ public class HomeControllerTest
     private readonly Mock<UserManager<User>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<User>();
 
-    private readonly HomeController _homeController;
+    private readonly FeedController _feedController;
 
-    public HomeControllerTest()
+    public FeedControllerTest()
     {
         var user = new User
         {
@@ -45,7 +45,7 @@ public class HomeControllerTest
         _viewModelFactoryMock.Setup(v => v.Create(tweed))
             .ReturnsAsync(new TweedViewModel());
 
-        _homeController = new HomeController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
+        _feedController = new FeedController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
             _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
@@ -56,14 +56,14 @@ public class HomeControllerTest
     public void RequiresAuthorization()
     {
         var authorizeAttributeValue =
-            Attribute.GetCustomAttribute(typeof(HomeController), typeof(AuthorizeAttribute));
+            Attribute.GetCustomAttribute(typeof(FeedController), typeof(AuthorizeAttribute));
         Assert.NotNull(authorizeAttributeValue);
     }
 
     [Fact]
     public async Task Index_ShouldReturnIndexViewModel()
     {
-        var result = await _homeController.Index();
+        var result = await _feedController.Index();
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -73,7 +73,7 @@ public class HomeControllerTest
     [Fact]
     public async Task Index_ShouldReturnPage0()
     {
-        var result = await _homeController.Index();
+        var result = await _feedController.Index();
 
         var model = ((result as ViewResult)!.Model as IndexViewModel)!;
         Assert.Equal(0, model.Feed.Page);
@@ -99,7 +99,7 @@ public class HomeControllerTest
                 }
             });
 
-        var result = await _homeController.Index();
+        var result = await _feedController.Index();
 
         var model = ((result as ViewResult)!.Model as IndexViewModel)!;
         Assert.Equal(tweed.Id, model.Feed.Tweeds[0].Id);
@@ -108,7 +108,7 @@ public class HomeControllerTest
     [Fact]
     public async Task Feed_ShouldReturnFeedPartialViewModel()
     {
-        var result = await _homeController.Feed();
+        var result = await _feedController.Feed();
 
         Assert.IsType<PartialViewResult>(result);
         var resultAsView = (PartialViewResult)result;
@@ -118,7 +118,7 @@ public class HomeControllerTest
     [Fact]
     public async Task Feed_ShouldReturnPage1_WhenPageIs1()
     {
-        var result = await _homeController.Feed(1);
+        var result = await _feedController.Feed(1);
 
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
 
@@ -145,7 +145,7 @@ public class HomeControllerTest
                 }
             });
 
-        var result = await _homeController.Feed();
+        var result = await _feedController.Feed();
 
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
         Assert.Equal(tweed.Id, model.Tweeds[0].Id);

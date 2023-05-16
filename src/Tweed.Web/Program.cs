@@ -99,7 +99,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     "default",
-    "{controller=Home}/{action=Index}/{id?}");
+    "{controller=Feed}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
