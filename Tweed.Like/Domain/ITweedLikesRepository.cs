@@ -1,6 +1,4 @@
-using Tweed.Domain.Model;
-
-namespace Tweed.Domain;
+namespace Tweed.Like.Domain;
 
 public interface ITweedLikesRepository
 {

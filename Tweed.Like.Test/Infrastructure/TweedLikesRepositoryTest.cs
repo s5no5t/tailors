@@ -1,9 +1,11 @@
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Infrastructure.Test.Helper;
+using Tweed.Infrastructure;
+using Tweed.Like.Infrastructure;
+using Tweed.Like.Test.Helper;
 using Xunit;
 
-namespace Tweed.Infrastructure.Test;
+namespace Tweed.Like.Test.Infrastructure;
 
 [Collection("RavenDB")]
 public class TweedLikesRepositoryTest
@@ -22,7 +24,7 @@ public class TweedLikesRepositoryTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Domain.Model.Tweed tweed = new()
+        Tweed.Domain.Model.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime

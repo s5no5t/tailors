@@ -1,8 +1,10 @@
-namespace Tweed.Domain;
+using Tweed.Domain;
+
+namespace Tweed.Feed.Domain;
 
 public interface IShowFeedUseCase
 {
-    Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize);
+    Task<List<Tweed.Domain.Model.Tweed>> GetFeed(string userId, int page, int pageSize);
 }
 
 public class ShowFeedUseCase : IShowFeedUseCase
@@ -16,7 +18,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         _followUserUseCase = followUserUseCase;
     }
 
-    public async Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize)
+    public async Task<List<Tweed.Domain.Model.Tweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 
@@ -29,7 +31,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
         var extraTweeds = await _tweedRepository.GetRecentTweeds(numExtraTweeds);
 
-        var tweeds = new List<Model.Tweed>();
+        var tweeds = new List<Tweed.Domain.Model.Tweed>();
         tweeds.AddRange(ownTweeds);
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);
