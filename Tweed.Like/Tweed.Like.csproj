@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NodaTime" Version="3.1.9" />
+      <PackageReference Include="RavenDB.Client" Version="5.4.104" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\src\Tweed.Domain\Tweed.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

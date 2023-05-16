@@ -14,15 +14,6 @@ public interface IUserFollowsRepository
     Task<int> GetFollowerCount(string userId);
 }
 
-public interface ITweedLikesRepository
-{
-    Task<UserLikes?> GetById(string userLikesId);
-    Task Create(UserLikes userLikes);
-    Task<long> GetLikesCounter(string tweedId);
-    void IncreaseLikesCounter(string tweedId);
-    void DecreaseLikesCounter(string tweedId);
-}
-
 public interface ITweedRepository
 {
     Task<Model.Tweed?> GetById(string id);
