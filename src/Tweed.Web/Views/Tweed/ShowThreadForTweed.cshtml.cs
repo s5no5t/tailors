@@ -4,8 +4,6 @@ namespace Tweed.Web.Views.Tweed;
 
 public class ShowThreadForTweedViewModel
 {
-    public List<TweedViewModel> LeadingTweeds { get; set; } = new();
-    public TweedViewModel Tweed { get; set; } = new();
-    public List<TweedViewModel> ReplyTweeds { get; set; } = new();
-    public CreateReplyTweedViewModel CreateTweed { get; set; } = new();
+    public List<TweedViewModel> Tweeds { get; set; } = new();
+    public CreateReplyTweedViewModel CreateReplyTweed { get; set; } = new();
 }

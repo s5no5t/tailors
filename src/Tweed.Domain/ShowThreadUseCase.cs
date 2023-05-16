@@ -1,32 +1,43 @@
+using FluentResults;
 using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
 public interface IShowThreadUseCase
 {
-    Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId, string tweedId);
+    Task<Result<List<Model.Tweed>>> GetThreadTweedsForTweed(string tweedId);
 }
 
 public class ShowThreadUseCase : IShowThreadUseCase
 {
+    private readonly ITweedRepository _tweedRepository;
     private readonly ITweedThreadRepository _tweedThreadRepository;
 
-    public ShowThreadUseCase(ITweedThreadRepository tweedThreadRepository)
+    public ShowThreadUseCase(ITweedThreadRepository tweedThreadRepository,
+        ITweedRepository tweedRepository)
     {
         _tweedThreadRepository = tweedThreadRepository;
+        _tweedRepository = tweedRepository;
     }
 
-    public async Task<List<TweedThread.TweedReference>?> GetLeadingTweeds(string threadId,
-        string tweedId)
+    public async Task<Result<List<Model.Tweed>>> GetThreadTweedsForTweed(string tweedId)
     {
-        var thread = await GetOrCreateThread(threadId);
+        var tweed = await _tweedRepository.GetById(tweedId);
+        if (tweed is null)
+            return Result.Fail($"Tweed {tweedId} not found");
+
+        if (tweed.ThreadId is null)
+            return new List<Model.Tweed>();
+
+        var thread = await GetOrCreateThread(tweed.ThreadId!);
 
         var path = FindTweedInThread(thread, tweedId);
         if (path is null)
-            return null;
+            return Result.Fail($"Tweed {tweedId} not found in Thread {tweed.ThreadId}");
 
-        path.RemoveAt(path.Count - 1);
-        return path;
+        var tweedsByIds = await _tweedRepository.GetByIds(path.Select(t => t.TweedId!));
+        var tweeds = tweedsByIds.Values.Select(t => t).ToList();
+        return tweeds;
     }
 
     public async Task AddTweedToThread(string threadId, string tweedId, string? parentTweedId)

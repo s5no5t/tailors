@@ -20,6 +20,11 @@ public sealed class TweedRepository : ITweedRepository
         return _session.LoadAsync<Domain.Model.Tweed>(id)!;
     }
 
+    public Task<Dictionary<string, Domain.Model.Tweed>> GetByIds(IEnumerable<string> ids)
+    {
+        return _session.LoadAsync<Domain.Model.Tweed>(ids);
+    }
+
     public async Task Create(Domain.Model.Tweed tweed)
     {
         await _session.StoreAsync(tweed);
