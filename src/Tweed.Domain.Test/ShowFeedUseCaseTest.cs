@@ -14,7 +14,7 @@ public class ShowFeedUseCaseTest
         new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
 
     private readonly Mock<IFollowUserUseCase> _followsServiceMock = new();
-    private readonly ShowShowFeedUseCase _sut;
+    private readonly ShowFeedUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
 
     public ShowFeedUseCaseTest()
@@ -29,7 +29,7 @@ public class ShowFeedUseCaseTest
         _tweedRepositoryMock
             .Setup(m => m.GetRecentTweeds(It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
-        _sut = new ShowShowFeedUseCase(_tweedRepositoryMock.Object, _followsServiceMock.Object);
+        _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
 
     [Fact]

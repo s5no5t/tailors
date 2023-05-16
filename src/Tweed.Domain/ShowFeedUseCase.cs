@@ -5,12 +5,12 @@ public interface IShowFeedUseCase
     Task<List<Model.Tweed>> GetFeed(string userId, int page, int pageSize);
 }
 
-public class ShowShowFeedUseCase : IShowFeedUseCase
+public class ShowFeedUseCase : IShowFeedUseCase
 {
     private readonly IFollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
 
-    public ShowShowFeedUseCase(ITweedRepository tweedRepository, IFollowUserUseCase followUserUseCase)
+    public ShowFeedUseCase(ITweedRepository tweedRepository, IFollowUserUseCase followUserUseCase)
     {
         _tweedRepository = tweedRepository;
         _followUserUseCase = followUserUseCase;
