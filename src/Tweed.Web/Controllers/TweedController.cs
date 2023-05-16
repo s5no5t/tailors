@@ -15,7 +15,7 @@ public class TweedController : Controller
 {
     private readonly ILikeTweedUseCase _likeTweedUseCase;
     private readonly INotificationManager _notificationManager;
-    private readonly IShowThreadUseCase _showThreadUseCase;
+    private readonly IThreadOfTweedsUseCase _threadOfTweedsUseCase;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
     private readonly UserManager<User> _userManager;
@@ -23,14 +23,14 @@ public class TweedController : Controller
     public TweedController(ITweedRepository tweedRepository,
         UserManager<User> userManager,
         INotificationManager notificationManager, ILikeTweedUseCase likeTweedUseCase,
-        IShowThreadUseCase showThreadUseCase,
+        IThreadOfTweedsUseCase threadOfTweedsUseCase,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
         _likeTweedUseCase = likeTweedUseCase;
-        _showThreadUseCase = showThreadUseCase;
+        _threadOfTweedsUseCase = threadOfTweedsUseCase;
         _tweedViewModelFactory = tweedViewModelFactory;
     }
 
@@ -40,7 +40,7 @@ public class TweedController : Controller
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var threadTweeds = await _showThreadUseCase.GetThreadTweedsForTweed(decodedTweedId);
+        var threadTweeds = await _threadOfTweedsUseCase.GetThreadTweedsForTweed(decodedTweedId);
         if (threadTweeds.IsFailed)
             return NotFound();
 

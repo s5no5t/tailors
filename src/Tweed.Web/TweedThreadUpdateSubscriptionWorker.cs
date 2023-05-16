@@ -115,9 +115,9 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
     {
         TweedThreadRepository threadRepository = new(session);
         TweedRepository tweedRepository = new(session);
-        ShowThreadUseCase showThreadUseCase = new(threadRepository, tweedRepository);
+        ThreadOfTweedsUseCase threadOfTweedsUseCase = new(threadRepository, tweedRepository);
 
-        var result = await showThreadUseCase.AddTweedToThread(tweed.Id!);
+        var result = await threadOfTweedsUseCase.AddTweedToThread(tweed.Id!);
         result.LogIfFailed();
     }
 }

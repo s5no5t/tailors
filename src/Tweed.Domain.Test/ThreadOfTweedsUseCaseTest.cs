@@ -8,15 +8,15 @@ using Xunit;
 
 namespace Tweed.Domain.Test;
 
-public class ShowThreadUseCaseTest
+public class ThreadOfTweedsUseCaseTest
 {
-    private readonly ShowThreadUseCase _sut;
+    private readonly ThreadOfTweedsUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<ITweedThreadRepository> _tweedThreadRepositoryMock = new();
 
-    public ShowThreadUseCaseTest()
+    public ThreadOfTweedsUseCaseTest()
     {
-        _sut = new ShowThreadUseCase(_tweedThreadRepositoryMock.Object,
+        _sut = new ThreadOfTweedsUseCase(_tweedThreadRepositoryMock.Object,
             _tweedRepositoryMock.Object);
     }
 
