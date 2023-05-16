@@ -1,12 +1,13 @@
+using FluentResults;
 using NodaTime;
 
 namespace Tweed.Thread.Domain;
 
 public interface ICreateTweedUseCase
 {
-    Task<Tweed> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
+    Task<Result<Tweed>> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
 
-    Task<Tweed> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
+    Task<Result<Tweed>> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
         string parentTweedId);
 }
 
@@ -21,7 +22,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         _tweedThreadRepository = tweedThreadRepository;
     }
 
-    public async Task<Tweed> CreateRootTweed(string authorId, string text,
+    public async Task<Result<Tweed>> CreateRootTweed(string authorId, string text,
         ZonedDateTime createdAt)
     {
         Tweed tweed = new()
@@ -37,12 +38,12 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         return tweed;
     }
 
-    public async Task<Tweed> CreateReplyTweed(string authorId, string text,
+    public async Task<Result<Tweed>> CreateReplyTweed(string authorId, string text,
         ZonedDateTime createdAt, string parentTweedId)
     {
         var parentTweed = await _tweedRepository.GetById(parentTweedId);
         if (parentTweed is null)
-            throw new Exception($"Parent Tweed {parentTweedId} not found");
+            return Result.Fail(new ReferenceNotFoundError($"Parent Tweed {parentTweedId} not found"));
         var threadId = parentTweed.ThreadId;
         Tweed tweed = new()
         {

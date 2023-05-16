@@ -28,7 +28,8 @@ public class TweedController : Controller
     }
 
     [HttpGet("Tweed/{tweedId}")]
-    public async Task<ActionResult> ShowThreadForTweed(string tweedId, [FromServices] IThreadOfTweedsUseCase threadOfTweedsUseCase)
+    public async Task<ActionResult> ShowThreadForTweed(string tweedId,
+        [FromServices] IThreadOfTweedsUseCase threadOfTweedsUseCase)
     {
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
@@ -57,7 +58,7 @@ public class TweedController : Controller
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateTweedViewModel viewModel,
-        [FromServices] ICreateTweedUseCase createTweedUseCase, 
+        [FromServices] ICreateTweedUseCase createTweedUseCase,
         [FromServices] INotificationManager notificationManager)
     {
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
@@ -65,7 +66,9 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        var result = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        if (result.IsFailed)
+            throw new Exception("Error creating Tweed");
 
         notificationManager.AppendSuccess("Tweed Posted");
 
@@ -79,18 +82,14 @@ public class TweedController : Controller
     {
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
-        if (viewModel.ParentTweedId is null)
-            return BadRequest();
-
-        var parentTweed = await _tweedRepository.GetById(viewModel.ParentTweedId);
-        if (parentTweed is null)
-            return BadRequest();
-
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        var result = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now, viewModel.ParentTweedId);
+        if (result.HasError<ReferenceNotFoundError>())
+            return BadRequest();
 
-        await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
-            viewModel.ParentTweedId);
+        if (result.IsFailed)
+            throw new Exception("Error creating Tweed");
 
         notificationManager.AppendSuccess("Reply Posted");
 

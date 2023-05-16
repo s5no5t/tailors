@@ -219,6 +219,10 @@ public class TweedControllerTest
         {
             Text = "test"
         };
+        _createTweedUseCaseMock
+            .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>(),
+                It.IsAny<string>())).ReturnsAsync(Result.Fail(new ReferenceNotFoundError()));
+        
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         Assert.IsType<BadRequestResult>(result);
@@ -232,6 +236,9 @@ public class TweedControllerTest
             Text = "test",
             ParentTweedId = "nonExistingTweed"
         };
+        _createTweedUseCaseMock
+            .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>(),
+                It.IsAny<string>())).ReturnsAsync(Result.Fail(new ReferenceNotFoundError()));
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         Assert.IsType<BadRequestResult>(result);

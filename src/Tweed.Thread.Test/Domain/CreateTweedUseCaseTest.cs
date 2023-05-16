@@ -1,3 +1,4 @@
+using FluentResults.Extensions.FluentAssertions;
 using Moq;
 using NodaTime;
 using Tweed.Thread.Domain;
@@ -22,16 +23,18 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateRootTweed_SavesTweed()
     {
-        await _sut.CreateRootTweed("authorId", "text", FixedZonedDateTime);
+        var result = await _sut.CreateRootTweed("authorId", "text", FixedZonedDateTime);
 
+        result.Should().BeSuccess();
         _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Thread.Domain.Tweed>()));
     }
 
     [Fact]
     public async Task CreateRootTweed_CreatesThread()
     {
-        await _sut.CreateRootTweed("authorId", "text", FixedZonedDateTime);
+        var result = await _sut.CreateRootTweed("authorId", "text", FixedZonedDateTime);
 
+        result.Should().BeSuccess();
         _tweedThreadRepositoryMock.Verify(s => s.Create(It.IsAny<TweedThread>()));
     }
 
@@ -45,8 +48,9 @@ public class CreateTweedUseCaseTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
-        await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
+        var result = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
 
+        result.Should().BeSuccess();
         _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Thread.Domain.Tweed>()));
     }
 
@@ -60,8 +64,9 @@ public class CreateTweedUseCaseTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
-        var tweed = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, "parentTweedId");
+        var result = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, "parentTweedId");
 
-        Assert.Equal(parentTweed.ThreadId, tweed.ThreadId);
+        result.Should().BeSuccess();
+        Assert.Equal(parentTweed.ThreadId, result.Value.ThreadId);
     }
 }
