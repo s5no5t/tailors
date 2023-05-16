@@ -14,12 +14,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class ChangePasswordModel : PageModel
 {
     private readonly ILogger<ChangePasswordModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
     public ChangePasswordModel(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
         ILogger<ChangePasswordModel> logger)
     {
         _userManager = userManager;

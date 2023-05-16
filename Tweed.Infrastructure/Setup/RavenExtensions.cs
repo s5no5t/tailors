@@ -42,15 +42,15 @@ public static class RavenExtensions
 
     private static void ApplyCustomConventions(this IDocumentStore store)
     {
-        store.Conventions.RegisterAsyncIdConvention<AppUserFollows>((_, follows) =>
+        store.Conventions.RegisterAsyncIdConvention<UserFollows>((_, follows) =>
         {
-            ArgumentNullException.ThrowIfNull(follows.AppUserId);
-            return Task.FromResult(AppUserFollows.BuildId(follows.AppUserId));
+            ArgumentNullException.ThrowIfNull(follows.UserId);
+            return Task.FromResult(UserFollows.BuildId(follows.UserId));
         });
-        store.Conventions.RegisterAsyncIdConvention<AppUserLikes>((_, appUserLikes) =>
+        store.Conventions.RegisterAsyncIdConvention<UserLikes>((_, userLikes) =>
         {
-            ArgumentNullException.ThrowIfNull(appUserLikes.AppUserId);
-            return Task.FromResult(AppUserLikes.BuildId(appUserLikes.AppUserId));
+            ArgumentNullException.ThrowIfNull(userLikes.UserId);
+            return Task.FromResult(UserLikes.BuildId(userLikes.UserId));
         });
     }
 
@@ -58,7 +58,7 @@ public static class RavenExtensions
     {
         new Tweeds_ByAuthorIdAndCreatedAt().Execute(store);
         new Tweeds_ByText().Execute(store);
-        new AppUserFollows_FollowerCount().Execute(store);
-        new AppUsers_ByUserName().Execute(store);
+        new UserFollows_FollowerCount().Execute(store);
+        new Users_ByUserName().Execute(store);
     }
 }

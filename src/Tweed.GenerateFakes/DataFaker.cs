@@ -15,44 +15,44 @@ internal class DataFaker
         _settings = settings;
     }
 
-    internal async Task<List<AppUser>> CreateFakeAppUsers()
+    internal async Task<List<User>> CreateFakeUsers()
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var appUserFaker = new Faker<AppUser>()
+        var userFaker = new Faker<User>()
             .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName())
             .RuleFor(u => u.Email, (f, _) => f.Internet.ExampleEmail());
 
-        var numAppUsers = _settings.NumberOfAppUsers;
-        var appUsers = appUserFaker.Generate(numAppUsers);
-        foreach (var appUser in appUsers) await bulkInsert.StoreAsync(appUser);
-        Console.WriteLine("{0} AppUsers created", appUsers.Count);
+        var numberOfUsers = _settings.NumberOfUsers;
+        var users = userFaker.Generate(numberOfUsers);
+        foreach (var user in users) await bulkInsert.StoreAsync(user);
+        Console.WriteLine("{0} Users created", users.Count);
 
-        return appUsers;
+        return users;
     }
 
-    internal async Task CreateFakeFollows(List<AppUser> appUsers)
+    internal async Task CreateFakeFollows(List<User> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var followsFaker = new Faker<AppUserFollows.LeaderReference>()
-            .RuleFor(f => f.LeaderId, f => f.PickRandom(appUsers).Id)
+        var followsFaker = new Faker<UserFollows.LeaderReference>()
+            .RuleFor(f => f.LeaderId, f => f.PickRandom(users).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
-        var appUserFollowsFaker = new Faker<AppUserFollows>()
-            .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, appUsers.Count - 1));
+        var userFollowsFaker = new Faker<UserFollows>()
+            .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, users.Count - 1));
 
-        foreach (var appUser in appUsers)
+        foreach (var user in users)
         {
-            var appUserFollows = appUserFollowsFaker.Generate(1).First();
-            appUserFollows.AppUserId = appUser.Id;
-            await bulkInsert.StoreAsync(appUserFollows);
+            var userFollows = userFollowsFaker.Generate(1).First();
+            userFollows.UserId = user.Id;
+            await bulkInsert.StoreAsync(userFollows);
         }
 
-        Console.WriteLine("{0} AppUserFollows created", appUsers.Count);
+        Console.WriteLine("{0} UserFollows created", users.Count);
     }
 
-    internal async Task<List<Domain.Model.Tweed>> CreateFakeTweeds(List<AppUser> appUsers)
+    internal async Task<List<Domain.Model.Tweed>> CreateFakeTweeds(List<User> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
@@ -65,7 +65,7 @@ internal class DataFaker
         var tweedFaker = new Faker<Domain.Model.Tweed>()
             .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
             .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
-            .RuleFor(t => t.AuthorId, f => f.PickRandom(appUsers).Id)
+            .RuleFor(t => t.AuthorId, f => f.PickRandom(users).Id)
             .RuleFor(t => t.ThreadId, f => threads[f.IndexFaker].Id);
 
         var numTweeds = _settings.NumberOfTweeds;
@@ -76,30 +76,30 @@ internal class DataFaker
         return tweeds;
     }
 
-    internal async Task CreateFakeLikes(List<AppUser> appUsers, List<Domain.Model.Tweed> tweeds)
+    internal async Task CreateFakeLikes(List<User> users, List<Domain.Model.Tweed> tweeds)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var likesFaker = new Faker<AppUserLikes.TweedLike>()
+        var likesFaker = new Faker<UserLikes.TweedLike>()
             .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
             .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
 
-        var appUserLikesFaker = new Faker<AppUserLikes>()
+        var userLikesFaker = new Faker<UserLikes>()
             .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, tweeds.Count - 1));
 
-        foreach (var appUser in appUsers)
+        foreach (var user in users)
         {
-            var appUserLikes = appUserLikesFaker.Generate(1).First();
-            appUserLikes.AppUserId = appUser.Id;
-            await bulkInsert.StoreAsync(appUserLikes);
+            var userLikes = userLikesFaker.Generate(1).First();
+            userLikes.UserId = user.Id;
+            await bulkInsert.StoreAsync(userLikes);
         }
 
-        Console.WriteLine("{0} AppUserLikes created", appUsers.Count);
+        Console.WriteLine("{0} UserLikes created", users.Count);
     }
 }
 
 internal class DataFakerSettings
 {
-    public int NumberOfAppUsers { get; set; }
+    public int NumberOfUsers { get; set; }
     public int NumberOfTweeds { get; set; }
 }

@@ -14,11 +14,11 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 
 public class ConfirmEmailChangeModel : PageModel
 {
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
-    public ConfirmEmailChangeModel(UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager)
+    public ConfirmEmailChangeModel(UserManager<User> userManager,
+        SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;

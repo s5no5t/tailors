@@ -15,11 +15,11 @@ namespace Tweed.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly IFeedService _feedService;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
     private const int PageSize = 20;
 
-    public HomeController(IFeedService feedService, UserManager<AppUser> userManager,
+    public HomeController(IFeedService feedService, UserManager<User> userManager,
         IViewModelFactory viewModelFactory)
     {
         _feedService = feedService;

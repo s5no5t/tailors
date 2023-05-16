@@ -21,11 +21,11 @@ public class LikesService : ILikesService
 
     public async Task AddLike(string tweedId, string userId, ZonedDateTime likedAt)
     {
-        var appUserLikes = await GetOrCreateAppUserLikes(userId);
+        var userLikes = await GetOrCreateUserLikes(userId);
 
-        if (appUserLikes.Likes.Any(l => l.TweedId == tweedId))
+        if (userLikes.Likes.Any(l => l.TweedId == tweedId))
             return;
-        appUserLikes.Likes.Add(new AppUserLikes.TweedLike
+        userLikes.Likes.Add(new UserLikes.TweedLike
         {
             TweedId = tweedId,
             CreatedAt = likedAt
@@ -36,31 +36,31 @@ public class LikesService : ILikesService
 
     public async Task RemoveLike(string tweedId, string userId)
     {
-        var appUserLikes = await GetOrCreateAppUserLikes(userId);
-        appUserLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
+        var userLikes = await GetOrCreateUserLikes(userId);
+        userLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
 
         _tweedLikesRepository.DecreaseLikesCounter(tweedId);
     }
 
     public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
     {
-        var appUserLikes = await GetOrCreateAppUserLikes(userId);
-        return appUserLikes.Likes.Any(lb => lb.TweedId == tweedId);
+        var userLikes = await GetOrCreateUserLikes(userId);
+        return userLikes.Likes.Any(lb => lb.TweedId == tweedId);
     }
 
-    private async Task<AppUserLikes> GetOrCreateAppUserLikes(string userId)
+    private async Task<UserLikes> GetOrCreateUserLikes(string userId)
     {
-        var appUserLikesId = AppUserLikes.BuildId(userId);
-        var appUserLikes = await _tweedLikesRepository.GetById(appUserLikesId);
-        if (appUserLikes is null)
+        var userLikesId = UserLikes.BuildId(userId);
+        var userLikes = await _tweedLikesRepository.GetById(userLikesId);
+        if (userLikes is null)
         {
-            appUserLikes = new AppUserLikes
+            userLikes = new UserLikes
             {
-                AppUserId = userId
+                UserId = userId
             };
-            await _tweedLikesRepository.Create(appUserLikes);
+            await _tweedLikesRepository.Create(userLikes);
         }
 
-        return appUserLikes;
+        return userLikes;
     }
 }

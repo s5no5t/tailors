@@ -14,20 +14,20 @@ namespace Tweed.Web.Controllers;
 public class ProfileController : Controller
 {
     private const int PageSize = 100;
-    private readonly IAppUserFollowsRepository _appUserFollowsRepository;
+    private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly IFollowsService _followsService;
     private readonly ITweedRepository _tweedRepository;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
-    public ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
-        IViewModelFactory viewModelFactory, IAppUserFollowsRepository appUserFollowsRepository,
+    public ProfileController(ITweedRepository tweedRepository, UserManager<User> userManager,
+        IViewModelFactory viewModelFactory, IUserFollowsRepository userFollowsRepository,
         IFollowsService followsService)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _viewModelFactory = viewModelFactory;
-        _appUserFollowsRepository = appUserFollowsRepository;
+        _userFollowsRepository = userFollowsRepository;
         _followsService = followsService;
     }
 
@@ -54,7 +54,7 @@ public class ProfileController : Controller
             user.UserName,
             tweedViewModels,
             currentUserFollows.Any(f => f.LeaderId == user.Id),
-            await _appUserFollowsRepository.GetFollowerCount(userId)
+            await _userFollowsRepository.GetFollowerCount(userId)
         );
 
         return View(viewModel);

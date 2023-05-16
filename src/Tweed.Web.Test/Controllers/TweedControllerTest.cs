@@ -29,8 +29,8 @@ public class TweedControllerTest
     private readonly Mock<ITweedService> _tweedServiceMock = new();
     private readonly Mock<IThreadService> _tweedThreadServiceMock = new();
 
-    private readonly Mock<UserManager<AppUser>> _userManagerMock =
-        UserManagerMockHelper.MockUserManager<AppUser>();
+    private readonly Mock<UserManager<User>> _userManagerMock =
+        UserManagerMockHelper.MockUserManager<User>();
 
     private readonly Mock<IViewModelFactory> _viewModelFactoryMock = new();
 
@@ -327,7 +327,7 @@ public class TweedControllerTest
             AuthorId = "author"
         };
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
-        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new User());
 
         var result = await _tweedController.Like("123");
 
@@ -356,7 +356,7 @@ public class TweedControllerTest
             AuthorId = "author"
         };
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
-        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new User());
 
         var result = await _tweedController.Unlike("123");
 

@@ -1,6 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Tweed.Domain.Model
-@inject SignInManager<AppUser> SignInManager
+@inject SignInManager<User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

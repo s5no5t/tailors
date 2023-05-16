@@ -13,12 +13,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 
 public class IndexModel : PageModel
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
     public IndexModel(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager)
+        UserManager<User> userManager,
+        SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -42,7 +42,7 @@ public class IndexModel : PageModel
     [BindProperty]
     public InputModel Input { get; set; }
 
-    private async Task LoadAsync(AppUser user)
+    private async Task LoadAsync(User user)
     {
         var userName = await _userManager.GetUserNameAsync(user);
 

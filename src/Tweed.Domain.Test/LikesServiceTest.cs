@@ -24,15 +24,15 @@ public class LikesServiceTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikes()
     {
-        var appUserLikes = new AppUserLikes
+        var userLikes = new UserLikes
         {
-            AppUserId = "userId"
+            UserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(userLikes);
 
         await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
-        Assert.Single(appUserLikes.Likes);
+        Assert.Single(userLikes.Likes);
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class LikesServiceTest
     [Fact]
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
-        var appUserLikes = new AppUserLikes
+        var userLikes = new UserLikes
         {
-            AppUserId = "userId",
-            Likes = new List<AppUserLikes.TweedLike>
+            UserId = "userId",
+            Likes = new List<UserLikes.TweedLike>
             {
                 new()
                 {
@@ -62,20 +62,20 @@ public class LikesServiceTest
                 }
             }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
 
         await _service.AddLike("tweedId", "userId", FixedZonedDateTime);
 
-        Assert.Single(appUserLikes.Likes);
+        Assert.Single(userLikes.Likes);
     }
 
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikes()
     {
-        var appUserLikes = new AppUserLikes
+        var userLikes = new UserLikes
         {
-            AppUserId = "userId",
-            Likes = new List<AppUserLikes.TweedLike>
+            UserId = "userId",
+            Likes = new List<UserLikes.TweedLike>
             {
                 new()
                 {
@@ -83,21 +83,21 @@ public class LikesServiceTest
                 }
             }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(userLikes);
 
         await _service.RemoveLike("tweedId", "userId");
 
-        Assert.Empty(appUserLikes.Likes);
+        Assert.Empty(userLikes.Likes);
     }
 
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikesCounter()
     {
-        var appUserLikes = new AppUserLikes
+        var userLikes = new UserLikes
         {
-            AppUserId = "userId"
+            UserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
 
         await _service.RemoveLike("tweedId", "userId");
 
@@ -107,14 +107,14 @@ public class LikesServiceTest
     [Fact]
     public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
     {
-        var appUserLikes = new AppUserLikes
+        var userLikes = new UserLikes
         {
-            AppUserId = "userId"
+            UserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(appUserLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
 
         await _service.RemoveLike("tweedId", "userId");
 
-        Assert.Empty(appUserLikes.Likes);
+        Assert.Empty(userLikes.Likes);
     }
 }

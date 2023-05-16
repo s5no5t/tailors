@@ -17,12 +17,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 public class EmailModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
     public EmailModel(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
         IEmailSender emailSender)
     {
         _userManager = userManager;
@@ -60,7 +60,7 @@ public class EmailModel : PageModel
     [BindProperty]
     public InputModel Input { get; set; }
 
-    private async Task LoadAsync(AppUser user)
+    private async Task LoadAsync(User user)
     {
         var email = await _userManager.GetEmailAsync(user);
         Email = email;

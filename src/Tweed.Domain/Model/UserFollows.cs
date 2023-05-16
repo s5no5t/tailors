@@ -2,15 +2,15 @@ using NodaTime;
 
 namespace Tweed.Domain.Model;
 
-public class AppUserFollows
+public class UserFollows
 {
-    public string? AppUserId { get; set; }
+    public string? UserId { get; set; }
     public List<LeaderReference> Follows { get; set; } = new();
 
-    public static string BuildId(string appUserId)
+    public static string BuildId(string userId)
     {
-        ArgumentNullException.ThrowIfNull(appUserId);
-        return $"{appUserId}/Follows";
+        ArgumentNullException.ThrowIfNull(userId);
+        return $"{userId}/Follows";
     }
 
     public class LeaderReference

@@ -7,26 +7,26 @@ public interface IFollowsService
 {
     Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
-    Task<List<AppUserFollows.LeaderReference>> GetFollows(string userId);
+    Task<List<UserFollows.LeaderReference>> GetFollows(string userId);
 }
 
 public class FollowsService : IFollowsService
 {
-    private readonly IAppUserFollowsRepository _appUserFollowsRepository;
+    private readonly IUserFollowsRepository _userFollowsRepository;
 
-    public FollowsService(IAppUserFollowsRepository appUserFollowsRepository)
+    public FollowsService(IUserFollowsRepository userFollowsRepository)
     {
-        _appUserFollowsRepository = appUserFollowsRepository;
+        _userFollowsRepository = userFollowsRepository;
     }
 
     public async Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt)
     {
-        var appUserFollows = await GetOrCreateAppUserFollower(followerId);
+        var userFollows= await GetOrCreateUserFollower(followerId);
 
-        if (appUserFollows.Follows.Any(f => f.LeaderId == leaderId))
+        if (userFollows.Follows.Any(f => f.LeaderId == leaderId))
             return;
 
-        appUserFollows.Follows.Add(new AppUserFollows.LeaderReference
+        userFollows.Follows.Add(new UserFollows.LeaderReference
         {
             LeaderId = leaderId,
             CreatedAt = createdAt
@@ -35,29 +35,29 @@ public class FollowsService : IFollowsService
 
     public async Task RemoveFollower(string leaderId, string followerId)
     {
-        var follower = await GetOrCreateAppUserFollower(followerId);
+        var follower = await GetOrCreateUserFollower(followerId);
         follower.Follows.RemoveAll(f => f.LeaderId == leaderId);
     }
 
-    public async Task<List<AppUserFollows.LeaderReference>> GetFollows(string followerId)
+    public async Task<List<UserFollows.LeaderReference>> GetFollows(string followerId)
     {
-        var follower = await GetOrCreateAppUserFollower(followerId);
+        var follower = await GetOrCreateUserFollower(followerId);
         return follower.Follows;
     }
 
-    private async Task<AppUserFollows> GetOrCreateAppUserFollower(string userId)
+    private async Task<UserFollows> GetOrCreateUserFollower(string userId)
     {
-        var appUserFollowsId = AppUserFollows.BuildId(userId);
-        var appUserFollows = await _appUserFollowsRepository.GetById(appUserFollowsId);
-        if (appUserFollows is null)
+        var userFollowsId = UserFollows.BuildId(userId);
+        var userFollows = await _userFollowsRepository.GetById(userFollowsId);
+        if (userFollows is null)
         {
-            appUserFollows = new AppUserFollows
+            userFollows = new UserFollows
             {
-                AppUserId = userId
+                UserId = userId
             };
-            await _appUserFollowsRepository.Create(appUserFollows);
+            await _userFollowsRepository.Create(userFollows);
         }
 
-        return appUserFollows;
+        return userFollows;
     }
 }

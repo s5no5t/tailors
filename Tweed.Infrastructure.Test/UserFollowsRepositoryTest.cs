@@ -6,11 +6,11 @@ using Xunit;
 namespace Tweed.Infrastructure.Test;
 
 [Collection("RavenDB")]
-public class AppUserFollowsRepositoryTest
+public class UserFollowsRepositoryTest
 {
     private readonly IDocumentStore _store;
 
-    public AppUserFollowsRepositoryTest(RavenTestDbFixture ravenDb)
+    public UserFollowsRepositoryTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -24,22 +24,22 @@ public class AppUserFollowsRepositoryTest
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        AppUser leader = new()
+        User leader = new()
         {
             Id = "leaderId"
         };
         await session.StoreAsync(leader);
         for (var i = 0; i < givenFollowerCount; i++)
         {
-            AppUser follower = new()
+            User follower = new()
             {
                 Id = $"follower/${i}"
             };
             await session.StoreAsync(follower);
-            AppUserFollows appUserFollows = new()
+            UserFollows userFollows = new()
             {
-                AppUserId = follower.Id,
-                Follows = new List<AppUserFollows.LeaderReference>
+                UserId = follower.Id,
+                Follows = new List<UserFollows.LeaderReference>
                 {
                     new()
                     {
@@ -47,11 +47,11 @@ public class AppUserFollowsRepositoryTest
                     }
                 }
             };
-            await session.StoreAsync(appUserFollows);
+            await session.StoreAsync(userFollows);
         }
 
         await session.SaveChangesAsync();
-        AppUserFollowsRepository repository = new(session);
+        UserFollowsRepository repository = new(session);
 
         var followerCount = await repository.GetFollowerCount("leaderId");
 

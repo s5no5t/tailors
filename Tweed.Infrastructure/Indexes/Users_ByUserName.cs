@@ -3,9 +3,9 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Infrastructure.Indexes;
 
-public class AppUsers_ByUserName : AbstractIndexCreationTask<AppUser>
+public class Users_ByUserName : AbstractIndexCreationTask<User>
 {
-    public AppUsers_ByUserName()
+    public Users_ByUserName()
     {
         Map = users => from user in users
                        select new

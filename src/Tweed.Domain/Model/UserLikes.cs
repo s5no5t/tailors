@@ -2,16 +2,16 @@ using NodaTime;
 
 namespace Tweed.Domain.Model;
 
-public class AppUserLikes
+public class UserLikes
 {
-    public string? AppUserId { get; set; }
+    public string? UserId { get; set; }
 
     public List<TweedLike> Likes { get; set; } = new();
 
-    public static string BuildId(string appUserId)
+    public static string BuildId(string userId)
     {
-        ArgumentNullException.ThrowIfNull(appUserId);
-        return $"{appUserId}/Likes";
+        ArgumentNullException.ThrowIfNull(userId);
+        return $"{userId}/Likes";
     }
 
     public class TweedLike
