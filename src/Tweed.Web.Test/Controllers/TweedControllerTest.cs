@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
-using Tweed.User;
 using Tweed.Like.Domain;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
@@ -57,9 +56,7 @@ public class TweedControllerTest
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
             .ReturnsAsync(Result.Ok(new List<Thread.Domain.Tweed>()));
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
-            _userManagerMock.Object,
-            _notificationManagerMock.Object,
-            _tweedViewModelFactoryMock.Object)
+            _userManagerMock.Object, _tweedViewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
             Url = new Mock<IUrlHelper>().Object
@@ -128,7 +125,7 @@ public class TweedControllerTest
         {
             Text = "test"
         };
-        var result = await _tweedController.Create(viewModel, _createTweedUseCaseMock.Object);
+        var result = await _tweedController.Create(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         Assert.IsType<RedirectToActionResult>(result);
     }
@@ -140,7 +137,7 @@ public class TweedControllerTest
         {
             Text = "test"
         };
-        await _tweedController.Create(viewModel, _createTweedUseCaseMock.Object);
+        await _tweedController.Create(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         _createTweedUseCaseMock.Verify(t =>
             t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>()));
@@ -154,7 +151,7 @@ public class TweedControllerTest
         {
             Text = "test"
         };
-        await _tweedController.Create(viewModel, _createTweedUseCaseMock.Object);
+        await _tweedController.Create(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         _notificationManagerMock.Verify(n => n.AppendSuccess("Tweed Posted"));
     }
@@ -172,7 +169,7 @@ public class TweedControllerTest
             Text = "test",
             ParentTweedId = "parentTweedId"
         };
-        var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object);
+        var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         Assert.IsType<RedirectToActionResult>(result);
     }
@@ -190,7 +187,7 @@ public class TweedControllerTest
             Text = "text",
             ParentTweedId = "parentTweedId"
         };
-        await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object);
+        await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         _createTweedUseCaseMock.Verify(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
@@ -210,7 +207,7 @@ public class TweedControllerTest
             Text = "test",
             ParentTweedId = "parentTweedId"
         };
-        await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object);
+        await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         _notificationManagerMock.Verify(n => n.AppendSuccess("Reply Posted"));
     }
@@ -222,7 +219,7 @@ public class TweedControllerTest
         {
             Text = "test"
         };
-        var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object);
+        var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         Assert.IsType<BadRequestResult>(result);
     }
@@ -235,7 +232,7 @@ public class TweedControllerTest
             Text = "test",
             ParentTweedId = "nonExistingTweed"
         };
-        var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object);
+        var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object, _notificationManagerMock.Object);
 
         Assert.IsType<BadRequestResult>(result);
     }
