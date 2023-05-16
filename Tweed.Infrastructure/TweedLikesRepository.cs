@@ -13,14 +13,14 @@ public class TweedLikesRepository : ITweedLikesRepository
         _session = session;
     }
 
-    public async Task<AppUserLikes?> GetById(string appUserLikesId)
+    public async Task<UserLikes?> GetById(string userLikesId)
     {
-        return await _session.LoadAsync<AppUserLikes>(appUserLikesId);
+        return await _session.LoadAsync<UserLikes>(userLikesId);
     }
 
-    public async Task Create(AppUserLikes appUserLikes)
+    public async Task Create(UserLikes userLikes)
     {
-        await _session.StoreAsync(appUserLikes);
+        await _session.StoreAsync(userLikes);
     }
 
     public async Task<long> GetLikesCounter(string tweedId)

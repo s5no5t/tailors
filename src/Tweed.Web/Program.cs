@@ -28,12 +28,12 @@ builder.Services.AddRavenDbAsyncSession();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services
-    .AddIdentity<AppUser, IdentityRole>(options =>
+    .AddIdentity<User, IdentityRole>(options =>
     {
         options.User.AllowedUserNameCharacters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     })
-    .AddRavenDbIdentityStores<AppUser,
+    .AddRavenDbIdentityStores<User,
         IdentityRole>(
         _ => // empty options is a workaround for an exception in case this param is null
         {
@@ -46,8 +46,8 @@ builder.Services.ConfigureApplicationCookie(
 builder.Services.Scan(scan =>
 {
     scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
-    scan.FromAssembliesOf(typeof(AppUserRepository)).AddClasses().AsMatchingInterface();
-    scan.FromAssembliesOf(typeof(AppUser)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(UserRepository)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(User)).AddClasses().AsMatchingInterface();
 });
 
 builder.Services.Configure<IdentityOptions>(options =>

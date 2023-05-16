@@ -14,12 +14,12 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class LoginWith2faModel : PageModel
 {
     private readonly ILogger<LoginWith2faModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
     public LoginWith2faModel(
-        SignInManager<AppUser> signInManager,
-        UserManager<AppUser> userManager,
+        SignInManager<User> signInManager,
+        UserManager<User> userManager,
         ILogger<LoginWith2faModel> logger)
     {
         _signInManager = signInManager;

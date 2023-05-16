@@ -20,7 +20,7 @@ public class FeedServiceTest
     public FeedServiceTest()
     {
         _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
-            .ReturnsAsync(new List<AppUserFollows.LeaderReference>());
+            .ReturnsAsync(new List<UserFollows.LeaderReference>());
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _tweedRepositoryMock
@@ -53,7 +53,7 @@ public class FeedServiceTest
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
     {
-        var followedUser = new AppUser();
+        var followedUser = new User();
 
         Domain.Model.Tweed followedUserTweed = new()
         {

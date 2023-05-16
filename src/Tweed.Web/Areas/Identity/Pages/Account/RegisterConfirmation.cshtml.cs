@@ -17,9 +17,9 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class RegisterConfirmationModel : PageModel
 {
     private readonly IEmailSender _sender;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<User> _userManager;
 
-    public RegisterConfirmationModel(UserManager<AppUser> userManager, IEmailSender sender)
+    public RegisterConfirmationModel(UserManager<User> userManager, IEmailSender sender)
     {
         _userManager = userManager;
         _sender = sender;

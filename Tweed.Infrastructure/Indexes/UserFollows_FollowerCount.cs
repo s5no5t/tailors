@@ -4,12 +4,12 @@ using Tweed.Domain.Model;
 namespace Tweed.Infrastructure.Indexes;
 
 public class
-    AppUserFollows_FollowerCount : AbstractIndexCreationTask<AppUserFollows, AppUserFollows_FollowerCount.Result>
+    UserFollows_FollowerCount : AbstractIndexCreationTask<UserFollows, UserFollows_FollowerCount.Result>
 {
-    public AppUserFollows_FollowerCount()
+    public UserFollows_FollowerCount()
     {
-        Map = appUsers => from appUser in appUsers
-            from follow in appUser.Follows
+        Map = users => from user in users
+            from follow in user.Follows
             select new
             {
                 UserId = follow.LeaderId,

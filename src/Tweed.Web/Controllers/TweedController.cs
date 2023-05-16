@@ -19,11 +19,11 @@ public class TweedController : Controller
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedService _tweedService;
     private readonly IThreadService _threadService;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IViewModelFactory _viewModelFactory;
 
     public TweedController(ITweedService tweedService, ITweedRepository tweedRepository,
-        UserManager<AppUser> userManager,
+        UserManager<User> userManager,
         INotificationManager notificationManager, ILikesService likesService,
         IThreadService threadService,
         IViewModelFactory viewModelFactory)

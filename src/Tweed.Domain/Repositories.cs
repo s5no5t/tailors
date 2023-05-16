@@ -2,22 +2,22 @@ using Tweed.Domain.Model;
 
 namespace Tweed.Domain;
 
-public interface IAppUserRepository
+public interface IUserRepository
 {
-    Task<List<AppUser>> Search(string term);
+    Task<List<User>> Search(string term);
 }
 
-public interface IAppUserFollowsRepository
+public interface IUserFollowsRepository
 {
-    Task<AppUserFollows?> GetById(string appUserFollowsId);
-    Task Create(AppUserFollows appUserFollows);
+    Task<UserFollows?> GetById(string userFollowsId);
+    Task Create(UserFollows userFollows);
     Task<int> GetFollowerCount(string userId);
 }
 
 public interface ITweedLikesRepository
 {
-    Task<AppUserLikes?> GetById(string appUserLikesId);
-    Task Create(AppUserLikes appUserLikes);
+    Task<UserLikes?> GetById(string userLikesId);
+    Task Create(UserLikes userLikes);
     Task<long> GetLikesCounter(string tweedId);
     void IncreaseLikesCounter(string tweedId);
     void DecreaseLikesCounter(string tweedId);

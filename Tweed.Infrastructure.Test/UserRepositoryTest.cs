@@ -6,25 +6,25 @@ using Xunit;
 namespace Tweed.Infrastructure.Test;
 
 [Collection("RavenDB")]
-public class AppUserRepositoryTest
+public class UserRepositoryTest
 {
     private readonly IDocumentStore _store;
 
-    public AppUserRepositoryTest(RavenTestDbFixture ravenDb)
+    public UserRepositoryTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
 
     [Fact]
-    public async Task SearchAppUsers_ShouldReturnEmptyList_WhenNoResults()
+    public async Task SearchUsers_ShouldReturnEmptyList_WhenNoResults()
     {
         using var session = _store.OpenAsyncSession();
-        await session.StoreAsync(new AppUser
+        await session.StoreAsync(new User
         {
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserRepository repository = new(session);
+        UserRepository repository = new(session);
 
         var results = await repository.Search("noresults");
 
@@ -32,16 +32,16 @@ public class AppUserRepositoryTest
     }
 
     [Fact]
-    public async Task SearchAppUsers_ShouldFindMatchingAppUser()
+    public async Task SearchUsers_ShouldFindMatchingUser()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        await session.StoreAsync(new AppUser
+        await session.StoreAsync(new User
         {
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserRepository repository = new(session);
+        UserRepository repository = new(session);
 
         var results = await repository.Search("UserName");
 
@@ -49,16 +49,16 @@ public class AppUserRepositoryTest
     }
 
     [Fact]
-    public async Task SearchAppUsers_ShouldFindMatchingAppUser_WhenUserNamePrefixGiven()
+    public async Task SearchUsers_ShouldFindMatchingUser_WhenUserNamePrefixGiven()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        await session.StoreAsync(new AppUser
+        await session.StoreAsync(new User
         {
             UserName = "UserName"
         });
         await session.SaveChangesAsync();
-        AppUserRepository repository = new(session);
+        UserRepository repository = new(session);
 
         var results = await repository.Search("Use");
 
@@ -66,20 +66,20 @@ public class AppUserRepositoryTest
     }
 
     [Fact]
-    public async Task SearchAppUsers_ShouldReturn20Users()
+    public async Task SearchUsers_ShouldReturn20Users()
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 21; i++)
         {
-            await session.StoreAsync(new AppUser
+            await session.StoreAsync(new User
             {
                 UserName = $"User-{i}"
             });
             await session.SaveChangesAsync();
         }
 
-        AppUserRepository repository = new(session);
+        UserRepository repository = new(session);
 
         var results = await repository.Search("User");
 

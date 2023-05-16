@@ -18,16 +18,16 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<AppUser> _userEmailStore;
+    private readonly IUserEmailStore<User> _userEmailStore;
     private readonly ILogger<RegisterModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IUserStore<AppUser> _userStore;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly IUserStore<User> _userStore;
 
     public RegisterModel(
-        UserManager<AppUser> userManager,
-        IUserStore<AppUser> userStore,
-        SignInManager<AppUser> signInManager,
+        UserManager<User> userManager,
+        IUserStore<User> userStore,
+        SignInManager<User> signInManager,
         ILogger<RegisterModel> logger,
         IEmailSender emailSender)
     {
@@ -112,11 +112,11 @@ public class RegisterModel : PageModel
         return Page();
     }
 
-    private AppUser CreateUser()
+    private User CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<AppUser>();
+            return Activator.CreateInstance<User>();
         }
         catch
         {
@@ -127,12 +127,12 @@ public class RegisterModel : PageModel
         }
     }
 
-    private IUserEmailStore<AppUser> GetEmailStore()
+    private IUserEmailStore<User> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
             throw new NotSupportedException(
                 "The default UI requires a user store with email support.");
-        return (IUserEmailStore<AppUser>)_userStore;
+        return (IUserEmailStore<User>)_userStore;
     }
 
     /// <summary>

@@ -16,17 +16,17 @@ namespace Tweed.Web.Test.Controllers;
 public class SearchControllerTest
 {
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
-    private readonly Mock<IAppUserRepository> _appUserRepositoryMock = new();
+    private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly SearchController _searchController;
 
     public SearchControllerTest()
     {
-        _appUserRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<AppUser>());
+        _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
+            .ReturnsAsync(new List<User>());
         _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<Domain.Model.Tweed>());
         _searchController =
-            new SearchController(_tweedRepositoryMock.Object, _appUserRepositoryMock.Object);
+            new SearchController(_tweedRepositoryMock.Object, _userRepositoryMock.Object);
     }
 
     [Fact]
@@ -46,14 +46,14 @@ public class SearchControllerTest
     }
 
     [Fact]
-    public async Task Results_ShouldSearchAppUsers()
+    public async Task Results_ShouldSearchUsers()
     {
-        AppUser user = new()
+        User user = new()
         {
             Id = "userId"
         };
-        _appUserRepositoryMock.Setup(u => u.Search("userId"))
-            .ReturnsAsync(new List<AppUser> { user });
+        _userRepositoryMock.Setup(u => u.Search("userId"))
+            .ReturnsAsync(new List<User> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -67,13 +67,13 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldReturnUserName()
     {
-        AppUser user = new()
+        User user = new()
         {
             Id = "userId",
             UserName = "UserName"
         };
-        _appUserRepositoryMock.Setup(u => u.Search("userId"))
-            .ReturnsAsync(new List<AppUser> { user });
+        _userRepositoryMock.Setup(u => u.Search("userId"))
+            .ReturnsAsync(new List<User> { user });
 
         var result = await _searchController.Results("userId");
 

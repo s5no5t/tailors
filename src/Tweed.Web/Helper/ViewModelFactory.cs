@@ -17,10 +17,10 @@ public class ViewModelFactory : IViewModelFactory
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly ILikesService _likesService;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<User> _userManager;
 
     public ViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikesService likesService,
-        UserManager<AppUser> userManager,
+        UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
         _tweedLikesRepository = tweedLikesRepository;

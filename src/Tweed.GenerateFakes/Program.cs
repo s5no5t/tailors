@@ -13,7 +13,7 @@ var dataFakerSettings =
     config.GetRequiredSection("DataFakerSettings").Get<DataFakerSettings>();
 var dataFaker = new DataFaker(store, dataFakerSettings);
 
-var appUsers = await dataFaker.CreateFakeAppUsers();
-await dataFaker.CreateFakeFollows(appUsers);
-var tweeds = await dataFaker.CreateFakeTweeds(appUsers);
-await dataFaker.CreateFakeLikes(appUsers, tweeds);
+var users = await dataFaker.CreateFakeUsers();
+await dataFaker.CreateFakeFollows(users);
+var tweeds = await dataFaker.CreateFakeTweeds(users);
+await dataFaker.CreateFakeLikes(users, tweeds);

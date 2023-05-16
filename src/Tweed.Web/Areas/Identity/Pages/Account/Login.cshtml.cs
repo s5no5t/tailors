@@ -15,11 +15,11 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class LoginModel : PageModel
 {
     private readonly ILogger<LoginModel> _logger;
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
 
-    public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger,
-        UserManager<AppUser> userManager)
+    public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger,
+        UserManager<User> userManager)
     {
         _signInManager = signInManager;
         _logger = logger;
