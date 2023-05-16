@@ -15,7 +15,6 @@ namespace Tweed.Web.Controllers;
 [Authorize]
 public class TweedController : Controller
 {
-    private readonly ILikeTweedUseCase _likeTweedUseCase;
     private readonly INotificationManager _notificationManager;
     private readonly IThreadOfTweedsUseCase _threadOfTweedsUseCase;
     private readonly ITweedRepository _tweedRepository;
@@ -24,14 +23,13 @@ public class TweedController : Controller
 
     public TweedController(ITweedRepository tweedRepository,
         UserManager<AppUser> userManager,
-        INotificationManager notificationManager, ILikeTweedUseCase likeTweedUseCase,
+        INotificationManager notificationManager,
         IThreadOfTweedsUseCase threadOfTweedsUseCase,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;
         _notificationManager = notificationManager;
-        _likeTweedUseCase = likeTweedUseCase;
         _threadOfTweedsUseCase = threadOfTweedsUseCase;
         _tweedViewModelFactory = tweedViewModelFactory;
     }
@@ -105,7 +103,7 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Like(string tweedId)
+    public async Task<IActionResult> Like(string tweedId, [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed == null)
@@ -113,21 +111,21 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        await _likeTweedUseCase.AddLike(tweedId, currentUserId!, now);
+        await likeTweedUseCase.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _tweedViewModelFactory.Create(tweed);
         return PartialView("_Tweed", viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Unlike(string tweedId)
+    public async Task<IActionResult> Unlike(string tweedId, [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed == null)
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        await _likeTweedUseCase.RemoveLike(tweedId, currentUserId!);
+        await likeTweedUseCase.RemoveLike(tweedId, currentUserId!);
 
         var viewModel = await _tweedViewModelFactory.Create(tweed);
         return PartialView("_Tweed", viewModel);

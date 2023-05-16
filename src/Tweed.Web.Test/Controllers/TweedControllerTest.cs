@@ -59,7 +59,7 @@ public class TweedControllerTest
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
             _userManagerMock.Object,
             _notificationManagerMock.Object,
-            _likeTweedUseCaseMock.Object, _showThreadUseCaseMock.Object,
+            _showThreadUseCaseMock.Object,
             _tweedViewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
@@ -250,7 +250,7 @@ public class TweedControllerTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        await _tweedController.Like("123");
+        await _tweedController.Like("123", _likeTweedUseCaseMock.Object);
 
         _likeTweedUseCaseMock.Verify(u =>
             u.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
@@ -266,7 +266,7 @@ public class TweedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
-        var result = await _tweedController.Like("123");
+        var result = await _tweedController.Like("123", _likeTweedUseCaseMock.Object);
 
         Assert.IsType<PartialViewResult>(result);
     }
@@ -280,7 +280,7 @@ public class TweedControllerTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        await _tweedController.Unlike("123");
+        await _tweedController.Unlike("123", _likeTweedUseCaseMock.Object);
 
         _likeTweedUseCaseMock.Verify(u => u.RemoveLike("123", "currentUser"));
     }
@@ -295,7 +295,7 @@ public class TweedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
-        var result = await _tweedController.Unlike("123");
+        var result = await _tweedController.Unlike("123", _likeTweedUseCaseMock.Object);
 
         Assert.IsType<PartialViewResult>(result);
     }
