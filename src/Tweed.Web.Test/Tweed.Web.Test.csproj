@@ -23,8 +23,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tweed.Domain.Test\Tweed.Domain.Test.csproj" />
-      <ProjectReference Include="..\Tweed.Domain\Tweed.Domain.csproj" />
+      <ProjectReference Include="..\Tweed.User.Test\Tweed.User.Test.csproj" />
+      <ProjectReference Include="..\Tweed.User\Tweed.User.csproj" />
       <ProjectReference Include="..\Tweed.Web\Tweed.Web.csproj" />
     </ItemGroup>
 

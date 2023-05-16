@@ -1,8 +1,8 @@
 using Bogus;
 using Raven.Client.Documents;
-using Tweed.Domain.Model;
 using Tweed.Like.Domain;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
+using Tweed.User.Domain;
 
 namespace Tweed.GenerateFakes;
 
@@ -17,11 +17,11 @@ internal class DataFaker
         _settings = settings;
     }
 
-    internal async Task<List<User>> CreateFakeUsers()
+    internal async Task<List<User.Domain.AppUser>> CreateFakeUsers()
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var userFaker = new Faker<User>()
+        var userFaker = new Faker<AppUser>()
             .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName())
             .RuleFor(u => u.Email, (f, _) => f.Internet.ExampleEmail());
 
@@ -33,7 +33,7 @@ internal class DataFaker
         return users;
     }
 
-    internal async Task CreateFakeFollows(List<User> users)
+    internal async Task CreateFakeFollows(List<AppUser> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
@@ -54,7 +54,7 @@ internal class DataFaker
         Console.WriteLine("{0} UserFollows created", users.Count);
     }
 
-    internal async Task<List<TheTweed>> CreateFakeTweeds(List<User> users)
+    internal async Task<List<Thread.Domain.Tweed>> CreateFakeTweeds(List<AppUser> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
@@ -64,7 +64,7 @@ internal class DataFaker
         var threads = threadFaker.Generate(numThreads);
         foreach (var thread in threads) await bulkInsert.StoreAsync(thread);
 
-        var tweedFaker = new Faker<TheTweed>()
+        var tweedFaker = new Faker<Thread.Domain.Tweed>()
             .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
             .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
             .RuleFor(t => t.AuthorId, f => f.PickRandom(users).Id)
@@ -78,7 +78,7 @@ internal class DataFaker
         return tweeds;
     }
 
-    internal async Task CreateFakeLikes(List<User> users, List<TheTweed> tweeds)
+    internal async Task CreateFakeLikes(List<AppUser> users, List<Thread.Domain.Tweed> tweeds)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 

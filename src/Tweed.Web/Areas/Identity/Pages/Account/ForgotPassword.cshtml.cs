@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Tweed.Domain.Model;
+using Tweed.User.Domain;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account;
 
 public class ForgotPasswordModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<AppUser> _userManager;
 
-    public ForgotPasswordModel(UserManager<User> userManager, IEmailSender emailSender)
+    public ForgotPasswordModel(UserManager<AppUser> userManager, IEmailSender emailSender)
     {
         _userManager = userManager;
         _emailSender = emailSender;

@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
-using Tweed.Domain;
-using Tweed.Domain.Model;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
+using Tweed.User;
+using Tweed.User.Domain;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -19,7 +19,7 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly User _currentUser = new()
+    private readonly AppUser _currentUser = new()
     {
         Id = "currentUser"
     };
@@ -28,19 +28,19 @@ public class ProfileControllerTest
 
     private readonly ProfileController _profileController;
 
-    private readonly User _profileUser = new()
+    private readonly AppUser _profileUser = new()
     {
         Id = "user"
     };
 
     private readonly Mock<ITweedRepository> _tweedRepositoryMock;
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
-    private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<UserManager<AppUser>> _userManagerMock;
     private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     public ProfileControllerTest()
     {
-        _userManagerMock = UserManagerMockHelper.MockUserManager<User>();
+        _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
         _userManagerMock.Setup(u =>
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
@@ -53,7 +53,7 @@ public class ProfileControllerTest
 
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
-            .ReturnsAsync(new List<TheTweed>());
+            .ReturnsAsync(new List<Thread.Domain.Tweed>());
 
         _profileController = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,
@@ -82,7 +82,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldReturnNotFound_WhenUserIdDoesntExist()
     {
-        _userManagerMock.Setup(u => u.FindByIdAsync("unknownUser")).ReturnsAsync((User)null!);
+        _userManagerMock.Setup(u => u.FindByIdAsync("unknownUser")).ReturnsAsync((AppUser)null!);
 
         var result = await _profileController.Index("unknownUser");
 

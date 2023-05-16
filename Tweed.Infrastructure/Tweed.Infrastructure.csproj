@@ -12,7 +12,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Tweed.Domain\Tweed.Domain.csproj" />
+      <ProjectReference Include="..\src\Tweed.User\Tweed.User.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Setup\" />
     </ItemGroup>
 
 </Project>

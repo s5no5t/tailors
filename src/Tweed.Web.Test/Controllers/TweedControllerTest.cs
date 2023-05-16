@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NodaTime;
-using Tweed.Domain;
-using Tweed.Domain.Model;
+using Tweed.User;
 using Tweed.Like.Domain;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
+using Tweed.User.Domain;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
@@ -34,8 +34,8 @@ public class TweedControllerTest
 
     private readonly Mock<ITweedViewModelFactory> _tweedViewModelFactoryMock = new();
 
-    private readonly Mock<UserManager<User>> _userManagerMock =
-        UserManagerMockHelper.MockUserManager<User>();
+    private readonly Mock<UserManager<AppUser>> _userManagerMock =
+        UserManagerMockHelper.MockUserManager<AppUser>();
 
     public TweedControllerTest()
     {
@@ -43,19 +43,19 @@ public class TweedControllerTest
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<ZonedDateTime>()))
-            .ReturnsAsync(new TheTweed
+            .ReturnsAsync(new Thread.Domain.Tweed
             {
                 Id = "tweedId"
             });
         _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<ZonedDateTime>(), It.IsAny<string>())).ReturnsAsync(new TheTweed
+            It.IsAny<ZonedDateTime>(), It.IsAny<string>())).ReturnsAsync(new Thread.Domain.Tweed
         {
             Id = "tweedId"
         });
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
-            .ReturnsAsync(Result.Ok(new List<TheTweed>()));
+            .ReturnsAsync(Result.Ok(new List<Thread.Domain.Tweed>()));
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
             _userManagerMock.Object,
             _notificationManagerMock.Object,
@@ -88,11 +88,11 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweeds()
     {
-        var rootTweed = new TheTweed
+        var rootTweed = new Thread.Domain.Tweed
         {
             Id = "tweedId"
         };
-        var tweeds = new List<TheTweed>
+        var tweeds = new List<Thread.Domain.Tweed>
         {
             rootTweed
         };
@@ -164,9 +164,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldReturnRedirect()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new TheTweed());
+            .ReturnsAsync(new Thread.Domain.Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new TheTweed());
+            .ReturnsAsync(new Thread.Domain.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -182,9 +182,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSaveReplyTweed()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new TheTweed());
+            .ReturnsAsync(new Thread.Domain.Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new TheTweed());
+            .ReturnsAsync(new Thread.Domain.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -202,9 +202,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new TheTweed());
+            .ReturnsAsync(new Thread.Domain.Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new TheTweed());
+            .ReturnsAsync(new Thread.Domain.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -244,11 +244,11 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        TheTweed theTweed = new()
+        Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
-        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(theTweed);
+        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
         await _tweedController.Like("123");
 
@@ -259,12 +259,12 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        TheTweed theTweed = new()
+        Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
-        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(theTweed);
-        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new User());
+        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _tweedController.Like("123");
 
@@ -274,11 +274,11 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        TheTweed theTweed = new()
+        Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
-        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(theTweed);
+        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
         await _tweedController.Unlike("123");
 
@@ -288,12 +288,12 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        TheTweed theTweed = new()
+        Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
-        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(theTweed);
-        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new User());
+        _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
+        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _tweedController.Unlike("123");
 
