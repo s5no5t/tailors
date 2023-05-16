@@ -7,19 +7,19 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tweed.Domain.Model;
+using Tweed.User.Domain;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account;
 
 public class LoginWith2faModel : PageModel
 {
     private readonly ILogger<LoginWith2faModel> _logger;
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<AppUser> _userManager;
 
     public LoginWith2faModel(
-        SignInManager<User> signInManager,
-        UserManager<User> userManager,
+        SignInManager<AppUser> signInManager,
+        UserManager<AppUser> userManager,
         ILogger<LoginWith2faModel> logger)
     {
         _signInManager = signInManager;

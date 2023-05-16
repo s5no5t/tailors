@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Tweed.Domain.Model;
+using Tweed.User.Domain;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account;
 
@@ -17,9 +17,9 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class RegisterConfirmationModel : PageModel
 {
     private readonly IEmailSender _sender;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<AppUser> _userManager;
 
-    public RegisterConfirmationModel(UserManager<User> userManager, IEmailSender sender)
+    public RegisterConfirmationModel(UserManager<AppUser> userManager, IEmailSender sender)
     {
         _userManager = userManager;
         _sender = sender;

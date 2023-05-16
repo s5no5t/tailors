@@ -1,6 +1,6 @@
-@using Tweed.Domain.Model
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
+@using Tweed.User.Domain
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))

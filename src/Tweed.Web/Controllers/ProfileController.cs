@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using Tweed.Domain;
-using Tweed.Domain.Model;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
+using Tweed.User;
+using Tweed.User.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Profile;
 
@@ -17,10 +17,10 @@ public class ProfileController : Controller
     private readonly IFollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
     private readonly IUserFollowsRepository _userFollowsRepository;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<AppUser> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
-    public ProfileController(ITweedRepository tweedRepository, UserManager<User> userManager,
+    public ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
         ITweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
         IFollowUserUseCase followUserUseCase)
     {

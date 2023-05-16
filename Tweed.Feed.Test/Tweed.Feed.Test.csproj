@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Tweed.Feed\Tweed.Feed.csproj" />
-      <ProjectReference Include="..\Tweed.Infrastructure\Tweed.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>

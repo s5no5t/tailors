@@ -7,18 +7,18 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tweed.Domain.Model;
+using Tweed.User.Domain;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account.Manage;
 
 public class SetPasswordModel : PageModel
 {
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<AppUser> _userManager;
 
     public SetPasswordModel(
-        UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;

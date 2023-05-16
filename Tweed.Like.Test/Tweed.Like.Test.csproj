@@ -19,9 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tweed.Infrastructure\Tweed.Infrastructure.csproj" />
       <ProjectReference Include="..\Tweed.Like\Tweed.Like.csproj" />
-      <ProjectReference Include="..\Tweed.Tweed\Tweed.Tweed.csproj" />
+      <ProjectReference Include="..\Tweed.Thread\Tweed.Thread.csproj" />
     </ItemGroup>
 
 </Project>

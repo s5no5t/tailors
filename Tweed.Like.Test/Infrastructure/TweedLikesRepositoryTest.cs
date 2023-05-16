@@ -1,10 +1,8 @@
 using NodaTime;
 using Raven.Client.Documents;
-using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Like.Infrastructure;
 using Tweed.Like.Test.Helper;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
 using Xunit;
 
 namespace Tweed.Like.Test.Infrastructure;
@@ -26,7 +24,7 @@ public class TweedLikesRepositoryTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        TheTweed tweed = new()
+        Thread.Domain.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime

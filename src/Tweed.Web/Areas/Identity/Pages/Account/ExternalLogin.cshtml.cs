@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Tweed.Domain.Model;
+using Tweed.User.Domain;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account;
 
@@ -20,16 +20,16 @@ namespace Tweed.Web.Areas.Identity.Pages.Account;
 public class ExternalLoginModel : PageModel
 {
     private readonly IEmailSender _emailSender;
-    private readonly IUserEmailStore<User> _emailStore;
+    private readonly IUserEmailStore<AppUser> _emailStore;
     private readonly ILogger<ExternalLoginModel> _logger;
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
-    private readonly IUserStore<User> _userStore;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<AppUser> _userManager;
+    private readonly IUserStore<AppUser> _userStore;
 
     public ExternalLoginModel(
-        SignInManager<User> signInManager,
-        UserManager<User> userManager,
-        IUserStore<User> userStore,
+        SignInManager<AppUser> signInManager,
+        UserManager<AppUser> userManager,
+        IUserStore<AppUser> userStore,
         ILogger<ExternalLoginModel> logger,
         IEmailSender emailSender)
     {
@@ -183,11 +183,11 @@ public class ExternalLoginModel : PageModel
         return Page();
     }
 
-    private User CreateUser()
+    private AppUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<User>();
+            return Activator.CreateInstance<AppUser>();
         }
         catch
         {
@@ -198,12 +198,12 @@ public class ExternalLoginModel : PageModel
         }
     }
 
-    private IUserEmailStore<User> GetEmailStore()
+    private IUserEmailStore<AppUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
             throw new NotSupportedException(
                 "The default UI requires a user store with email support.");
-        return (IUserEmailStore<User>)_userStore;
+        return (IUserEmailStore<AppUser>)_userStore;
     }
 
     /// <summary>

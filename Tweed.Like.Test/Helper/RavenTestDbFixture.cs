@@ -1,7 +1,7 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
 using Tweed.Like.Infrastructure;
-using Tweed.Tweed.Infrastructure;
+using Tweed.Thread.Infrastructure;
 using Xunit;
 
 namespace Tweed.Like.Test.Helper;

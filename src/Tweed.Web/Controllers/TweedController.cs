@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using Tweed.Domain;
-using Tweed.Domain.Model;
+using Tweed.User;
 using Tweed.Like.Domain;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
+using Tweed.User.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Tweed;
 
@@ -20,10 +20,10 @@ public class TweedController : Controller
     private readonly IThreadOfTweedsUseCase _threadOfTweedsUseCase;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<AppUser> _userManager;
 
     public TweedController(ITweedRepository tweedRepository,
-        UserManager<User> userManager,
+        UserManager<AppUser> userManager,
         INotificationManager notificationManager, ILikeTweedUseCase likeTweedUseCase,
         IThreadOfTweedsUseCase threadOfTweedsUseCase,
         ITweedViewModelFactory tweedViewModelFactory)

@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Domain;
-using Tweed.Domain.Model;
-using Tweed.Tweed.Domain;
+using Tweed.Thread.Domain;
+using Tweed.User;
+using Tweed.User.Domain;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;
 using Xunit;
@@ -22,9 +22,9 @@ public class SearchControllerTest
     public SearchControllerTest()
     {
         _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<User>());
+            .ReturnsAsync(new List<AppUser>());
         _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<TheTweed>());
+            .ReturnsAsync(new List<Thread.Domain.Tweed>());
         _searchController =
             new SearchController(_tweedRepositoryMock.Object, _userRepositoryMock.Object);
     }
@@ -48,12 +48,12 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchUsers()
     {
-        User user = new()
+        AppUser user = new()
         {
             Id = "userId"
         };
         _userRepositoryMock.Setup(u => u.Search("userId"))
-            .ReturnsAsync(new List<User> { user });
+            .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -67,13 +67,13 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldReturnUserName()
     {
-        User user = new()
+        AppUser user = new()
         {
             Id = "userId",
             UserName = "UserName"
         };
         _userRepositoryMock.Setup(u => u.Search("userId"))
-            .ReturnsAsync(new List<User> { user });
+            .ReturnsAsync(new List<AppUser> { user });
 
         var result = await _searchController.Results("userId");
 
@@ -88,7 +88,7 @@ public class SearchControllerTest
     public async Task Results_ShouldSearchTweeds()
     {
         _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
-            new List<TheTweed>
+            new List<Thread.Domain.Tweed>
             {
                 new()
                 {

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Domain;
-using Tweed.Domain.Model;
+using Tweed.User;
 using Tweed.Feed.Domain;
+using Tweed.User.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Feed;
 using Tweed.Web.Views.Shared;
@@ -16,10 +16,10 @@ public class FeedController : Controller
 {
     private const int PageSize = 20;
     private readonly IShowFeedUseCase _showFeedUseCase;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<AppUser> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
-    public FeedController(IShowFeedUseCase showFeedUseCase, UserManager<User> userManager,
+    public FeedController(IShowFeedUseCase showFeedUseCase, UserManager<AppUser> userManager,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _showFeedUseCase = showFeedUseCase;

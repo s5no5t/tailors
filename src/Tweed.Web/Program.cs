@@ -2,14 +2,13 @@ using Microsoft.AspNetCore.Identity;
 using OpenTelemetry.Trace;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tweed.Domain.Model;
 using Tweed.Feed.Domain;
-using Tweed.Infrastructure;
-using Tweed.Infrastructure.Setup;
 using Tweed.Like.Domain;
 using Tweed.Like.Infrastructure;
-using Tweed.Tweed.Domain;
-using Tweed.Tweed.Infrastructure;
+using Tweed.Thread.Domain;
+using Tweed.Thread.Infrastructure;
+using Tweed.User.Domain;
+using Tweed.User.Infrastructure;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
@@ -33,7 +32,7 @@ builder.Services.AddRavenDbDocStore(options =>
     options.AfterInitializeDocStore = store =>
     {
         store.EnsureDatabaseExists();
-        store.DeployIndexes();
+        store.DeployUserIndexes();
         store.DeployTweedIndexes();
     };
 });
@@ -42,12 +41,12 @@ builder.Services.AddRavenDbAsyncSession();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services
-    .AddIdentity<User, IdentityRole>(options =>
+    .AddIdentity<AppUser, IdentityRole>(options =>
     {
         options.User.AllowedUserNameCharacters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     })
-    .AddRavenDbIdentityStores<User,
+    .AddRavenDbIdentityStores<AppUser,
         IdentityRole>(
         _ => // empty options is a workaround for an exception in case this param is null
         {
@@ -61,10 +60,10 @@ builder.Services.Scan(scan =>
 {
     scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(UserRepository)).AddClasses().AsMatchingInterface();
-    scan.FromAssembliesOf(typeof(User)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(AppUser)).AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(ShowFeedUseCase)).AddClasses().AsMatchingInterface();
     scan.FromAssembliesOf(typeof(UserLikes)).AddClasses().AsMatchingInterface();
-    scan.FromAssembliesOf(typeof(TheTweed)).AddClasses().AsMatchingInterface();
+    scan.FromAssembliesOf(typeof(Tweed.Thread.Domain.Tweed)).AddClasses().AsMatchingInterface();
 });
 
 builder.Services.Configure<IdentityOptions>(options =>
