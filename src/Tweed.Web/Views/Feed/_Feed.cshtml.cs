@@ -1,6 +1,6 @@
 using Tweed.Web.Views.Shared;
 
-namespace Tweed.Web.Views.Home;
+namespace Tweed.Web.Views.Feed;
 
 public class FeedViewModel
 {

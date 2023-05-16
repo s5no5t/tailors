@@ -98,7 +98,7 @@ public class TweedController : Controller
 
         _notificationManager.AppendSuccess("Tweed Posted");
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Feed");
     }
 
     [HttpPost]

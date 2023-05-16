@@ -5,20 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Web.Helper;
-using Tweed.Web.Views.Home;
+using Tweed.Web.Views.Feed;
 using Tweed.Web.Views.Shared;
 
 namespace Tweed.Web.Controllers;
 
 [Authorize]
-public class HomeController : Controller
+public class FeedController : Controller
 {
     private const int PageSize = 20;
     private readonly IShowFeedUseCase _showFeedUseCase;
     private readonly UserManager<User> _userManager;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
-    public HomeController(IShowFeedUseCase showFeedUseCase, UserManager<User> userManager,
+    public FeedController(IShowFeedUseCase showFeedUseCase, UserManager<User> userManager,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _showFeedUseCase = showFeedUseCase;
