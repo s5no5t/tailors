@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Domain;
 using Tweed.Domain.Model;
-using Tweed.Infrastructure;
 using Tweed.Web.Controllers;
 using Tweed.Web.Views.Search;
 using Xunit;
@@ -15,16 +14,16 @@ namespace Tweed.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
+    private readonly SearchController _searchController;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
-    private readonly SearchController _searchController;
 
     public SearchControllerTest()
     {
         _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<User>());
         _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<Domain.Model.Tweed>());
+            .ReturnsAsync(new List<TheTweed>());
         _searchController =
             new SearchController(_tweedRepositoryMock.Object, _userRepositoryMock.Object);
     }
@@ -88,7 +87,7 @@ public class SearchControllerTest
     public async Task Results_ShouldSearchTweeds()
     {
         _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
-            new List<Domain.Model.Tweed>
+            new List<TheTweed>
             {
                 new()
                 {

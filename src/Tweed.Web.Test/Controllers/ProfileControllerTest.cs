@@ -18,8 +18,6 @@ namespace Tweed.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
-
     private readonly User _currentUser = new()
     {
         Id = "currentUser"
@@ -35,6 +33,7 @@ public class ProfileControllerTest
     };
 
     private readonly Mock<ITweedRepository> _tweedRepositoryMock;
+    private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly Mock<UserManager<User>> _userManagerMock;
     private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
@@ -53,7 +52,7 @@ public class ProfileControllerTest
 
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
-            .ReturnsAsync(new List<Domain.Model.Tweed>());
+            .ReturnsAsync(new List<TheTweed>());
 
         _profileController = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,

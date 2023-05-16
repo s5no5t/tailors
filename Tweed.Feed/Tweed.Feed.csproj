@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\src\Tweed.Domain\Tweed.Domain.csproj" />
       <ProjectReference Include="..\Tweed.Infrastructure\Tweed.Infrastructure.csproj" />
+      <ProjectReference Include="..\Tweed.Tweed\Tweed.Tweed.csproj" />
     </ItemGroup>
 
     <ItemGroup>

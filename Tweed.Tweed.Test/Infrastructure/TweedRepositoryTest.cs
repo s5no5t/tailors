@@ -1,5 +1,6 @@
 using NodaTime;
 using Raven.Client.Documents;
+using Tweed.Domain.Model;
 using Tweed.Infrastructure.Test.Helper;
 using Xunit;
 
@@ -22,18 +23,18 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Domain.Model.Tweed tweed = new()
+        TheTweed theTweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime
         };
-        await session.StoreAsync(tweed);
+        await session.StoreAsync(theTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweed2 = await repository.GetById(tweed.Id!);
+        var tweed2 = await repository.GetById(theTweed.Id!);
 
-        Assert.Equal(tweed.Id, tweed2?.Id);
+        Assert.Equal(theTweed.Id, tweed2?.Id);
     }
 
     [Fact]
@@ -52,12 +53,12 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Domain.Model.Tweed tweed = new()
+        TheTweed theTweed = new()
         {
             Text = "test",
             AuthorId = "user"
         };
-        await session.StoreAsync(tweed);
+        await session.StoreAsync(theTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
@@ -71,28 +72,28 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Domain.Model.Tweed olderTweed = new()
+        TheTweed olderTheTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedZonedDateTime,
             AuthorId = "user1"
         };
-        await session.StoreAsync(olderTweed);
+        await session.StoreAsync(olderTheTweed);
         var recent = FixedZonedDateTime.PlusHours(1);
-        Domain.Model.Tweed recentTweed = new()
+        TheTweed recentTheTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent,
             AuthorId = "user1"
         };
-        await session.StoreAsync(recentTweed);
+        await session.StoreAsync(recentTheTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
         var tweeds = await repository.GetAllByAuthorId("user1", 10);
 
-        Assert.Equal(recentTweed, tweeds[0]);
-        Assert.Equal(olderTweed, tweeds[1]);
+        Assert.Equal(recentTheTweed, tweeds[0]);
+        Assert.Equal(olderTheTweed, tweeds[1]);
     }
 
     [Fact]
@@ -102,13 +103,13 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Domain.Model.Tweed tweed = new()
+            TheTweed theTweed = new()
             {
                 Text = "test",
                 CreatedAt = FixedZonedDateTime,
                 AuthorId = "user1"
             };
-            await session.StoreAsync(tweed);
+            await session.StoreAsync(theTweed);
         }
 
         await session.SaveChangesAsync();
@@ -124,13 +125,13 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Domain.Model.Tweed tweed = new()
+        TheTweed theTweed = new()
         {
             Text = "test",
             CreatedAt = FixedZonedDateTime,
             AuthorId = "user2"
         };
-        await session.StoreAsync(tweed);
+        await session.StoreAsync(theTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
@@ -155,12 +156,12 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Domain.Model.Tweed tweed = new()
+        TheTweed theTweed = new()
         {
             Id = "tweedId",
             Text = "Here is a word included."
         };
-        await session.StoreAsync(tweed);
+        await session.StoreAsync(theTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 

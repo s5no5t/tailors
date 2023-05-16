@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Feed.Domain;
 using Tweed.Web.Controllers;
@@ -21,13 +20,14 @@ namespace Tweed.Web.Test.Controllers;
 public class FeedControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
+
+    private readonly FeedController _feedController;
     private readonly Mock<IShowFeedUseCase> _showFeedUseCaseMock = new();
-    private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     private readonly Mock<UserManager<User>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<User>();
 
-    private readonly FeedController _feedController;
+    private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     public FeedControllerTest()
     {
@@ -36,13 +36,13 @@ public class FeedControllerTest
             Id = "currentUser"
         };
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
-        var tweed = new Domain.Model.Tweed
+        var tweed = new TheTweed
         {
             Id = "tweedId",
             AuthorId = "author"
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
+            .ReturnsAsync(new List<TheTweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.Create(tweed))
             .ReturnsAsync(new TweedViewModel());
 
@@ -83,15 +83,15 @@ public class FeedControllerTest
     [Fact]
     public async Task Index_ShouldReturnTweeds()
     {
-        var tweed = new Domain.Model.Tweed
+        var tweed = new TheTweed
         {
             Id = "tweedId",
             AuthorId = "author"
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
-            .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
+            .ReturnsAsync(new List<TheTweed> { tweed });
         _viewModelFactoryMock
-            .Setup(v => v.Create(It.IsAny<List<Domain.Model.Tweed>>()))
+            .Setup(v => v.Create(It.IsAny<List<TheTweed>>()))
             .ReturnsAsync(new List<TweedViewModel>
             {
                 new()
@@ -129,15 +129,15 @@ public class FeedControllerTest
     [Fact]
     public async Task Feed_ShouldReturnTweeds()
     {
-        var tweed = new Domain.Model.Tweed
+        var tweed = new TheTweed
         {
             Id = "tweedId",
             AuthorId = "author"
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
-            .ReturnsAsync(new List<Domain.Model.Tweed> { tweed });
+            .ReturnsAsync(new List<TheTweed> { tweed });
         _viewModelFactoryMock
-            .Setup(v => v.Create(It.IsAny<List<Domain.Model.Tweed>>()))
+            .Setup(v => v.Create(It.IsAny<List<TheTweed>>()))
             .ReturnsAsync(new List<TweedViewModel>
             {
                 new()

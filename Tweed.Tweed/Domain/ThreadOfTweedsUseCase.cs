@@ -5,7 +5,7 @@ namespace Tweed.Domain;
 
 public interface IThreadOfTweedsUseCase
 {
-    Task<Result<List<Model.Tweed>>> GetThreadTweedsForTweed(string tweedId);
+    Task<Result<List<TheTweed>>> GetThreadTweedsForTweed(string tweedId);
 }
 
 public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
@@ -20,14 +20,14 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<Result<List<Model.Tweed>>> GetThreadTweedsForTweed(string tweedId)
+    public async Task<Result<List<TheTweed>>> GetThreadTweedsForTweed(string tweedId)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed is null)
             return Result.Fail($"Tweed {tweedId} not found");
 
         if (tweed.ThreadId is null)
-            return new List<Model.Tweed>();
+            return new List<TheTweed>();
 
         var thread = await _tweedThreadRepository.GetById(tweed.ThreadId!);
         if (thread is null)
@@ -53,7 +53,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         var thread = await _tweedThreadRepository.GetById(tweed.ThreadId);
         if (thread is null)
             return Result.Fail($"Thread {tweed.ThreadId} not found");
-        
+
         // This is a root Tweed
         if (tweed.ParentTweedId is null)
         {

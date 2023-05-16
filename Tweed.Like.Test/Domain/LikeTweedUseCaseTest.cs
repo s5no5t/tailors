@@ -1,6 +1,5 @@
 using Moq;
 using NodaTime;
-using Tweed.Domain;
 using Tweed.Domain.Model;
 using Tweed.Like.Domain;
 using Xunit;
@@ -38,7 +37,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        var tweed = new Tweed.Domain.Model.Tweed
+        var tweed = new TheTweed
         {
             Id = "tweedId"
         };

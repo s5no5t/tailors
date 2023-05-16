@@ -1,23 +1,24 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
-using Tweed.Like.Infrastructure;
+using Tweed.Infrastructure.Setup;
 using Tweed.Tweed.Infrastructure;
 using Xunit;
 
-namespace Tweed.Like.Test.Helper;
+namespace Tweed.Infrastructure.Test.Helper;
 
 public class RavenTestDbFixture : RavenTestDriver
 {
     public IDocumentStore CreateDocumentStore()
     {
         var store = GetDocumentStore();
+        store.DeployIndexes();
         store.DeployTweedIndexes();
         return store;
     }
 
     protected override void PreInitialize(IDocumentStore documentStore)
     {
-        documentStore.PreInitializeLikes();
+        documentStore.PreInitialize();
         documentStore.Conventions.ThrowIfQueryPageSizeIsNotSet = true;
     }
 }

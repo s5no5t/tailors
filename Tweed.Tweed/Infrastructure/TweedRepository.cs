@@ -2,6 +2,7 @@
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tweed.Domain;
+using Tweed.Domain.Model;
 using Tweed.Infrastructure.Indexes;
 
 namespace Tweed.Infrastructure;
@@ -15,42 +16,42 @@ public sealed class TweedRepository : ITweedRepository
         _session = session;
     }
 
-    public Task<Domain.Model.Tweed?> GetById(string id)
+    public Task<TheTweed?> GetById(string id)
     {
-        return _session.LoadAsync<Domain.Model.Tweed>(id)!;
+        return _session.LoadAsync<TheTweed>(id)!;
     }
 
-    public Task<Dictionary<string, Domain.Model.Tweed>> GetByIds(IEnumerable<string> ids)
+    public Task<Dictionary<string, TheTweed>> GetByIds(IEnumerable<string> ids)
     {
-        return _session.LoadAsync<Domain.Model.Tweed>(ids);
+        return _session.LoadAsync<TheTweed>(ids);
     }
 
-    public async Task Create(Domain.Model.Tweed tweed)
+    public async Task Create(TheTweed theTweed)
     {
-        await _session.StoreAsync(tweed);
+        await _session.StoreAsync(theTweed);
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetAllByAuthorId(string authorId, int count)
+    public async Task<List<TheTweed>> GetAllByAuthorId(string authorId, int count)
     {
-        return await _session.Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        return await _session.Query<TheTweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == authorId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(count)
             .Include(t => t.AuthorId).ToListAsync();
     }
 
-    public async Task<List<Domain.Model.Tweed>> Search(string term)
+    public async Task<List<TheTweed>> Search(string term)
     {
-        return await _session.Query<Domain.Model.Tweed, Tweeds_ByText>()
+        return await _session.Query<TheTweed, Tweeds_ByText>()
             .Search(t => t.Text, term)
             .Take(20).ToListAsync();
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetFollowerTweeds(List<string> followedUserIds,
+    public async Task<List<TheTweed>> GetFollowerTweeds(List<string> followedUserIds,
         int count)
     {
         var followerTweeds = await _session
-            .Query<Domain.Model.Tweed, Tweeds_ByAuthorIdAndCreatedAt>()
+            .Query<TheTweed, Tweeds_ByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(count)
@@ -59,9 +60,9 @@ public sealed class TweedRepository : ITweedRepository
         return followerTweeds;
     }
 
-    public async Task<List<Domain.Model.Tweed>> GetRecentTweeds(int count)
+    public async Task<List<TheTweed>> GetRecentTweeds(int count)
     {
-        return await _session.Query<Domain.Model.Tweed>()
+        return await _session.Query<TheTweed>()
             .OrderByDescending(t => t.CreatedAt)
             .Take(count)
             .Include(t => t.AuthorId)
