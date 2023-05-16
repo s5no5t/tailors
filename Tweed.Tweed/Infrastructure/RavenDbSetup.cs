@@ -1,5 +1,5 @@
 using Raven.Client.Documents;
-using Tweed.Infrastructure.Indexes;
+using Tweed.Tweed.Infrastructure.Indexes;
 
 namespace Tweed.Tweed.Infrastructure;
 

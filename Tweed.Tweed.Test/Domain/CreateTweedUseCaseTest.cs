@@ -1,9 +1,9 @@
 using Moq;
 using NodaTime;
-using Tweed.Domain.Model;
+using Tweed.Tweed.Domain;
 using Xunit;
 
-namespace Tweed.Domain.Test;
+namespace Tweed.Tweed.Test.Domain;
 
 public class CreateTweedUseCaseTest
 {

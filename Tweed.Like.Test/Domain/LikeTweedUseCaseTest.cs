@@ -2,6 +2,7 @@ using Moq;
 using NodaTime;
 using Tweed.Domain.Model;
 using Tweed.Like.Domain;
+using Tweed.Tweed.Domain;
 using Xunit;
 
 namespace Tweed.Like.Test.Domain;

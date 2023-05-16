@@ -1,11 +1,10 @@
 ﻿using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Tweed.Domain;
-using Tweed.Domain.Model;
-using Tweed.Infrastructure.Indexes;
+using Tweed.Tweed.Domain;
+using Tweed.Tweed.Infrastructure.Indexes;
 
-namespace Tweed.Infrastructure;
+namespace Tweed.Tweed.Infrastructure;
 
 public sealed class TweedRepository : ITweedRepository
 {

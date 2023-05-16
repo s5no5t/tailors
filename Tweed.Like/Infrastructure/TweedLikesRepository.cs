@@ -1,6 +1,7 @@
 using Raven.Client.Documents.Session;
 using Tweed.Domain.Model;
 using Tweed.Like.Domain;
+using Tweed.Tweed.Domain;
 
 namespace Tweed.Like.Infrastructure;
 

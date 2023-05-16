@@ -1,8 +1,7 @@
 using Raven.Client.Documents.Session;
-using Tweed.Domain;
-using Tweed.Domain.Model;
+using Tweed.Tweed.Domain;
 
-namespace Tweed.Infrastructure;
+namespace Tweed.Tweed.Infrastructure;
 
 public class TweedThreadRepository : ITweedThreadRepository
 {
