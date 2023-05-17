@@ -1,4 +1,3 @@
-using FluentResults.Extensions.FluentAssertions;
 using Moq;
 using Tweed.Thread.Domain;
 using Xunit;
@@ -80,7 +79,7 @@ public class ThreadOfTweedsUseCaseTest
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
 
         _tweedRepositoryMock.Setup(m =>
-                m.GetByIds(CollectionMatcher(new[] { "rootTweedId", "tweedId" })))
+                m.GetByIds(MoqExtensions.CollectionMatcher(new[] { "rootTweedId", "tweedId" })))
             .ReturnsAsync(
                 new Dictionary<string, Thread.Domain.Tweed>
                 {
@@ -93,13 +92,6 @@ public class ThreadOfTweedsUseCaseTest
         Assert.True(tweeds.IsT0);
         Assert.Equal("rootTweedId", tweeds.AsT0[0].Id);
         Assert.Equal("tweedId", tweeds.AsT0[1].Id);
-    }
-
-    public static IEnumerable<T> CollectionMatcher<T>(IEnumerable<T> expectation)
-    {
-        return Match.Create((IEnumerable<T> inputCollection) =>
-            !expectation.Except(inputCollection).Any() &&
-            !inputCollection.Except(expectation).Any());
     }
 
     [Fact]
@@ -147,7 +139,7 @@ public class ThreadOfTweedsUseCaseTest
         };
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
         _tweedRepositoryMock.Setup(m =>
-                m.GetByIds(CollectionMatcher(new[] { "rootTweedId", "parentTweedId", "tweedId" })))
+                m.GetByIds(MoqExtensions.CollectionMatcher(new[] { "rootTweedId", "parentTweedId", "tweedId" })))
             .ReturnsAsync(
                 new Dictionary<string, Thread.Domain.Tweed>
                 {
@@ -178,7 +170,7 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        result.Should().BeSuccess();
+        Assert.True(result.IsT0);
         Assert.Equal("tweedId", thread.Root.TweedId);
     }
 
@@ -204,7 +196,7 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        result.Should().BeSuccess();
+        Assert.True(result.IsT0);
         Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
     }
 
@@ -237,7 +229,7 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        result.Should().BeSuccess();
+        Assert.True(result.IsT0);
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
     }
 }

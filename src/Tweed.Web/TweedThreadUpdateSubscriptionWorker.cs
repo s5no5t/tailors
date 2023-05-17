@@ -1,3 +1,5 @@
+using OneOf;
+using OneOf.Types;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Subscriptions;
@@ -119,6 +121,12 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         ThreadOfTweedsUseCase threadOfTweedsUseCase = new(threadRepository, tweedRepository);
 
         var result = await threadOfTweedsUseCase.AddTweedToThread(tweed.Id!);
-        result.LogIfFailed();
+        result.Match<OneOf<Success, ReferenceNotFoundError>>(
+            success => success,
+            error =>
+            {
+                _logger.LogError(error.Message);
+                return error;
+            });
     }
 }
