@@ -16,4 +16,6 @@
     }
 
     ContainerDb(db, "Database", "RavenDB", "Stores Users, Tweeds, Threads, Likes, Follows")
+    
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
