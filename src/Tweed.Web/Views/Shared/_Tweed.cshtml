@@ -1,8 +1,13 @@
 @model Tweed.Web.Views.Shared.TweedViewModel
 
 <div class="border d-flex flex-column mt-2 p-2 tweed"
-     hx-get="@Url.Action("ShowThreadForTweed", "Tweed", new { tweedId = Model.Id })"
-     hx-target="body" hx-swap="outerHTML" hx-push-url="true">
+     @{
+         if (!Model.IsCurrentTweed)
+         {
+             <text>hx-get="@Url.Action("ShowThreadForTweed", "Tweed", new { tweedId = Model.Id })"
+                 hx-target="body" hx-swap="outerHTML" hx-push-url="true"</text>
+         }
+     }>
     <div>
         <a class="link-secondary fw-bold" asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId">@Model.Author</a>
         <small class="text-muted">@Model.CreatedAt</small>
@@ -17,7 +22,7 @@
     </div>
     @if (Model.LikedByCurrentUser)
     {
-        <button hx-post="@Url.Action("Unlike", "Tweed", new { tweedId = Model.Id })"
+        <button hx-post="@Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed })"
                 hx-target="closest .tweed"
                 hx-swap="outerHTML"
                 hx-sync="closest div:drop"
@@ -28,7 +33,7 @@
     }
     else
     {
-        <button hx-post="@Url.Action("Like", "Tweed", new { tweedId = Model.Id })"
+        <button hx-post="@Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed })"
                 hx-target="closest .tweed"
                 hx-swap="outerHTML"
                 hx-sync="closest div:drop"

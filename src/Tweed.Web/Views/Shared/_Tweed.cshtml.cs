@@ -9,4 +9,5 @@ public class TweedViewModel
     public string? Id { get; set; }
     public long? LikesCount { get; set; }
     public bool LikedByCurrentUser { get; set; }
+    public bool IsCurrentTweed { get; set; }
 }
