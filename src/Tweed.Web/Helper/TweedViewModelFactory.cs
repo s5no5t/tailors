@@ -2,7 +2,6 @@ using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Tweed.Like.Domain;
-using Tweed.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Views.Shared;
 
@@ -10,8 +9,10 @@ namespace Tweed.Web.Helper;
 
 public interface ITweedViewModelFactory
 {
-    Task<TweedViewModel> Create(Thread.Domain.Tweed tweed);
-    Task<List<TweedViewModel>> Create(List<Thread.Domain.Tweed> tweeds);
+    Task<TweedViewModel> Create(Thread.Domain.Tweed tweed, bool isCurrent = false);
+
+    Task<List<TweedViewModel>> Create(List<Thread.Domain.Tweed> tweeds,
+        string currentTweedId = "none");
 }
 
 public class TweedViewModelFactory : ITweedViewModelFactory
@@ -21,7 +22,8 @@ public class TweedViewModelFactory : ITweedViewModelFactory
     private readonly ITweedLikesRepository _tweedLikesRepository;
     private readonly UserManager<AppUser> _userManager;
 
-    public TweedViewModelFactory(ITweedLikesRepository tweedLikesRepository, ILikeTweedUseCase likeTweedUseCase,
+    public TweedViewModelFactory(ITweedLikesRepository tweedLikesRepository,
+        ILikeTweedUseCase likeTweedUseCase,
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
@@ -31,7 +33,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> Create(Thread.Domain.Tweed tweed)
+    public async Task<TweedViewModel> Create(Thread.Domain.Tweed tweed, bool isCurrent)
     {
         var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
             .Humanize(true, null, CultureInfo.InvariantCulture);
@@ -50,17 +52,19 @@ public class TweedViewModelFactory : ITweedViewModelFactory
             AuthorId = tweed.AuthorId,
             LikesCount = likesCount,
             LikedByCurrentUser = currentUserLikesTweed,
-            Author = author!.UserName
+            Author = author!.UserName,
+            IsCurrentTweed = isCurrent
         };
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Thread.Domain.Tweed> tweeds)
+    public async Task<List<TweedViewModel>> Create(List<Thread.Domain.Tweed> tweeds,
+        string currentTweedId)
     {
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in tweeds)
         {
-            var tweedViewModel = await Create(tweed);
+            var tweedViewModel = await Create(tweed, tweed.Id == currentTweedId);
             tweedViewModels.Add(tweedViewModel);
         }
 

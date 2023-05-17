@@ -94,7 +94,7 @@ public class TweedControllerTest
         };
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(rootTweed.Id)).ReturnsAsync(tweeds);
-        _tweedViewModelFactoryMock.Setup(v => v.Create(tweeds)).ReturnsAsync(
+        _tweedViewModelFactoryMock.Setup(v => v.Create(tweeds, It.IsAny<string>())).ReturnsAsync(
             new List<TweedViewModel>
             {
                 new()
@@ -265,7 +265,7 @@ public class TweedControllerTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        await _tweedController.Like("123", _likeTweedUseCaseMock.Object);
+        await _tweedController.Like("123", false, _likeTweedUseCaseMock.Object);
 
         _likeTweedUseCaseMock.Verify(u =>
             u.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
@@ -281,7 +281,7 @@ public class TweedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
-        var result = await _tweedController.Like("123", _likeTweedUseCaseMock.Object);
+        var result = await _tweedController.Like("123", false, _likeTweedUseCaseMock.Object);
 
         Assert.IsType<PartialViewResult>(result);
     }
@@ -295,7 +295,7 @@ public class TweedControllerTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        await _tweedController.Unlike("123", _likeTweedUseCaseMock.Object);
+        await _tweedController.Unlike("123", false, _likeTweedUseCaseMock.Object);
 
         _likeTweedUseCaseMock.Verify(u => u.RemoveLike("123", "currentUser"));
     }
@@ -310,7 +310,7 @@ public class TweedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
-        var result = await _tweedController.Unlike("123", _likeTweedUseCaseMock.Object);
+        var result = await _tweedController.Unlike("123", false, _likeTweedUseCaseMock.Object);
 
         Assert.IsType<PartialViewResult>(result);
     }

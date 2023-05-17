@@ -40,7 +40,7 @@ public class TweedController : Controller
             {
                 ShowThreadForTweedViewModel viewModel = new()
                 {
-                    Tweeds = await _tweedViewModelFactory.Create(tweeds),
+                    Tweeds = await _tweedViewModelFactory.Create(tweeds, decodedTweedId),
                     CreateReplyTweed = new CreateReplyTweedViewModel
                     {
                         ParentTweedId = decodedTweedId
@@ -99,7 +99,7 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Like(string tweedId,
+    public async Task<IActionResult> Like(string tweedId, bool isCurrent,
         [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
@@ -110,12 +110,12 @@ public class TweedController : Controller
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
         await likeTweedUseCase.AddLike(tweedId, currentUserId!, now);
 
-        var viewModel = await _tweedViewModelFactory.Create(tweed);
+        var viewModel = await _tweedViewModelFactory.Create(tweed, isCurrent);
         return PartialView("_Tweed", viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Unlike(string tweedId,
+    public async Task<IActionResult> Unlike(string tweedId, bool isCurrent,
         [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
@@ -125,7 +125,7 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         await likeTweedUseCase.RemoveLike(tweedId, currentUserId!);
 
-        var viewModel = await _tweedViewModelFactory.Create(tweed);
+        var viewModel = await _tweedViewModelFactory.Create(tweed, isCurrent);
         return PartialView("_Tweed", viewModel);
     }
 }

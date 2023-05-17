@@ -43,7 +43,7 @@ public class FeedControllerTest
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
-        _viewModelFactoryMock.Setup(v => v.Create(tweed))
+        _viewModelFactoryMock.Setup(v => v.Create(tweed, false))
             .ReturnsAsync(new TweedViewModel());
 
         _feedController = new FeedController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
@@ -91,7 +91,7 @@ public class FeedControllerTest
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
         _viewModelFactoryMock
-            .Setup(v => v.Create(It.IsAny<List<Thread.Domain.Tweed>>()))
+            .Setup(v => v.Create(It.IsAny<List<Thread.Domain.Tweed>>(), "none"))
             .ReturnsAsync(new List<TweedViewModel>
             {
                 new()
@@ -137,7 +137,7 @@ public class FeedControllerTest
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
         _viewModelFactoryMock
-            .Setup(v => v.Create(It.IsAny<List<Thread.Domain.Tweed>>()))
+            .Setup(v => v.Create(It.IsAny<List<Thread.Domain.Tweed>>(), It.IsAny<string>()))
             .ReturnsAsync(new List<TweedViewModel>
             {
                 new()

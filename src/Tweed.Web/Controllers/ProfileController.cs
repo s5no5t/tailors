@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 using Tweed.Thread.Domain;
-using Tweed.User;
 using Tweed.User.Domain;
 using Tweed.Web.Helper;
 using Tweed.Web.Views.Profile;
@@ -16,9 +15,9 @@ public class ProfileController : Controller
     private const int PageSize = 100;
     private readonly IFollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
+    private readonly ITweedViewModelFactory _tweedViewModelFactory;
     private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly UserManager<AppUser> _userManager;
-    private readonly ITweedViewModelFactory _tweedViewModelFactory;
 
     public ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
         ITweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
