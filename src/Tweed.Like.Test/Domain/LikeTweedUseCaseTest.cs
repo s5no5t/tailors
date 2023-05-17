@@ -26,7 +26,8 @@ public class LikeTweedUseCaseTest
         {
             UserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(userLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
+            .ReturnsAsync(userLikes);
 
         await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
 
@@ -60,11 +61,14 @@ public class LikeTweedUseCaseTest
                 }
             }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
+            .ReturnsAsync(userLikes);
 
         await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
 
         Assert.Single(userLikes.Likes);
+        _tweedLikesRepositoryMock.Verify(m => m.IncreaseLikesCounter(It.IsAny<string>()),
+            Times.Never);
     }
 
     [Fact]
@@ -81,7 +85,8 @@ public class LikeTweedUseCaseTest
                 }
             }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId/Likes")).ReturnsAsync(userLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
+            .ReturnsAsync(userLikes);
 
         await _sut.RemoveLike("tweedId", "userId");
 
@@ -93,9 +98,17 @@ public class LikeTweedUseCaseTest
     {
         var userLikes = new UserLikes
         {
-            UserId = "userId"
+            UserId = "userId",
+            Likes = new List<UserLikes.TweedLike>
+            {
+                new()
+                {
+                    TweedId = "tweedId"
+                }
+            }
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
+            .ReturnsAsync(userLikes);
 
         await _sut.RemoveLike("tweedId", "userId");
 
@@ -109,10 +122,13 @@ public class LikeTweedUseCaseTest
         {
             UserId = "userId"
         };
-        _tweedLikesRepositoryMock.Setup(m => m.GetById("userId")).ReturnsAsync(userLikes);
+        _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
+            .ReturnsAsync(userLikes);
 
         await _sut.RemoveLike("tweedId", "userId");
 
         Assert.Empty(userLikes.Likes);
+        _tweedLikesRepositoryMock.Verify(m => m.DecreaseLikesCounter(It.IsAny<string>()),
+            Times.Never);
     }
 }

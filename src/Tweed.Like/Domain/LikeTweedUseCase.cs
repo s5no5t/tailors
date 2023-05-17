@@ -36,9 +36,10 @@ public class LikeTweedUseCase : ILikeTweedUseCase
     public async Task RemoveLike(string tweedId, string userId)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
-        userLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
+        var removedCount = userLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
 
-        _tweedLikesRepository.DecreaseLikesCounter(tweedId);
+        if (removedCount > 0)
+            _tweedLikesRepository.DecreaseLikesCounter(tweedId);
     }
 
     public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
