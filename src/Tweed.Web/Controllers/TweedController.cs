@@ -47,7 +47,7 @@ public class TweedController : Controller
                     }
                 };
                 return View(viewModel);
-            }, 
+            },
             _ => Task.FromResult<ActionResult>(NotFound()));
     }
 
@@ -68,13 +68,13 @@ public class TweedController : Controller
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
 
-        var result = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
-        if (result.IsFailed)
-            throw new Exception("Error creating Tweed");
-
-        notificationManager.AppendSuccess("Tweed Posted");
-
-        return RedirectToAction("Index", "Feed");
+        var tweed = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
+        return tweed.Match<ActionResult>(
+            _ =>
+            {
+                notificationManager.AppendSuccess("Tweed Posted");
+                return RedirectToAction("Index", "Feed");
+            });
     }
 
     [HttpPost]
@@ -86,20 +86,21 @@ public class TweedController : Controller
 
         var currentUserId = _userManager.GetUserId(User);
         var now = SystemClock.Instance.GetCurrentInstant().InUtc();
-        var result = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now, viewModel.ParentTweedId);
-        if (result.HasError<ReferenceNotFoundError>())
-            return BadRequest();
-
-        if (result.IsFailed)
-            throw new Exception("Error creating Tweed");
-
-        notificationManager.AppendSuccess("Reply Posted");
-
-        return RedirectToAction("Index", "Feed");
+        var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+            viewModel.ParentTweedId);
+        return tweed.Match<ActionResult>(
+            _ =>
+            {
+                notificationManager.AppendSuccess("Reply Posted");
+                return RedirectToAction("Index", "Feed");
+            }
+            ,
+            _ => BadRequest());
     }
 
     [HttpPost]
-    public async Task<IActionResult> Like(string tweedId, [FromServices] ILikeTweedUseCase likeTweedUseCase)
+    public async Task<IActionResult> Like(string tweedId,
+        [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed == null)
@@ -114,7 +115,8 @@ public class TweedController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Unlike(string tweedId, [FromServices] ILikeTweedUseCase likeTweedUseCase)
+    public async Task<IActionResult> Unlike(string tweedId,
+        [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed == null)
