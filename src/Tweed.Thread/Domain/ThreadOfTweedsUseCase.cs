@@ -1,10 +1,11 @@
 using FluentResults;
+using OneOf;
 
 namespace Tweed.Thread.Domain;
 
 public interface IThreadOfTweedsUseCase
 {
-    Task<Result<List<Tweed>>> GetThreadTweedsForTweed(string tweedId);
+    Task<OneOf<List<Tweed>, ReferenceNotFoundError>> GetThreadTweedsForTweed(string tweedId);
 }
 
 public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
@@ -19,22 +20,22 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<Result<List<Tweed>>> GetThreadTweedsForTweed(string tweedId)
+    public async Task<OneOf<List<Tweed>, ReferenceNotFoundError>> GetThreadTweedsForTweed(string tweedId)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed is null)
-            return Result.Fail($"Tweed {tweedId} not found");
+            return new ReferenceNotFoundError($"Tweed {tweedId} not found");
 
         if (tweed.ThreadId is null)
             return new List<Tweed>();
 
         var thread = await _tweedThreadRepository.GetById(tweed.ThreadId!);
         if (thread is null)
-            return Result.Fail($"Thread {tweed.ThreadId} not found");
+            return new ReferenceNotFoundError($"Thread {tweed.ThreadId} not found");
 
         var path = FindTweedInThread(thread, tweedId);
         if (path is null)
-            return Result.Fail($"Tweed {tweedId} not found in Thread {tweed.ThreadId}");
+            return new ReferenceNotFoundError($"Tweed {tweedId} not found in Thread {tweed.ThreadId}");
 
         var tweedsByIds = await _tweedRepository.GetByIds(path.Select(t => t.TweedId!));
         var tweeds = tweedsByIds.Values.Select(t => t).ToList();

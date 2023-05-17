@@ -21,8 +21,8 @@ public class ThreadOfTweedsUseCaseTest
     public async Task GetThreadTweedsForTweed_ShouldReturnFail_WhenTweedIsntFound()
     {
         var tweeds = await _sut.GetThreadTweedsForTweed("unknownTweedId");
-
-        tweeds.Should().BeFailure();
+        
+        Assert.True(tweeds.IsT1);
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class ThreadOfTweedsUseCaseTest
 
         var tweeds = await _sut.GetThreadTweedsForTweed("rootTweedId");
 
-        tweeds.Should().BeSuccess();
-        Assert.Empty(tweeds.Value);
+        Assert.True(tweeds.IsT0);
+        Assert.Empty(tweeds.AsT0);
     }
 
     [Fact]
@@ -90,9 +90,9 @@ public class ThreadOfTweedsUseCaseTest
 
         var tweeds = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        tweeds.Should().BeSuccess();
-        Assert.Equal("rootTweedId", tweeds.Value[0].Id);
-        Assert.Equal("tweedId", tweeds.Value[1].Id);
+        Assert.True(tweeds.IsT0);
+        Assert.Equal("rootTweedId", tweeds.AsT0[0].Id);
+        Assert.Equal("tweedId", tweeds.AsT0[1].Id);
     }
 
     public static IEnumerable<T> CollectionMatcher<T>(IEnumerable<T> expectation)
@@ -158,10 +158,10 @@ public class ThreadOfTweedsUseCaseTest
 
         var tweeds = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        tweeds.Should().BeSuccess();
-        Assert.Equal("rootTweedId", tweeds.Value[0].Id);
-        Assert.Equal("parentTweedId", tweeds.Value[1].Id);
-        Assert.Equal("tweedId", tweeds.Value[2].Id);
+        Assert.True(tweeds.IsT0);
+        Assert.Equal("rootTweedId", tweeds.AsT0[0].Id);
+        Assert.Equal("parentTweedId", tweeds.AsT0[1].Id);
+        Assert.Equal("tweedId", tweeds.AsT0[2].Id);
     }
 
     [Fact]
