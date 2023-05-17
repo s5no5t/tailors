@@ -1,6 +1,6 @@
 @model Tweed.Web.Views.Shared.TweedViewModel
 
-<div class="border d-flex flex-column mt-2 p-2 tweed"
+<div class="d-flex flex-column mt-2 p-2 tweed @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
      @{
          if (!Model.IsCurrentTweed)
          {
