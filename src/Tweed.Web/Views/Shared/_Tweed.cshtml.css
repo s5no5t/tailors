@@ -1,0 +1,7 @@
+.tweed--can-navigate-true:hover {
+    background: #e9ecef;
+}
+
+.tweed--can-navigate-true {
+    cursor: pointer;
+}
