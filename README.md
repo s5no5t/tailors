@@ -27,6 +27,8 @@ A social media web app built with [HTMX](https://htmx.org/).
 - [RavenDB](https://ravendb.net/) for application data
 - [Bootstrap](https://getbootstrap.com/) for easy-to-use frontend components
 
+Find more info about how this app is structured under [STRUCTURE.md](./STRUCTURE.md).
+
 ## Build & Run
 
 1. Install [dotnet 7](https://dotnet.microsoft.com/en-us/download)
