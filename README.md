@@ -1,43 +1,47 @@
 # Tweed
 
-A social media web app to play with.
+A social media web app built with [HTMX](https://htmx.org/).
 
 ## Design Goals
 
 - Easy to maintain and extend
 - Easy to test
-- As little client state as possible
-- Simple backend architecture
+- Simple frontend architecture
+- Fast
 
 ## What works
 
 - Signup & Login
 - Post a Tweed
-- See Tweeds from users you follow
 - Follow other users
+- See Tweeds from users you follow
+- Show Tweed threads
 - Like Tweeds
+- Reply to Tweeds in threads
 - Search for Tweeds and users
 
 ## Building Blocks
 
-- [ASP.NET Core MVC](https://github.com/dotnet/aspnetcore) framework for backend HTML templating
 - [HTMX](https://htmx.org/) A hypermedia approach to building Single Page Apps
-- [RavenDB](https://ravendb.net/) for storing and querying data
+- [ASP.NET Core MVC](https://github.com/dotnet/aspnetcore) framework for backend HTML templating (Blazor not used)
+- [RavenDB](https://ravendb.net/) for application data
 - [Bootstrap](https://getbootstrap.com/) for easy-to-use frontend components
 
 ## Build & Run
 
-1. Install [dotnet 6](https://dotnet.microsoft.com/en-us/download)
-2. Install [Docker Desktop](https://www.docker.com/)
+1. Install [dotnet 7](https://dotnet.microsoft.com/en-us/download)
+2. Install [Docker](https://www.docker.com/)
 3. Start RavenDB
 
-        cd ./src/Tweed.Web
         docker compose up
 
-4. Run Tweed
+4. Optional: Create some fake data
 
-        cd ./src/Tweed.Web
-        dotnet run
+        dotnet run --project ./src/Tweed.GenerateFakes
+
+5. Run Tweed
+
+        dotnet run --project ./src/Tweed.Web
 
 ## Run Tests
 
