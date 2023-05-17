@@ -41,7 +41,7 @@ Find more info about how this app is structured under [STRUCTURE.md](./STRUCTURE
 
         dotnet run --project ./src/Tweed.GenerateFakes
 
-5. Run Tweed
+5. Run web app
 
         dotnet run --project ./src/Tweed.Web
 
