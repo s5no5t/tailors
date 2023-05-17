@@ -54,7 +54,7 @@ public class TweedControllerTest
         });
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
-            .ReturnsAsync(Result.Ok(new List<Thread.Domain.Tweed>()));
+            .ReturnsAsync(new List<Thread.Domain.Tweed>());
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _tweedViewModelFactoryMock.Object)
         {

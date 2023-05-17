@@ -35,18 +35,20 @@ public class TweedController : Controller
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
         var threadTweeds = await threadOfTweedsUseCase.GetThreadTweedsForTweed(decodedTweedId);
-        if (threadTweeds.IsFailed)
-            return NotFound();
-
-        ShowThreadForTweedViewModel viewModel = new()
-        {
-            Tweeds = await _tweedViewModelFactory.Create(threadTweeds.Value),
-            CreateReplyTweed = new CreateReplyTweedViewModel
+        return await threadTweeds.Match<Task<ActionResult>>(
+            async tweeds =>
             {
-                ParentTweedId = decodedTweedId
-            }
-        };
-        return View(viewModel);
+                ShowThreadForTweedViewModel viewModel = new()
+                {
+                    Tweeds = await _tweedViewModelFactory.Create(tweeds),
+                    CreateReplyTweed = new CreateReplyTweedViewModel
+                    {
+                        ParentTweedId = decodedTweedId
+                    }
+                };
+                return View(viewModel);
+            }, 
+            _ => Task.FromResult<ActionResult>(NotFound()));
     }
 
     [HttpGet("Tweed/Create")]
