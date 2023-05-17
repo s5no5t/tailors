@@ -1,13 +1,14 @@
-using FluentResults;
 using NodaTime;
+using OneOf;
 
 namespace Tweed.Thread.Domain;
 
 public interface ICreateTweedUseCase
 {
-    Task<Result<Tweed>> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
+    Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
 
-    Task<Result<Tweed>> CreateReplyTweed(string authorId, string text, ZonedDateTime createdAt,
+    Task<OneOf<Tweed, ReferenceNotFoundError>> CreateReplyTweed(string authorId, string text,
+        ZonedDateTime createdAt,
         string parentTweedId);
 }
 
@@ -16,13 +17,14 @@ public class CreateTweedUseCase : ICreateTweedUseCase
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedThreadRepository _tweedThreadRepository;
 
-    public CreateTweedUseCase(ITweedRepository tweedRepository, ITweedThreadRepository tweedThreadRepository)
+    public CreateTweedUseCase(ITweedRepository tweedRepository,
+        ITweedThreadRepository tweedThreadRepository)
     {
         _tweedRepository = tweedRepository;
         _tweedThreadRepository = tweedThreadRepository;
     }
 
-    public async Task<Result<Tweed>> CreateRootTweed(string authorId, string text,
+    public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
         ZonedDateTime createdAt)
     {
         Tweed tweed = new()
@@ -38,12 +40,13 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         return tweed;
     }
 
-    public async Task<Result<Tweed>> CreateReplyTweed(string authorId, string text,
+    public async Task<OneOf<Tweed, ReferenceNotFoundError>> CreateReplyTweed(string authorId,
+        string text,
         ZonedDateTime createdAt, string parentTweedId)
     {
         var parentTweed = await _tweedRepository.GetById(parentTweedId);
         if (parentTweed is null)
-            return Result.Fail(new ReferenceNotFoundError($"Parent Tweed {parentTweedId} not found"));
+            return new ReferenceNotFoundError($"Parent Tweed {parentTweedId} not found");
         var threadId = parentTweed.ThreadId;
         Tweed tweed = new()
         {
