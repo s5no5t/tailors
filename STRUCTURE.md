@@ -47,4 +47,5 @@ The other components each come with two main folders:
 Each component has a corresponding test component with tests for domains (business logic) and 
 infrastructure (data access).
 
-Infrastrucure tests use 
+Infrastructure tests use [RavenTestDriver](https://ravendb.net/docs/article-page/5.3/csharp/start/test-driver) 
+for managing a real RavenDB instance.
