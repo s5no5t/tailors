@@ -46,6 +46,18 @@ public class FeedController : Controller
         return PartialView("_Feed", viewModel);
     }
 
+    public async Task<IActionResult> UpdateAvailable(DateTime since)
+    {
+        var currentUserId = _userManager.GetUserId(User)!;
+        var feed = await _showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
+        var mostRecentFeedItem = feed.FirstOrDefault();
+
+        if (mostRecentFeedItem is not null && mostRecentFeedItem.CreatedAt!.Value > since)
+            return PartialView(new UpdateAvailableViewModel { IsUpdateAvailable = true });
+
+        return PartialView(new UpdateAvailableViewModel());
+    }
+
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
         var feed = await _showFeedUseCase.GetFeed(currentUserId, page, PageSize);
