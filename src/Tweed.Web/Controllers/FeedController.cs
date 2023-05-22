@@ -46,16 +46,16 @@ public class FeedController : Controller
         return PartialView("_Feed", viewModel);
     }
 
-    public async Task<IActionResult> UpdateAvailable(DateTime since)
+    public async Task<IActionResult> NewTweedsNotification(DateTime since)
     {
         var currentUserId = _userManager.GetUserId(User)!;
         var feed = await _showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
         var mostRecentFeedItem = feed.First();
 
         if (mostRecentFeedItem.CreatedAt!.Value > since)
-            return PartialView(new UpdateAvailableViewModel { IsUpdateAvailable = true });
+            return PartialView(new NewTweedsNotificationViewModel() { NewTweedsAvailable = true });
 
-        return PartialView(new UpdateAvailableViewModel());
+        return PartialView(new NewTweedsNotificationViewModel());
     }
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
