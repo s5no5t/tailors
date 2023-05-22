@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NodaTime;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Helper;
@@ -63,7 +62,7 @@ public class ProfileController : Controller
         if (userId == currentUserId)
             return BadRequest("Following yourself isn't allowed");
 
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        var now = DateTime.UtcNow;
         await _followUserUseCase.AddFollower(userId, currentUserId!, now);
 
         return RedirectToAction("Index", new

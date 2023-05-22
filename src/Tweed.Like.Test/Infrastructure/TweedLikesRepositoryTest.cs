@@ -1,4 +1,3 @@
-using NodaTime;
 using Raven.Client.Documents;
 using Tweed.Like.Infrastructure;
 using Tweed.Like.Test.Helper;
@@ -9,8 +8,7 @@ namespace Tweed.Like.Test.Infrastructure;
 [Collection("RavenDB")]
 public class TweedLikesRepositoryTest
 {
-    private static readonly ZonedDateTime FixedZonedDateTime =
-        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
 
     private readonly IDocumentStore _store;
 
@@ -26,7 +24,7 @@ public class TweedLikesRepositoryTest
         Thread.Domain.Tweed tweed = new()
         {
             Text = "test",
-            CreatedAt = FixedZonedDateTime
+            CreatedAt = FixedDateTime
         };
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");

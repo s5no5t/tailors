@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NodaTime;
 using Tweed.Thread.Domain;
-using Tweed.User;
 using Tweed.User.Domain;
 using Tweed.Web.Controllers;
 using Tweed.Web.Helper;
@@ -192,7 +190,7 @@ public class ProfileControllerTest
         await _profileController.Follow("user");
 
         _followUserUseCaseMock.Verify(t =>
-            t.AddFollower("user", "currentUser", It.IsAny<ZonedDateTime>()));
+            t.AddFollower("user", "currentUser", It.IsAny<DateTime>()));
     }
 
     [Fact]

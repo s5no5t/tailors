@@ -2,7 +2,6 @@ using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NodaTime;
 using Tweed.Like.Domain;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
@@ -66,7 +65,7 @@ public class TweedController : Controller
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
 
         var currentUserId = _userManager.GetUserId(User);
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        var now = DateTime.UtcNow;
 
         var tweed = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
         return tweed.Match<ActionResult>(
@@ -85,7 +84,7 @@ public class TweedController : Controller
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
         var currentUserId = _userManager.GetUserId(User);
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        var now = DateTime.UtcNow;
         var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
         return tweed.Match<ActionResult>(
@@ -107,7 +106,7 @@ public class TweedController : Controller
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
-        var now = SystemClock.Instance.GetCurrentInstant().InUtc();
+        var now = DateTime.UtcNow;
         await likeTweedUseCase.AddLike(tweedId, currentUserId!, now);
 
         var viewModel = await _tweedViewModelFactory.Create(tweed, isCurrent);

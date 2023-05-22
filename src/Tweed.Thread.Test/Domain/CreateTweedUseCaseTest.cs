@@ -1,5 +1,4 @@
 using Moq;
-using NodaTime;
 using Tweed.Thread.Domain;
 using Xunit;
 
@@ -7,8 +6,7 @@ namespace Tweed.Thread.Test.Domain;
 
 public class CreateTweedUseCaseTest
 {
-    private static readonly ZonedDateTime FixedZonedDateTime =
-        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
 
     private readonly CreateTweedUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
@@ -22,7 +20,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateRootTweed_SavesTweed()
     {
-        var result = await _sut.CreateRootTweed("authorId", "text", FixedZonedDateTime);
+        var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
 
         Assert.True(result.IsT0);
         _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Thread.Domain.Tweed>()));
@@ -31,7 +29,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateRootTweed_CreatesThread()
     {
-        var result = await _sut.CreateRootTweed("authorId", "text", FixedZonedDateTime);
+        var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
 
         Assert.True(result.IsT0);
         _tweedThreadRepositoryMock.Verify(s => s.Create(It.IsAny<TweedThread>()));
@@ -47,7 +45,7 @@ public class CreateTweedUseCaseTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
-        var result = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, parentTweed.Id);
+        var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id);
 
         Assert.True(result.IsT0);
         _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Thread.Domain.Tweed>()));
@@ -63,7 +61,7 @@ public class CreateTweedUseCaseTest
         };
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
 
-        var result = await _sut.CreateReplyTweed("authorId", "text", FixedZonedDateTime, "parentTweedId");
+        var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");
 
         Assert.True(result.IsT0);
         Assert.Equal(parentTweed.ThreadId, result.AsT0.ThreadId);

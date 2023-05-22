@@ -35,8 +35,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
 
     public async Task<TweedViewModel> Create(Thread.Domain.Tweed tweed, bool isCurrent)
     {
-        var humanizedCreatedAt = tweed.CreatedAt?.LocalDateTime.ToDateTimeUnspecified()
-            .Humanize(true, null, CultureInfo.InvariantCulture);
+        var humanizedCreatedAt = tweed.CreatedAt?.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
         var likesCount = await _tweedLikesRepository.GetLikesCounter(tweed.Id!);
 

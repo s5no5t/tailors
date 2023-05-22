@@ -39,7 +39,7 @@ internal class DataFaker
 
         var followsFaker = new Faker<UserFollows.LeaderReference>()
             .RuleFor(f => f.LeaderId, f => f.PickRandom(users).Id)
-            .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
+            .RuleFor(f => f.CreatedAt, f => f.Date.Past());
 
         var userFollowsFaker = new Faker<UserFollows>()
             .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, users.Count - 1));
@@ -65,7 +65,7 @@ internal class DataFaker
         foreach (var thread in threads) await bulkInsert.StoreAsync(thread);
 
         var tweedFaker = new Faker<Thread.Domain.Tweed>()
-            .RuleFor(t => t.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()))
+            .RuleFor(t => t.CreatedAt, f => f.Date.Past())
             .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
             .RuleFor(t => t.AuthorId, f => f.PickRandom(users).Id)
             .RuleFor(t => t.ThreadId, f => threads[f.IndexFaker].Id);
@@ -84,7 +84,7 @@ internal class DataFaker
 
         var likesFaker = new Faker<UserLikes.TweedLike>()
             .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
-            .RuleFor(f => f.CreatedAt, f => DateHelper.DateTimeToZonedDateTime(f.Date.Past()));
+            .RuleFor(f => f.CreatedAt, f => f.Date.Past());
 
         var userLikesFaker = new Faker<UserLikes>()
             .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, tweeds.Count - 1));
