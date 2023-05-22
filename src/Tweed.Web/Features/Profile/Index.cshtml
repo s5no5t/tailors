@@ -1,0 +1,31 @@
+@using IndexViewModel = Tweed.Web.Features.Profile.IndexViewModel
+@using Tweed.User.Domain
+@model IndexViewModel
+@inject UserManager<AppUser> UserManager
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1>Profile for @Model.UserName</h1>
+<h2>@Model.FollowersCount followers</h2>
+
+@if (UserManager.GetUserId(User) != Model.UserId)
+{
+    @if (Model.CurrentUserFollows)
+    {
+        <form method="post" asp-action="Unfollow" asp-route-userid="@Model.UserId">
+            <button type="submit" class="btn btn-primary">Unfollow</button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="Follow" asp-route-userid="@Model.UserId">
+            <button type="submit" class="btn btn-primary">Follow</button>
+        </form>
+    }
+}
+
+@foreach (var tweed in Model.Tweeds)
+{
+    <partial name="_Tweed" model="tweed"/>
+}

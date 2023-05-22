@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Tweed.Web.Features.Tweed;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.Views.Tweed;
 using Xunit;
 
 namespace Tweed.Web.Test.Views;

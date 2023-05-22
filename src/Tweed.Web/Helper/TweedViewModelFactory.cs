@@ -3,7 +3,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Tweed.Like.Domain;
 using Tweed.User.Domain;
-using Tweed.Web.Views.Shared;
+using Tweed.Web.Features.Shared;
 
 namespace Tweed.Web.Helper;
 

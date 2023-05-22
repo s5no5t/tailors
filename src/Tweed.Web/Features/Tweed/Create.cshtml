@@ -1,0 +1,10 @@
+@model Tweed.Web.Features.Tweed.CreateViewModel
+@{
+    ViewData["Title"] = "Create Tweed";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<form method="post" asp-action="Create">
+    <partial name="_CreateTweed" model="@Model.CreateTweed"/>
+</form>

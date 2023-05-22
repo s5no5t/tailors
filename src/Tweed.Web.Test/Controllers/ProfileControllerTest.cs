@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
-using Tweed.Web.Controllers;
+using Tweed.Web.Features.Profile;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.Views.Profile;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;

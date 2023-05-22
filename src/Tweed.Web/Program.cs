@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Trace;
 using Raven.DependencyInjection;
 using Raven.Identity;
@@ -18,6 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages().AddMvcOptions(options => options.Filters.Add<RavenSaveChangesAsyncPageFilter>());
 builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationExpanders.Add(new FeatureFolderLocationExpander());
+});
 
 builder.Services.AddHttpContextAccessor();
 

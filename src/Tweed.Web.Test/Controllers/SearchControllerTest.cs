@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
-using Tweed.Web.Controllers;
-using Tweed.Web.Views.Search;
+using Tweed.Web.Features.Search;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;
