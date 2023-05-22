@@ -12,6 +12,7 @@ using Tweed.User.Infrastructure;
 using Tweed.Web;
 using Tweed.Web.Areas.Identity;
 using Tweed.Web.Filters;
+using Tweed.Web.Helper;
 using IdentityRole = Raven.Identity.IdentityRole;
 
 var builder = WebApplication.CreateBuilder(args);

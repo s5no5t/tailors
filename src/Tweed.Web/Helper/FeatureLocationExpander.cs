@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 [assembly: AspMvcViewLocationFormat("/Features/Shared/{0}.cshtml")]
 [assembly: AspMvcPartialViewLocationFormat("~/Features/{1}/{0}.cshtml")]
 [assembly: AspMvcPartialViewLocationFormat("~/Features/Shared/{0}.cshtml")]
-namespace Tweed.Web
+namespace Tweed.Web.Helper
 {
     public class FeatureFolderLocationExpander : IViewLocationExpander
     {
