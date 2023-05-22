@@ -1,5 +1,4 @@
 using Moq;
-using NodaTime;
 using Tweed.Like.Domain;
 using Xunit;
 
@@ -7,8 +6,7 @@ namespace Tweed.Like.Test.Domain;
 
 public class LikeTweedUseCaseTest
 {
-    private static readonly ZonedDateTime FixedZonedDateTime =
-        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
 
     private readonly LikeTweedUseCase _sut;
 
@@ -29,7 +27,7 @@ public class LikeTweedUseCaseTest
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
 
-        await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
+        await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
         Assert.Single(userLikes.Likes);
     }
@@ -42,7 +40,7 @@ public class LikeTweedUseCaseTest
             Id = "tweedId"
         };
 
-        await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
+        await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
         _tweedLikesRepositoryMock.Verify(t => t.IncreaseLikesCounter(tweed.Id), Times.Once);
     }
@@ -64,7 +62,7 @@ public class LikeTweedUseCaseTest
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
 
-        await _sut.AddLike("tweedId", "userId", FixedZonedDateTime);
+        await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
         Assert.Single(userLikes.Likes);
         _tweedLikesRepositoryMock.Verify(m => m.IncreaseLikesCounter(It.IsAny<string>()),

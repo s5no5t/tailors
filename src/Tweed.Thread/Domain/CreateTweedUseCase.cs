@@ -1,15 +1,13 @@
-using NodaTime;
 using OneOf;
 
 namespace Tweed.Thread.Domain;
 
 public interface ICreateTweedUseCase
 {
-    Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text, ZonedDateTime createdAt);
+    Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text, DateTime createdAt);
 
     Task<OneOf<Tweed, ReferenceNotFoundError>> CreateReplyTweed(string authorId, string text,
-        ZonedDateTime createdAt,
-        string parentTweedId);
+        DateTime createdAt, string parentTweedId);
 }
 
 public class CreateTweedUseCase : ICreateTweedUseCase
@@ -25,7 +23,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
     }
 
     public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
-        ZonedDateTime createdAt)
+        DateTime createdAt)
     {
         Tweed tweed = new()
         {
@@ -42,7 +40,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
 
     public async Task<OneOf<Tweed, ReferenceNotFoundError>> CreateReplyTweed(string authorId,
         string text,
-        ZonedDateTime createdAt, string parentTweedId)
+        DateTime createdAt, string parentTweedId)
     {
         var parentTweed = await _tweedRepository.GetById(parentTweedId);
         if (parentTweed is null)

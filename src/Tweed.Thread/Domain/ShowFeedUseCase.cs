@@ -38,7 +38,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
 
         var feed = tweeds
             .DistinctBy(t => t.Id)
-            .OrderByDescending(t => t.CreatedAt?.LocalDateTime)
+            .OrderByDescending(t => t.CreatedAt)
             .Skip(pageSize * page)
             .Take(pageSize)
             .ToList();

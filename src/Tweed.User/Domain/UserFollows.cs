@@ -1,5 +1,3 @@
-using NodaTime;
-
 namespace Tweed.User.Domain;
 
 public class UserFollows
@@ -16,6 +14,6 @@ public class UserFollows
     public class LeaderReference
     {
         public string? LeaderId { get; set; }
-        public ZonedDateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

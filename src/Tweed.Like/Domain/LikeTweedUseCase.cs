@@ -1,10 +1,8 @@
-using NodaTime;
-
 namespace Tweed.Like.Domain;
 
 public interface ILikeTweedUseCase
 {
-    Task AddLike(string tweedId, string userId, ZonedDateTime likedAt);
+    Task AddLike(string tweedId, string userId, DateTime likedAt);
     Task RemoveLike(string tweedId, string userId);
     Task<bool> DoesUserLikeTweed(string tweedId, string userId);
 }
@@ -18,7 +16,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
         _tweedLikesRepository = tweedLikesRepository;
     }
 
-    public async Task AddLike(string tweedId, string userId, ZonedDateTime likedAt)
+    public async Task AddLike(string tweedId, string userId, DateTime likedAt)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
 

@@ -1,4 +1,3 @@
-using NodaTime;
 using Raven.Client.Documents;
 using Tweed.Thread.Infrastructure;
 using Tweed.Thread.Test.Helper;
@@ -9,9 +8,7 @@ namespace Tweed.Thread.Test.Infrastructure;
 [Collection("RavenDB")]
 public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
 {
-    private static readonly ZonedDateTime FixedZonedDateTime =
-        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
-
+    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
     private readonly IDocumentStore _store;
 
     public TweedRepositoryTest(RavenTestDbFixture ravenDb)
@@ -26,7 +23,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         Thread.Domain.Tweed tweed = new()
         {
             Text = "test",
-            CreatedAt = FixedZonedDateTime
+            CreatedAt = FixedDateTime
         };
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -75,11 +72,11 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         Thread.Domain.Tweed olderTweed = new()
         {
             Text = "older tweed",
-            CreatedAt = FixedZonedDateTime,
+            CreatedAt = FixedDateTime,
             AuthorId = "user1"
         };
         await session.StoreAsync(olderTweed);
-        var recent = FixedZonedDateTime.PlusHours(1);
+        var recent = FixedDateTime.AddHours(1);
         Thread.Domain.Tweed recentTweed = new()
         {
             Text = "recent tweed",
@@ -106,7 +103,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
             Thread.Domain.Tweed tweed = new()
             {
                 Text = "test",
-                CreatedAt = FixedZonedDateTime,
+                CreatedAt = FixedDateTime,
                 AuthorId = "user1"
             };
             await session.StoreAsync(tweed);
@@ -128,7 +125,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         Thread.Domain.Tweed tweed = new()
         {
             Text = "test",
-            CreatedAt = FixedZonedDateTime,
+            CreatedAt = FixedDateTime,
             AuthorId = "user2"
         };
         await session.StoreAsync(tweed);

@@ -1,5 +1,3 @@
-using NodaTime;
-
 namespace Tweed.Like.Domain;
 
 public class UserLikes
@@ -17,6 +15,6 @@ public class UserLikes
     public class TweedLike
     {
         public string? TweedId { get; set; }
-        public ZonedDateTime? CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }

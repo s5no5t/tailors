@@ -1,5 +1,4 @@
 using Moq;
-using NodaTime;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
 using Xunit;
@@ -8,8 +7,7 @@ namespace Tweed.Thread.Test.Domain;
 
 public class ShowFeedUseCaseTest
 {
-    private static readonly ZonedDateTime FixedZonedDateTime =
-        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
 
     private readonly Mock<IFollowUserUseCase> _followsServiceMock = new();
     private readonly ShowFeedUseCase _sut;
@@ -37,7 +35,7 @@ public class ShowFeedUseCaseTest
         {
             Text = "test",
             AuthorId = "userId",
-            CreatedAt = FixedZonedDateTime.PlusHours(1)
+            CreatedAt = FixedDateTime.AddHours(1)
         };
         _tweedRepositoryMock
             .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
@@ -57,7 +55,7 @@ public class ShowFeedUseCaseTest
         {
             Text = "test",
             AuthorId = followedUser.Id!,
-            CreatedAt = FixedZonedDateTime.PlusHours(1)
+            CreatedAt = FixedDateTime.AddHours(1)
         };
         _tweedRepositoryMock
             .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
@@ -75,7 +73,7 @@ public class ShowFeedUseCaseTest
         {
             Text = "test",
             AuthorId = "userId",
-            CreatedAt = FixedZonedDateTime.PlusHours(1)
+            CreatedAt = FixedDateTime.AddHours(1)
         };
         _tweedRepositoryMock
             .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
@@ -97,7 +95,7 @@ public class ShowFeedUseCaseTest
                 Id = $"tweeds/{i}",
                 Text = "test",
                 AuthorId = "userId",
-                CreatedAt = FixedZonedDateTime
+                CreatedAt = FixedDateTime
             };
             return tweed;
         }).ToList();
@@ -120,7 +118,7 @@ public class ShowFeedUseCaseTest
                 Id = $"tweeds/{i}",
                 Text = "test",
                 AuthorId = "userId",
-                CreatedAt = FixedZonedDateTime
+                CreatedAt = FixedDateTime
             };
             return tweed;
         }).ToList();

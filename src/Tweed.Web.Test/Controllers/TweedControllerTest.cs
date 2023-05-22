@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NodaTime;
 using Tweed.Like.Domain;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
@@ -40,14 +39,14 @@ public class TweedControllerTest
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<ZonedDateTime>()))
+                    It.IsAny<DateTime>()))
             .ReturnsAsync(new Thread.Domain.Tweed
             {
                 Id = "tweedId"
             });
         _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<ZonedDateTime>(), It.IsAny<string>())).ReturnsAsync(new Thread.Domain.Tweed
+            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Thread.Domain.Tweed
         {
             Id = "tweedId"
         });
@@ -144,7 +143,7 @@ public class TweedControllerTest
             _notificationManagerMock.Object);
 
         _createTweedUseCaseMock.Verify(t =>
-            t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ZonedDateTime>()));
+            t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()));
     }
 
 
@@ -198,7 +197,7 @@ public class TweedControllerTest
 
         _createTweedUseCaseMock.Verify(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<ZonedDateTime>(), It.IsAny<string>()));
+            It.IsAny<DateTime>(), It.IsAny<string>()));
     }
 
     [Fact]
@@ -229,7 +228,7 @@ public class TweedControllerTest
         };
         _createTweedUseCaseMock
             .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<ZonedDateTime>(),
+                It.IsAny<DateTime>(),
                 It.IsAny<string>())).ReturnsAsync(new ReferenceNotFoundError());
 
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object,
@@ -248,7 +247,7 @@ public class TweedControllerTest
         };
         _createTweedUseCaseMock
             .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<ZonedDateTime>(),
+                It.IsAny<DateTime>(),
                 It.IsAny<string>())).ReturnsAsync(new ReferenceNotFoundError());
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object,
             _notificationManagerMock.Object);
@@ -268,7 +267,7 @@ public class TweedControllerTest
         await _tweedController.Like("123", false, _likeTweedUseCaseMock.Object);
 
         _likeTweedUseCaseMock.Verify(u =>
-            u.AddLike("123", "currentUser", It.IsAny<ZonedDateTime>()));
+            u.AddLike("123", "currentUser", It.IsAny<DateTime>()));
     }
 
     [Fact]

@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
-using NodaTime;
 using Tweed.User.Domain;
 using Xunit;
 
@@ -9,8 +9,7 @@ namespace Tweed.User.Test.Domain;
 
 public class FollowUserUseCaseTest
 {
-    private static readonly ZonedDateTime FixedZonedDateTime =
-        new(new LocalDateTime(2022, 11, 18, 15, 20), DateTimeZone.Utc, new Offset());
+    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
 
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly FollowUserUseCase _sut;
@@ -31,7 +30,7 @@ public class FollowUserUseCaseTest
             .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
             .ReturnsAsync(userFollows);
 
-        await _sut.AddFollower("leaderId", userFollows.UserId, FixedZonedDateTime);
+        await _sut.AddFollower("leaderId", userFollows.UserId, FixedDateTime);
 
         Assert.Equal("leaderId", userFollows.Follows[0].LeaderId);
     }
@@ -54,7 +53,7 @@ public class FollowUserUseCaseTest
             .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
             .ReturnsAsync(userFollows);
 
-        await _sut.AddFollower("leaderId", userFollows.UserId, FixedZonedDateTime);
+        await _sut.AddFollower("leaderId", userFollows.UserId, FixedDateTime);
 
         Assert.Single(userFollows.Follows);
     }

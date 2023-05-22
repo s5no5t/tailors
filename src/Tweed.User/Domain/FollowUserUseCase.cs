@@ -1,10 +1,8 @@
-using NodaTime;
-
 namespace Tweed.User.Domain;
 
 public interface IFollowUserUseCase
 {
-    Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt);
+    Task AddFollower(string leaderId, string followerId, DateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
     Task<List<UserFollows.LeaderReference>> GetFollows(string userId);
 }
@@ -18,7 +16,7 @@ public class FollowUserUseCase : IFollowUserUseCase
         _userFollowsRepository = userFollowsRepository;
     }
 
-    public async Task AddFollower(string leaderId, string followerId, ZonedDateTime createdAt)
+    public async Task AddFollower(string leaderId, string followerId, DateTime createdAt)
     {
         var userFollows= await GetOrCreateUserFollower(followerId);
 
