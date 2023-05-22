@@ -151,4 +151,40 @@ public class FeedControllerTest
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
         Assert.Equal(tweed.Id, model.Tweeds[0].Id);
     }
+
+    [Fact]
+    public async Task UpdateAvailable_ShouldReturnTrue_WhenThereIsANewTweed()
+    {
+        var instant = new DateTime(2023, 5, 22, 10, 0, 0);
+        var tweed = new Thread.Domain.Tweed
+        {
+            Id = "tweedId",
+            CreatedAt = instant.AddMinutes(5) 
+        };
+        _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
+            .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
+        
+        var result = await _feedController.UpdateAvailable(instant);
+
+        var resultViewModel = (UpdateAvailableViewModel)((PartialViewResult)result).Model!;
+        Assert.True(resultViewModel.IsUpdateAvailable);
+    }
+
+    [Fact]
+    public async Task UpdateAvailable_ShouldReturnFalse_WhenThereIsNoNewTweed()
+    {
+        var instant = new DateTime(2023, 5, 22, 10, 0, 0);
+        var tweed = new Thread.Domain.Tweed
+        {
+            Id = "tweedId",
+            CreatedAt = instant.AddMinutes(-5) 
+        };
+        _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
+            .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
+        
+        var result = await _feedController.UpdateAvailable(instant);
+        
+        var resultViewModel = (UpdateAvailableViewModel)((PartialViewResult)result).Model!;
+        Assert.False(resultViewModel.IsUpdateAvailable);
+    }
 }
