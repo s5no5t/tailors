@@ -8,11 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Thread.Domain;
 using Tweed.User.Domain;
-using Tweed.Web.Controllers;
+using Tweed.Web.Features.Feed;
+using Tweed.Web.Features.Shared;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;
-using Tweed.Web.Views.Feed;
-using Tweed.Web.Views.Shared;
 using Xunit;
 
 namespace Tweed.Web.Test.Controllers;
