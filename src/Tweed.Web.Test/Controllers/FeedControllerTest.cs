@@ -164,10 +164,10 @@ public class FeedControllerTest
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
         
-        var result = await _feedController.UpdateAvailable(instant);
+        var result = await _feedController.NewTweedsNotification(instant);
 
-        var resultViewModel = (UpdateAvailableViewModel)((PartialViewResult)result).Model!;
-        Assert.True(resultViewModel.IsUpdateAvailable);
+        var resultViewModel = (NewTweedsNotificationViewModel)((PartialViewResult)result).Model!;
+        Assert.True(resultViewModel.NewTweedsAvailable);
     }
 
     [Fact]
@@ -182,9 +182,9 @@ public class FeedControllerTest
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
         
-        var result = await _feedController.UpdateAvailable(instant);
+        var result = await _feedController.NewTweedsNotification(instant);
         
-        var resultViewModel = (UpdateAvailableViewModel)((PartialViewResult)result).Model!;
-        Assert.False(resultViewModel.IsUpdateAvailable);
+        var resultViewModel = (NewTweedsNotificationViewModel)((PartialViewResult)result).Model!;
+        Assert.False(resultViewModel.NewTweedsAvailable);
     }
 }
