@@ -7,7 +7,8 @@ A social media web app built with [HTMX](https://htmx.org/).
 - Easy to maintain and extend
 - Easy to test
 - Simple frontend architecture
-- Fast
+- Fast to build and run
+- Code organized by responsibility, not by file types
 
 ## What works
 
@@ -19,6 +20,7 @@ A social media web app built with [HTMX](https://htmx.org/).
 - Like Tweeds
 - Reply to Tweeds in threads
 - Search for Tweeds and users
+- Show notification for new Tweeds
 
 ## Building Blocks
 
