@@ -6,15 +6,15 @@ Layering is done within each component.
 ## Components
 
 There are 4 main components:
-* `Tweed.User` for user identity and following other users
-* `Tweed.Thread` for tweeds and threads
-* `Tweed.Like` for liking tweeds
-* `Tweed.Web` for app config, views, event handling
+* `Tailors.User` for user identity and following other users
+* `Tailors.Thread` for tweeds and threads
+* `Tailors.Like` for liking tweeds
+* `Tailors.Web` for app config, views, event handling
 
 ```mermaid
     C4Component
-    title Component diagram for Tweed
-    Container_Boundary(backend, "Tweed App") {
+    title Component diagram for Tailors
+    Container_Boundary(backend, "Tailors App") {
         Component(user, "User Identity and Follows", "C# Library", "Signin, profile, following other users")
         Component(web, "Web", "HTMX + ASP.NET Core MVC", "App config, views, event handling")
         Component(thread, "Threads", "C# Library", "Business logic an data access for tweeds")
@@ -35,7 +35,7 @@ There are 4 main components:
 
 ## Layering
 
-The `Tweed.Web` component follows standard ASP.NET Core MVC folder structure for controllers and views. 
+The `Tailors.Web` component follows standard ASP.NET Core MVC folder structure for controllers and views. 
 It has dependencies on other components that contain business logic 
 
 The other components each come with two main folders:
