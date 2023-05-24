@@ -15,7 +15,7 @@ There are 4 main components:
     C4Component
     title Component diagram for Tailors
     Container_Boundary(backend, "Tailors App") {
-        Component(user, "User Identity and Follows", "C# Library", "Signin, profile, following other users")
+        Component(user, "User", "C# Library", "Signin, profile, following other users")
         Component(web, "Web", "HTMX + ASP.NET Core MVC", "App config, views, event handling")
         Component(thread, "Threads", "C# Library", "Business logic an data access for tweeds")
         Component(like, "Likes", "C# Library", "Business logic and data access for likes")
