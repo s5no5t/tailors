@@ -2,7 +2,7 @@ using Raven.Client.Documents;
 using Raven.DependencyInjection;
 using Tailors.User.Infrastructure;
 
-namespace Tweed.GenerateFakes;
+namespace Tailors.GenerateFakes;
 
 internal static class DocumentStoreHelper
 {
