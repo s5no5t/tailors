@@ -23,7 +23,7 @@ public class CreateTweedUseCaseTest
         var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
 
         Assert.True(result.IsT0);
-        _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tailors.Thread.Domain.Tweed>()));
+        _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>()));
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateReplyTweed_SavesTweed()
     {
-        Tailors.Thread.Domain.Tweed parentTweed = new()
+        Tweed parentTweed = new()
         {
             Id = "parentTweedId",
             ThreadId = "threadId"
@@ -48,13 +48,13 @@ public class CreateTweedUseCaseTest
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id);
 
         Assert.True(result.IsT0);
-        _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Tailors.Thread.Domain.Tweed>()));
+        _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Tweed>()));
     }
 
     [Fact]
     public async Task CreateReplyTweed_SetsThreadId()
     {
-        Tailors.Thread.Domain.Tweed parentTweed = new()
+        Tweed parentTweed = new()
         {
             Id = "parentTweedId",
             ThreadId = "threadId"

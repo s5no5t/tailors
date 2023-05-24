@@ -39,19 +39,19 @@ public class TweedControllerTest
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<DateTime>()))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed
+            .ReturnsAsync(new Tweed
             {
                 Id = "tweedId"
             });
         _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tailors.Thread.Domain.Tweed
+            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tweed
         {
             Id = "tweedId"
         });
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
-            .ReturnsAsync(new List<Tailors.Thread.Domain.Tweed>());
+            .ReturnsAsync(new List<Tweed>());
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _tweedViewModelFactoryMock.Object)
         {
@@ -82,11 +82,11 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweeds()
     {
-        var rootTweed = new Tailors.Thread.Domain.Tweed
+        var rootTweed = new Tweed
         {
             Id = "tweedId"
         };
-        var tweeds = new List<Tailors.Thread.Domain.Tweed>
+        var tweeds = new List<Tweed>
         {
             rootTweed
         };
@@ -163,9 +163,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldReturnRedirect()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
+            .ReturnsAsync(new Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
+            .ReturnsAsync(new Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -182,9 +182,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSaveReplyTweed()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
+            .ReturnsAsync(new Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
+            .ReturnsAsync(new Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -203,9 +203,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
+            .ReturnsAsync(new Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
+            .ReturnsAsync(new Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -257,7 +257,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -272,7 +272,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -287,7 +287,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -301,7 +301,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             AuthorId = "author"
         };

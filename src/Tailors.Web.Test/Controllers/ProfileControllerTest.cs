@@ -50,7 +50,7 @@ public class ProfileControllerTest
 
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
-            .ReturnsAsync(new List<Tailors.Thread.Domain.Tweed>());
+            .ReturnsAsync(new List<Tweed>());
 
         _profileController = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,

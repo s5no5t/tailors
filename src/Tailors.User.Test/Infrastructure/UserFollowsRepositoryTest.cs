@@ -27,14 +27,14 @@ public class UserFollowsRepositoryTest
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        Tailors.User.Domain.AppUser leader = new()
+        AppUser leader = new()
         {
             Id = "leaderId"
         };
         await session.StoreAsync(leader);
         for (var i = 0; i < givenFollowerCount; i++)
         {
-            Tailors.User.Domain.AppUser follower = new()
+            AppUser follower = new()
             {
                 Id = $"follower/${i}"
             };
