@@ -1,4 +1,4 @@
-# Tweed
+# Tailors
 
 A social media web app built with [HTMX](https://htmx.org/).
 
