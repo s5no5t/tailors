@@ -20,13 +20,15 @@ namespace Tweed.Web.Helper
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
-            // The old locations are /Views/{1}/{0}.cshtml and /Views/Shared/{0}.cshtml where {1} is the controller and {0} is the name of the View
-            // Replace /Views with /Features
-            return new[]
+            // The default locations are /Views/{1}/{0}.cshtml and /Views/Shared/{0}.cshtml where {1} is the controller and {0} is the name of the View
+            // Add /Features
+            var customLocations = new List<string>
             {
                 "/Features/{1}/{0}.cshtml",
                 "/Features/Shared/{0}.cshtml"
             };
+            customLocations.AddRange(viewLocations);
+            return customLocations;
         }
     }
 }
