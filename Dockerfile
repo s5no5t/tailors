@@ -6,11 +6,10 @@ COPY . ./
 # Restore as distinct layers
 RUN dotnet restore
 # Build and publish a release
-RUN dotnet publish -c Release -o out ./src/Tweed.Web/Tweed.Web.csproj
+RUN dotnet publish -c Release -o out ./src/Tailors.Web/Tailors.Web.csproj
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /App
 COPY --from=build-env /App/out .
-ENTRYPOINT ["dotnet", "Tweed.Web.dll"]
-
+ENTRYPOINT ["dotnet", "Tailors.Web.dll"]
