@@ -2,7 +2,7 @@ using Moq;
 using Tailors.Thread.Domain;
 using Xunit;
 
-namespace Tweed.Thread.Test.Domain;
+namespace Tailors.Thread.Test.Domain;
 
 public class ThreadOfTweedsUseCaseTest
 {

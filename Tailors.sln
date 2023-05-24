@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Like.Test", "src\Twee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Thread", "src\Tailors.Thread\Tailors.Thread.csproj", "{FBD05F00-0BA8-496F-A330-D59B79628CE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Thread.Test", "src\Tweed.Thread.Test\Tweed.Thread.Test.csproj", "{F7C54CEF-9F53-4A60-85AC-8C17FEFA622E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Thread.Test", "src\Tailors.Thread.Test\Tailors.Thread.Test.csproj", "{F7C54CEF-9F53-4A60-85AC-8C17FEFA622E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

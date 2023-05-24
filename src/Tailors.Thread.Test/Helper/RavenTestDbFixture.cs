@@ -4,7 +4,7 @@ using Tailors.Thread.Infrastructure;
 using Tweed.User.Infrastructure;
 using Xunit;
 
-namespace Tweed.Thread.Test.Helper;
+namespace Tailors.Thread.Test.Helper;
 
 public class RavenTestDbFixture : RavenTestDriver
 {

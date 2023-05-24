@@ -1,6 +1,6 @@
 using Moq;
 
-namespace Tweed.Thread.Test.Domain;
+namespace Tailors.Thread.Test.Domain;
 
 public class MoqExtensions
 {
