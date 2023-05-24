@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -48,17 +49,13 @@ app.UseForwardedHeaders();
 if (!app.Environment.IsDevelopment()) app.UseExceptionHandler("/Error");
 
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllerRoute(
     "default",
     "{controller=Feed}/{action=Index}/{id?}");
 app.MapRazorPages();
-
 app.Run();
 
 static void SetupRavenDbServices(WebApplicationBuilder builder)
@@ -98,8 +95,38 @@ static void SetupIdentity(WebApplicationBuilder builder)
         .AddDefaultTokenProviders();
 
     builder.Services.ConfigureApplicationCookie(
-        options => options.LoginPath = "/Identity/Account/login");
+        options =>
+        {
+            options.LoginPath = "/Identity/Account/login";
+            options.Events = new CookieAuthenticationEvents
+            {
+                OnRedirectToLogin = context =>
+                {
+                    const string hxRedirectHeader = "Hx-Redirect";
+                    const string hxRequestHeader = "Hx-Request";
+                    
+                    if (IsHtmxRequest(context.Request))
+                    {
+                        context.Response.Headers[hxRedirectHeader] = context.RedirectUri;
+                        context.Response.StatusCode = 401;
+                    }
+                    else
+                    {
+                        context.Response.Redirect(context.RedirectUri);
+                    }
 
+                    return Task.CompletedTask;
+
+                    static bool IsHtmxRequest(HttpRequest request)
+                    {
+                        return string.Equals(request.Query[hxRequestHeader], "true",
+                                   StringComparison.Ordinal)
+                               || string.Equals(request.Headers[hxRequestHeader], "true",
+                                   StringComparison.Ordinal);
+                    }
+                }
+            };
+        });
 
     builder.Services.Configure<IdentityOptions>(options =>
     {
