@@ -104,11 +104,13 @@ static void SetupIdentity(WebApplicationBuilder builder)
                 {
                     const string hxRedirectHeader = "Hx-Redirect";
                     const string hxRequestHeader = "Hx-Request";
-                    
+                    const string hxBoostedHeader = "Hx-Boosted";
+
                     if (IsHtmxRequest(context.Request))
                     {
-                        context.Response.Headers[hxRedirectHeader] = context.RedirectUri;
                         context.Response.StatusCode = 401;
+                        if (IsHtmxBoostedRequest(context.Request))
+                            context.Response.Headers[hxRedirectHeader] = context.RedirectUri;
                     }
                     else
                     {
@@ -119,10 +121,13 @@ static void SetupIdentity(WebApplicationBuilder builder)
 
                     static bool IsHtmxRequest(HttpRequest request)
                     {
-                        return string.Equals(request.Query[hxRequestHeader], "true",
-                                   StringComparison.Ordinal)
-                               || string.Equals(request.Headers[hxRequestHeader], "true",
-                                   StringComparison.Ordinal);
+                        return string.Equals(request.Headers[hxRequestHeader], "true",
+                            StringComparison.Ordinal);
+                    }
+
+                    static bool IsHtmxBoostedRequest(HttpRequest request)
+                    {
+                        return string.Equals(request.Headers[hxBoostedHeader], "true");
                     }
                 }
             };
