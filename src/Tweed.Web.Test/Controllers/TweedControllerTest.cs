@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Like.Domain;
+using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Features.Shared;

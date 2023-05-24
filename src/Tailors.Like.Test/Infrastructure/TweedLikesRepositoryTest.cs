@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
-using Tweed.Like.Infrastructure;
-using Tweed.Like.Test.Helper;
+using Tailors.Like.Infrastructure;
+using Tailors.Like.Test.Helper;
 using Xunit;
 
-namespace Tweed.Like.Test.Infrastructure;
+namespace Tailors.Like.Test.Infrastructure;
 
 [Collection("RavenDB")]
 public class TweedLikesRepositoryTest

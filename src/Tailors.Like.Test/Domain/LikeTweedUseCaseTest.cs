@@ -1,8 +1,8 @@
 using Moq;
-using Tweed.Like.Domain;
+using Tailors.Like.Domain;
 using Xunit;
 
-namespace Tweed.Like.Test.Domain;
+namespace Tailors.Like.Test.Domain;
 
 public class LikeTweedUseCaseTest
 {

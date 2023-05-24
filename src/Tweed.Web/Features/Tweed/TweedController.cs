@@ -2,7 +2,7 @@ using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Like.Domain;
+using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Helper;
