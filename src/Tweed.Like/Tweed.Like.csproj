@@ -10,8 +10,4 @@
         <PackageReference Include="RavenDB.Client" Version="5.4.104" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Tweed.Thread\Tweed.Thread.csproj" />
-    </ItemGroup>
-
 </Project>
