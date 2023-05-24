@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Thread.Domain;
+using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Features.Profile;
 using Tweed.Web.Helper;
@@ -50,7 +50,7 @@ public class ProfileControllerTest
 
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
-            .ReturnsAsync(new List<Thread.Domain.Tweed>());
+            .ReturnsAsync(new List<Tailors.Thread.Domain.Tweed>());
 
         _profileController = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,

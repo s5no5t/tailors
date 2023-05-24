@@ -1,6 +1,6 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
-using Tweed.Thread.Infrastructure;
+using Tailors.Thread.Infrastructure;
 using Tweed.User.Infrastructure;
 using Xunit;
 

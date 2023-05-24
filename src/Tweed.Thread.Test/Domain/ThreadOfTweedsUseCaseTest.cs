@@ -1,5 +1,5 @@
 using Moq;
-using Tweed.Thread.Domain;
+using Tailors.Thread.Domain;
 using Xunit;
 
 namespace Tweed.Thread.Test.Domain;
@@ -27,7 +27,7 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnRootTweed_WhenThereIsOnlyRoot()
     {
-        Thread.Domain.Tweed rootTweed = new()
+        Tailors.Thread.Domain.Tweed rootTweed = new()
         {
             Id = "rootTweedId"
         };
@@ -51,11 +51,11 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsOneLeadingTweed()
     {
-        Thread.Domain.Tweed rootTweed = new()
+        Tailors.Thread.Domain.Tweed rootTweed = new()
         {
             Id = "rootTweedId"
         };
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             Id = "tweedId",
             ThreadId = "threadId"
@@ -81,7 +81,7 @@ public class ThreadOfTweedsUseCaseTest
         _tweedRepositoryMock.Setup(m =>
                 m.GetByIds(MoqExtensions.CollectionMatcher(new[] { "rootTweedId", "tweedId" })))
             .ReturnsAsync(
-                new Dictionary<string, Thread.Domain.Tweed>
+                new Dictionary<string, Tailors.Thread.Domain.Tweed>
                 {
                     { rootTweed.Id, rootTweed },
                     { tweed.Id, tweed }
@@ -97,15 +97,15 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsAnotherBranch()
     {
-        Thread.Domain.Tweed rootTweed = new()
+        Tailors.Thread.Domain.Tweed rootTweed = new()
         {
             Id = "rootTweedId"
         };
-        Thread.Domain.Tweed parentTweed = new()
+        Tailors.Thread.Domain.Tweed parentTweed = new()
         {
             Id = "parentTweedId"
         };
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             Id = "tweedId",
             ThreadId = "threadId"
@@ -141,7 +141,7 @@ public class ThreadOfTweedsUseCaseTest
         _tweedRepositoryMock.Setup(m =>
                 m.GetByIds(MoqExtensions.CollectionMatcher(new[] { "rootTweedId", "parentTweedId", "tweedId" })))
             .ReturnsAsync(
-                new Dictionary<string, Thread.Domain.Tweed>
+                new Dictionary<string, Tailors.Thread.Domain.Tweed>
                 {
                     { rootTweed.Id, rootTweed },
                     { parentTweed.Id, parentTweed },
@@ -159,7 +159,7 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             Id = "tweedId",
             ThreadId = "threadId"
@@ -177,7 +177,7 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             Id = "tweedId",
             ParentTweedId = "rootTweedId",
@@ -203,7 +203,7 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             Id = "tweedId",
             ParentTweedId = "replyTweedId",

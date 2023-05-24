@@ -3,7 +3,7 @@ using Htmx;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tweed.Thread.Domain;
+using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Features.Shared;
 using Tweed.Web.Helper;

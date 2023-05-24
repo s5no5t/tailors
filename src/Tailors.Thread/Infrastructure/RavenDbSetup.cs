@@ -1,7 +1,7 @@
 using Raven.Client.Documents;
-using Tweed.Thread.Infrastructure.Indexes;
+using Tailors.Thread.Infrastructure.Indexes;
 
-namespace Tweed.Thread.Infrastructure;
+namespace Tailors.Thread.Infrastructure;
 
 public static class RavenDbSetup
 {

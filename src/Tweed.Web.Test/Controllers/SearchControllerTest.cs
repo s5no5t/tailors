@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tweed.Thread.Domain;
+using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Features.Search;
 using Xunit;
@@ -22,7 +22,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
         _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<Thread.Domain.Tweed>());
+            .ReturnsAsync(new List<Tailors.Thread.Domain.Tweed>());
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class SearchControllerTest
     public async Task Results_ShouldSearchTweeds()
     {
         _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
-            new List<Thread.Domain.Tweed>
+            new List<Tailors.Thread.Domain.Tweed>
             {
                 new()
                 {

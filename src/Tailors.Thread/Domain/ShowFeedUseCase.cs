@@ -1,6 +1,6 @@
 using Tweed.User.Domain;
 
-namespace Tweed.Thread.Domain;
+namespace Tailors.Thread.Domain;
 
 public interface IShowFeedUseCase
 {

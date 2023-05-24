@@ -1,7 +1,7 @@
 using OneOf;
 using OneOf.Types;
 
-namespace Tweed.Thread.Domain;
+namespace Tailors.Thread.Domain;
 
 public interface IThreadOfTweedsUseCase
 {
