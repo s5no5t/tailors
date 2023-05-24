@@ -1,0 +1,66 @@
+@using IndexViewModel = Tailors.Web.Features.Search.IndexViewModel
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model IndexViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<form method="get" asp-action="Results">
+    <div class="mb-3">
+        <label for="text" class="form-label">Term</label>
+        @if (ViewData.ModelState.GetValidationState("term") == ModelValidationState.Invalid)
+        {
+            <input type="text" class="form-control is-invalid"
+                   id="term" value="@Model.Term"
+                   name="Term" aria-describedby="validationTermFeedback"/>
+            <div id="validationTermFeedback" class="invalid-feedback">
+                Please enter a search term.
+            </div>
+        }
+        else
+        {
+            <input type="text" class="form-control"
+                   id="term" value="@Model.Term" name="Term"/>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="mt-3">
+    @if (!string.IsNullOrWhiteSpace(Model.Term))
+    {
+        <h2>Users found:</h2>
+
+        @if (Model.FoundUsers.Any())
+        {
+            @foreach (var user in Model.FoundUsers)
+            {
+                <div>
+                    <a asp-controller="Profile" asp-action="Index" asp-route-userId="@user.UserId">@user.UserName</a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No users found</p>
+        }
+
+        <h2>Tweeds found:</h2>
+        
+        @if (Model.FoundTweeds.Any())
+        {
+            @foreach (var tweed in Model.FoundTweeds)
+            {
+                <div>
+                    <a asp-controller="Tweed" asp-action="ShowThreadForTweed" asp-route-tweedId="@tweed.TweedId">@tweed.Text</a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No tweeds found</p>
+        }
+    }
+</div>
