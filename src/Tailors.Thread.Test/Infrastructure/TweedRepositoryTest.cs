@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
 using Tailors.Thread.Infrastructure;
-using Tweed.Thread.Test.Helper;
+using Tailors.Thread.Test.Helper;
 using Xunit;
 
-namespace Tweed.Thread.Test.Infrastructure;
+namespace Tailors.Thread.Test.Infrastructure;
 
 [Collection("RavenDB")]
 public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>

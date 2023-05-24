@@ -3,7 +3,7 @@ using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Xunit;
 
-namespace Tweed.Thread.Test.Domain;
+namespace Tailors.Thread.Test.Domain;
 
 public class ShowFeedUseCaseTest
 {
