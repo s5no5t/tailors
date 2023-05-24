@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Htmx;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -47,12 +48,15 @@ public class FeedController : Controller
 
     public async Task<IActionResult> NewTweedsNotification(DateTime since)
     {
+        if (!Request.IsHtmx())
+            throw new Exception("HTMX request expected");
+
         var currentUserId = _userManager.GetUserId(User)!;
         var feed = await _showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
         var mostRecentFeedItem = feed.First();
 
         if (mostRecentFeedItem.CreatedAt!.Value > since)
-            return PartialView(new NewTweedsNotificationViewModel() { NewTweedsAvailable = true });
+            return PartialView(new NewTweedsNotificationViewModel { NewTweedsAvailable = true });
 
         return PartialView(new NewTweedsNotificationViewModel());
     }

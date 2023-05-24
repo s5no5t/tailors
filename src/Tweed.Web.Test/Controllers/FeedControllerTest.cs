@@ -158,11 +158,12 @@ public class FeedControllerTest
         var tweed = new Thread.Domain.Tweed
         {
             Id = "tweedId",
-            CreatedAt = instant.AddMinutes(5) 
+            CreatedAt = instant.AddMinutes(5)
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
-        
+        _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
+
         var result = await _feedController.NewTweedsNotification(instant);
 
         var resultViewModel = (NewTweedsNotificationViewModel)((PartialViewResult)result).Model!;
@@ -176,14 +177,24 @@ public class FeedControllerTest
         var tweed = new Thread.Domain.Tweed
         {
             Id = "tweedId",
-            CreatedAt = instant.AddMinutes(-5) 
+            CreatedAt = instant.AddMinutes(-5)
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Thread.Domain.Tweed> { tweed });
-        
+        _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
+
         var result = await _feedController.NewTweedsNotification(instant);
-        
+
         var resultViewModel = (NewTweedsNotificationViewModel)((PartialViewResult)result).Model!;
         Assert.False(resultViewModel.NewTweedsAvailable);
+    }
+
+    [Fact]
+    public async Task UpdateAvailable_ShouldReturnRedirect_WhenRequestIsNotFromHtmx()
+    {
+        var instant = new DateTime(2023, 5, 22, 10, 0, 0);
+
+        await Assert.ThrowsAsync<Exception>(async () =>
+            await _feedController.NewTweedsNotification(instant));
     }
 }
