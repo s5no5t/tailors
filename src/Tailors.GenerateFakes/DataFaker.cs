@@ -4,7 +4,7 @@ using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
 using Tailors.User.Domain;
 
-namespace Tweed.GenerateFakes;
+namespace Tailors.GenerateFakes;
 
 internal class DataFaker
 {
