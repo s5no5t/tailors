@@ -1,0 +1,13 @@
+@using Tailors.Web.Helper
+@inject INotificationManager NotificationManager
+
+@if (NotificationManager.SuccessMessage != null)
+{
+    <div class="alert alert-success" role="alert">
+        @NotificationManager.SuccessMessage
+    </div>
+}
+
+@{
+    NotificationManager.Clear();
+}

@@ -1,0 +1,45 @@
+@model Tailors.Web.Features.Shared.TweedViewModel
+
+<div class="d-flex flex-column mt-2 p-2 tweed @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
+     @{
+         if (!Model.IsCurrentTweed)
+         {
+             <text>hx-get="@Url.Action("ShowThreadForTweed", "Tweed", new { tweedId = Model.Id })"
+                 hx-target="body" hx-swap="outerHTML" hx-push-url="true"</text>
+         }
+     }>
+    <div>
+        <a class="link-secondary fw-bold" asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId">@Model.Author</a>
+        <small class="text-muted">@Model.CreatedAt</small>
+    </div>
+    <div class="mt-1">
+        @Model.Text
+    </div>
+    <div class="mt-1">
+        <small class="text-muted">
+            <i class="bi bi-heart-fill" style="font-size: 1em"></i> @Model.LikesCount
+        </small>
+    </div>
+    @if (Model.LikedByCurrentUser)
+    {
+        <button hx-post="@Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed })"
+                hx-target="closest .tweed"
+                hx-swap="outerHTML"
+                hx-sync="closest div:drop"
+                hx-push-url="false"
+                class="btn btn-light mt-2">
+            <i class="bi bi-heart-fill" style="font-size: 1em"></i>
+        </button>
+    }
+    else
+    {
+        <button hx-post="@Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed })"
+                hx-target="closest .tweed"
+                hx-swap="outerHTML"
+                hx-sync="closest div:drop"
+                hx-push-url="false"
+                class="btn btn-light mt-2">
+            <i class="bi bi-heart" style="font-size: 1em"></i>
+        </button>
+    }
+</div>
