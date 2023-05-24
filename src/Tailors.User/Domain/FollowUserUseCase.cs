@@ -1,4 +1,4 @@
-namespace Tweed.User.Domain;
+namespace Tailors.User.Domain;
 
 public interface IFollowUserUseCase
 {

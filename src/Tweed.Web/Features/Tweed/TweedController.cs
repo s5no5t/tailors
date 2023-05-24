@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 using Tweed.Web.Helper;
 
 namespace Tweed.Web.Features.Tweed;

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
-using Tweed.User.Domain;
-using Tweed.User.Infrastructure;
-using Tweed.User.Test.Helper;
+using Tailors.User.Domain;
+using Tailors.User.Infrastructure;
+using Tailors.User.Test.Helper;
 using Xunit;
 
-namespace Tweed.User.Test.Infrastructure;
+namespace Tailors.User.Test.Infrastructure;
 
 [Collection("RavenDB")]
 public class UserFollowsRepositoryTest
@@ -27,14 +27,14 @@ public class UserFollowsRepositoryTest
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
 
-        User.Domain.AppUser leader = new()
+        Tailors.User.Domain.AppUser leader = new()
         {
             Id = "leaderId"
         };
         await session.StoreAsync(leader);
         for (var i = 0; i < givenFollowerCount; i++)
         {
-            User.Domain.AppUser follower = new()
+            Tailors.User.Domain.AppUser follower = new()
             {
                 Id = $"follower/${i}"
             };

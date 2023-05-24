@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Thread.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 
 namespace Tweed.Web.Features.Search;
 

@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tweed.User\Tweed.User.csproj" />
+      <ProjectReference Include="..\Tailors.User\Tailors.User.csproj" />
     </ItemGroup>
 
 </Project>

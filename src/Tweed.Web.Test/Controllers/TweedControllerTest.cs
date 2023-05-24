@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 using Tweed.Web.Features.Shared;
 using Tweed.Web.Features.Tweed;
 using Tweed.Web.Helper;

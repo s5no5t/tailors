@@ -8,7 +8,7 @@ using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
 using Tailors.Thread.Domain;
 using Tailors.Thread.Infrastructure;
-using Tweed.User;
+using Tailors.User;
 
 namespace Tweed.Web;
 

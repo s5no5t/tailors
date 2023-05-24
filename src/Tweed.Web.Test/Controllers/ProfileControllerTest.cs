@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Thread.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 using Tweed.Web.Features.Profile;
 using Tweed.Web.Helper;
 using Tweed.Web.Test.TestHelper;

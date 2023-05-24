@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Raven.Client.Documents;
-using Tweed.User.Infrastructure;
-using Tweed.User.Test.Helper;
+using Tailors.User.Infrastructure;
+using Tailors.User.Test.Helper;
 using Xunit;
 
-namespace Tweed.User.Test.Infrastructure;
+namespace Tailors.User.Test.Infrastructure;
 
 [Collection("RavenDB")]
 public class UserRepositoryTest
@@ -20,7 +20,7 @@ public class UserRepositoryTest
     public async Task SearchUsers_ShouldReturnEmptyList_WhenNoResults()
     {
         using var session = _store.OpenAsyncSession();
-        await session.StoreAsync(new User.Domain.AppUser
+        await session.StoreAsync(new Tailors.User.Domain.AppUser
         {
             UserName = "UserName"
         });
@@ -37,7 +37,7 @@ public class UserRepositoryTest
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        await session.StoreAsync(new User.Domain.AppUser
+        await session.StoreAsync(new Tailors.User.Domain.AppUser
         {
             UserName = "UserName"
         });
@@ -54,7 +54,7 @@ public class UserRepositoryTest
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        await session.StoreAsync(new User.Domain.AppUser
+        await session.StoreAsync(new Tailors.User.Domain.AppUser
         {
             UserName = "UserName"
         });
@@ -73,7 +73,7 @@ public class UserRepositoryTest
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 21; i++)
         {
-            await session.StoreAsync(new User.Domain.AppUser
+            await session.StoreAsync(new Tailors.User.Domain.AppUser
             {
                 UserName = $"User-{i}"
             });

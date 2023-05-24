@@ -2,7 +2,7 @@ using Bogus;
 using Raven.Client.Documents;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 
 namespace Tweed.GenerateFakes;
 
@@ -17,7 +17,7 @@ internal class DataFaker
         _settings = settings;
     }
 
-    internal async Task<List<User.Domain.AppUser>> CreateFakeUsers()
+    internal async Task<List<Tailors.User.Domain.AppUser>> CreateFakeUsers()
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 

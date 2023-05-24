@@ -1,4 +1,4 @@
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 
 namespace Tailors.Thread.Domain;
 
