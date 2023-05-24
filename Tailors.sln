@@ -8,11 +8,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.User.Test", "src\Twee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.GenerateFakes", "src\Tweed.GenerateFakes\Tweed.GenerateFakes.csproj", "{A580B502-4FC4-4BA4-9088-667B24EA73C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Like", "src\Tweed.Like\Tweed.Like.csproj", "{8657A610-CC20-49E5-8798-DCD207523ED9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Like", "src\Tailors.Like\Tailors.Like.csproj", "{8657A610-CC20-49E5-8798-DCD207523ED9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.User", "src\Tweed.User\Tweed.User.csproj", "{0DC9A7D7-AC11-4433-BD5D-6CDA39A80FD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweed.Like.Test", "src\Tweed.Like.Test\Tweed.Like.Test.csproj", "{E0704DB4-04C8-4DD7-8033-75278E9AEF8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Like.Test", "src\Tailors.Like.Test\Tailors.Like.Test.csproj", "{E0704DB4-04C8-4DD7-8033-75278E9AEF8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Thread", "src\Tailors.Thread\Tailors.Thread.csproj", "{FBD05F00-0BA8-496F-A330-D59B79628CE2}"
 EndProject

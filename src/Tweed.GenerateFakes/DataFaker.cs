@@ -1,6 +1,6 @@
 using Bogus;
 using Raven.Client.Documents;
-using Tweed.Like.Domain;
+using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 

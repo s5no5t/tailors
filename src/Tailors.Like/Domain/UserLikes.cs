@@ -1,4 +1,4 @@
-namespace Tweed.Like.Domain;
+namespace Tailors.Like.Domain;
 
 public class UserLikes
 {
