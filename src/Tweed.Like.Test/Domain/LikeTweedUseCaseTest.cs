@@ -35,7 +35,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        var tweed = new Thread.Domain.Tweed
+        var tweed = new Tailors.Thread.Domain.Tweed
         {
             Id = "tweedId"
         };

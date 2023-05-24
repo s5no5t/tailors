@@ -7,8 +7,8 @@ using Raven.DependencyInjection;
 using Raven.Identity;
 using Tweed.Like.Domain;
 using Tweed.Like.Infrastructure;
-using Tweed.Thread.Domain;
-using Tweed.Thread.Infrastructure;
+using Tailors.Thread.Domain;
+using Tailors.Thread.Infrastructure;
 using Tweed.User.Domain;
 using Tweed.User.Infrastructure;
 using Tweed.Web;
@@ -165,6 +165,6 @@ static void SetupAssemblyScanning(WebApplicationBuilder builder)
         scan.FromAssembliesOf(typeof(AppUser)).AddClasses().AsMatchingInterface();
         scan.FromAssembliesOf(typeof(ShowFeedUseCase)).AddClasses().AsMatchingInterface();
         scan.FromAssembliesOf(typeof(UserLikes)).AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(Tweed.Thread.Domain.Tweed)).AddClasses().AsMatchingInterface();
+        scan.FromAssembliesOf(typeof(Tailors.Thread.Domain.Tweed)).AddClasses().AsMatchingInterface();
     });
 }

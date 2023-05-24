@@ -1,6 +1,6 @@
 using OneOf;
 
-namespace Tweed.Thread.Domain;
+namespace Tailors.Thread.Domain;
 
 public interface ICreateTweedUseCase
 {

@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Tweed.Thread\Tweed.Thread.csproj" />
+        <ProjectReference Include="..\Tailors.Thread\Tailors.Thread.csproj" />
     </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@ public class TweedLikesRepositoryTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedDateTime

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tweed.Like.Domain;
-using Tweed.Thread.Domain;
+using Tailors.Thread.Domain;
 using Tweed.User.Domain;
 using Tweed.Web.Features.Shared;
 using Tweed.Web.Features.Tweed;
@@ -39,19 +40,19 @@ public class TweedControllerTest
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<DateTime>()))
-            .ReturnsAsync(new Thread.Domain.Tweed
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed
             {
                 Id = "tweedId"
             });
         _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Thread.Domain.Tweed
+            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tailors.Thread.Domain.Tweed
         {
             Id = "tweedId"
         });
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
-            .ReturnsAsync(new List<Thread.Domain.Tweed>());
+            .ReturnsAsync(new List<Tailors.Thread.Domain.Tweed>());
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _tweedViewModelFactoryMock.Object)
         {
@@ -82,11 +83,11 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweeds()
     {
-        var rootTweed = new Thread.Domain.Tweed
+        var rootTweed = new Tailors.Thread.Domain.Tweed
         {
             Id = "tweedId"
         };
-        var tweeds = new List<Thread.Domain.Tweed>
+        var tweeds = new List<Tailors.Thread.Domain.Tweed>
         {
             rootTweed
         };
@@ -163,9 +164,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldReturnRedirect()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Thread.Domain.Tweed());
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Thread.Domain.Tweed());
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -182,9 +183,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSaveReplyTweed()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Thread.Domain.Tweed());
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Thread.Domain.Tweed());
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -203,9 +204,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Thread.Domain.Tweed());
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Thread.Domain.Tweed());
+            .ReturnsAsync(new Tailors.Thread.Domain.Tweed());
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -257,7 +258,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -272,7 +273,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -287,7 +288,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
@@ -301,7 +302,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Thread.Domain.Tweed tweed = new()
+        Tailors.Thread.Domain.Tweed tweed = new()
         {
             AuthorId = "author"
         };
