@@ -165,6 +165,6 @@ static void SetupAssemblyScanning(WebApplicationBuilder builder)
         scan.FromAssembliesOf(typeof(AppUser)).AddClasses().AsMatchingInterface();
         scan.FromAssembliesOf(typeof(ShowFeedUseCase)).AddClasses().AsMatchingInterface();
         scan.FromAssembliesOf(typeof(UserLikes)).AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(Tailors.Thread.Domain.Tweed)).AddClasses().AsMatchingInterface();
+        scan.FromAssembliesOf(typeof(Tweed)).AddClasses().AsMatchingInterface();
     });
 }
