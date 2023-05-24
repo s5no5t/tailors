@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Trace;
@@ -18,14 +19,19 @@ using IdentityRole = Raven.Identity.IdentityRole;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages().AddMvcOptions(options => options.Filters.Add<RavenSaveChangesAsyncPageFilter>());
+builder.Services.AddRazorPages()
+    .AddMvcOptions(options => options.Filters.Add<RavenSaveChangesAsyncPageFilter>());
 builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationExpanders.Add(new FeatureFolderLocationExpander());
 });
-
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 SetupRavenDbServices(builder);
 SetupIdentity(builder);
@@ -94,7 +100,7 @@ static void SetupIdentity(WebApplicationBuilder builder)
     builder.Services.ConfigureApplicationCookie(
         options => options.LoginPath = "/Identity/Account/login");
 
-    
+
     builder.Services.Configure<IdentityOptions>(options =>
     {
         options.Password.RequireDigit = false;
