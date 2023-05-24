@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tweed.User.Domain;
-using Tweed.User.Infrastructure.Indexes;
+using Tailors.User.Domain;
+using Tailors.User.Infrastructure.Indexes;
 
-namespace Tweed.User.Infrastructure;
+namespace Tailors.User.Infrastructure;
 
 public class UserFollowsRepository : IUserFollowsRepository
 {

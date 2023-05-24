@@ -6,7 +6,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 
 namespace Tweed.Web.Areas.Identity.Pages.Account;
 

@@ -1,6 +1,6 @@
 using Raven.Client.Documents.Indexes;
 
-namespace Tweed.User.Infrastructure.Indexes;
+namespace Tailors.User.Infrastructure.Indexes;
 
 public class Users_ByUserName : AbstractIndexCreationTask<Domain.AppUser>
 {

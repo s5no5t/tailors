@@ -1,6 +1,6 @@
 using Moq;
 using Tailors.Thread.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 using Xunit;
 
 namespace Tailors.Thread.Test.Domain;

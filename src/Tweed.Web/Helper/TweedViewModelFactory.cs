@@ -2,7 +2,7 @@ using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Tailors.Like.Domain;
-using Tweed.User.Domain;
+using Tailors.User.Domain;
 using Tweed.Web.Features.Shared;
 
 namespace Tweed.Web.Helper;
