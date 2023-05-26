@@ -41,11 +41,11 @@ Find more info about how this app is structured under [STRUCTURE.md](./STRUCTURE
 
 4. Optional: Create some fake data
 
-        dotnet run --project ./src/Tweed.GenerateFakes
+        dotnet run --project ./src/Tailors.GenerateFakes
 
 5. Run web app
 
-        dotnet run --project ./src/Tweed.Web
+        dotnet run --project ./src/Tailors.Web
 
 ## Run Tests
 
