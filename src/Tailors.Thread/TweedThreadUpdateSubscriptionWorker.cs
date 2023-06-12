@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using OneOf;
 using OneOf.Types;
 using Raven.Client.Documents;
@@ -8,9 +10,8 @@ using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
 using Tailors.Thread.Domain;
 using Tailors.Thread.Infrastructure;
-using Tailors.User;
 
-namespace Tailors.Web;
+namespace Tailors.Thread;
 
 public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 {
