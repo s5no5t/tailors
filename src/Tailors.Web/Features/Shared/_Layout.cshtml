@@ -18,22 +18,11 @@
     <link rel="stylesheet" href="~/Tailors.Web.styles.css" asp-append-version="true"/>
 </head>
 <body hx-boost="true">
+
 <header>
-    <nav class="navbar fixed-bottom navbar-expand-sm navbar-toggleable-sm navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Feed" asp-action="Index">
-                <img src="/images/tweed.svg" alt="Tweed Logo" width="30" height="24"/>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse">
-                <partial name="_NavBar"/>
-            </div>
-        </div>
-    </nav>
+    <partial name="_NavBar"/>
 </header>
+
 <div class="container">
     <main role="main" class="p-3">
         <partial name="_NotificationPartial"/>
@@ -45,5 +34,6 @@
 <script src="~/js/site.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", false)
+
 </body>
 </html>
