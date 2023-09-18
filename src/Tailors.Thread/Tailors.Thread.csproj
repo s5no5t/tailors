@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="OneOf" Version="3.0.263" />
-        <PackageReference Include="RavenDB.Client" Version="5.4.104" />
+        <PackageReference Include="RavenDB.Client" Version="5.4.110" />
     </ItemGroup>
 
     <ItemGroup>
