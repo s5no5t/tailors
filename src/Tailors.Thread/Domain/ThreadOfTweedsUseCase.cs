@@ -106,28 +106,8 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         var thread = await _tweedThreadRepository.GetById(threadId);
         if (thread is null)
             return new ReferenceNotFoundError($"Thread {threadId} not found");
-            
-        Queue<List<TweedThread.TweedReference>> queue = new();
-        queue.Enqueue(new List<TweedThread.TweedReference>
-        {
-            thread.Root
-        });
 
-        while (queue.Count > 0)
-        {
-            var currentPath = queue.Dequeue();
-            var currentRef = currentPath.Last();
-
-            if (currentRef.TweedId == tweedId)
-                return currentPath.Select(t => t.TweedId!).ToArray();
-
-            foreach (var reply in currentRef.Replies)
-            {
-                var replyPath = new List<TweedThread.TweedReference>(currentPath) { reply };
-                queue.Enqueue(replyPath);
-            }
-        }
-
-        return Array.Empty<string>();
+        var path = (FindTweedInThread(thread, tweedId) ?? new List<TweedThread.TweedReference>()).Select(tr => tr.TweedId!).ToArray();
+        return path;
     }
 }
