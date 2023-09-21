@@ -20,7 +20,7 @@ public class ThreadOfTweedsUseCaseTest
     public async Task GetThreadTweedsForTweed_ShouldReturnFail_WhenTweedIsntFound()
     {
         var tweeds = await _sut.GetThreadTweedsForTweed("unknownTweedId");
-        
+
         Assert.True(tweeds.IsT1);
     }
 
@@ -231,5 +231,47 @@ public class ThreadOfTweedsUseCaseTest
 
         Assert.True(result.IsT0);
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
+    }
+    
+    [Fact(Skip = "missing find Tweed in thread function")]
+    public async Task AddTweedToThread_ShouldInsertThreadReference_WhenThreadDepthIsLarger64()
+    {
+        Tweed tweed = new()
+        {
+            Id = "tweedId",
+            ParentTweedId = "replyTweed-63",
+            ThreadId = "threadId"
+        };
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id)).ReturnsAsync(tweed);
+        TweedThread thread = new()
+        {
+            Id = "threadId",
+            Root = new TweedThread.TweedReference
+            {
+                TweedId = "rootTweedId",
+                Replies = new List<TweedThread.TweedReference>
+                {
+                    CreateThreadRefs(0, 63)
+                }
+            }
+        };
+        TweedThread.TweedReference CreateThreadRefs(int currentDepth, int maxDepth)
+        {
+            return new()
+            {
+                TweedId = $"replyTweed-{currentDepth}",
+                Replies = currentDepth == maxDepth
+                    ? new List<TweedThread.TweedReference>()
+                    : new List<TweedThread.TweedReference>
+                    {
+                        CreateThreadRefs(currentDepth + 1, maxDepth)
+                    }
+            };
+        }
+        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
+
+        var result = await _sut.AddTweedToThread("tweedId");
+
+        Assert.True(result.IsT0);
     }
 }
