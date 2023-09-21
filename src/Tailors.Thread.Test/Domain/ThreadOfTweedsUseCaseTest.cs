@@ -274,4 +274,38 @@ public class ThreadOfTweedsUseCaseTest
 
         Assert.True(result.IsT0);
     }
+
+    [Fact]
+    public async Task FindTweedInThread_ShouldReturnTweedId_WhenTweedIsInThread()
+    {
+        TweedThread thread = new()
+        {
+            Id = "threadId",
+            Root = new TweedThread.TweedReference
+            {
+                TweedId = "rootTweedId",
+                Replies = new List<TweedThread.TweedReference>
+                {
+                    new()
+                    {
+                        TweedId = "someTweedId",
+                        Replies = new List<TweedThread.TweedReference>()
+                        {
+                            new()
+                            {
+                                TweedId = "tweedId",
+                                Replies = new List<TweedThread.TweedReference>()
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
+        
+        var path = await _sut.FindTweedInThread("tweedId", "threadId");
+        
+        Assert.True(path.IsT0);
+        Assert.Equal(new[]{"rootTweedId", "someTweedId", "tweedId"}, path.AsT0);
+    }
 }
