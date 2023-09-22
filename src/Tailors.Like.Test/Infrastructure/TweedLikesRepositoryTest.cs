@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Tailors.Like.Test.Infrastructure;
 
+[Trait("Category","Integration")]
 [Collection("RavenDB")]
 public class TweedLikesRepositoryTest
 {

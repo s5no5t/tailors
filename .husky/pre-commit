@@ -19,7 +19,7 @@
 ## or put your custom commands -------------------
 #echo 'Husky.Net is awesome!'
 
-exec dotnet test "./"
+exec dotnet test "./" --filter "TestCategory!=Integration" --no-build --nologo
 
 if [ $? -ne 0 ]; then
   echo "Tests must pass before commit!"
