@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using OneOf;
 using OneOf.Types;
 
@@ -54,7 +55,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         // This is a root Tweed
         if (tweed.ParentTweedId is null)
         {
-            thread!.Root.TweedId = tweedId;
+            thread.Root.TweedId = tweedId;
             return new Success();
         }
 
@@ -70,7 +71,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         return new Success();
     }
 
-    private static List<TweedThread.TweedReference> FindTweedInThread(TweedThread thread,
+    private static ReadOnlyCollection<TweedThread.TweedReference> FindTweedInThread(TweedThread thread,
         string tweedId)
     {
         Queue<List<TweedThread.TweedReference>> queue = new();
@@ -85,7 +86,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
             var currentRef = currentPath.Last();
 
             if (currentRef.TweedId == tweedId)
-                return currentPath;
+                return currentPath.AsReadOnly();
 
             foreach (var reply in currentRef.Replies)
             {
@@ -94,16 +95,16 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
             }
         }
 
-        return new List<TweedThread.TweedReference>();
+        return new ReadOnlyCollection<TweedThread.TweedReference>(Array.Empty<TweedThread.TweedReference>());
     }
 
-    public async Task<OneOf<string[], ReferenceNotFoundError>> FindTweedInThread(string tweedId, string threadId)
+    public async Task<OneOf<ReadOnlyCollection<string>, ReferenceNotFoundError>> FindTweedInThread(string tweedId, string threadId)
     {
         var thread = await _tweedThreadRepository.GetById(threadId);
         if (thread is null)
             return new ReferenceNotFoundError($"Thread {threadId} not found");
 
-        var path = FindTweedInThread(thread, tweedId).Select(tr => tr.TweedId!).ToArray();
+        var path = FindTweedInThread(thread, tweedId).Select(tr => tr.TweedId!).ToList().AsReadOnly();
         return path;
     }
 }
