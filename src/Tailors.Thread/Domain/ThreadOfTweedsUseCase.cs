@@ -34,9 +34,6 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
             return new ReferenceNotFoundError($"Thread {tweed.ThreadId} not found");
 
         var path = FindTweedInThread(thread, tweedId);
-        if (path is null)
-            return new ReferenceNotFoundError($"Tweed {tweedId} not found in Thread {tweed.ThreadId}");
-
         var tweedsByIds = await _tweedRepository.GetByIds(path.Select(t => t.TweedId!));
         var tweeds = tweedsByIds.Values.Select(t => t).ToList();
         return tweeds;
@@ -63,9 +60,8 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
 
         // This is a reply to a reply
         var path = FindTweedInThread(thread, tweed.ParentTweedId);
-        if (path is null)
-            return new ReferenceNotFoundError(
-                $"Parent Tweed {tweed.ParentTweedId} not found in Thread {thread.Id}");
+        if (path.Count == 0)
+            return new ReferenceNotFoundError($"Tweed {tweed.ParentTweedId} not found in thread {thread.Id}");
         var parentTweedRef = path.Last();
         parentTweedRef.Replies.Add(new TweedThread.TweedReference
         {
@@ -74,7 +70,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         return new Success();
     }
 
-    private static List<TweedThread.TweedReference>? FindTweedInThread(TweedThread thread,
+    private static List<TweedThread.TweedReference> FindTweedInThread(TweedThread thread,
         string tweedId)
     {
         Queue<List<TweedThread.TweedReference>> queue = new();
@@ -98,7 +94,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
             }
         }
 
-        return null;
+        return new List<TweedThread.TweedReference>();
     }
 
     public async Task<OneOf<string[], ReferenceNotFoundError>> FindTweedInThread(string tweedId, string threadId)
@@ -107,7 +103,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         if (thread is null)
             return new ReferenceNotFoundError($"Thread {threadId} not found");
 
-        var path = (FindTweedInThread(thread, tweedId) ?? new List<TweedThread.TweedReference>()).Select(tr => tr.TweedId!).ToArray();
+        var path = FindTweedInThread(thread, tweedId).Select(tr => tr.TweedId!).ToArray();
         return path;
     }
 }
