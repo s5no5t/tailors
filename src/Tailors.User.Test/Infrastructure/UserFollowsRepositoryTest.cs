@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Tailors.User.Test.Infrastructure;
 
+[Trait("Category","Integration")]
 [Collection("RavenDB")]
 public class UserFollowsRepositoryTest
 {

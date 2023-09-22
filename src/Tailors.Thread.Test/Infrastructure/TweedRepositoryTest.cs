@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Tailors.Thread.Test.Infrastructure;
 
+[Trait("Category","Integration")]
 [Collection("RavenDB")]
 public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
 {
