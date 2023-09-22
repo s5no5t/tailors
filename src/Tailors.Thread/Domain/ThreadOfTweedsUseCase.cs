@@ -71,6 +71,16 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         return new Success();
     }
 
+    public async Task<OneOf<ReadOnlyCollection<string>, ReferenceNotFoundError>> FindTweedInThread(string tweedId, string threadId)
+    {
+        var thread = await _tweedThreadRepository.GetById(threadId);
+        if (thread is null)
+            return new ReferenceNotFoundError($"Thread {threadId} not found");
+
+        var path = FindTweedInThread(thread, tweedId).Select(tr => tr.TweedId!).ToList().AsReadOnly();
+        return path;
+    }
+
     private static ReadOnlyCollection<TweedThread.TweedReference> FindTweedInThread(TweedThread thread,
         string tweedId)
     {
@@ -96,15 +106,5 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         }
 
         return new ReadOnlyCollection<TweedThread.TweedReference>(Array.Empty<TweedThread.TweedReference>());
-    }
-
-    public async Task<OneOf<ReadOnlyCollection<string>, ReferenceNotFoundError>> FindTweedInThread(string tweedId, string threadId)
-    {
-        var thread = await _tweedThreadRepository.GetById(threadId);
-        if (thread is null)
-            return new ReferenceNotFoundError($"Thread {threadId} not found");
-
-        var path = FindTweedInThread(thread, tweedId).Select(tr => tr.TweedId!).ToList().AsReadOnly();
-        return path;
     }
 }
