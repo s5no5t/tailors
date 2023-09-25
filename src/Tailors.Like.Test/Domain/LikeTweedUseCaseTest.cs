@@ -1,7 +1,6 @@
 using Moq;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain.TweedAggregate;
-using Tailors.Thread.Infrastructure;
 using Xunit;
 
 namespace Tailors.Like.Test.Domain;
