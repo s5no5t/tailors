@@ -40,7 +40,7 @@ public class TweedThread
         }
 
         // This is a reply to a reply
-        var path = FindTweedInThread(tweed.ParentTweedId);
+        var path = FindTweedPath(tweed.ParentTweedId);
         if (path.Count == 0)
             return new DomainError($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
         var parentTweedRef = path.Last();
@@ -48,7 +48,7 @@ public class TweedThread
         return new Success();
     }
 
-    private ReadOnlyCollection<TweedReference> FindTweedInThread(string tweedId)
+    public ReadOnlyCollection<TweedReference> FindTweedPath(string tweedId)
     {
         if (Root is null)
             return new ReadOnlyCollection<TweedReference>(Array.Empty<TweedReference>());
