@@ -29,7 +29,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt);
         await _tweedRepository.Create(tweed);
 
-        var thread = await CreateThread(tweed.Id!);
+        var thread = await CreateThread(tweed);
         tweed.ThreadId = thread.Id;
         return tweed;
     }
@@ -48,15 +48,10 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         return tweed;
     }
 
-    private async Task<TweedThread> CreateThread(string tweedId)
+    private async Task<TweedThread> CreateThread(Tweed tweed)
     {
-        TweedThread thread = new()
-        {
-            Root =
-            {
-                TweedId = tweedId
-            }
-        };
+        TweedThread thread = new();
+        thread.AddTweed(tweed);
         await _tweedThreadRepository.Create(thread);
         return thread;
     }

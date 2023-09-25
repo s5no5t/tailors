@@ -13,13 +13,18 @@ public class TweedThread
     }
 
     public string? Id { get; }
-    public TweedReference Root { get; } = new();
+    public TweedReference? Root { get; private set; }
 
     public class TweedReference
     {
-        public string? TweedId { get; set; }
+        public TweedReference(string? tweedId)
+        {
+            TweedId = tweedId;
+        }
 
-        public List<TweedReference> Replies { get; set; } = new();
+        public string? TweedId { get; }
+
+        public List<TweedReference> Replies { get; } = new();
     }
     
     public OneOf<Success, ReferenceNotFoundError> AddTweed(Tweed tweed)
@@ -30,7 +35,7 @@ public class TweedThread
         // This is a root Tweed
         if (tweed.ParentTweedId is null)
         {
-            Root.TweedId = tweed.Id;
+            Root = new TweedReference(tweed.Id);
             return new Success();
         }
 
@@ -39,15 +44,15 @@ public class TweedThread
         if (path.Count == 0)
             return new ReferenceNotFoundError($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
         var parentTweedRef = path.Last();
-        parentTweedRef.Replies.Add(new TweedReference
-        {
-            TweedId = tweed.Id
-        });
+        parentTweedRef.Replies.Add(new TweedReference(tweed.Id));
         return new Success();
     }
 
     private ReadOnlyCollection<TweedReference> FindTweedInThread(string tweedId)
     {
+        if (Root is null)
+            return new ReadOnlyCollection<TweedReference>(Array.Empty<TweedReference>());
+        
         Queue<List<TweedReference>> queue = new();
         queue.Enqueue(new List<TweedReference>
         {
