@@ -16,6 +16,6 @@ public class Tweed
     public string? ParentTweedId { get; }
     public string? Text { get; }
     public DateTime? CreatedAt { get; init; }
-    public string? AuthorId { get; set; }
+    public string? AuthorId { get; }
     public string? ThreadId { get; set; }
 }
