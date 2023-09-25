@@ -2,6 +2,7 @@
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure.Indexes;
 
 namespace Tailors.Thread.Infrastructure;

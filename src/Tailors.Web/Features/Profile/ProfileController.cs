@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
 using Tailors.Web.Helper;
 

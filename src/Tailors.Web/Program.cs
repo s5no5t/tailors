@@ -9,6 +9,7 @@ using Tailors.Like.Domain;
 using Tailors.Like.Infrastructure;
 using Tailors.Thread;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 using Tailors.User.Infrastructure;

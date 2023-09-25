@@ -1,4 +1,4 @@
-namespace Tailors.Thread.Infrastructure;
+namespace Tailors.Thread.Domain.TweedAggregate;
 
 public class Tweed
 {

@@ -1,3 +1,4 @@
+using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 
