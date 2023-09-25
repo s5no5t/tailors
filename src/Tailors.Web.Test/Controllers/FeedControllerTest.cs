@@ -36,10 +36,7 @@ public class FeedControllerTest
             Id = "currentUser"
         };
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
-        var tweed = new Tweed("twedId")
-        {
-            AuthorId = "author"
-        };
+        var tweed = new Tweed(id: "twedId", authorId: "author");
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.Create(tweed, false))
@@ -82,10 +79,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Index_ShouldReturnTweeds()
     {
-        var tweed = new Tweed("tweedId")
-        {
-            AuthorId = "author"
-        };
+        var tweed = new Tweed(id: "tweedId", authorId: "author");
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock
@@ -127,10 +121,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Feed_ShouldReturnTweeds()
     {
-        var tweed = new Tweed("tweedId")
-        {
-            AuthorId = "author"
-        };
+        var tweed = new Tweed(id: "tweedId", authorId: "author");
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock
