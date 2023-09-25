@@ -32,14 +32,9 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
-        Tweed currentUserTweed = new()
-        {
-            Text = "test",
-            AuthorId = "userId",
-            CreatedAt = FixedDateTime.AddHours(1)
-        };
+        Tweed currentUserTweed = new(text: "test", authorId: "userId", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
-            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
+            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId!, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
@@ -52,12 +47,7 @@ public class ShowFeedUseCaseTest
     {
         var followedUser = new AppUser();
 
-        Tweed followedUserTweed = new()
-        {
-            Text = "test",
-            AuthorId = followedUser.Id!,
-            CreatedAt = FixedDateTime.AddHours(1)
-        };
+        Tweed followedUserTweed = new(text: "test", authorId: followedUser.Id!, createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { followedUserTweed });
@@ -70,14 +60,9 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldNotReturnTheSameTweedTwice()
     {
-        Tweed currentUserTweed = new()
-        {
-            Text = "test",
-            AuthorId = "userId",
-            CreatedAt = FixedDateTime.AddHours(1)
-        };
+        Tweed currentUserTweed = new(text: "test", authorId: "userId", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
-            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
+            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId!, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { currentUserTweed, currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
