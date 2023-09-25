@@ -29,8 +29,8 @@ public class TweedThread
     
     public OneOf<Success, DomainError> AddTweed(Tweed tweed)
     {
-        if (tweed.ThreadId is null)
-            return new DomainError($"Thread {tweed.ThreadId} is missing ThreadId");
+        if (tweed.Id is null)
+            return new DomainError($"Tweed {tweed.Id} is missing Id");
 
         // This is a root Tweed
         if (tweed.ParentTweedId is null)
