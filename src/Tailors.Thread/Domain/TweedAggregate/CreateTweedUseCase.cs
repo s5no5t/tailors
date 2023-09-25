@@ -26,12 +26,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
     public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
         DateTime createdAt)
     {
-        Tweed tweed = new()
-        {
-            AuthorId = authorId,
-            Text = text,
-            CreatedAt = createdAt
-        };
+        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt);
         await _tweedRepository.Create(tweed);
 
         var thread = await CreateThread(tweed.Id!);
