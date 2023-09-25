@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 using Tailors.Web.Test.TestHelper;

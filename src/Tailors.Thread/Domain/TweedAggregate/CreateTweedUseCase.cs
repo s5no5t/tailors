@@ -1,7 +1,7 @@
 using OneOf;
 using Tailors.Thread.Infrastructure;
 
-namespace Tailors.Thread.Domain;
+namespace Tailors.Thread.Domain.TweedAggregate;
 
 public interface ICreateTweedUseCase
 {

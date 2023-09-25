@@ -1,4 +1,5 @@
 using Raven.Client.Documents.Indexes;
+using Tailors.Thread.Domain.TweedAggregate;
 
 namespace Tailors.Thread.Infrastructure.Indexes;
 
