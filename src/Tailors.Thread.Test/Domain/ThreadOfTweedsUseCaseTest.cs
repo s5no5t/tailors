@@ -18,7 +18,7 @@ public class ThreadOfTweedsUseCaseTest
     }
 
     [Fact]
-    public async Task GetThreadTweedsForTweed_ShouldReturnFail_WhenTweedIsntFound()
+    public async Task GetThreadTweedsForTweed_ShouldReturnFail_WhenTweedNotFound()
     {
         var tweeds = await _sut.GetThreadTweedsForTweed("unknownTweedId");
 
@@ -29,16 +29,10 @@ public class ThreadOfTweedsUseCaseTest
     public async Task GetThreadTweedsForTweed_ShouldReturnRootTweed_WhenThereIsOnlyRoot()
     {
         Tweed rootTweed = new(id: "rootTweedId");
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = rootTweed.Id
-            }
-        };
-        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
         _tweedRepositoryMock.Setup(m => m.GetById("rootTweedId")).ReturnsAsync(rootTweed);
+        TweedThread thread = new(id: "threadId");
+        thread.AddTweed(rootTweed);
+        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id!)).ReturnsAsync(thread);
 
         var tweeds = await _sut.GetThreadTweedsForTweed("rootTweedId");
 
@@ -49,25 +43,15 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsOneLeadingTweed()
     {
-        Tweed rootTweed = new(id: "rootTweedId");
-        Tweed tweed = new(id: "tweedId", threadId: "threadId");
+        Tweed rootTweed = new(id: "rootTweedId", threadId: "threadId");
+        Tweed tweed = new(id: "tweedId", threadId: "threadId", parentTweedId: rootTweed.Id!);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId",
-                Replies = new List<TweedThread.TweedReference>
-                {
-                    new()
-                    {
-                        TweedId = "tweedId"
-                    }
-                }
-            }
-        };
-        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
+
+        TweedThread thread = new(id: "threadId");
+        thread.AddTweed(rootTweed);
+        thread.AddTweed(tweed);
+           
+        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id!)).ReturnsAsync(thread);
 
         _tweedRepositoryMock.Setup(m =>
                 m.GetByIds(MoqExtensions.CollectionMatcher(new[] { "rootTweedId", "tweedId" })))
@@ -88,37 +72,18 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsAnotherBranch()
     {
-        Tweed rootTweed = new(id: "rootTweedId");
-        Tweed parentTweed = new(id: "parentTweedId");
-        Tweed tweed = new(id: "tweedId", threadId: "threadId");
+        Tweed rootTweed = new(id: "rootTweedId", threadId: "threadId");
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", parentTweedId: "rootTweedId");
+        Tweed tweed = new(id: "tweedId", threadId: "threadId", parentTweedId: "parentTweedId");
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId",
-                Replies = new List<TweedThread.TweedReference>
-                {
-                    new()
-                    {
-                        TweedId = "parentTweedId",
-                        Replies = new List<TweedThread.TweedReference>
-                        {
-                            new()
-                            {
-                                TweedId = "tweedId"
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        TweedId = "otherTweedId"
-                    }
-                }
-            }
-        };
-        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id)).ReturnsAsync(thread);
+        Tweed otherTweed = new(id: "otherTweedId", threadId: "threadId", parentTweedId: "rootTweedId");
+
+        TweedThread thread = new(id: "threadId");
+        thread.AddTweed(rootTweed);
+        thread.AddTweed(parentTweed);
+        thread.AddTweed(tweed);
+        thread.AddTweed(otherTweed);
+        _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id!)).ReturnsAsync(thread);
         _tweedRepositoryMock.Setup(m =>
                 m.GetByIds(MoqExtensions.CollectionMatcher(new[] { "rootTweedId", "parentTweedId", "tweedId" })))
             .ReturnsAsync(
@@ -154,16 +119,13 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
     {
+        Tweed rootTweed = new(id: "rootTweedId", threadId: "threadId");
+        _tweedRepositoryMock.Setup(m => m.GetById(rootTweed.Id!)).ReturnsAsync(rootTweed);
         Tweed tweed = new(id: "tweedId", parentTweedId: "rootTweedId", threadId: "threadId");
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId"
-            }
-        };
+        TweedThread thread = new(id: "threadId");
+        thread.AddTweed(rootTweed);
+
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
         var result = await _sut.AddTweedToThread("tweedId");
@@ -175,99 +137,20 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
     {
+        Tweed rootTweed = new(id: "rootTweedId", threadId: "threadId");
+        Tweed replyTweed = new(id: "replyTweedId", threadId: "threadId", parentTweedId: "rootTweedId");
         Tweed tweed = new(id: "tweedId", parentTweedId: "replyTweedId", threadId: "threadId");
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId",
-                Replies = new List<TweedThread.TweedReference>
-                {
-                    new()
-                    {
-                        TweedId = "replyTweedId"
-                    }
-                }
-            }
-        };
+        
+        TweedThread thread = new(id: "threadId");
+        thread.AddTweed(rootTweed);
+        thread.AddTweed(replyTweed);
+        
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
         var result = await _sut.AddTweedToThread("tweedId");
 
         Assert.True(result.IsT0);
         Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
-    }
-    
-    [Fact(Skip = "missing find Tweed in thread function")]
-    public async Task AddTweedToThread_ShouldInsertThreadReference_WhenThreadDepthIsLarger64()
-    {
-        Tweed tweed = new(id: "tweedId", parentTweedId: "replyTweed-63", threadId: "threadId");
-        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId",
-                Replies = new List<TweedThread.TweedReference>
-                {
-                    CreateThreadRefs(0, 63)
-                }
-            }
-        };
-        TweedThread.TweedReference CreateThreadRefs(int currentDepth, int maxDepth)
-        {
-            return new()
-            {
-                TweedId = $"replyTweed-{currentDepth}",
-                Replies = currentDepth == maxDepth
-                    ? new List<TweedThread.TweedReference>()
-                    : new List<TweedThread.TweedReference>
-                    {
-                        CreateThreadRefs(currentDepth + 1, maxDepth)
-                    }
-            };
-        }
-        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
-
-        var result = await _sut.AddTweedToThread("tweedId");
-
-        Assert.True(result.IsT0);
-    }
-
-    [Fact]
-    public async Task FindTweedInThread_ShouldReturnTweedId_WhenTweedIsInThread()
-    {
-        TweedThread thread = new()
-        {
-            Id = "threadId",
-            Root = new TweedThread.TweedReference
-            {
-                TweedId = "rootTweedId",
-                Replies = new List<TweedThread.TweedReference>
-                {
-                    new()
-                    {
-                        TweedId = "someTweedId",
-                        Replies = new List<TweedThread.TweedReference>()
-                        {
-                            new()
-                            {
-                                TweedId = "tweedId",
-                                Replies = new List<TweedThread.TweedReference>()
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
-        
-        var path = await _sut.FindTweedInThread("tweedId", "threadId");
-        
-        Assert.True(path.IsT0);
-        Assert.Equal(new[]{"rootTweedId", "someTweedId", "tweedId"}, path.AsT0);
     }
 }
