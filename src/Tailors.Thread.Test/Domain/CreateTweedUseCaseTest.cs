@@ -41,14 +41,10 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateReplyTweed_SavesTweed()
     {
-        Tweed parentTweed = new()
-        {
-            Id = "parentTweedId",
-            ThreadId = "threadId"
-        };
-        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId");
+        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
 
-        var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id);
+        var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id!);
 
         Assert.True(result.IsT0);
         _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Tweed>()));
@@ -57,12 +53,8 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateReplyTweed_SetsThreadId()
     {
-        Tweed parentTweed = new()
-        {
-            Id = "parentTweedId",
-            ThreadId = "threadId"
-        };
-        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id)).ReturnsAsync(parentTweed);
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId");
+        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");
 

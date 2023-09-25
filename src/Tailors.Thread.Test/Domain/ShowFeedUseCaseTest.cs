@@ -93,13 +93,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            Tweed tweed = new()
-            {
-                Id = $"tweeds/{i}",
-                Text = "test",
-                AuthorId = "userId",
-                CreatedAt = FixedDateTime
-            };
+            Tweed tweed = new(id: $"tweeds/{i}", text: "test", authorId: "userId", createdAt: FixedDateTime);
             return tweed;
         }).ToList();
         _tweedRepositoryMock
@@ -116,13 +110,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            Tweed tweed = new()
-            {
-                Id = $"tweeds/{i}",
-                Text = "test",
-                AuthorId = "userId",
-                CreatedAt = FixedDateTime
-            };
+            Tweed tweed = new(id: $"tweeds/{i}", text: "test", authorId: "userId", createdAt: FixedDateTime);
             return tweed;
         }).ToList();
         _tweedRepositoryMock
