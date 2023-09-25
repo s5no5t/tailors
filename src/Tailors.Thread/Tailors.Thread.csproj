@@ -16,8 +16,5 @@
     </ItemGroup>
 
 
-    <ItemGroup>
-      <Folder Include="Domain\ThreadAggregate\" />
-    </ItemGroup>
 
 </Project>

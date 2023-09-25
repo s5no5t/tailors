@@ -1,8 +1,7 @@
 using Tailors.Thread.Domain.TweedAggregate;
-using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 
-namespace Tailors.Thread.Domain;
+namespace Tailors.Thread.Domain.ThreadAggregate;
 
 public interface IShowFeedUseCase
 {
