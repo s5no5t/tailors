@@ -1,5 +1,4 @@
 using Raven.Client.Documents.Session;
-using Tailors.Thread.Domain;
 using Tailors.Thread.Domain.ThreadAggregate;
 
 namespace Tailors.Thread.Infrastructure;

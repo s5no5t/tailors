@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tailors.Thread.Domain;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
 

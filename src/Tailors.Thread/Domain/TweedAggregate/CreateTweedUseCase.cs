@@ -1,6 +1,5 @@
 using OneOf;
 using Tailors.Thread.Domain.ThreadAggregate;
-using Tailors.Thread.Infrastructure;
 
 namespace Tailors.Thread.Domain.TweedAggregate;
 
