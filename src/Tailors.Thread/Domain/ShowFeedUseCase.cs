@@ -1,3 +1,4 @@
+using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 
 namespace Tailors.Thread.Domain;

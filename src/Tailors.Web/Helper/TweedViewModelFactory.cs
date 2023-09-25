@@ -2,6 +2,7 @@ using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Tailors.Like.Domain;
+using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 using Tailors.Web.Features.Shared;
 
@@ -9,9 +10,9 @@ namespace Tailors.Web.Helper;
 
 public interface ITweedViewModelFactory
 {
-    Task<TweedViewModel> Create(Thread.Domain.Tweed tweed, bool isCurrent = false);
+    Task<TweedViewModel> Create(Tweed tweed, bool isCurrent = false);
 
-    Task<List<TweedViewModel>> Create(List<Thread.Domain.Tweed> tweeds,
+    Task<List<TweedViewModel>> Create(List<Tweed> tweeds,
         string currentTweedId = "none");
 }
 
@@ -33,7 +34,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> Create(Thread.Domain.Tweed tweed, bool isCurrent)
+    public async Task<TweedViewModel> Create(Tweed tweed, bool isCurrent)
     {
         var humanizedCreatedAt = tweed.CreatedAt?.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
@@ -57,7 +58,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Thread.Domain.Tweed> tweeds,
+    public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds,
         string currentTweedId)
     {
         List<TweedViewModel> tweedViewModels = new();

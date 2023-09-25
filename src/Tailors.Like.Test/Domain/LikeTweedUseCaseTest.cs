@@ -1,5 +1,6 @@
 using Moq;
 using Tailors.Like.Domain;
+using Tailors.Thread.Infrastructure;
 using Xunit;
 
 namespace Tailors.Like.Test.Domain;
@@ -35,7 +36,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        var tweed = new Tailors.Thread.Domain.Tweed
+        var tweed = new Tweed
         {
             Id = "tweedId"
         };

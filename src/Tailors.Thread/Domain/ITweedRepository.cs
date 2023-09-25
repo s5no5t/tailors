@@ -1,3 +1,5 @@
+using Tailors.Thread.Infrastructure;
+
 namespace Tailors.Thread.Domain;
 
 public interface ITweedRepository

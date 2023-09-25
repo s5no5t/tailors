@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using OneOf;
 using OneOf.Types;
+using Tailors.Thread.Infrastructure;
 
 namespace Tailors.Thread.Domain;
 

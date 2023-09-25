@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
 using Tailors.Web.Features.Search;
 using Xunit;
