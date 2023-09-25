@@ -34,7 +34,7 @@ public class Tweed
         CreatedAt = createdAt;
     }
 
-    public string? Id { get; protected set; }
+    public string? Id { get; }
     public string? ParentTweedId { get; set; }
     public string? Text { get; init; }
     public DateTime? CreatedAt { get; init; }
