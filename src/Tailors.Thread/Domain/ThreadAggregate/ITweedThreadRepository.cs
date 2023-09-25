@@ -1,6 +1,4 @@
-using Tailors.Thread.Infrastructure;
-
-namespace Tailors.Thread.Domain;
+namespace Tailors.Thread.Domain.ThreadAggregate;
 
 public interface ITweedThreadRepository
 {

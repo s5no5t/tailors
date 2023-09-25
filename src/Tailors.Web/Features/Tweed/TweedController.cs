@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Domain.ThreadAggregate;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
 using Tailors.Web.Helper;

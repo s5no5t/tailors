@@ -2,6 +2,7 @@ using Bogus;
 using Raven.Client.Documents;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
+using Tailors.Thread.Domain.ThreadAggregate;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure;
 using Tailors.User.Domain;
