@@ -1,6 +1,7 @@
 using Raven.Client.Documents;
 using Tailors.Like.Infrastructure;
 using Tailors.Like.Test.Helper;
+using Tailors.Thread.Infrastructure;
 using Xunit;
 
 namespace Tailors.Like.Test.Infrastructure;
@@ -22,7 +23,7 @@ public class TweedLikesRepositoryTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedDateTime

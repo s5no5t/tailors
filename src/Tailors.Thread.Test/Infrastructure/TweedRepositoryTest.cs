@@ -21,7 +21,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedDateTime
@@ -51,7 +51,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             Text = "test",
             AuthorId = "user"
@@ -70,7 +70,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tailors.Thread.Domain.Tweed olderTweed = new()
+        Tweed olderTweed = new()
         {
             Text = "older tweed",
             CreatedAt = FixedDateTime,
@@ -78,7 +78,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         };
         await session.StoreAsync(olderTweed);
         var recent = FixedDateTime.AddHours(1);
-        Tailors.Thread.Domain.Tweed recentTweed = new()
+        Tweed recentTweed = new()
         {
             Text = "recent tweed",
             CreatedAt = recent,
@@ -101,7 +101,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Tailors.Thread.Domain.Tweed tweed = new()
+            Tweed tweed = new()
             {
                 Text = "test",
                 CreatedAt = FixedDateTime,
@@ -123,7 +123,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             Text = "test",
             CreatedAt = FixedDateTime,
@@ -154,7 +154,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tailors.Thread.Domain.Tweed tweed = new()
+        Tweed tweed = new()
         {
             Id = "tweedId",
             Text = "Here is a word included."
