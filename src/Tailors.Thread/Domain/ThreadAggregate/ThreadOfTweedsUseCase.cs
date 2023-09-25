@@ -53,33 +53,8 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         if (thread is null)
             return new ReferenceNotFoundError($"Thread {tweed.ThreadId} not found");
 
-        // This is a root Tweed
-        if (tweed.ParentTweedId is null)
-        {
-            thread.Root.TweedId = tweedId;
-            return new Success();
-        }
-
-        // This is a reply to a reply
-        var path = FindTweedInThread(thread, tweed.ParentTweedId);
-        if (path.Count == 0)
-            return new ReferenceNotFoundError($"Tweed {tweed.ParentTweedId} not found in thread {thread.Id}");
-        var parentTweedRef = path.Last();
-        parentTweedRef.Replies.Add(new TweedThread.TweedReference
-        {
-            TweedId = tweedId
-        });
-        return new Success();
-    }
-
-    public async Task<OneOf<ReadOnlyCollection<string>, ReferenceNotFoundError>> FindTweedInThread(string tweedId, string threadId)
-    {
-        var thread = await _tweedThreadRepository.GetById(threadId);
-        if (thread is null)
-            return new ReferenceNotFoundError($"Thread {threadId} not found");
-
-        var path = FindTweedInThread(thread, tweedId).Select(tr => tr.TweedId!).ToList().AsReadOnly();
-        return path;
+        var result = thread.AddTweed(tweed);
+        return result;
     }
 
     private static ReadOnlyCollection<TweedThread.TweedReference> FindTweedInThread(TweedThread thread,
