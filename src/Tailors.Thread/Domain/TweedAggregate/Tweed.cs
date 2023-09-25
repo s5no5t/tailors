@@ -2,35 +2,13 @@ namespace Tailors.Thread.Domain.TweedAggregate;
 
 public class Tweed
 {
-    public Tweed(string? id = null)
+    public Tweed(string? id = null, string? parentTweedId = null, string? threadId = null, string? text = null, string? authorId = null, DateTime? createdAt = null)
     {
-        Id = id;
-    }
-
-    public Tweed(string? id, string? text, string? authorId, DateTime? createdAt)
-    {
+        ParentTweedId = parentTweedId;
+        ThreadId = threadId;
         Id = id;
         Text = text;
         AuthorId = authorId;
-        CreatedAt = createdAt;
-    }
-
-    public Tweed(string? id, string? threadId) : this()
-    {
-        Id = id;
-        ThreadId = threadId;
-    }
-
-    public Tweed(string? id, string? parentTweedId, string? threadId) : this()
-    {
-        Id = id;
-        ParentTweedId = parentTweedId;
-        ThreadId = threadId;
-    }
-
-    public Tweed(string? id, DateTime? createdAt) : this()
-    {
-        Id = id;
         CreatedAt = createdAt;
     }
 
