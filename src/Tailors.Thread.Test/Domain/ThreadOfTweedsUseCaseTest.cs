@@ -113,7 +113,7 @@ public class ThreadOfTweedsUseCaseTest
         var result = await _sut.AddTweedToThread("tweedId");
 
         Assert.True(result.IsT0);
-        Assert.Equal("tweedId", thread.Root.TweedId);
+        Assert.Equal("tweedId", thread.Root?.TweedId);
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class ThreadOfTweedsUseCaseTest
         var result = await _sut.AddTweedToThread("tweedId");
 
         Assert.True(result.IsT0);
-        Assert.Equal("tweedId", thread.Root.Replies[0].TweedId);
+        Assert.Equal("tweedId", thread.Root?.Replies[0].TweedId);
     }
 
     [Fact]
@@ -151,6 +151,6 @@ public class ThreadOfTweedsUseCaseTest
         var result = await _sut.AddTweedToThread("tweedId");
 
         Assert.True(result.IsT0);
-        Assert.Equal("tweedId", thread.Root.Replies[0].Replies[0].TweedId);
+        Assert.Equal("tweedId", thread.Root?.Replies[0].Replies[0].TweedId);
     }
 }
