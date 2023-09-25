@@ -88,10 +88,7 @@ public class SearchControllerTest
         _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
             new List<Tweed>
             {
-                new()
-                {
-                    Id = "tweedId"
-                }
+                new(id: "tweedId")
             });
 
         var result = await _searchController.Results("term", _tweedRepositoryMock.Object, _userRepositoryMock.Object);

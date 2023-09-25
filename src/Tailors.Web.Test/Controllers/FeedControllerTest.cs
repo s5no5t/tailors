@@ -38,9 +38,8 @@ public class FeedControllerTest
             Id = "currentUser"
         };
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
-        var tweed = new Tweed
+        var tweed = new Tweed("twedId")
         {
-            Id = "tweedId",
             AuthorId = "author"
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
@@ -85,9 +84,8 @@ public class FeedControllerTest
     [Fact]
     public async Task Index_ShouldReturnTweeds()
     {
-        var tweed = new Tweed
+        var tweed = new Tweed("tweedId")
         {
-            Id = "tweedId",
             AuthorId = "author"
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
@@ -131,9 +129,8 @@ public class FeedControllerTest
     [Fact]
     public async Task Feed_ShouldReturnTweeds()
     {
-        var tweed = new Tweed
+        var tweed = new Tweed("tweedId")
         {
-            Id = "tweedId",
             AuthorId = "author"
         };
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
@@ -158,11 +155,7 @@ public class FeedControllerTest
     public async Task UpdateAvailable_ShouldReturnTrue_WhenThereIsANewTweed()
     {
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
-        var tweed = new Tweed
-        {
-            Id = "tweedId",
-            CreatedAt = instant.AddMinutes(5)
-        };
+        var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(5));
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
@@ -177,11 +170,7 @@ public class FeedControllerTest
     public async Task UpdateAvailable_ShouldReturnFalse_WhenThereIsNoNewTweed()
     {
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
-        var tweed = new Tweed
-        {
-            Id = "tweedId",
-            CreatedAt = instant.AddMinutes(-5)
-        };
+        var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(-5));
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";

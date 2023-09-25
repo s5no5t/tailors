@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Tailors.Thread.Test.Infrastructure;
 
-[Trait("Category","Integration")]
+[Trait("Category", "Integration")]
 [Collection("RavenDB")]
 public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
 {
@@ -155,9 +155,8 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new()
+        Tweed tweed = new("tweedId")
         {
-            Id = "tweedId",
             Text = "Here is a word included."
         };
         await session.StoreAsync(tweed);

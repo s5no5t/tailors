@@ -42,16 +42,10 @@ public class TweedControllerTest
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<DateTime>()))
-            .ReturnsAsync(new Tweed
-            {
-                Id = "tweedId"
-            });
+            .ReturnsAsync(new Tweed(id: "tweedId"));
         _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tweed
-        {
-            Id = "tweedId"
-        });
+            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tweed(id: "tweedId"));
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
             .ReturnsAsync(new List<Tweed>());
@@ -85,16 +79,13 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweeds()
     {
-        var rootTweed = new Tweed
-        {
-            Id = "tweedId"
-        };
+        var rootTweed = new Tweed(id: "tweedId");
         var tweeds = new List<Tweed>
         {
             rootTweed
         };
         _showThreadUseCaseMock
-            .Setup(t => t.GetThreadTweedsForTweed(rootTweed.Id)).ReturnsAsync(tweeds);
+            .Setup(t => t.GetThreadTweedsForTweed(rootTweed.Id!)).ReturnsAsync(tweeds);
         _tweedViewModelFactoryMock.Setup(v => v.Create(tweeds, It.IsAny<string>())).ReturnsAsync(
             new List<TweedViewModel>
             {
