@@ -40,9 +40,8 @@ public class UserFollowsRepositoryTest
                 Id = $"follower/${i}"
             };
             await session.StoreAsync(follower);
-            UserFollows userFollows = new()
+            UserFollows userFollows = new(userId: follower.Id)
             {
-                UserId = follower.Id,
                 Follows = new List<UserFollows.LeaderReference>
                 {
                     new()

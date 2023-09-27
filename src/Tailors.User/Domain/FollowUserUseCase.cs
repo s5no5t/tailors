@@ -48,10 +48,7 @@ public class FollowUserUseCase : IFollowUserUseCase
         var userFollows = await _userFollowsRepository.GetById(userFollowsId);
         if (userFollows is null)
         {
-            userFollows = new UserFollows
-            {
-                UserId = userId
-            };
+            userFollows = new UserFollows(userId: userId);
             await _userFollowsRepository.Create(userFollows);
         }
 
