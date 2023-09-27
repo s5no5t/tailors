@@ -12,9 +12,11 @@ public class TweedThreadRepository : ITweedThreadRepository
         _session = session;
     }
 
-    public async Task Create(TweedThread thread)
+    public async Task<TweedThread> Create()
     {
+        TweedThread thread = new();
         await _session.StoreAsync(thread);
+        return thread;
     }
 
     public async Task<TweedThread?> GetById(string threadId)

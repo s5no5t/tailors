@@ -104,6 +104,19 @@ public class ThreadOfTweedsUseCaseTest
     }
 
     [Fact]
+    public async Task AddTweedToThread_ShouldCreateTweed_WhenTweedIdIsNull()
+    {
+        Tweed tweed = new(id: "tweedId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
+        _tweedThreadRepositoryMock.Setup(t => t.Create()).ReturnsAsync(new TweedThread(id: "threadId"));
+
+        var result = await _sut.AddTweedToThread("tweedId");
+
+        Assert.True(result.IsT0);
+        Assert.Equal("threadId", tweed.ThreadId);
+    }
+
+    [Fact]
     public async Task AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
         Tweed tweed = new(id: "tweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);

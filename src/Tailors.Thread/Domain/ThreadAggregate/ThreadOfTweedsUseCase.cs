@@ -46,12 +46,17 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         if (tweed is null)
             return new DomainError($"Tweed {tweedId} not found");
 
-        if (tweed.ThreadId is null)
-            return new DomainError($"Thread {tweed.ThreadId} is missing ThreadId");
-        var thread = await _tweedThreadRepository.GetById(tweed.ThreadId);
+        var thread = tweed.ThreadId switch
+        {
+            null => await _tweedThreadRepository.Create(),
+            _ => await _tweedThreadRepository.GetById(tweed.ThreadId)
+        };
+        
         if (thread is null)
             return new DomainError($"Thread {tweed.ThreadId} not found");
 
+        tweed.ThreadId = thread.Id;
+        
         var result = thread.AddTweed(tweed);
         return result;
     }

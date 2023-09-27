@@ -1,5 +1,4 @@
 using Moq;
-using Tailors.Thread.Domain.ThreadAggregate;
 using Tailors.Thread.Domain.TweedAggregate;
 using Xunit;
 
@@ -11,11 +10,10 @@ public class CreateTweedUseCaseTest
 
     private readonly CreateTweedUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
-    private readonly Mock<ITweedThreadRepository> _tweedThreadRepositoryMock = new();
 
     public CreateTweedUseCaseTest()
     {
-        _sut = new CreateTweedUseCase(_tweedRepositoryMock.Object, _tweedThreadRepositoryMock.Object);
+        _sut = new CreateTweedUseCase(_tweedRepositoryMock.Object);
     }
 
     [Fact]
@@ -25,15 +23,6 @@ public class CreateTweedUseCaseTest
 
         Assert.True(result.IsT0);
         _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>()));
-    }
-
-    [Fact]
-    public async Task CreateRootTweed_CreatesThread()
-    {
-        var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
-
-        Assert.True(result.IsT0);
-        _tweedThreadRepositoryMock.Verify(s => s.Create(It.IsAny<TweedThread>()));
     }
 
     [Fact]
