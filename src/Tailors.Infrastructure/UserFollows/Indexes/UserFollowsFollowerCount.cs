@@ -1,10 +1,9 @@
 using Raven.Client.Documents.Indexes;
-using Tailors.Domain.UserFollows;
 
-namespace Tailors.User.Infrastructure.Indexes;
+namespace Tailors.Infrastructure.UserFollows.Indexes;
 
 public class
-    UserFollowsFollowerCount : AbstractIndexCreationTask<UserFollows, UserFollowsFollowerCount.Result>
+    UserFollowsFollowerCount : AbstractIndexCreationTask<Domain.UserFollows.UserFollows, UserFollowsFollowerCount.Result>
 {
     public UserFollowsFollowerCount()
     {

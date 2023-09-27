@@ -1,7 +1,7 @@
 using Raven.Client.Documents;
 using Tailors.Domain.AppUser;
+using Tailors.Infrastructure.User;
 using Tailors.Like.Test.Helper;
-using Tailors.User.Infrastructure;
 
 namespace Tailors.User.Test.Infrastructure;
 

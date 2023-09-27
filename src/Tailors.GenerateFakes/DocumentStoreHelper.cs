@@ -1,7 +1,6 @@
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
-using Tailors.Like.Infrastructure;
-using Tailors.User.Infrastructure;
+using Tailors.Infrastructure;
 
 namespace Tailors.GenerateFakes;
 

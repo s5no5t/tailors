@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.AppUser;
-using Tailors.User.Infrastructure.Indexes;
+using Tailors.Infrastructure.UserFollows.Indexes;
 
-namespace Tailors.User.Infrastructure;
+namespace Tailors.Infrastructure.User;
 
 public class UserRepository : IUserRepository
 {

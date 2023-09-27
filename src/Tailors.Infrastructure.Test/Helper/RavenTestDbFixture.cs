@@ -1,7 +1,6 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
-using Tailors.Like.Infrastructure;
-using Tailors.Tweed.Infrastructure;
+using Tailors.Infrastructure;
 using Xunit;
 
 namespace Tailors.Like.Test.Helper;

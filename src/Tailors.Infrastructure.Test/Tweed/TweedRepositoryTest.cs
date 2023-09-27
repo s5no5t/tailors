@@ -1,7 +1,7 @@
 using Raven.Client.Documents;
 using Tailors.Domain.Tweed;
+using Tailors.Infrastructure.Tweed;
 using Tailors.Like.Test.Helper;
-using Tailors.Tweed.Infrastructure;
 using Xunit;
 
 namespace Tailors.Tweed.Test.Infrastructure;

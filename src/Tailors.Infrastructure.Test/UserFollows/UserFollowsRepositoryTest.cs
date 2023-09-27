@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tailors.Domain.AppUser;
 using Tailors.Domain.UserFollows;
+using Tailors.Infrastructure.UserFollows;
 using Tailors.Like.Test.Helper;
-using Tailors.User.Infrastructure;
 using Xunit;
 
 namespace Tailors.User.Test.Infrastructure;

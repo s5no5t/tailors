@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.UserFollows;
-using Tailors.User.Infrastructure.Indexes;
+using Tailors.Infrastructure.UserFollows.Indexes;
 
-namespace Tailors.User.Infrastructure;
+namespace Tailors.Infrastructure.UserFollows;
 
 public class UserFollowsRepository : IUserFollowsRepository
 {
@@ -24,12 +24,12 @@ public class UserFollowsRepository : IUserFollowsRepository
         return result?.FollowerCount ?? 0;
     }
 
-    public async Task<UserFollows?> GetById(string userFollowsId)
+    public async Task<Domain.UserFollows.UserFollows?> GetById(string userFollowsId)
     {
-        return await _session.LoadAsync<UserFollows>(userFollowsId);
+        return await _session.LoadAsync<Domain.UserFollows.UserFollows>(userFollowsId);
     }
 
-    public async Task Create(UserFollows userFollows)
+    public async Task Create(Domain.UserFollows.UserFollows userFollows)
     {
         await _session.StoreAsync(userFollows);
     }
