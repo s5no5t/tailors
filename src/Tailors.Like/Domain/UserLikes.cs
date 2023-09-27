@@ -26,11 +26,7 @@ public class UserLikes
     {
         if (_likes.Any(l => l.TweedId == tweedId))
             return false;
-        _likes.Add(new TweedLike
-        {
-            TweedId = tweedId,
-            CreatedAt = likedAt
-        });
+        _likes.Add(new TweedLike(tweedId: tweedId, createdAt: likedAt));
         return true;
     }
     
@@ -48,7 +44,13 @@ public class UserLikes
 
     public class TweedLike
     {
-        public string? TweedId { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public TweedLike(string? tweedId, DateTime? createdAt)
+        {
+            TweedId = tweedId;
+            CreatedAt = createdAt;
+        }
+
+        public string? TweedId { get;  }
+        public DateTime? CreatedAt { get; }
     }
 }
