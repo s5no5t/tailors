@@ -22,7 +22,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
         _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<Tweed.Domain.Tweed>());
+            .ReturnsAsync(new List<TailorsTweed>());
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class SearchControllerTest
     public async Task Results_ShouldSearchTweeds()
     {
         _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
-            new List<Tweed.Domain.Tweed>
+            new List<TailorsTweed>
             {
                 new(id: "tweedId", authorId: "authorId", text: string.Empty, createdAt: DateTime.Now)
             });

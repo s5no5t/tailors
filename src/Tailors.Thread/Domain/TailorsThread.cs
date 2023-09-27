@@ -35,7 +35,7 @@ public class TailorsThread
         public List<TweedReference> Replies { get; } = new();
     }
     
-    public OneOf<Success, DomainError> AddTweed(Tweed.Domain.Tweed tweed)
+    public OneOf<Success, DomainError> AddTweed(TailorsTweed tweed)
     {
         if (tweed.Id is null)
             return new DomainError($"Tweed {tweed.Id} is missing Id");

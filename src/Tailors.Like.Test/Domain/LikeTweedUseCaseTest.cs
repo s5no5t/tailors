@@ -1,12 +1,13 @@
 using Moq;
 using Tailors.Like.Domain;
+using Tailors.Tweed.Domain;
 using Xunit;
 
 namespace Tailors.Like.Test.Domain;
 
 public class LikeTweedUseCaseTest
 {
-    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
+    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
     private readonly LikeTweedUseCase _sut;
 
@@ -32,7 +33,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        var tweed = new Tweed.Domain.Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
+        var tweed = new TailorsTweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
 
         await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
