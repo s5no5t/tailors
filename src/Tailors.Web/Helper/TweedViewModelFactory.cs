@@ -9,9 +9,9 @@ namespace Tailors.Web.Helper;
 
 public interface ITweedViewModelFactory
 {
-    Task<TweedViewModel> Create(Tweed.Domain.TweedAggregate.Tweed tweed, bool isCurrent = false);
+    Task<TweedViewModel> Create(Tweed.Domain.Tweed tweed, bool isCurrent = false);
 
-    Task<List<TweedViewModel>> Create(List<Tweed.Domain.TweedAggregate.Tweed> tweeds,
+    Task<List<TweedViewModel>> Create(List<Tweed.Domain.Tweed> tweeds,
         string currentTweedId = "none");
 }
 
@@ -33,7 +33,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> Create(Tweed.Domain.TweedAggregate.Tweed tweed, bool isCurrent)
+    public async Task<TweedViewModel> Create(Tweed.Domain.Tweed tweed, bool isCurrent)
     {
         var humanizedCreatedAt = tweed.CreatedAt?.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId!);
@@ -57,7 +57,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Tweed.Domain.TweedAggregate.Tweed> tweeds,
+    public async Task<List<TweedViewModel>> Create(List<Tweed.Domain.Tweed> tweeds,
         string currentTweedId)
     {
         List<TweedViewModel> tweedViewModels = new();

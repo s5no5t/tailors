@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tailors.Tweed.Domain.TweedAggregate;
+using Tailors.Tweed.Domain;
 using Tailors.User.Domain.AppUser;
 
 namespace Tailors.Web.Features.Search;

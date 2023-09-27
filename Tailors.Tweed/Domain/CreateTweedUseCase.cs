@@ -1,6 +1,6 @@
 using OneOf;
 
-namespace Tailors.Tweed.Domain.TweedAggregate;
+namespace Tailors.Tweed.Domain;
 
 public interface ICreateTweedUseCase
 {
