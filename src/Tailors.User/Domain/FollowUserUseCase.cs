@@ -4,7 +4,7 @@ public interface IFollowUserUseCase
 {
     Task AddFollower(string leaderId, string followerId, DateTime createdAt);
     Task RemoveFollower(string leaderId, string followerId);
-    Task<List<UserFollows.LeaderReference>> GetFollows(string userId);
+    Task<IReadOnlyList<UserFollows.LeaderReference>> GetFollows(string userId);
 }
 
 public class FollowUserUseCase : IFollowUserUseCase
@@ -20,23 +20,16 @@ public class FollowUserUseCase : IFollowUserUseCase
     {
         var userFollows= await GetOrCreateUserFollower(followerId);
 
-        if (userFollows.Follows.Any(f => f.LeaderId == leaderId))
-            return;
-
-        userFollows.Follows.Add(new UserFollows.LeaderReference
-        {
-            LeaderId = leaderId,
-            CreatedAt = createdAt
-        });
+        userFollows.AddFollows(leaderId, createdAt);
     }
 
     public async Task RemoveFollower(string leaderId, string followerId)
     {
         var follower = await GetOrCreateUserFollower(followerId);
-        follower.Follows.RemoveAll(f => f.LeaderId == leaderId);
+        follower.RemoveFollows(leaderId);
     }
 
-    public async Task<List<UserFollows.LeaderReference>> GetFollows(string followerId)
+    public async Task<IReadOnlyList<UserFollows.LeaderReference>> GetFollows(string followerId)
     {
         var follower = await GetOrCreateUserFollower(followerId);
         return follower.Follows;

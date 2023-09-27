@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tailors.User.Domain;
@@ -40,16 +40,8 @@ public class UserFollowsRepositoryTest
                 Id = $"follower/${i}"
             };
             await session.StoreAsync(follower);
-            UserFollows userFollows = new(userId: follower.Id)
-            {
-                Follows = new List<UserFollows.LeaderReference>
-                {
-                    new()
-                    {
-                        LeaderId = "leaderId"
-                    }
-                }
-            };
+            UserFollows userFollows = new(userId: follower.Id);
+            userFollows.AddFollows(leaderId: "leaderId", createdAt: DateTime.UtcNow);
             await session.StoreAsync(userFollows);
         }
 

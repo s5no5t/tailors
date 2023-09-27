@@ -105,10 +105,7 @@ public class ProfileControllerTest
     {
         var follows = new List<UserFollows.LeaderReference>
         {
-            new()
-            {
-                LeaderId = _profileUser.Id
-            }
+            new(leaderId: _profileUser.Id!, DateTime.UtcNow)
         };
         _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
 
