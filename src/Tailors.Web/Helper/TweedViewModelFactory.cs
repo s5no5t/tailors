@@ -1,9 +1,9 @@
 using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Tailors.Domain.Tweed;
-using Tailors.Domain.User;
-using Tailors.Domain.UserLikes;
+using Tailors.Domain.TweedAggregate;
+using Tailors.Domain.UserAggregate;
+using Tailors.Domain.UserLikesAggregate;
 using Tailors.Web.Features.Shared;
 
 namespace Tailors.Web.Helper;

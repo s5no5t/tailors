@@ -1,10 +1,10 @@
 using Bogus;
 using Raven.Client.Documents;
-using Tailors.Domain.Thread;
-using Tailors.Domain.Tweed;
-using Tailors.Domain.User;
-using Tailors.Domain.UserFollows;
-using Tailors.Domain.UserLikes;
+using Tailors.Domain.ThreadAggregate;
+using Tailors.Domain.TweedAggregate;
+using Tailors.Domain.UserAggregate;
+using Tailors.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserLikesAggregate;
 
 namespace Tailors.GenerateFakes;
 

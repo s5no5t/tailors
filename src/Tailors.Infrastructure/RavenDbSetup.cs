@@ -4,8 +4,8 @@ using Raven.Client.Exceptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
-using Tailors.Infrastructure.Tweed.Indexes;
-using Tailors.Infrastructure.UserFollows.Indexes;
+using Tailors.Infrastructure.TweedAggregate.Indexes;
+using Tailors.Infrastructure.UserFollowsAggregate.Indexes;
 
 namespace Tailors.Infrastructure;
 
@@ -40,15 +40,15 @@ public static class RavenDbSetup
     
     private static void ApplyCustomConventions(this IDocumentStore store)
     {
-        store.Conventions.RegisterAsyncIdConvention<Domain.UserLikes.UserLikes>((_, userLikes) =>
+        store.Conventions.RegisterAsyncIdConvention<Domain.UserLikesAggregate.UserLikes>((_, userLikes) =>
         {
             ArgumentNullException.ThrowIfNull(userLikes.UserId);
-            return Task.FromResult(Domain.UserLikes.UserLikes.BuildId(userLikes.UserId));
+            return Task.FromResult(Domain.UserLikesAggregate.UserLikes.BuildId(userLikes.UserId));
         });
-        store.Conventions.RegisterAsyncIdConvention<Domain.UserFollows.UserFollows>((_, follows) =>
+        store.Conventions.RegisterAsyncIdConvention<Domain.UserFollowsAggregate.UserFollows>((_, follows) =>
         {
             ArgumentNullException.ThrowIfNull(follows.UserId);
-            return Task.FromResult(Domain.UserFollows.UserFollows.BuildId(follows.UserId));
+            return Task.FromResult(Domain.UserFollowsAggregate.UserFollows.BuildId(follows.UserId));
         });
     }
     
