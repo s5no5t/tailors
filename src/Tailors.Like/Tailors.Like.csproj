@@ -10,4 +10,12 @@
         <PackageReference Include="RavenDB.Client" Version="5.4.110" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Tailors.Domain\Tailors.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Domain\" />
+    </ItemGroup>
+
 </Project>
