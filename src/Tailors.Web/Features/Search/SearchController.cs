@@ -30,7 +30,7 @@ public class SearchController : Controller
         IndexViewModel viewModel = new(
             term,
             users.Select(u => new UserViewModel(u.Id!, u.UserName)).ToList(),
-            tweeds.Select(t => new TweedViewModel(t.Id!, t.Text!)).ToList()
+            tweeds.Select(t => new TweedViewModel(t.Id!, t.Text)).ToList()
         );
         return View("index", viewModel);
     }

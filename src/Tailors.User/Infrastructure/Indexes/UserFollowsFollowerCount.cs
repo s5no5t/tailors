@@ -4,9 +4,9 @@ using Tailors.User.Domain.UserFollowsAggregate;
 namespace Tailors.User.Infrastructure.Indexes;
 
 public class
-    UserFollows_FollowerCount : AbstractIndexCreationTask<UserFollows, UserFollows_FollowerCount.Result>
+    UserFollowsFollowerCount : AbstractIndexCreationTask<UserFollows, UserFollowsFollowerCount.Result>
 {
-    public UserFollows_FollowerCount()
+    public UserFollowsFollowerCount()
     {
         Map = users => from user in users
             from follow in user.Follows

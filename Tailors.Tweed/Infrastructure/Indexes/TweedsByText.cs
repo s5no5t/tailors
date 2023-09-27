@@ -3,15 +3,17 @@ using Tailors.Tweed.Domain;
 
 namespace Tailors.Tweed.Infrastructure.Indexes;
 
-public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<TailorsTweed>
+public class TweedsByText : AbstractIndexCreationTask<TailorsTweed>
 {
-    public Tweeds_ByAuthorIdAndCreatedAt()
+    public TweedsByText()
     {
         Map = tweeds => from tweed in tweeds
             select new
             {
-                tweed.AuthorId,
-                tweed.CreatedAt
+                tweed.Id,
+                tweed.Text
             };
+
+        Analyzers.Add(a => a.Text, "StandardAnalyzer");
     }
 }

@@ -17,7 +17,7 @@ public class UserFollowsRepository : IUserFollowsRepository
     public async Task<int> GetFollowerCount(string userId)
     {
         var result = await _session
-            .Query<UserFollows_FollowerCount.Result, UserFollows_FollowerCount>()
+            .Query<UserFollowsFollowerCount.Result, UserFollowsFollowerCount>()
             .Where(r => r.UserId == userId)
             .FirstOrDefaultAsync();
 

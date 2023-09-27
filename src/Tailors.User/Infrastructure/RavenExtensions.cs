@@ -49,7 +49,7 @@ public static class RavenExtensions
 
     public static void DeployUserIndexes(this IDocumentStore store)
     {
-        new UserFollows_FollowerCount().Execute(store);
-        new Users_ByUserName().Execute(store);
+        new UserFollowsFollowerCount().Execute(store);
+        new UsersByUserName().Execute(store);
     }
 }
