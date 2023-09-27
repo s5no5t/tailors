@@ -19,24 +19,19 @@ public class LikeTweedUseCase : ILikeTweedUseCase
     public async Task AddLike(string tweedId, string userId, DateTime likedAt)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
+        
+        var added = userLikes.AddLike(tweedId, likedAt);
 
-        if (userLikes.Likes.Any(l => l.TweedId == tweedId))
-            return;
-        userLikes.Likes.Add(new UserLikes.TweedLike
-        {
-            TweedId = tweedId,
-            CreatedAt = likedAt
-        });
-
-        _tweedLikesRepository.IncreaseLikesCounter(tweedId);
+        if (added)
+            _tweedLikesRepository.IncreaseLikesCounter(tweedId);
     }
 
     public async Task RemoveLike(string tweedId, string userId)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
-        var removedCount = userLikes.Likes.RemoveAll(lb => lb.TweedId == tweedId);
+        var removed = userLikes.RemoveLike(tweedId);
 
-        if (removedCount > 0)
+        if (removed)
             _tweedLikesRepository.DecreaseLikesCounter(tweedId);
     }
 
@@ -52,10 +47,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
         var userLikes = await _tweedLikesRepository.GetById(userLikesId);
         if (userLikes is null)
         {
-            userLikes = new UserLikes
-            {
-                UserId = userId
-            };
+            userLikes = new UserLikes(userId: userId);
             await _tweedLikesRepository.Create(userLikes);
         }
 
