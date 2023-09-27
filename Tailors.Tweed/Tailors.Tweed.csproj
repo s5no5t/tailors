@@ -16,9 +16,5 @@
       <ProjectReference Include="..\src\Tailors.User\Tailors.User.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Domain\" />
-    </ItemGroup>
-
 
 </Project>
