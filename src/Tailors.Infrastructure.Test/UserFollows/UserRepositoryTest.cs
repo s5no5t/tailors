@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
 using Raven.Client.Documents;
+using Tailors.Like.Test.Helper;
 using Tailors.User.Domain.AppUser;
 using Tailors.User.Infrastructure;
-using Tailors.User.Test.Helper;
-using Xunit;
 
 namespace Tailors.User.Test.Infrastructure;
 

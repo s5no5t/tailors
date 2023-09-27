@@ -20,12 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Tailors.Like\Tailors.Like.csproj" />
-        <ProjectReference Include="..\Tailors.Thread\Tailors.Thread.csproj" />
-        <ProjectReference Include="..\Tailors.User\Tailors.User.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
@@ -86,6 +80,11 @@
         <None Update="render.com.pfx">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Tailors.Domain\Tailors.Domain.csproj" />
+      <ProjectReference Include="..\Tailors.Infrastructure\Tailors.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

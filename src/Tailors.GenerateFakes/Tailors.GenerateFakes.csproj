@@ -14,12 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Tailors.Like\Tailors.Like.csproj" />
-        <ProjectReference Include="..\Tailors.Thread\Tailors.Thread.csproj" />
-        <ProjectReference Include="..\Tailors.User\Tailors.User.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Remove="appsettings.Development.json" />
     </ItemGroup>
 
@@ -27,6 +21,11 @@
         <Content Include="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Tailors.Domain\Tailors.Domain.csproj" />
+      <ProjectReference Include="..\Tailors.Infrastructure\Tailors.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
