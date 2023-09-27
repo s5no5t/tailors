@@ -1,3 +1,3 @@
-namespace Tailors.Tweed.Domain;
+namespace Tailors.Domain.Tweed;
 
 public record TweedError(string Message);

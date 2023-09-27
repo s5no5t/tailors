@@ -1,4 +1,4 @@
-@using Tailors.User.Domain.AppUser
+@using Tailors.Domain.AppUser
 @inject SignInManager<AppUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

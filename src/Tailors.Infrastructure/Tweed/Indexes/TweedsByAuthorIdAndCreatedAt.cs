@@ -1,5 +1,5 @@
 using Raven.Client.Documents.Indexes;
-using Tailors.Tweed.Domain;
+using Tailors.Domain.Tweed;
 
 namespace Tailors.Tweed.Infrastructure.Indexes;
 

@@ -1,4 +1,4 @@
-using Tailors.User.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserFollows;
 using Xunit;
 
 namespace Tailors.User.Test.Domain;

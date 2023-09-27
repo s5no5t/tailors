@@ -1,5 +1,5 @@
 using Raven.Client.Documents.Indexes;
-using Tailors.User.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserFollows;
 
 namespace Tailors.User.Infrastructure.Indexes;
 

@@ -8,9 +8,9 @@ using Raven.Client.Documents.Subscriptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
-using Tailors.Thread.Domain;
+using Tailors.Domain.Thread;
+using Tailors.Domain.Tweed;
 using Tailors.Thread.Infrastructure;
-using Tailors.Tweed.Domain;
 using Tailors.Tweed.Infrastructure;
 
 namespace Tailors.Thread;

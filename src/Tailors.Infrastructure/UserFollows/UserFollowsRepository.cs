@@ -1,6 +1,6 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tailors.User.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserFollows;
 using Tailors.User.Infrastructure.Indexes;
 
 namespace Tailors.User.Infrastructure;

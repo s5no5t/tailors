@@ -1,3 +1,3 @@
-namespace Tailors.Thread;
+namespace Tailors.Domain.Thread;
 
 public record ThreadError(string Message);

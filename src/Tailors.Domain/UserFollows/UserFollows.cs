@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Tailors.User.Domain.UserFollowsAggregate;
+namespace Tailors.Domain.UserFollows;
 
 public class UserFollows
 {

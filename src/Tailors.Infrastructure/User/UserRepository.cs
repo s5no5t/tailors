@@ -1,6 +1,6 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using Tailors.User.Domain.AppUser;
+using Tailors.Domain.AppUser;
 using Tailors.User.Infrastructure.Indexes;
 
 namespace Tailors.User.Infrastructure;

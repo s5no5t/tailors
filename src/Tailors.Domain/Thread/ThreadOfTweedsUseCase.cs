@@ -1,8 +1,8 @@
 using OneOf;
 using OneOf.Types;
-using Tailors.Tweed.Domain;
+using Tailors.Domain.Tweed;
 
-namespace Tailors.Thread.Domain;
+namespace Tailors.Domain.Thread;
 
 public interface IThreadOfTweedsUseCase
 {

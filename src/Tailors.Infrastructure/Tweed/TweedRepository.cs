@@ -1,7 +1,7 @@
 ﻿using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Tailors.Tweed.Domain;
+using Tailors.Domain.Tweed;
 using Tailors.Tweed.Infrastructure.Indexes;
 
 namespace Tailors.Tweed.Infrastructure;

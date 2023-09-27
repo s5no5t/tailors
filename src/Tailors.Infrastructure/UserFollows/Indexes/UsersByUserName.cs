@@ -1,5 +1,5 @@
 using Raven.Client.Documents.Indexes;
-using Tailors.User.Domain.AppUser;
+using Tailors.Domain.AppUser;
 
 namespace Tailors.User.Infrastructure.Indexes;
 

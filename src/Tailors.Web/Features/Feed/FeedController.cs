@@ -3,8 +3,8 @@ using Htmx;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tailors.Thread.Domain;
-using Tailors.User.Domain.AppUser;
+using Tailors.Domain.AppUser;
+using Tailors.Domain.Thread;
 using Tailors.Web.Features.Shared;
 using Tailors.Web.Helper;
 

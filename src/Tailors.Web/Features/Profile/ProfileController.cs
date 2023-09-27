@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tailors.Tweed.Domain;
-using Tailors.User.Domain.AppUser;
-using Tailors.User.Domain.UserFollowsAggregate;
+using Tailors.Domain.AppUser;
+using Tailors.Domain.Tweed;
+using Tailors.Domain.UserFollows;
 using Tailors.Web.Helper;
 
 namespace Tailors.Web.Features.Profile;

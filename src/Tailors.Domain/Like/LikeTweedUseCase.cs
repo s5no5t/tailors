@@ -1,4 +1,4 @@
-namespace Tailors.Like.Domain;
+namespace Tailors.Domain.Like;
 
 public interface ILikeTweedUseCase
 {

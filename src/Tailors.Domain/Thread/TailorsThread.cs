@@ -2,9 +2,9 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
-using Tailors.Tweed.Domain;
+using Tailors.Domain.Tweed;
 
-namespace Tailors.Thread.Domain;
+namespace Tailors.Domain.Thread;
 
 public class TailorsThread
 {
