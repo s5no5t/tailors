@@ -2,7 +2,7 @@ using OneOf;
 using OneOf.Types;
 using Tailors.Tweed.Domain;
 
-namespace Tailors.Thread.Domain.ThreadAggregate;
+namespace Tailors.Thread.Domain;
 
 public interface IThreadOfTweedsUseCase
 {

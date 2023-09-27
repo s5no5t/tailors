@@ -8,7 +8,7 @@ using Raven.Identity;
 using Tailors.Like.Domain;
 using Tailors.Like.Infrastructure;
 using Tailors.Thread;
-using Tailors.Thread.Domain.ThreadAggregate;
+using Tailors.Thread.Domain;
 using Tailors.Thread.Infrastructure;
 using Tailors.Tweed.Domain;
 using Tailors.Tweed.Infrastructure;

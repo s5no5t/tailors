@@ -1,5 +1,5 @@
 using Moq;
-using Tailors.Thread.Domain.ThreadAggregate;
+using Tailors.Thread.Domain;
 using Tailors.Tweed.Domain;
 using Tailors.User.Domain.AppUser;
 using Tailors.User.Domain.UserFollowsAggregate;
