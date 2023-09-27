@@ -1,11 +1,9 @@
 using Moq;
-using Tailors.Domain.AppUser;
 using Tailors.Domain.Thread;
 using Tailors.Domain.Tweed;
 using Tailors.Domain.UserFollows;
-using Xunit;
 
-namespace Tailors.Thread.Test.Domain;
+namespace Tailors.Domain.Test.Thread;
 
 public class ShowFeedUseCaseTest
 {
@@ -18,7 +16,7 @@ public class ShowFeedUseCaseTest
     public ShowFeedUseCaseTest()
     {
         _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
-            .ReturnsAsync(new List<UserFollows.LeaderReference>());
+            .ReturnsAsync(new List<Domain.UserFollows.UserFollows.LeaderReference>());
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new List<TailorsTweed>());
         _tweedRepositoryMock
@@ -46,7 +44,7 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
     {
-        var followedUser = new AppUser();
+        var followedUser = new AppUser.AppUser();
 
         TailorsTweed followedUserTweed = new(authorId: followedUser.Id!, text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock

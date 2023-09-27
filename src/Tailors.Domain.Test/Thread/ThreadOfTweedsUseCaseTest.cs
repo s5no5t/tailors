@@ -1,9 +1,8 @@
 using Moq;
 using Tailors.Domain.Thread;
 using Tailors.Domain.Tweed;
-using Xunit;
 
-namespace Tailors.Thread.Test.Domain;
+namespace Tailors.Domain.Test.Thread;
 
 public class ThreadOfTweedsUseCaseTest
 {

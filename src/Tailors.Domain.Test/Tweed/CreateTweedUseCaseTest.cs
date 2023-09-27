@@ -1,8 +1,7 @@
 using Moq;
 using Tailors.Domain.Tweed;
-using Xunit;
 
-namespace Tailors.Tweed.Test.Domain;
+namespace Tailors.Domain.Test.Tweed;
 
 public class CreateTweedUseCaseTest
 {
