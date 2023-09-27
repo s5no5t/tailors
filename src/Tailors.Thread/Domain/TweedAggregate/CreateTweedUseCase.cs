@@ -42,8 +42,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         if (parentTweed is null)
             return new DomainError($"Parent Tweed {parentTweedId} not found");
         var threadId = parentTweed.ThreadId;
-        Tweed tweed = new(authorId: authorId, text: text, parentTweedId: parentTweedId, threadId: threadId,
-            createdAt: createdAt);
+        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt, parentTweedId: parentTweedId, threadId: threadId);
         await _tweedRepository.Create(tweed);
         return tweed;
     }
