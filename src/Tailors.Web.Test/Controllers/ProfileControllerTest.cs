@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain.TweedAggregate;
 using Tailors.User.Domain.AppUser;
 using Tailors.User.Domain.UserFollowsAggregate;
 using Tailors.Web.Test.TestHelper;
@@ -51,7 +51,7 @@ public class ProfileControllerTest
 
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed>());
 
         _profileController = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,

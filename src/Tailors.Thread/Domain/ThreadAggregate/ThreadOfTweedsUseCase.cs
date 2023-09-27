@@ -1,12 +1,13 @@
 using OneOf;
 using OneOf.Types;
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain;
+using Tailors.Tweed.Domain.TweedAggregate;
 
 namespace Tailors.Thread.Domain.ThreadAggregate;
 
 public interface IThreadOfTweedsUseCase
 {
-    Task<OneOf<List<Tweed>, DomainError>> GetThreadTweedsForTweed(string tweedId);
+    Task<OneOf<List<Tweed.Domain.TweedAggregate.Tweed>, DomainError>> GetThreadTweedsForTweed(string tweedId);
 }
 
 public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
@@ -21,14 +22,14 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<OneOf<List<Tweed>, DomainError>> GetThreadTweedsForTweed(string tweedId)
+    public async Task<OneOf<List<Tweed.Domain.TweedAggregate.Tweed>, DomainError>> GetThreadTweedsForTweed(string tweedId)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed is null)
             return new DomainError($"Tweed {tweedId} not found");
 
         if (tweed.ThreadId is null)
-            return new List<Tweed>();
+            return new List<Tweed.Domain.TweedAggregate.Tweed>();
 
         var thread = await _tweedThreadRepository.GetById(tweed.ThreadId!);
         if (thread is null)

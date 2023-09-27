@@ -1,6 +1,6 @@
 using Moq;
 using Tailors.Thread.Domain.ThreadAggregate;
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain.TweedAggregate;
 using Tailors.User.Domain.AppUser;
 using Tailors.User.Domain.UserFollowsAggregate;
 using Xunit;
@@ -20,23 +20,23 @@ public class ShowFeedUseCaseTest
         _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed>());
         _tweedRepositoryMock
             .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed>());
         _tweedRepositoryMock
             .Setup(m => m.GetRecentTweeds(It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed>());
         _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
 
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
-        Tweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
+        Tweed.Domain.TweedAggregate.Tweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId!, It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { currentUserTweed });
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed> { currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
 
@@ -48,10 +48,10 @@ public class ShowFeedUseCaseTest
     {
         var followedUser = new AppUser();
 
-        Tweed followedUserTweed = new(authorId: followedUser.Id!, text: "test", createdAt: FixedDateTime.AddHours(1));
+        Tweed.Domain.TweedAggregate.Tweed followedUserTweed = new(authorId: followedUser.Id!, text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { followedUserTweed });
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed> { followedUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
 
@@ -61,10 +61,10 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldNotReturnTheSameTweedTwice()
     {
-        Tweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
+        Tweed.Domain.TweedAggregate.Tweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId!, It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { currentUserTweed, currentUserTweed });
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed> { currentUserTweed, currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
 
@@ -77,7 +77,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            Tweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
+            Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
             return tweed;
         }).ToList();
         _tweedRepositoryMock
@@ -94,7 +94,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            Tweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
+            Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
             return tweed;
         }).ToList();
         _tweedRepositoryMock

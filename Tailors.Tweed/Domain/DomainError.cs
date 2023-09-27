@@ -1,4 +1,4 @@
-namespace Tailors.Thread.Domain;
+namespace Tailors.Tweed.Domain;
 
 public record DomainError(string Message)
 {

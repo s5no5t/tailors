@@ -10,8 +10,9 @@ using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
 using Tailors.Thread.Domain;
 using Tailors.Thread.Domain.ThreadAggregate;
-using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure;
+using Tailors.Tweed.Domain;
+using Tailors.Tweed.Infrastructure;
 
 namespace Tailors.Thread;
 
@@ -40,7 +41,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 MaxDocsPerBatch = 20
             };
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<Tweed>(options);
+                _store.Subscriptions.GetSubscriptionWorker<Tweed.Domain.TweedAggregate.Tweed>(options);
 
             try
             {
@@ -109,7 +110,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
         catch (SubscriptionDoesNotExistException)
         {
-            SubscriptionCreationOptions<Tweed> options = new()
+            SubscriptionCreationOptions<Tweed.Domain.TweedAggregate.Tweed> options = new()
             {
                 Name = SubscriptionName
             };
@@ -117,7 +118,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
     }
 
-    private async Task ProcessTweed(Tweed tweed, IAsyncDocumentSession session)
+    private async Task ProcessTweed(Tweed.Domain.TweedAggregate.Tweed tweed, IAsyncDocumentSession session)
     {
         TweedThreadRepository threadRepository = new(session);
         TweedRepository tweedRepository = new(session);

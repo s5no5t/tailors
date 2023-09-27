@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain;
 
 namespace Tailors.Thread.Domain.ThreadAggregate;
 
@@ -35,7 +35,7 @@ public class TweedThread
         public List<TweedReference> Replies { get; } = new();
     }
     
-    public OneOf<Success, DomainError> AddTweed(Tweed tweed)
+    public OneOf<Success, DomainError> AddTweed(Tweed.Domain.TweedAggregate.Tweed tweed)
     {
         if (tweed.Id is null)
             return new DomainError($"Tweed {tweed.Id} is missing Id");

@@ -1,11 +1,11 @@
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain.TweedAggregate;
 using Tailors.User.Domain.UserFollowsAggregate;
 
 namespace Tailors.Thread.Domain.ThreadAggregate;
 
 public interface IShowFeedUseCase
 {
-    Task<List<Tweed>> GetFeed(string userId, int page, int pageSize);
+    Task<List<Tweed.Domain.TweedAggregate.Tweed>> GetFeed(string userId, int page, int pageSize);
 }
 
 public class ShowFeedUseCase : IShowFeedUseCase
@@ -19,7 +19,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         _followUserUseCase = followUserUseCase;
     }
 
-    public async Task<List<Tweed>> GetFeed(string userId, int page, int pageSize)
+    public async Task<List<Tweed.Domain.TweedAggregate.Tweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 
@@ -32,7 +32,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
         var extraTweeds = await _tweedRepository.GetRecentTweeds(numExtraTweeds);
 
-        var tweeds = new List<Tweed>();
+        var tweeds = new List<Tweed.Domain.TweedAggregate.Tweed>();
         tweeds.AddRange(ownTweeds);
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);

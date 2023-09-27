@@ -10,7 +10,8 @@ using Moq;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain;
 using Tailors.Thread.Domain.ThreadAggregate;
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain;
+using Tailors.Tweed.Domain.TweedAggregate;
 using Tailors.User.Domain.AppUser;
 using Tailors.Web.Test.TestHelper;
 using Tailors.Web.Features.Shared;
@@ -42,13 +43,13 @@ public class TweedControllerTest
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<DateTime>()))
-            .ReturnsAsync(new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
         _createTweedUseCaseMock.Setup(t => t.CreateReplyTweed(It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
         _showThreadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
-            .ReturnsAsync(new List<Tweed>());
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed>());
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _tweedViewModelFactoryMock.Object)
         {
@@ -79,8 +80,8 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweeds()
     {
-        var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
-        var tweeds = new List<Tweed>
+        var rootTweed = new Tweed.Domain.TweedAggregate.Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
+        var tweeds = new List<Tweed.Domain.TweedAggregate.Tweed>
         {
             rootTweed
         };
@@ -157,9 +158,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldReturnRedirect()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -176,9 +177,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSaveReplyTweed()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -197,9 +198,9 @@ public class TweedControllerTest
     public async Task CreateReply_ShouldSetSuccessMessage()
     {
         _tweedRepositoryMock.Setup(t => t.GetById("parentTweedId"))
-            .ReturnsAsync(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
         _tweedRepositoryMock.Setup(t => t.GetById("rootTweedId"))
-            .ReturnsAsync(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
+            .ReturnsAsync(new Tweed.Domain.TweedAggregate.Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId"));
 
         CreateReplyTweedViewModel viewModel = new()
         {
@@ -251,7 +252,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Tweed tweed = new(authorId: "author", text: string.Empty, createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "author", text: string.Empty, createdAt: FixedDateTime);
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
         await _tweedController.Like("123", false, _likeTweedUseCaseMock.Object);
@@ -263,7 +264,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Tweed tweed = new(authorId: "author", text: string.Empty, createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "author", text: string.Empty, createdAt: FixedDateTime);
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
@@ -275,7 +276,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Tweed tweed = new(authorId: "author", text: string.Empty, createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "author", text: string.Empty, createdAt: FixedDateTime);
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
         await _tweedController.Unlike("123", false, _likeTweedUseCaseMock.Object);
@@ -286,7 +287,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Tweed tweed = new(authorId: "authorId", text: string.Empty, createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "authorId", text: string.Empty, createdAt: FixedDateTime);
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("authorId")).ReturnsAsync(new AppUser());
 
