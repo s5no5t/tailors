@@ -6,7 +6,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tailors.Domain.User;
+using Tailors.Domain.UserAggregate;
 
 namespace Tailors.Web.Areas.Identity.Pages.Account;
 
