@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tailors.Thread.Domain.TweedAggregate;
+using Tailors.Tweed.Domain.TweedAggregate;
 using Tailors.User.Domain.AppUser;
 using Tailors.Web.Features.Search;
 using Xunit;
@@ -22,7 +22,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
         _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<Tweed>());
+            .ReturnsAsync(new List<Tweed.Domain.TweedAggregate.Tweed>());
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class SearchControllerTest
     public async Task Results_ShouldSearchTweeds()
     {
         _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
-            new List<Tweed>
+            new List<Tweed.Domain.TweedAggregate.Tweed>
             {
                 new(id: "tweedId", authorId: "authorId", text: string.Empty, createdAt: DateTime.Now)
             });

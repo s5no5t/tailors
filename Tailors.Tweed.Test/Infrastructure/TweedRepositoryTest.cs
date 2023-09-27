@@ -1,10 +1,9 @@
 using Raven.Client.Documents;
-using Tailors.Thread.Domain.TweedAggregate;
-using Tailors.Thread.Infrastructure;
-using Tailors.Thread.Test.Helper;
+using Tailors.Tweed.Infrastructure;
+using Tailors.Tweed.Test.Helper;
 using Xunit;
 
-namespace Tailors.Thread.Test.Infrastructure;
+namespace Tailors.Tweed.Test.Infrastructure;
 
 [Trait("Category", "Integration")]
 [Collection("RavenDB")]
@@ -22,7 +21,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     public async Task GetById_ShouldReturnTweed()
     {
         using var session = _store.OpenAsyncSession();
-        Tweed tweed = new(text: "test", createdAt: FixedDateTime, authorId: "authorId");
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(text: "test", createdAt: FixedDateTime, authorId: "authorId");
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
@@ -48,7 +47,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(authorId: "user", text: "test", createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "user", text: "test", createdAt: FixedDateTime);
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
@@ -63,10 +62,10 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed olderTweed = new(authorId: "user1", text: "older tweed", createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed olderTweed = new(authorId: "user1", text: "older tweed", createdAt: FixedDateTime);
         await session.StoreAsync(olderTweed);
         var recent = FixedDateTime.AddHours(1);
-        Tweed recentTweed = new(authorId: "user1", text: "recent tweed", createdAt: recent);
+        Tweed.Domain.TweedAggregate.Tweed recentTweed = new(authorId: "user1", text: "recent tweed", createdAt: recent);
         await session.StoreAsync(recentTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
@@ -84,7 +83,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Tweed tweed = new(authorId: "user1", text: "test", createdAt: FixedDateTime);
+            Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "user1", text: "test", createdAt: FixedDateTime);
             await session.StoreAsync(tweed);
         }
 
@@ -101,7 +100,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(authorId: "user2", text: "test", createdAt: FixedDateTime);
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(authorId: "user2", text: "test", createdAt: FixedDateTime);
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
@@ -127,7 +126,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: FixedDateTime, authorId: "authorId");
+        Tweed.Domain.TweedAggregate.Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: FixedDateTime, authorId: "authorId");
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);

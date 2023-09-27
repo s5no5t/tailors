@@ -1,9 +1,8 @@
 using Raven.Client.Documents.Indexes;
-using Tailors.Thread.Domain.TweedAggregate;
 
-namespace Tailors.Thread.Infrastructure.Indexes;
+namespace Tailors.Tweed.Infrastructure.Indexes;
 
-public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Tweed>
+public class Tweeds_ByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Domain.TweedAggregate.Tweed>
 {
     public Tweeds_ByAuthorIdAndCreatedAt()
     {
