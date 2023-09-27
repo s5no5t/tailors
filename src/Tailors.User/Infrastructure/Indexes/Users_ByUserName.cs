@@ -1,8 +1,9 @@
 using Raven.Client.Documents.Indexes;
+using Tailors.User.Domain.AppUser;
 
 namespace Tailors.User.Infrastructure.Indexes;
 
-public class Users_ByUserName : AbstractIndexCreationTask<Domain.AppUser>
+public class Users_ByUserName : AbstractIndexCreationTask<AppUser>
 {
     public Users_ByUserName()
     {

@@ -1,4 +1,4 @@
-namespace Tailors.User.Domain;
+namespace Tailors.User.Domain.UserFollowsAggregate;
 
 public interface IFollowUserUseCase
 {

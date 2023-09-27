@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
+using Tailors.User.Domain.AppUser;
 using Tailors.Web.Features.Shared;
 
 namespace Tailors.Web.Helper;
