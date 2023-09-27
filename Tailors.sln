@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Thread", "src\Tailo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Thread.Test", "src\Tailors.Thread.Test\Tailors.Thread.Test.csproj", "{F7C54CEF-9F53-4A60-85AC-8C17FEFA622E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Tweed", "Tailors.Tweed\Tailors.Tweed.csproj", "{263A6574-7626-4D21-BB59-B837F502B01E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Tweed.Test", "Tailors.Tweed.Test\Tailors.Tweed.Test.csproj", "{AF85EB00-ED4B-4F87-9ADA-887B3D6B2746}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +64,13 @@ Global
 		{F7C54CEF-9F53-4A60-85AC-8C17FEFA622E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7C54CEF-9F53-4A60-85AC-8C17FEFA622E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7C54CEF-9F53-4A60-85AC-8C17FEFA622E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{263A6574-7626-4D21-BB59-B837F502B01E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{263A6574-7626-4D21-BB59-B837F502B01E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{263A6574-7626-4D21-BB59-B837F502B01E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{263A6574-7626-4D21-BB59-B837F502B01E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF85EB00-ED4B-4F87-9ADA-887B3D6B2746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF85EB00-ED4B-4F87-9ADA-887B3D6B2746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF85EB00-ED4B-4F87-9ADA-887B3D6B2746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF85EB00-ED4B-4F87-9ADA-887B3D6B2746}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
