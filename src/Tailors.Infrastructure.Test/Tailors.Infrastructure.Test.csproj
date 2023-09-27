@@ -22,4 +22,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Tailors.Infrastructure\Tailors.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
