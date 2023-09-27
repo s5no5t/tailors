@@ -2,7 +2,12 @@ namespace Tailors.User.Domain;
 
 public class UserFollows
 {
-    public string? UserId { get; set; }
+    public UserFollows(string userId)
+    {
+        UserId = userId;
+    }
+
+    public string UserId { get; set; }
     public List<LeaderReference> Follows { get; set; } = new();
 
     public static string BuildId(string userId)
