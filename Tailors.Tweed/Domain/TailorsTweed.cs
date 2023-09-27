@@ -14,8 +14,8 @@ public class TailorsTweed
 
     public string? Id { get; }
     public string? ParentTweedId { get; }
-    public string? Text { get; }
-    public DateTime? CreatedAt { get; }
-    public string? AuthorId { get; }
+    public string Text { get; }
+    public DateTime CreatedAt { get; }
+    public string AuthorId { get; }
     public string? ThreadId { get; set; }
 }
