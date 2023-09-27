@@ -122,12 +122,17 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         ThreadOfTweedsUseCase threadOfTweedsUseCase = new(threadRepository, tweedRepository);
 
         var result = await threadOfTweedsUseCase.AddTweedToThread(tweed.Id!);
-        result.Match<OneOf<Success, DomainError>>(
+        result.Match<OneOf<Success, TweedError, ThreadError>>(
             success => success,
-            error =>
+            threadError =>
             {
-                _logger.LogError(error.Message);
-                return error;
+                _logger.LogError(threadError.Message);
+                return threadError;
+            },
+            tweedError =>
+            {
+                _logger.LogError(tweedError.Message);
+                return tweedError;
             });
     }
 }

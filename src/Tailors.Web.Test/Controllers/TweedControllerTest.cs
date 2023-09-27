@@ -221,7 +221,7 @@ public class TweedControllerTest
         _createTweedUseCaseMock
             .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<DateTime>(),
-                It.IsAny<string>())).ReturnsAsync(new DomainError());
+                It.IsAny<string>())).ReturnsAsync(new TweedError("Tweed error"));
 
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object,
             _notificationManagerMock.Object);
@@ -240,7 +240,7 @@ public class TweedControllerTest
         _createTweedUseCaseMock
             .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<DateTime>(),
-                It.IsAny<string>())).ReturnsAsync(new DomainError());
+                It.IsAny<string>())).ReturnsAsync(new TweedError("Tweed error"));
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object,
             _notificationManagerMock.Object);
 

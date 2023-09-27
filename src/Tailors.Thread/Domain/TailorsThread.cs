@@ -35,10 +35,10 @@ public class TailorsThread
         public List<TweedReference> Replies { get; } = new();
     }
     
-    public OneOf<Success, DomainError> AddTweed(TailorsTweed tweed)
+    public OneOf<Success, ThreadError, TweedError> AddTweed(TailorsTweed tweed)
     {
         if (tweed.Id is null)
-            return new DomainError($"Tweed {tweed.Id} is missing Id");
+            return new TweedError($"Tweed {tweed.Id} is missing Id");
 
         // This is a root Tweed
         if (tweed.ParentTweedId is null)
@@ -50,7 +50,7 @@ public class TailorsThread
         // This is a reply to a reply
         var path = FindTweedPath(tweed.ParentTweedId);
         if (path.Count == 0)
-            return new DomainError($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
+            return new ThreadError($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
         var parentTweedRef = path.Last();
         parentTweedRef.Replies.Add(new TweedReference(tweed.Id));
         return new Success();
