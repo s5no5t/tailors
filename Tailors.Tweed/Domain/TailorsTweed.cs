@@ -12,7 +12,7 @@ public class TailorsTweed
         CreatedAt = createdAt;
     }
 
-    public string? Id { get; }
+    public string? Id { get; set; }
     public string? ParentTweedId { get; }
     public string Text { get; }
     public DateTime CreatedAt { get; }
