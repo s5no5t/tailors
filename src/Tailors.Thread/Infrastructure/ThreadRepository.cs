@@ -12,11 +12,9 @@ public class ThreadRepository : IThreadRepository
         _session = session;
     }
 
-    public async Task<TailorsThread> Create()
+    public async Task Create(TailorsThread thread)
     {
-        TailorsThread thread = new();
         await _session.StoreAsync(thread);
-        return thread;
     }
 
     public async Task<TailorsThread?> GetById(string threadId)

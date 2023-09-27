@@ -29,7 +29,8 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnRootTweed_WhenThereIsOnlyRoot()
     {
-        TailorsTweed rootTweed = new(id: "rootTweedId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed rootTweed = new(id: "rootTweedId", authorId: "authorId", createdAt: FixedDateTime,
+            text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById("rootTweedId")).ReturnsAsync(rootTweed);
         TailorsThread thread = new(id: "threadId");
         thread.AddTweed(rootTweed);
@@ -44,14 +45,16 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsOneLeadingTweed()
     {
-        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
-        TailorsTweed tweed = new(id: "tweedId", parentTweedId: rootTweed.Id!, threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId",
+            createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed tweed = new(id: "tweedId", parentTweedId: rootTweed.Id!, threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
 
         TailorsThread thread = new(id: "threadId");
         thread.AddTweed(rootTweed);
         thread.AddTweed(tweed);
-           
+
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id!)).ReturnsAsync(thread);
 
         _tweedRepositoryMock.Setup(m =>
@@ -73,11 +76,15 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsAnotherBranch()
     {
-        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
-        TailorsTweed parentTweed = new(id: "parentTweedId", parentTweedId: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
-        TailorsTweed tweed = new(id: "tweedId", parentTweedId: "parentTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId",
+            createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed parentTweed = new(id: "parentTweedId", parentTweedId: "rootTweedId", threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed tweed = new(id: "tweedId", parentTweedId: "parentTweedId", threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        TailorsTweed otherTweed = new(id: "otherTweedId", parentTweedId: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed otherTweed = new(id: "otherTweedId", parentTweedId: "rootTweedId", threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
 
         TailorsThread thread = new(id: "threadId");
         thread.AddTweed(rootTweed);
@@ -104,11 +111,12 @@ public class ThreadOfTweedsUseCaseTest
     }
 
     [Fact]
-    public async Task AddTweedToThread_ShouldCreateTweed_WhenTweedIdIsNull()
+    public async Task AddTweedToThread_ShouldCreateThread_WhenThreadIdIsNull()
     {
         TailorsTweed tweed = new(id: "tweedId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        _tweedThreadRepositoryMock.Setup(t => t.Create()).ReturnsAsync(new TailorsThread(id: "threadId"));
+        _tweedThreadRepositoryMock.Setup(t => t.Create(It.IsAny<TailorsThread>()))
+            .Callback((TailorsThread t) => t.Id = "threadId").Returns(Task.CompletedTask);
 
         var result = await _sut.AddTweedToThread("tweedId");
 
@@ -119,7 +127,8 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldSetRootTweed_IfParentTweedIdIsNull()
     {
-        TailorsTweed tweed = new(id: "tweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed tweed = new(id: "tweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime,
+            text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
         TailorsThread thread = new();
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
@@ -133,9 +142,11 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToRootTweed()
     {
-        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId",
+            createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(rootTweed.Id!)).ReturnsAsync(rootTweed);
-        TailorsTweed tweed = new(id: "tweedId", parentTweedId: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed tweed = new(id: "tweedId", parentTweedId: "rootTweedId", threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
         TailorsThread thread = new(id: "threadId");
         thread.AddTweed(rootTweed);
@@ -151,15 +162,18 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task AddTweedToThread_ShouldInsertReplyToReplyTweed()
     {
-        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
-        TailorsTweed replyTweed = new(id: "replyTweedId", parentTweedId: "rootTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
-        TailorsTweed tweed = new(id: "tweedId", parentTweedId: "replyTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed rootTweed = new(id: "rootTweedId", threadId: "threadId", authorId: "authorId",
+            createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed replyTweed = new(id: "replyTweedId", parentTweedId: "rootTweedId", threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        TailorsTweed tweed = new(id: "tweedId", parentTweedId: "replyTweedId", threadId: "threadId",
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
-        
+
         TailorsThread thread = new(id: "threadId");
         thread.AddTweed(rootTweed);
         thread.AddTweed(replyTweed);
-        
+
         _tweedThreadRepositoryMock.Setup(m => m.GetById("threadId")).ReturnsAsync(thread);
 
         var result = await _sut.AddTweedToThread("tweedId");
