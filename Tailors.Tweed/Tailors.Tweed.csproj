@@ -15,4 +15,5 @@
       <ProjectReference Include="..\src\Tailors.User\Tailors.User.csproj" />
     </ItemGroup>
 
+
 </Project>

@@ -35,7 +35,7 @@ public class TweedThread
         public List<TweedReference> Replies { get; } = new();
     }
     
-    public OneOf<Success, DomainError> AddTweed(Tweed.Domain.TweedAggregate.Tweed tweed)
+    public OneOf<Success, DomainError> AddTweed(Tweed.Domain.Tweed tweed)
     {
         if (tweed.Id is null)
             return new DomainError($"Tweed {tweed.Id} is missing Id");

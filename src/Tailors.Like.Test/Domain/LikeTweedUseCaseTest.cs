@@ -32,7 +32,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        var tweed = new Tweed.Domain.TweedAggregate.Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
+        var tweed = new Tweed.Domain.Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
 
         await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
