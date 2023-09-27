@@ -5,11 +5,10 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 using Tailors.Domain.Like;
-using Tailors.Domain.UserFollows;
-using Tailors.Tweed.Infrastructure.Indexes;
-using Tailors.User.Infrastructure.Indexes;
+using Tailors.Infrastructure.Tweed.Indexes;
+using Tailors.Infrastructure.UserFollows.Indexes;
 
-namespace Tailors.Like.Infrastructure;
+namespace Tailors.Infrastructure;
 
 public static class RavenDbSetup
 {
@@ -47,10 +46,10 @@ public static class RavenDbSetup
             ArgumentNullException.ThrowIfNull(userLikes.UserId);
             return Task.FromResult(UserLikes.BuildId(userLikes.UserId));
         });
-        store.Conventions.RegisterAsyncIdConvention<UserFollows>((_, follows) =>
+        store.Conventions.RegisterAsyncIdConvention<Domain.UserFollows.UserFollows>((_, follows) =>
         {
             ArgumentNullException.ThrowIfNull(follows.UserId);
-            return Task.FromResult(UserFollows.BuildId(follows.UserId));
+            return Task.FromResult(Domain.UserFollows.UserFollows.BuildId(follows.UserId));
         });
     }
     

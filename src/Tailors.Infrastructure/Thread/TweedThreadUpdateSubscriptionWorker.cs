@@ -10,10 +10,9 @@ using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
 using Tailors.Domain.Thread;
 using Tailors.Domain.Tweed;
-using Tailors.Thread.Infrastructure;
-using Tailors.Tweed.Infrastructure;
+using Tailors.Infrastructure.Tweed;
 
-namespace Tailors.Thread;
+namespace Tailors.Infrastructure.Thread;
 
 public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 {

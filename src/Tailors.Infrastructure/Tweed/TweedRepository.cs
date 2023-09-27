@@ -2,9 +2,9 @@
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.Tweed;
-using Tailors.Tweed.Infrastructure.Indexes;
+using Tailors.Infrastructure.Tweed.Indexes;
 
-namespace Tailors.Tweed.Infrastructure;
+namespace Tailors.Infrastructure.Tweed;
 
 public sealed class TweedRepository : ITweedRepository
 {

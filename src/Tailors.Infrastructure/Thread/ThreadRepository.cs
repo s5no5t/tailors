@@ -1,7 +1,7 @@
 using Raven.Client.Documents.Session;
 using Tailors.Domain.Thread;
 
-namespace Tailors.Thread.Infrastructure;
+namespace Tailors.Infrastructure.Thread;
 
 public class ThreadRepository : IThreadRepository
 {

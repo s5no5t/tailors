@@ -1,7 +1,7 @@
 using Raven.Client.Documents.Session;
 using Tailors.Domain.Like;
 
-namespace Tailors.Like.Infrastructure;
+namespace Tailors.Infrastructure.Like;
 
 public class TweedLikesRepository : ITweedLikesRepository
 {
