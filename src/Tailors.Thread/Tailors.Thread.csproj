@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Tailors.Tweed\Tailors.Tweed.csproj" />
         <ProjectReference Include="..\Tailors.User\Tailors.User.csproj" />
     </ItemGroup>
 

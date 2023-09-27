@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Tailors.Tweed\Tailors.Tweed.csproj" />
       <ProjectReference Include="..\Tailors.Like\Tailors.Like.csproj" />
       <ProjectReference Include="..\Tailors.Thread\Tailors.Thread.csproj" />
     </ItemGroup>
