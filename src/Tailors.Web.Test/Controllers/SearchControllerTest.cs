@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
+using Tailors.User.Domain.AppUser;
 using Tailors.Web.Features.Search;
 using Xunit;
 

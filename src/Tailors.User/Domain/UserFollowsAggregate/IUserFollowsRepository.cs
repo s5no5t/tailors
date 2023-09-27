@@ -1,9 +1,4 @@
-namespace Tailors.User.Domain;
-
-public interface IUserRepository
-{
-    Task<List<AppUser>> Search(string term);
-}
+namespace Tailors.User.Domain.UserFollowsAggregate;
 
 public interface IUserFollowsRepository
 {

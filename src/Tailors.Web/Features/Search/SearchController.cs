@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
+using Tailors.User.Domain.AppUser;
 
 namespace Tailors.Web.Features.Search;
 

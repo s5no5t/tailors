@@ -5,6 +5,7 @@ using Raven.Client.Exceptions.Database;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 using Tailors.User.Domain;
+using Tailors.User.Domain.UserFollowsAggregate;
 using Tailors.User.Infrastructure.Indexes;
 
 namespace Tailors.User.Infrastructure;

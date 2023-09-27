@@ -1,5 +1,6 @@
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.User.Domain;
+using Tailors.User.Domain.UserFollowsAggregate;
 
 namespace Tailors.Thread.Domain.ThreadAggregate;
 
