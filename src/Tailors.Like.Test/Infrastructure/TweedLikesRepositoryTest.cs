@@ -23,7 +23,7 @@ public class TweedLikesRepositoryTest
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        Tweed tweed = new(text: "test", createdAt: FixedDateTime);
+        Tweed tweed = new Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();

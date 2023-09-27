@@ -37,7 +37,7 @@ public class FeedControllerTest
             Id = "currentUser"
         };
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
-        var tweed = new Tweed(id: "twedId", authorId: "author");
+        var tweed = new Tweed(authorId: "author", id: "twedId", createdAt: DateTime.Now, text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.Create(tweed, false))
@@ -80,7 +80,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Index_ShouldReturnTweeds()
     {
-        var tweed = new Tweed(id: "tweedId", authorId: "author");
+        var tweed = new Tweed(authorId: "author", id: "tweedId", createdAt: DateTime.Now, text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock
@@ -122,7 +122,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Feed_ShouldReturnTweeds()
     {
-        var tweed = new Tweed(id: "tweedId", authorId: "author");
+        var tweed = new Tweed(authorId: "author", id: "tweedId", createdAt: DateTime.Now, text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock
@@ -145,7 +145,7 @@ public class FeedControllerTest
     public async Task UpdateAvailable_ShouldReturnTrue_WhenThereIsANewTweed()
     {
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
-        var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(5));
+        var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(5), authorId: "authorId", text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
@@ -160,7 +160,7 @@ public class FeedControllerTest
     public async Task UpdateAvailable_ShouldReturnFalse_WhenThereIsNoNewTweed()
     {
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
-        var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(-5));
+        var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(-5), authorId: "authorId", text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";

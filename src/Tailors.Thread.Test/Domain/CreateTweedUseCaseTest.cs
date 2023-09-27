@@ -39,7 +39,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateReplyTweed_SavesTweed()
     {
-        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId");
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id!);
@@ -51,7 +51,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateReplyTweed_SetsThreadId()
     {
-        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId");
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");

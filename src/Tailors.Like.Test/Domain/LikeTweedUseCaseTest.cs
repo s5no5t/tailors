@@ -33,7 +33,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
-        var tweed = new Tweed(id: "tweedId");
+        var tweed = new Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
 
         await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
