@@ -4,7 +4,6 @@ using Raven.Client.Exceptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
-using Tailors.Domain.Like;
 using Tailors.Infrastructure.Tweed.Indexes;
 using Tailors.Infrastructure.UserFollows.Indexes;
 
@@ -41,10 +40,10 @@ public static class RavenDbSetup
     
     private static void ApplyCustomConventions(this IDocumentStore store)
     {
-        store.Conventions.RegisterAsyncIdConvention<UserLikes>((_, userLikes) =>
+        store.Conventions.RegisterAsyncIdConvention<Domain.UserLikes.UserLikes>((_, userLikes) =>
         {
             ArgumentNullException.ThrowIfNull(userLikes.UserId);
-            return Task.FromResult(UserLikes.BuildId(userLikes.UserId));
+            return Task.FromResult(Domain.UserLikes.UserLikes.BuildId(userLikes.UserId));
         });
         store.Conventions.RegisterAsyncIdConvention<Domain.UserFollows.UserFollows>((_, follows) =>
         {

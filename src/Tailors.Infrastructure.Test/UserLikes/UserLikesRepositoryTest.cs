@@ -1,19 +1,19 @@
 using Raven.Client.Documents;
 using Tailors.Domain.Tweed;
-using Tailors.Infrastructure.Like;
 using Tailors.Infrastructure.Test.Helper;
+using Tailors.Infrastructure.UserLikes;
 
-namespace Tailors.Infrastructure.Test.Like;
+namespace Tailors.Infrastructure.Test.UserLikes;
 
 [Trait("Category","Integration")]
 [Collection("RavenDB")]
-public class TweedLikesRepositoryTest
+public class UserLikesRepositoryTest
 {
     private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
 
     private readonly IDocumentStore _store;
 
-    public TweedLikesRepositoryTest(RavenTestDbFixture ravenDb)
+    public UserLikesRepositoryTest(RavenTestDbFixture ravenDb)
     {
         _store = ravenDb.CreateDocumentStore();
     }
@@ -26,9 +26,9 @@ public class TweedLikesRepositoryTest
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();
-        var service = new TweedLikesRepository(session);
+        var sut = new UserLikesRepository(session);
 
-        var likesCount = await service.GetLikesCounter(tweed.Id!);
+        var likesCount = await sut.GetLikesCounter(tweed.Id!);
 
         Assert.Equal(1, likesCount);
     }

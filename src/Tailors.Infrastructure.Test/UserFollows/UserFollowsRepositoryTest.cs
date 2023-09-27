@@ -1,5 +1,5 @@
 using Raven.Client.Documents;
-using Tailors.Domain.AppUser;
+using Tailors.Domain.User;
 using Tailors.Infrastructure.Test.Helper;
 using Tailors.Infrastructure.UserFollows;
 

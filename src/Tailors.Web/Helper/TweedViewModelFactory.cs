@@ -1,9 +1,9 @@
 using System.Globalization;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Tailors.Domain.AppUser;
-using Tailors.Domain.Like;
 using Tailors.Domain.Tweed;
+using Tailors.Domain.User;
+using Tailors.Domain.UserLikes;
 using Tailors.Web.Features.Shared;
 
 namespace Tailors.Web.Helper;
@@ -20,15 +20,15 @@ public class TweedViewModelFactory : ITweedViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILikeTweedUseCase _likeTweedUseCase;
-    private readonly ITweedLikesRepository _tweedLikesRepository;
+    private readonly IUserLikesRepository _userLikesRepository;
     private readonly UserManager<AppUser> _userManager;
 
-    public TweedViewModelFactory(ITweedLikesRepository tweedLikesRepository,
+    public TweedViewModelFactory(IUserLikesRepository userLikesRepository,
         ILikeTweedUseCase likeTweedUseCase,
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {
-        _tweedLikesRepository = tweedLikesRepository;
+        _userLikesRepository = userLikesRepository;
         _likeTweedUseCase = likeTweedUseCase;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
@@ -38,7 +38,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
     {
         var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
-        var likesCount = await _tweedLikesRepository.GetLikesCounter(tweed.Id!);
+        var likesCount = await _userLikesRepository.GetLikesCounter(tweed.Id!);
 
         var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
         var currentUserLikesTweed =

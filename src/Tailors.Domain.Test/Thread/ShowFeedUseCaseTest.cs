@@ -1,6 +1,7 @@
 using Moq;
 using Tailors.Domain.Thread;
 using Tailors.Domain.Tweed;
+using Tailors.Domain.User;
 using Tailors.Domain.UserFollows;
 
 namespace Tailors.Domain.Test.Thread;
@@ -44,7 +45,7 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
     {
-        var followedUser = new AppUser.AppUser();
+        var followedUser = new AppUser();
 
         TailorsTweed followedUserTweed = new(authorId: followedUser.Id!, text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock

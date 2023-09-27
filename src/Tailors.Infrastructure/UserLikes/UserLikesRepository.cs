@@ -1,24 +1,24 @@
 using Raven.Client.Documents.Session;
-using Tailors.Domain.Like;
+using Tailors.Domain.UserLikes;
 
-namespace Tailors.Infrastructure.Like;
+namespace Tailors.Infrastructure.UserLikes;
 
-public class TweedLikesRepository : ITweedLikesRepository
+public class UserLikesRepository : IUserLikesRepository
 {
     private const string LikesCounterName = "Likes";
     private readonly IAsyncDocumentSession _session;
 
-    public TweedLikesRepository(IAsyncDocumentSession session)
+    public UserLikesRepository(IAsyncDocumentSession session)
     {
         _session = session;
     }
 
-    public async Task<UserLikes?> GetById(string userLikesId)
+    public async Task<Domain.UserLikes.UserLikes?> GetById(string userLikesId)
     {
-        return await _session.LoadAsync<UserLikes>(userLikesId);
+        return await _session.LoadAsync<Domain.UserLikes.UserLikes>(userLikesId);
     }
 
-    public async Task Create(UserLikes userLikes)
+    public async Task Create(Domain.UserLikes.UserLikes userLikes)
     {
         await _session.StoreAsync(userLikes);
     }
