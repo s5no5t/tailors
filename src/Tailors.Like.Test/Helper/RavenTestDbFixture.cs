@@ -1,12 +1,12 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
 using Tailors.Like.Infrastructure;
-using Tailors.Thread.Infrastructure;
 using Tailors.Tweed.Infrastructure;
 using Xunit;
 
 namespace Tailors.Like.Test.Helper;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class RavenTestDbFixture : RavenTestDriver
 {
     public IDocumentStore CreateDocumentStore()

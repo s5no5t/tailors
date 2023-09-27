@@ -47,8 +47,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 // here we are able to be informed of any exception that happens during processing                    
                 subscriptionWorker.OnSubscriptionConnectionRetry += exception =>
                 {
-                    _logger.LogError(
-                        "Error during subscription processing: " + SubscriptionName, exception);
+                    _logger.LogError(exception, $"Error during subscription processing: ${SubscriptionName}");
                 };
 
                 await subscriptionWorker.Run(async batch =>
@@ -65,7 +64,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             }
             catch (Exception e)
             {
-                _logger.LogError("Failure in subscription: " + SubscriptionName, e);
+                _logger.LogError(e, "Failure in subscription: {SubscriptionName}", SubscriptionName);
 
                 if (e is DatabaseDoesNotExistException ||
                     e is SubscriptionDoesNotExistException ||
@@ -93,8 +92,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             }
             finally
             {
-                _logger.LogInformation(
-                    $"Stopping worker {subscriptionWorker.WorkerId} for subscription {SubscriptionName}");
+                _logger.LogInformation($"Stopping worker {subscriptionWorker.WorkerId} for subscription {SubscriptionName}");
                 await subscriptionWorker.DisposeAsync();
             }
         }
