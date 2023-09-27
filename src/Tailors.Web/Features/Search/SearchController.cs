@@ -29,7 +29,7 @@ public class SearchController : Controller
         var tweeds = await tweedRepository.Search(term);
         IndexViewModel viewModel = new(
             term,
-            users.Select(u => new UserViewModel(u.Id!, u.UserName!)).ToList(),
+            users.Select(u => new UserViewModel(u.Id!, u.UserName)).ToList(),
             tweeds.Select(t => new TweedViewModel(t.Id!, t.Text!)).ToList()
         );
         return View("index", viewModel);
