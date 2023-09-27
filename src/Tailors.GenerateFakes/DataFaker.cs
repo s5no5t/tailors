@@ -87,13 +87,11 @@ internal class DataFaker
             .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
             .RuleFor(f => f.CreatedAt, f => f.Date.Past());
 
-        var userLikesFaker = new Faker<UserLikes>()
-            .RuleFor(u => u.Likes, f => likesFaker.GenerateBetween(0, tweeds.Count - 1));
-
         foreach (var user in users)
         {
-            var userLikes = userLikesFaker.Generate(1).First();
-            userLikes.UserId = user.Id;
+            var likes = likesFaker.GenerateBetween(0, tweeds.Count - 1);
+            var userLikes = new UserLikes(user.Id, likes);
+           
             await bulkInsert.StoreAsync(userLikes);
         }
 
