@@ -66,13 +66,11 @@ static void SetupRavenDbServices(WebApplicationBuilder builder)
         options.BeforeInitializeDocStore = store =>
         {
             store.PreInitialize();
-            store.PreInitializeLikes();
         };
         options.AfterInitializeDocStore = store =>
         {
             store.EnsureDatabaseExists();
-            store.DeployUserIndexes();
-            store.DeployTweedIndexes();
+            store.DeployIndexes();
         };
     });
     builder.Services.AddRavenDbAsyncSession();
