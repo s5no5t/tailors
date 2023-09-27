@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tailors.Thread.Domain.ThreadAggregate;
+using Tailors.Thread.Domain;
 using Tailors.User.Domain.AppUser;
 using Tailors.Web.Test.TestHelper;
 using Tailors.Web.Features.Feed;
