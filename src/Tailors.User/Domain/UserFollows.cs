@@ -7,7 +7,7 @@ public class UserFollows
         UserId = userId;
     }
 
-    public string UserId { get; set; }
+    public string UserId { get; }
     public List<LeaderReference> Follows { get; set; } = new();
 
     public static string BuildId(string userId)
