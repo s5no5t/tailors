@@ -42,13 +42,10 @@ internal class DataFaker
             .RuleFor(f => f.LeaderId, f => f.PickRandom(users).Id)
             .RuleFor(f => f.CreatedAt, f => f.Date.Past());
 
-        var userFollowsFaker = new Faker<UserFollows>()
-            .RuleFor(u => u.Follows, f => followsFaker.GenerateBetween(0, users.Count - 1));
-
         foreach (var user in users)
         {
-            var userFollows = userFollowsFaker.Generate(1).First();
-            userFollows.UserId = user.Id;
+            var userFollows = new UserFollows(user.Id!);
+            userFollows.Follows = followsFaker.GenerateBetween(0, users.Count - 1);
             await bulkInsert.StoreAsync(userFollows);
         }
 
@@ -90,7 +87,7 @@ internal class DataFaker
         foreach (var user in users)
         {
             var likes = likesFaker.GenerateBetween(0, tweeds.Count - 1);
-            var userLikes = new UserLikes(user.Id, likes);
+            var userLikes = new UserLikes(user.Id!, likes);
            
             await bulkInsert.StoreAsync(userLikes);
         }
