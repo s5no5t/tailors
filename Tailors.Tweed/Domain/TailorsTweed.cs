@@ -1,8 +1,8 @@
 namespace Tailors.Tweed.Domain;
 
-public class Tweed
+public class TailorsTweed
 {
-    public Tweed(string authorId, string text, DateTime createdAt, string? id = null, string? parentTweedId = null, string? threadId = null)
+    public TailorsTweed(string authorId, string text, DateTime createdAt, string? id = null, string? parentTweedId = null, string? threadId = null)
     {
         ParentTweedId = parentTweedId;
         ThreadId = threadId;

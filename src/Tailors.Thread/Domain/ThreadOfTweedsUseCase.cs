@@ -6,7 +6,7 @@ namespace Tailors.Thread.Domain;
 
 public interface IThreadOfTweedsUseCase
 {
-    Task<OneOf<List<Tweed.Domain.Tweed>, DomainError>> GetThreadTweedsForTweed(string tweedId);
+    Task<OneOf<List<TailorsTweed>, DomainError>> GetThreadTweedsForTweed(string tweedId);
 }
 
 public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
@@ -21,14 +21,14 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<OneOf<List<Tweed.Domain.Tweed>, DomainError>> GetThreadTweedsForTweed(string tweedId)
+    public async Task<OneOf<List<TailorsTweed>, DomainError>> GetThreadTweedsForTweed(string tweedId)
     {
         var tweed = await _tweedRepository.GetById(tweedId);
         if (tweed is null)
             return new DomainError($"Tweed {tweedId} not found");
 
         if (tweed.ThreadId is null)
-            return new List<Tweed.Domain.Tweed>();
+            return new List<TailorsTweed>();
 
         var thread = await _threadRepository.GetById(tweed.ThreadId!);
         if (thread is null)

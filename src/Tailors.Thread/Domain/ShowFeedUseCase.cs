@@ -5,7 +5,7 @@ namespace Tailors.Thread.Domain;
 
 public interface IShowFeedUseCase
 {
-    Task<List<Tweed.Domain.Tweed>> GetFeed(string userId, int page, int pageSize);
+    Task<List<TailorsTweed>> GetFeed(string userId, int page, int pageSize);
 }
 
 public class ShowFeedUseCase : IShowFeedUseCase
@@ -19,7 +19,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         _followUserUseCase = followUserUseCase;
     }
 
-    public async Task<List<Tweed.Domain.Tweed>> GetFeed(string userId, int page, int pageSize)
+    public async Task<List<TailorsTweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 
@@ -32,7 +32,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
         var extraTweeds = await _tweedRepository.GetRecentTweeds(numExtraTweeds);
 
-        var tweeds = new List<Tweed.Domain.Tweed>();
+        var tweeds = new List<TailorsTweed>();
         tweeds.AddRange(ownTweeds);
         tweeds.AddRange(followerTweeds);
         tweeds.AddRange(extraTweeds);
