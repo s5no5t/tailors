@@ -1,7 +1,4 @@
-using Tailors.Domain.UserFollows;
-using Xunit;
-
-namespace Tailors.User.Test.Domain;
+namespace Tailors.Domain.Test.UserFollows;
 
 public class UserFollowsTest
 {
@@ -10,7 +7,7 @@ public class UserFollowsTest
     {
         var userId = "User/123-A";
         
-        var followsId = UserFollows.BuildId(userId);
+        var followsId = Domain.UserFollows.UserFollows.BuildId(userId);
         
         Assert.Equal($"{userId}/Follows", followsId);
     } 

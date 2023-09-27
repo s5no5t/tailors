@@ -1,6 +1,6 @@
 using Moq;
 
-namespace Tailors.Thread.Test.Domain;
+namespace Tailors.Domain.Test.Thread;
 
 public class MoqExtensions
 {
