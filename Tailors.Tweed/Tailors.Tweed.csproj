@@ -12,7 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\src\Tailors.Domain\Tailors.Domain.csproj" />
       <ProjectReference Include="..\src\Tailors.User\Tailors.User.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Domain\" />
     </ItemGroup>
 
 
