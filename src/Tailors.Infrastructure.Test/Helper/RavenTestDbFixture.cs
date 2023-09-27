@@ -12,13 +12,13 @@ public class RavenTestDbFixture : RavenTestDriver
     public IDocumentStore CreateDocumentStore()
     {
         var store = GetDocumentStore();
-        store.DeployTweedIndexes();
+        store.DeployIndexes();
         return store;
     }
 
     protected override void PreInitialize(IDocumentStore documentStore)
     {
-        documentStore.PreInitializeLikes();
+        documentStore.PreInitialize();
         documentStore.Conventions.ThrowIfQueryPageSizeIsNotSet = true;
     }
 }

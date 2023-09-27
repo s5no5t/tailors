@@ -23,8 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tailors.User.Test\Tailors.User.Test.csproj" />
-      <ProjectReference Include="..\Tailors.User\Tailors.User.csproj" />
       <ProjectReference Include="..\Tailors.Web\Tailors.Web.csproj" />
     </ItemGroup>
 
