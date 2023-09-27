@@ -11,7 +11,6 @@ using Tailors.Thread;
 using Tailors.Thread.Domain.ThreadAggregate;
 using Tailors.Thread.Domain.TweedAggregate;
 using Tailors.Thread.Infrastructure;
-using Tailors.User.Domain;
 using Tailors.User.Domain.AppUser;
 using Tailors.User.Infrastructure;
 using Tailors.Web.Areas.Identity;

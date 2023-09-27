@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Tailors.User.Domain;
 using Tailors.User.Domain.AppUser;
 
 namespace Tailors.Web.Areas.Identity.Pages.Account;
