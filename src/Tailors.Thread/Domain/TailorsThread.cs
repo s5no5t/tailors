@@ -6,15 +6,15 @@ using Tailors.Tweed.Domain;
 
 namespace Tailors.Thread.Domain;
 
-public class TweedThread
+public class TailorsThread
 {
-    public TweedThread(string? id = null)
+    public TailorsThread(string? id = null)
     {
         Id = id;
     }
     
     [JsonConstructor]
-    public TweedThread(string id, TweedReference? root)
+    public TailorsThread(string id, TweedReference? root)
     {
         Id = id;
         Root = root;
