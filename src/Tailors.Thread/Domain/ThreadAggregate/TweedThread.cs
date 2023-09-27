@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
 using Tailors.Thread.Domain.TweedAggregate;
@@ -10,6 +11,13 @@ public class TweedThread
     public TweedThread(string? id = null)
     {
         Id = id;
+    }
+    
+    [JsonConstructor]
+    public TweedThread(string id, TweedReference? root)
+    {
+        Id = id;
+        Root = root;
     }
 
     public string? Id { get; }
