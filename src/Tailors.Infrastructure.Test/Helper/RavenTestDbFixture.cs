@@ -1,9 +1,7 @@
 using Raven.Client.Documents;
 using Raven.TestDriver;
-using Tailors.Infrastructure;
-using Xunit;
 
-namespace Tailors.Like.Test.Helper;
+namespace Tailors.Infrastructure.Test.Helper;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class RavenTestDbFixture : RavenTestDriver
