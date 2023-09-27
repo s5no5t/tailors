@@ -1,10 +1,9 @@
 using Raven.Client.Documents;
 using Tailors.Domain.Tweed;
 using Tailors.Infrastructure.Like;
-using Tailors.Like.Test.Helper;
-using Xunit;
+using Tailors.Infrastructure.Test.Helper;
 
-namespace Tailors.Like.Test.Infrastructure;
+namespace Tailors.Infrastructure.Test.Like;
 
 [Trait("Category","Integration")]
 [Collection("RavenDB")]

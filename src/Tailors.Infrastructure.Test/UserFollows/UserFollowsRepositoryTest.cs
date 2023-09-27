@@ -1,13 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Tailors.Domain.AppUser;
-using Tailors.Domain.UserFollows;
+using Tailors.Infrastructure.Test.Helper;
 using Tailors.Infrastructure.UserFollows;
-using Tailors.Like.Test.Helper;
-using Xunit;
 
-namespace Tailors.User.Test.Infrastructure;
+namespace Tailors.Infrastructure.Test.UserFollows;
 
 [Trait("Category","Integration")]
 [Collection("RavenDB")]
@@ -41,7 +37,7 @@ public class UserFollowsRepositoryTest
                 Id = $"follower/${i}"
             };
             await session.StoreAsync(follower);
-            UserFollows userFollows = new(userId: follower.Id);
+            Domain.UserFollows.UserFollows userFollows = new(userId: follower.Id);
             userFollows.AddFollows(leaderId: "leaderId", createdAt: DateTime.UtcNow);
             await session.StoreAsync(userFollows);
         }

@@ -1,9 +1,9 @@
 using Raven.Client.Documents;
 using Tailors.Domain.AppUser;
+using Tailors.Infrastructure.Test.Helper;
 using Tailors.Infrastructure.User;
-using Tailors.Like.Test.Helper;
 
-namespace Tailors.User.Test.Infrastructure;
+namespace Tailors.Infrastructure.Test.User;
 
 [Trait("Category","Integration")]
 [Collection("RavenDB")]
