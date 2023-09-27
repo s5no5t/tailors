@@ -119,7 +119,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
     private async Task ProcessTweed(Tweed.Domain.Tweed tweed, IAsyncDocumentSession session)
     {
-        TweedThreadRepository threadRepository = new(session);
+        ThreadRepository threadRepository = new(session);
         TweedRepository tweedRepository = new(session);
         ThreadOfTweedsUseCase threadOfTweedsUseCase = new(threadRepository, tweedRepository);
 

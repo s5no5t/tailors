@@ -12,12 +12,12 @@ public interface IThreadOfTweedsUseCase
 public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
 {
     private readonly ITweedRepository _tweedRepository;
-    private readonly ITweedThreadRepository _tweedThreadRepository;
+    private readonly IThreadRepository _threadRepository;
 
-    public ThreadOfTweedsUseCase(ITweedThreadRepository tweedThreadRepository,
+    public ThreadOfTweedsUseCase(IThreadRepository threadRepository,
         ITweedRepository tweedRepository)
     {
-        _tweedThreadRepository = tweedThreadRepository;
+        _threadRepository = threadRepository;
         _tweedRepository = tweedRepository;
     }
 
@@ -30,7 +30,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         if (tweed.ThreadId is null)
             return new List<Tweed.Domain.Tweed>();
 
-        var thread = await _tweedThreadRepository.GetById(tweed.ThreadId!);
+        var thread = await _threadRepository.GetById(tweed.ThreadId!);
         if (thread is null)
             return new DomainError($"Thread {tweed.ThreadId} not found");
 
@@ -48,8 +48,8 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
 
         var thread = tweed.ThreadId switch
         {
-            null => await _tweedThreadRepository.Create(),
-            _ => await _tweedThreadRepository.GetById(tweed.ThreadId)
+            null => await _threadRepository.Create(),
+            _ => await _threadRepository.GetById(tweed.ThreadId)
         };
         
         if (thread is null)

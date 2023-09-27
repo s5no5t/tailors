@@ -60,7 +60,7 @@ internal class DataFaker
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var threadFaker = new Faker<TweedThread>();
+        var threadFaker = new Faker<TailorsThread>();
 
         var numThreads = _settings.NumberOfTweeds;
         var threads = threadFaker.Generate(numThreads);
