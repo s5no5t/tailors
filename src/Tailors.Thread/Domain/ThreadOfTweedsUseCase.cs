@@ -46,17 +46,21 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
         if (tweed is null)
             return new TweedError($"Tweed {tweedId} not found");
 
-        var thread = tweed.ThreadId switch
+        TailorsThread? thread;
+        switch (tweed.ThreadId)
         {
-            null => await _threadRepository.Create(),
-            _ => await _threadRepository.GetById(tweed.ThreadId)
-        };
-        
-        if (thread is null)
-            return new ThreadError($"Thread {tweed.ThreadId} not found");
+            case null:
+                thread = new TailorsThread();
+                await _threadRepository.Create(thread);
+                tweed.ThreadId = thread.Id;
+                break;
+            default:
+                thread = await _threadRepository.GetById(tweed.ThreadId);
+                if (thread is null)
+                    return new ThreadError($"Thread {tweed.ThreadId} not found");
+                break;
+        }
 
-        tweed.ThreadId = thread.Id;
-        
         var result = thread.AddTweed(tweed);
         return result;
     }

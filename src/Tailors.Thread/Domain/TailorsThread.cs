@@ -20,7 +20,7 @@ public class TailorsThread
         Root = root;
     }
 
-    public string? Id { get; }
+    public string? Id { get; set; }
     public TweedReference? Root { get; private set; }
 
     public class TweedReference
