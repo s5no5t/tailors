@@ -55,7 +55,7 @@ public class FeedController : Controller
         var feed = await _showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
         var mostRecentFeedItem = feed.First();
 
-        if (mostRecentFeedItem.CreatedAt!.Value > since)
+        if (mostRecentFeedItem.CreatedAt > since)
             return PartialView(new NewTweedsNotificationViewModel { NewTweedsAvailable = true });
 
         return PartialView(new NewTweedsNotificationViewModel());
