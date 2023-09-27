@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\src\Tailors.Infrastructure\Tailors.Infrastructure.csproj" />
       <ProjectReference Include="..\Tailors.Tweed\Tailors.Tweed.csproj" />
     </ItemGroup>
 
