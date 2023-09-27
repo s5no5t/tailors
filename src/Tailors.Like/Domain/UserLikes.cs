@@ -6,19 +6,19 @@ public class UserLikes
 {
     private readonly List<TweedLike> _likes = new ();
 
-    public UserLikes(string? userId)
+    public UserLikes(string userId)
     {
         UserId = userId;
     }
 
     [JsonConstructor]
-    public UserLikes(string? userId, List<TweedLike> likes)
+    public UserLikes(string userId, List<TweedLike> likes)
     {
         UserId = userId;
         _likes = likes;
     }
 
-    public string? UserId { get; }
+    public string UserId { get; }
 
     public IReadOnlyList<TweedLike> Likes  => _likes;
     
@@ -44,13 +44,13 @@ public class UserLikes
 
     public class TweedLike
     {
-        public TweedLike(string? tweedId, DateTime? createdAt)
+        public TweedLike(string tweedId, DateTime createdAt)
         {
             TweedId = tweedId;
             CreatedAt = createdAt;
         }
 
-        public string? TweedId { get;  }
-        public DateTime? CreatedAt { get; }
+        public string TweedId { get;  }
+        public DateTime CreatedAt { get; }
     }
 }
