@@ -11,6 +11,10 @@
       <PackageReference Include="RavenDB.Identity" Version="8.0.9" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Tailors.Domain\Tailors.Domain.csproj" />
+    </ItemGroup>
+
 
 
 </Project>
