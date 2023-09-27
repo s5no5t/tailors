@@ -3,9 +3,9 @@ using Tailors.User.Domain.AppUser;
 
 namespace Tailors.User.Infrastructure.Indexes;
 
-public class Users_ByUserName : AbstractIndexCreationTask<AppUser>
+public class UsersByUserName : AbstractIndexCreationTask<AppUser>
 {
-    public Users_ByUserName()
+    public UsersByUserName()
     {
         Map = users => from user in users
                        select new

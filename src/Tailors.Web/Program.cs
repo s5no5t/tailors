@@ -9,7 +9,6 @@ using Tailors.Like.Domain;
 using Tailors.Like.Infrastructure;
 using Tailors.Thread;
 using Tailors.Thread.Domain;
-using Tailors.Thread.Infrastructure;
 using Tailors.Tweed.Domain;
 using Tailors.Tweed.Infrastructure;
 using Tailors.User.Domain.AppUser;

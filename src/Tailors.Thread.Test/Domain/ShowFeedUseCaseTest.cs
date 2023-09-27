@@ -35,7 +35,7 @@ public class ShowFeedUseCaseTest
     {
         TailorsTweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
-            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId!, It.IsAny<int>()))
+            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
             .ReturnsAsync(new List<TailorsTweed> { currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
@@ -63,7 +63,7 @@ public class ShowFeedUseCaseTest
     {
         TailorsTweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
-            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId!, It.IsAny<int>()))
+            .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
             .ReturnsAsync(new List<TailorsTweed> { currentUserTweed, currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);

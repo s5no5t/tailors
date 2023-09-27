@@ -32,7 +32,7 @@ public sealed class TweedRepository : ITweedRepository
 
     public async Task<List<TailorsTweed>> GetAllByAuthorId(string authorId, int count)
     {
-        return await _session.Query<TailorsTweed, Tweeds_ByAuthorIdAndCreatedAt>()
+        return await _session.Query<TailorsTweed, TweedsByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId == authorId)
             .OrderByDescending(t => t.CreatedAt)
             .Take(count)
@@ -41,7 +41,7 @@ public sealed class TweedRepository : ITweedRepository
 
     public async Task<List<TailorsTweed>> Search(string term)
     {
-        return await _session.Query<TailorsTweed, Tweeds_ByText>()
+        return await _session.Query<TailorsTweed, TweedsByText>()
             .Search(t => t.Text, term)
             .Take(20).ToListAsync();
     }
@@ -50,7 +50,7 @@ public sealed class TweedRepository : ITweedRepository
         int count)
     {
         var followerTweeds = await _session
-            .Query<TailorsTweed, Tweeds_ByAuthorIdAndCreatedAt>()
+            .Query<TailorsTweed, TweedsByAuthorIdAndCreatedAt>()
             .Where(t => t.AuthorId.In(followedUserIds))
             .OrderByDescending(t => t.CreatedAt)
             .Take(count)

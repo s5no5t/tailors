@@ -16,7 +16,7 @@ public static class RavenDbSetup
 
     public static void DeployTweedIndexes(this IDocumentStore store)
     {
-        new Tweeds_ByAuthorIdAndCreatedAt().Execute(store);
-        new Tweeds_ByText().Execute(store);
+        new TweedsByAuthorIdAndCreatedAt().Execute(store);
+        new TweedsByText().Execute(store);
     }
 }
