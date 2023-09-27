@@ -2,10 +2,10 @@ using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Tailors.Like.Domain;
-using Tailors.Thread.Domain;
-using Tailors.Tweed.Domain;
-using Tailors.User.Domain.AppUser;
+using Tailors.Domain.AppUser;
+using Tailors.Domain.Like;
+using Tailors.Domain.Thread;
+using Tailors.Domain.Tweed;
 using Tailors.Web.Helper;
 
 namespace Tailors.Web.Features.Tweed;

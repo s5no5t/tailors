@@ -1,4 +1,4 @@
-namespace Tailors.Tweed.Domain;
+namespace Tailors.Domain.Tweed;
 
 public interface ITweedRepository
 {

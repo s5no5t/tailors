@@ -1,5 +1,5 @@
 using Raven.Client.Documents.Session;
-using Tailors.Like.Domain;
+using Tailors.Domain.Like;
 
 namespace Tailors.Like.Infrastructure;
 

@@ -1,5 +1,5 @@
 using Moq;
-using Tailors.Tweed.Domain;
+using Tailors.Domain.Tweed;
 using Xunit;
 
 namespace Tailors.Tweed.Test.Domain;

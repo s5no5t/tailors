@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Tailors.User.Domain.AppUser;
+using Tailors.Domain.AppUser;
 
 namespace Tailors.Web.Areas.Identity.Pages.Account;
 

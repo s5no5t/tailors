@@ -1,8 +1,8 @@
 using Moq;
-using Tailors.Thread.Domain;
-using Tailors.Tweed.Domain;
-using Tailors.User.Domain.AppUser;
-using Tailors.User.Domain.UserFollowsAggregate;
+using Tailors.Domain.AppUser;
+using Tailors.Domain.Thread;
+using Tailors.Domain.Tweed;
+using Tailors.Domain.UserFollows;
 using Xunit;
 
 namespace Tailors.Thread.Test.Domain;

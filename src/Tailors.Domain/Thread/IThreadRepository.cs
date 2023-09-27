@@ -1,4 +1,4 @@
-namespace Tailors.Thread.Domain;
+namespace Tailors.Domain.Thread;
 
 public interface IThreadRepository
 {

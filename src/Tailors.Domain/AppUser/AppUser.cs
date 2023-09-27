@@ -1,6 +1,6 @@
 using Raven.Identity;
 
-namespace Tailors.User.Domain.AppUser;
+namespace Tailors.Domain.AppUser;
 
 public class AppUser : IdentityUser
 {

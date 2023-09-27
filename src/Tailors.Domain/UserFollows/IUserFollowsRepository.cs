@@ -1,4 +1,4 @@
-namespace Tailors.User.Domain.UserFollowsAggregate;
+namespace Tailors.Domain.UserFollows;
 
 public interface IUserFollowsRepository
 {
