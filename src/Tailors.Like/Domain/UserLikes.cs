@@ -4,8 +4,6 @@ namespace Tailors.Like.Domain;
 
 public class UserLikes
 {
-    private readonly List<TweedLike> _likes = new ();
-
     public UserLikes(string userId)
     {
         UserId = userId;
@@ -20,6 +18,7 @@ public class UserLikes
 
     public string UserId { get; }
 
+    private readonly List<TweedLike> _likes = new ();
     public IReadOnlyList<TweedLike> Likes  => _likes;
     
     public bool AddLike(string tweedId, DateTime likedAt)
