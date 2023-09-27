@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Thread.Domain.ThreadAggregate;
 using Tailors.Thread.Domain.TweedAggregate;
-using Tailors.User.Domain;
 using Tailors.User.Domain.AppUser;
 using Tailors.Web.Test.TestHelper;
 using Tailors.Web.Features.Feed;

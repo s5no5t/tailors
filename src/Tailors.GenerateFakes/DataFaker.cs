@@ -3,7 +3,6 @@ using Raven.Client.Documents;
 using Tailors.Like.Domain;
 using Tailors.Thread.Domain.ThreadAggregate;
 using Tailors.Thread.Domain.TweedAggregate;
-using Tailors.User.Domain;
 using Tailors.User.Domain.AppUser;
 using Tailors.User.Domain.UserFollowsAggregate;
 
