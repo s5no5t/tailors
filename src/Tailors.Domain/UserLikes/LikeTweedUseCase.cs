@@ -1,4 +1,4 @@
-namespace Tailors.Domain.Like;
+namespace Tailors.Domain.UserLikes;
 
 public interface ILikeTweedUseCase
 {
@@ -9,11 +9,11 @@ public interface ILikeTweedUseCase
 
 public class LikeTweedUseCase : ILikeTweedUseCase
 {
-    private readonly ITweedLikesRepository _tweedLikesRepository;
+    private readonly IUserLikesRepository _userLikesRepository;
 
-    public LikeTweedUseCase(ITweedLikesRepository tweedLikesRepository)
+    public LikeTweedUseCase(IUserLikesRepository userLikesRepository)
     {
-        _tweedLikesRepository = tweedLikesRepository;
+        _userLikesRepository = userLikesRepository;
     }
 
     public async Task AddLike(string tweedId, string userId, DateTime likedAt)
@@ -23,7 +23,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
         var added = userLikes.AddLike(tweedId, likedAt);
 
         if (added)
-            _tweedLikesRepository.IncreaseLikesCounter(tweedId);
+            _userLikesRepository.IncreaseLikesCounter(tweedId);
     }
 
     public async Task RemoveLike(string tweedId, string userId)
@@ -32,7 +32,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
         var removed = userLikes.RemoveLike(tweedId);
 
         if (removed)
-            _tweedLikesRepository.DecreaseLikesCounter(tweedId);
+            _userLikesRepository.DecreaseLikesCounter(tweedId);
     }
 
     public async Task<bool> DoesUserLikeTweed(string tweedId, string userId)
@@ -44,11 +44,11 @@ public class LikeTweedUseCase : ILikeTweedUseCase
     private async Task<UserLikes> GetOrCreateUserLikes(string userId)
     {
         var userLikesId = UserLikes.BuildId(userId);
-        var userLikes = await _tweedLikesRepository.GetById(userLikesId);
+        var userLikes = await _userLikesRepository.GetById(userLikesId);
         if (userLikes is null)
         {
             userLikes = new UserLikes(userId: userId);
-            await _tweedLikesRepository.Create(userLikes);
+            await _userLikesRepository.Create(userLikes);
         }
 
         return userLikes;

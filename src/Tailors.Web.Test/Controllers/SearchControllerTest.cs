@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Tailors.Domain.AppUser;
 using Tailors.Domain.Tweed;
+using Tailors.Domain.User;
 using Tailors.Web.Features.Search;
 using Xunit;
 

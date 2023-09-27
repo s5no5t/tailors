@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Tailors.Domain.Like;
+namespace Tailors.Domain.UserLikes;
 
 public class UserLikes
 {

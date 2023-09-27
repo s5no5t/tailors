@@ -1,6 +1,6 @@
-namespace Tailors.Domain.Like;
+namespace Tailors.Domain.UserLikes;
 
-public interface ITweedLikesRepository
+public interface IUserLikesRepository
 {
     Task<UserLikes?> GetById(string userLikesId);
     Task Create(UserLikes userLikes);

@@ -1,4 +1,4 @@
-namespace Tailors.Domain.AppUser;
+namespace Tailors.Domain.User;
 
 public interface IUserRepository
 {
