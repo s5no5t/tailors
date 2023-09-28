@@ -38,13 +38,12 @@ public class FollowUserUseCase : IFollowUserUseCase
     private async Task<UserFollows> GetOrCreateUserFollower(string userId)
     {
         var userFollowsId = UserFollows.BuildId(userId);
-        var userFollows = await _userFollowsRepository.GetById(userFollowsId);
-        if (userFollows is null)
-        {
-            userFollows = new UserFollows(userId: userId);
-            await _userFollowsRepository.Create(userFollows);
-        }
+        var getUserFollowsResult = await _userFollowsRepository.GetById(userFollowsId);
+        if (getUserFollowsResult.TryPickT0(out var existingUserFollows, out _))
+            return existingUserFollows;
 
+        var userFollows = new UserFollows(userId: userId);
+        await _userFollowsRepository.Create(userFollows);
         return userFollows;
     }
 }
