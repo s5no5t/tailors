@@ -31,12 +31,13 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         string text,
         DateTime createdAt, string parentTweedId)
     {
-        var parentTweed = await _tweedRepository.GetById(parentTweedId);
-        if (parentTweed is null)
-            return new ResourceNotFoundError($"Parent Tweed {parentTweedId} not found");
-        
+        var getParentTweedResult = await _tweedRepository.GetById(parentTweedId);
+        if (getParentTweedResult.TryPickT1(out _, out var parentTweed))
+            return new ResourceNotFoundError($"Tweed {parentTweedId} not found");
+
         var threadId = parentTweed.ThreadId;
-        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt, parentTweedId: parentTweedId, threadId: threadId);
+        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt, parentTweedId: parentTweedId,
+            threadId: threadId);
         await _tweedRepository.Create(tweed);
         return tweed;
     }
