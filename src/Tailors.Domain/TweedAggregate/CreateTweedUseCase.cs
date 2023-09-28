@@ -4,9 +4,9 @@ namespace Tailors.Domain.TweedAggregate;
 
 public interface ICreateTweedUseCase
 {
-    Task<OneOf<TailorsTweed>> CreateRootTweed(string authorId, string text, DateTime createdAt);
+    Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text, DateTime createdAt);
 
-    Task<OneOf<TailorsTweed, TweedError>> CreateReplyTweed(string authorId, string text,
+    Task<OneOf<Tweed, TweedError>> CreateReplyTweed(string authorId, string text,
         DateTime createdAt, string parentTweedId);
 }
 
@@ -19,15 +19,15 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<OneOf<TailorsTweed>> CreateRootTweed(string authorId, string text,
+    public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
         DateTime createdAt)
     {
-        TailorsTweed tweed = new(authorId: authorId, text: text, createdAt: createdAt);
+        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt);
         await _tweedRepository.Create(tweed);
         return tweed;
     }
 
-    public async Task<OneOf<TailorsTweed, TweedError>> CreateReplyTweed(string authorId,
+    public async Task<OneOf<Tweed, TweedError>> CreateReplyTweed(string authorId,
         string text,
         DateTime createdAt, string parentTweedId)
     {
@@ -36,7 +36,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
             return new TweedError($"Parent Tweed {parentTweedId} not found");
         
         var threadId = parentTweed.ThreadId;
-        TailorsTweed tweed = new(authorId: authorId, text: text, createdAt: createdAt, parentTweedId: parentTweedId, threadId: threadId);
+        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt, parentTweedId: parentTweedId, threadId: threadId);
         await _tweedRepository.Create(tweed);
         return tweed;
     }

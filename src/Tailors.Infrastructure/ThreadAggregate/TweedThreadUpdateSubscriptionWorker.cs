@@ -39,7 +39,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
                 MaxDocsPerBatch = 20
             };
             var subscriptionWorker =
-                _store.Subscriptions.GetSubscriptionWorker<TailorsTweed>(options);
+                _store.Subscriptions.GetSubscriptionWorker<Tweed>(options);
 
             try
             {
@@ -106,7 +106,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
         catch (SubscriptionDoesNotExistException)
         {
-            SubscriptionCreationOptions<TailorsTweed> options = new()
+            SubscriptionCreationOptions<Tweed> options = new()
             {
                 Name = SubscriptionName
             };
@@ -114,7 +114,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
     }
 
-    private async Task ProcessTweed(TailorsTweed tweed, IAsyncDocumentSession session)
+    private async Task ProcessTweed(Tweed tweed, IAsyncDocumentSession session)
     {
         ThreadRepository threadRepository = new(session);
         TweedRepository tweedRepository = new(session);

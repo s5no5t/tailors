@@ -1,8 +1,8 @@
 namespace Tailors.Domain.TweedAggregate;
 
-public class TailorsTweed
+public class Tweed
 {
-    public TailorsTweed(string authorId, string text, DateTime createdAt, string? id = null, string? parentTweedId = null, string? threadId = null)
+    public Tweed(string authorId, string text, DateTime createdAt, string? id = null, string? parentTweedId = null, string? threadId = null)
     {
         ParentTweedId = parentTweedId;
         ThreadId = threadId;

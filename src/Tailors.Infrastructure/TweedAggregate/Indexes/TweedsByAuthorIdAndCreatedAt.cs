@@ -3,7 +3,7 @@ using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Infrastructure.TweedAggregate.Indexes;
 
-public class TweedsByAuthorIdAndCreatedAt : AbstractIndexCreationTask<TailorsTweed>
+public class TweedsByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Tweed>
 {
     public TweedsByAuthorIdAndCreatedAt()
     {
