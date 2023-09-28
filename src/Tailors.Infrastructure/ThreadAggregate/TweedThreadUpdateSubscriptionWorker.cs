@@ -8,6 +8,7 @@ using Raven.Client.Documents.Subscriptions;
 using Raven.Client.Exceptions.Database;
 using Raven.Client.Exceptions.Documents.Subscriptions;
 using Raven.Client.Exceptions.Security;
+using Tailors.Domain;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Infrastructure.TweedAggregate;
@@ -30,7 +31,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation($"Starting worker for subscription {SubscriptionName}");
-        await EnsureSubScriptionExists(stoppingToken);
+        await EnsureSubscriptionExists(stoppingToken);
 
         while (true)
         {
@@ -97,7 +98,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         }
     }
 
-    private async Task EnsureSubScriptionExists(CancellationToken stoppingToken)
+    private async Task EnsureSubscriptionExists(CancellationToken stoppingToken)
     {
         try
         {
@@ -121,17 +122,11 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
         ThreadOfTweedsUseCase threadOfTweedsUseCase = new(threadRepository, tweedRepository);
 
         var result = await threadOfTweedsUseCase.AddTweedToThread(tweed.Id!);
-        result.Match<OneOf<Success, TweedError, ThreadError>>(
-            success => success,
-            threadError =>
+        result.Switch(
+            _ => {},
+            error =>
             {
-                _logger.LogError(threadError.Message);
-                return threadError;
-            },
-            tweedError =>
-            {
-                _logger.LogError(tweedError.Message);
-                return tweedError;
+                _logger.LogError(error.Message);
             });
     }
 }

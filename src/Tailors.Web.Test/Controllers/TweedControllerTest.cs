@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Tailors.Domain;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
@@ -221,7 +222,7 @@ public class TweedControllerTest
         _createTweedUseCaseMock
             .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<DateTime>(),
-                It.IsAny<string>())).ReturnsAsync(new TweedError("Tweed error"));
+                It.IsAny<string>())).ReturnsAsync(new ResourceNotFoundError("Tweed error"));
 
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object,
             _notificationManagerMock.Object);
@@ -240,7 +241,7 @@ public class TweedControllerTest
         _createTweedUseCaseMock
             .Setup(m => m.CreateReplyTweed(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<DateTime>(),
-                It.IsAny<string>())).ReturnsAsync(new TweedError("Tweed error"));
+                It.IsAny<string>())).ReturnsAsync(new ResourceNotFoundError("Tweed error"));
         var result = await _tweedController.CreateReply(viewModel, _createTweedUseCaseMock.Object,
             _notificationManagerMock.Object);
 

@@ -6,6 +6,8 @@ using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Domain.ThreadAggregate;
 
+public record ParentTweedNotFoundError(string Message);
+
 public class TailorsThread
 {
     public TailorsThread(string? id = null)
@@ -35,10 +37,10 @@ public class TailorsThread
         public List<TweedReference> Replies { get; } = new();
     }
     
-    public OneOf<Success, ThreadError, TweedError> AddTweed(Tweed tweed)
+    public OneOf<Success, ParentTweedNotFoundError> AddTweed(Tweed tweed)
     {
         if (tweed.Id is null)
-            return new TweedError($"Tweed {tweed.Id} is missing Id");
+            throw new ArgumentException($"Tweed {tweed.Id} is missing Id");
 
         // This is a root Tweed
         if (tweed.ParentTweedId is null)
@@ -50,7 +52,7 @@ public class TailorsThread
         // This is a reply to a reply
         var path = FindTweedPath(tweed.ParentTweedId);
         if (path.Count == 0)
-            return new ThreadError($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
+            return new ParentTweedNotFoundError($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
         var parentTweedRef = path.Last();
         parentTweedRef.Replies.Add(new TweedReference(tweed.Id));
         return new Success();

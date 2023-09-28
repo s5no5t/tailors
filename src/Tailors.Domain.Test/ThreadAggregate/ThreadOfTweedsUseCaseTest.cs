@@ -132,7 +132,6 @@ public class ThreadOfTweedsUseCaseTest
 
         result.Switch(
             _ => { Assert.Equal("threadId", tweed.ThreadId); },
-            e => Assert.Fail(e.Message),
             e => Assert.Fail(e.Message));
     }
 
@@ -149,7 +148,6 @@ public class ThreadOfTweedsUseCaseTest
 
         result.Switch(
             _ => { Assert.Equal("tweedId", thread.Root?.TweedId); },
-            e => Assert.Fail(e.Message),
             e => Assert.Fail(e.Message));
     }
 
@@ -171,7 +169,6 @@ public class ThreadOfTweedsUseCaseTest
 
         result.Switch(
             _ => { Assert.Equal("tweedId", thread.Root?.Replies[0].TweedId); },
-            e => Assert.Fail(e.Message),
             e => Assert.Fail(e.Message));
     }
 
@@ -196,22 +193,24 @@ public class ThreadOfTweedsUseCaseTest
 
         result.Switch(
             _ => { Assert.Equal("tweedId", thread.Root?.Replies[0].Replies[0].TweedId); },
-            e => Assert.Fail(e.Message),
             e => Assert.Fail(e.Message));
     }
 
-    [Fact(Skip = "not implemented")]
+    [Fact(Skip = "Not implemented yet")]
     public async Task AddTweedToThread_ShouldCreateSubThread_WhenParentTweedIsInThreadWhereMaxDepthReached()
     {
         Tweed tweed = new(id: "childTweedId", authorId: "authorId", text: "text", createdAt: FixedDateTime,
             parentTweedId: "parentTweedId");
         _tweedRepositoryMock.Setup(t => t.GetById("childTweedId")).ReturnsAsync(tweed);
+        Tweed parentTweed = new(id: "parentTweedId", authorId: "authorId", createdAt: FixedDateTime,
+            text: string.Empty);
+        TailorsThread threadWithMaxDepthReached = new();
+        threadWithMaxDepthReached.AddTweed(parentTweed);
 
         var result = await _sut.AddTweedToThread("childTweedId");
 
         result.Switch(
             _ => { Assert.Equal("childThreadId", tweed.ThreadId); },
-            e => Assert.Fail(e.Message),
             e => Assert.Fail(e.Message));
     }
 }
