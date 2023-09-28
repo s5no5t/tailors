@@ -20,9 +20,9 @@ public class ThreadOfTweedsUseCaseTest
     [Fact]
     public async Task GetThreadTweedsForTweed_ShouldReturnFail_WhenTweedNotFound()
     {
-        var tweeds = await _sut.GetThreadTweedsForTweed("unknownTweedId");
+        var result = await _sut.GetThreadTweedsForTweed("unknownTweedId");
 
-        Assert.True(tweeds.IsT1);
+        Assert.Equal(1, result.Index);
     }
 
     [Fact]
@@ -35,10 +35,10 @@ public class ThreadOfTweedsUseCaseTest
         thread.AddTweed(rootTweed);
         _tweedThreadRepositoryMock.Setup(t => t.GetById(thread.Id!)).ReturnsAsync(thread);
 
-        var tweeds = await _sut.GetThreadTweedsForTweed("rootTweedId");
+        var result = await _sut.GetThreadTweedsForTweed("rootTweedId");
 
-        Assert.True(tweeds.IsT0);
-        Assert.Empty(tweeds.AsT0);
+        Assert.Equal(0, result.Index);
+        Assert.Empty(result.AsT0);
     }
 
     [Fact]
@@ -65,11 +65,11 @@ public class ThreadOfTweedsUseCaseTest
                     { tweed.Id!, tweed }
                 });
 
-        var tweeds = await _sut.GetThreadTweedsForTweed("tweedId");
+        var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        Assert.True(tweeds.IsT0);
-        Assert.Equal("rootTweedId", tweeds.AsT0[0].Id);
-        Assert.Equal("tweedId", tweeds.AsT0[1].Id);
+        Assert.Equal(0, result.Index);
+        Assert.Equal("rootTweedId", result.AsT0[0].Id);
+        Assert.Equal("tweedId", result.AsT0[1].Id);
     }
 
     [Fact]
@@ -101,12 +101,12 @@ public class ThreadOfTweedsUseCaseTest
                     { tweed.Id!, tweed }
                 });
 
-        var tweeds = await _sut.GetThreadTweedsForTweed("tweedId");
+        var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        Assert.True(tweeds.IsT0);
-        Assert.Equal("rootTweedId", tweeds.AsT0[0].Id);
-        Assert.Equal("parentTweedId", tweeds.AsT0[1].Id);
-        Assert.Equal("tweedId", tweeds.AsT0[2].Id);
+        Assert.Equal(0, result.Index);
+        Assert.Equal("rootTweedId", result.AsT0[0].Id);
+        Assert.Equal("parentTweedId", result.AsT0[1].Id);
+        Assert.Equal("tweedId", result.AsT0[2].Id);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.True(result.IsT0);
+        Assert.Equal(0, result.Index);
         Assert.Equal("threadId", tweed.ThreadId);
     }
 
@@ -134,7 +134,7 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.True(result.IsT0);
+        Assert.Equal(0, result.Index);
         Assert.Equal("tweedId", thread.Root?.TweedId);
     }
 
@@ -154,7 +154,7 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.True(result.IsT0);
+        Assert.Equal(0, result.Index);
         Assert.Equal("tweedId", thread.Root?.Replies[0].TweedId);
     }
 
@@ -177,7 +177,20 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.True(result.IsT0);
+        Assert.Equal(0, result.Index);
         Assert.Equal("tweedId", thread.Root?.Replies[0].Replies[0].TweedId);
+    }
+
+    [Fact(Skip = "not implemented")]
+    public async Task AddTweedToThread_ShouldCreateSubThread_WhenParentTweedIsInThreadWhereMaxDepthReached()
+    {
+        Tweed tweed = new(id: "childTweedId", authorId: "authorId", text: "text", createdAt: FixedDateTime,
+            parentTweedId: "parentTweedId");
+        _tweedRepositoryMock.Setup(t => t.GetById("childTweedId")).ReturnsAsync(tweed);
+
+        var result = await _sut.AddTweedToThread("childTweedId");
+
+        Assert.Equal(0, result.Index);
+        Assert.Equal("childThreadId", tweed.ThreadId);
     }
 }
