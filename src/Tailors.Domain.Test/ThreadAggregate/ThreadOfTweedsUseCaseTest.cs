@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Moq;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
@@ -22,7 +23,9 @@ public class ThreadOfTweedsUseCaseTest
     {
         var result = await _sut.GetThreadTweedsForTweed("unknownTweedId");
 
-        Assert.Equal(1, result.Index);
+        result.Switch(
+            _ => Assert.Fail("Should not return success"),
+            _ => { });
     }
 
     [Fact]
@@ -37,8 +40,9 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.GetThreadTweedsForTweed("rootTweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Empty(result.AsT0);
+        result.Switch(
+            Assert.Empty,
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
@@ -67,9 +71,12 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("rootTweedId", result.AsT0[0].Id);
-        Assert.Equal("tweedId", result.AsT0[1].Id);
+        result.Switch([AssertionMethod](s) =>
+            {
+                Assert.Equal("rootTweedId", s[0].Id);
+                Assert.Equal("tweedId", s[1].Id);
+            },
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
@@ -103,10 +110,14 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("rootTweedId", result.AsT0[0].Id);
-        Assert.Equal("parentTweedId", result.AsT0[1].Id);
-        Assert.Equal("tweedId", result.AsT0[2].Id);
+        result.Switch(
+            [AssertionMethod](s) =>
+            {
+                Assert.Equal("rootTweedId", s[0].Id);
+                Assert.Equal("parentTweedId", s[1].Id);
+                Assert.Equal("tweedId", s[2].Id);
+            },
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
@@ -119,8 +130,10 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("threadId", tweed.ThreadId);
+        result.Switch(
+            _ => { Assert.Equal("threadId", tweed.ThreadId); },
+            e => Assert.Fail(e.Message),
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
@@ -134,8 +147,10 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("tweedId", thread.Root?.TweedId);
+        result.Switch(
+            _ => { Assert.Equal("tweedId", thread.Root?.TweedId); },
+            e => Assert.Fail(e.Message),
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
@@ -154,8 +169,10 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("tweedId", thread.Root?.Replies[0].TweedId);
+        result.Switch(
+            _ => { Assert.Equal("tweedId", thread.Root?.Replies[0].TweedId); },
+            e => Assert.Fail(e.Message),
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
@@ -177,8 +194,10 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("tweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("tweedId", thread.Root?.Replies[0].Replies[0].TweedId);
+        result.Switch(
+            _ => { Assert.Equal("tweedId", thread.Root?.Replies[0].Replies[0].TweedId); },
+            e => Assert.Fail(e.Message),
+            e => Assert.Fail(e.Message));
     }
 
     [Fact(Skip = "not implemented")]
@@ -190,7 +209,9 @@ public class ThreadOfTweedsUseCaseTest
 
         var result = await _sut.AddTweedToThread("childTweedId");
 
-        Assert.Equal(0, result.Index);
-        Assert.Equal("childThreadId", tweed.ThreadId);
+        result.Switch(
+            _ => { Assert.Equal("childThreadId", tweed.ThreadId); },
+            e => Assert.Fail(e.Message),
+            e => Assert.Fail(e.Message));
     }
 }

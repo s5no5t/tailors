@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Moq;
 using Tailors.Domain.TweedAggregate;
 
@@ -20,31 +21,36 @@ public class CreateTweedUseCaseTest
     {
         var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
 
-        Assert.True(result.IsT0);
-        _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>()));
+        result.Switch(
+            [AssertionMethod](t) => { _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>())); }
+        );
     }
 
     [Fact]
     public async Task CreateReplyTweed_SavesTweed()
     {
-        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
+            createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id!);
 
-        Assert.True(result.IsT0);
-        _tweedRepositoryMock.Verify(t => t.Create(It.IsAny<Tweed>()));
+        result.Switch(
+            [AssertionMethod](t) => { _tweedRepositoryMock.Verify(tr => tr.Create(It.IsAny<Tweed>())); },
+            e => Assert.Fail(e.Message));
     }
 
     [Fact]
     public async Task CreateReplyTweed_SetsThreadId()
     {
-        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
+            createdAt: FixedDateTime, text: string.Empty);
         _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");
 
-        Assert.True(result.IsT0);
-        Assert.Equal(parentTweed.ThreadId, result.AsT0.ThreadId);
+        result.Switch(
+            [AssertionMethod](t) => { Assert.Equal(parentTweed.ThreadId, t.ThreadId); },
+            e => Assert.Fail(e.Message));
     }
 }
