@@ -44,13 +44,12 @@ public class LikeTweedUseCase : ILikeTweedUseCase
     private async Task<UserLikes> GetOrCreateUserLikes(string userId)
     {
         var userLikesId = UserLikes.BuildId(userId);
-        var userLikes = await _userLikesRepository.GetById(userLikesId);
-        if (userLikes is null)
-        {
-            userLikes = new UserLikes(userId: userId);
-            await _userLikesRepository.Create(userLikes);
-        }
+        var getUserLikesResult = await _userLikesRepository.GetById(userLikesId);
+        if (getUserLikesResult.TryPickT0(out var existingUserLikes, out _))
+            return existingUserLikes;
 
+        var userLikes = new UserLikes(userId: userId);
+        await _userLikesRepository.Create(userLikes);
         return userLikes;
     }
 }
