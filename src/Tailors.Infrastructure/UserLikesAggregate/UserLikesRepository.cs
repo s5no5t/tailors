@@ -1,3 +1,5 @@
+using OneOf;
+using OneOf.Types;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.UserLikesAggregate;
 
@@ -13,12 +15,13 @@ public class UserLikesRepository : IUserLikesRepository
         _session = session;
     }
 
-    public async Task<Domain.UserLikesAggregate.UserLikes?> GetById(string userLikesId)
+    public async Task<OneOf<UserLikes, None>> GetById(string userLikesId)
     {
-        return await _session.LoadAsync<Domain.UserLikesAggregate.UserLikes>(userLikesId);
+        var likes = await _session.LoadAsync<UserLikes>(userLikesId);
+        return likes is null ? new None() : likes;
     }
 
-    public async Task Create(Domain.UserLikesAggregate.UserLikes userLikes)
+    public async Task Create(UserLikes userLikes)
     {
         await _session.StoreAsync(userLikes);
     }
