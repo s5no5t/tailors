@@ -5,13 +5,11 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Trace;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
-using Tailors.Domain.UserLikesAggregate;
 using Tailors.Infrastructure;
 using Tailors.Infrastructure.ThreadAggregate;
-using Tailors.Infrastructure.UserAggregate;
+using Tailors.Infrastructure.TweedAggregate;
 using Tailors.Web.Areas.Identity;
 using Tailors.Web.Filters;
 using Tailors.Web.Helper;
@@ -159,10 +157,7 @@ static void SetupAssemblyScanning(WebApplicationBuilder builder)
     builder.Services.Scan(scan =>
     {
         scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(UserRepository)).AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(AppUser)).AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(ShowFeedUseCase)).AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(UserLikes)).AddClasses().AsMatchingInterface();
         scan.FromAssembliesOf(typeof(Tweed)).AddClasses().AsMatchingInterface();
+        scan.FromAssembliesOf(typeof(TweedRepository)).AddClasses().AsMatchingInterface();
     });
 }
