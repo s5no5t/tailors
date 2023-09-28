@@ -19,23 +19,23 @@ public class ShowFeedUseCaseTest
         _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<Domain.UserFollowsAggregate.UserFollows.LeaderReference>());
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<TailorsTweed>());
+            .ReturnsAsync(new List<Tweed>());
         _tweedRepositoryMock
             .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<TailorsTweed>());
+            .ReturnsAsync(new List<Tweed>());
         _tweedRepositoryMock
             .Setup(m => m.GetRecentTweeds(It.IsAny<int>()))
-            .ReturnsAsync(new List<TailorsTweed>());
+            .ReturnsAsync(new List<Tweed>());
         _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, _followsServiceMock.Object);
     }
 
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
-        TailorsTweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
+        Tweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
-            .ReturnsAsync(new List<TailorsTweed> { currentUserTweed });
+            .ReturnsAsync(new List<Tweed> { currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
 
@@ -47,10 +47,10 @@ public class ShowFeedUseCaseTest
     {
         var followedUser = new AppUser();
 
-        TailorsTweed followedUserTweed = new(authorId: followedUser.Id!, text: "test", createdAt: FixedDateTime.AddHours(1));
+        Tweed followedUserTweed = new(authorId: followedUser.Id!, text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<TailorsTweed> { followedUserTweed });
+            .ReturnsAsync(new List<Tweed> { followedUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
 
@@ -60,10 +60,10 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldNotReturnTheSameTweedTwice()
     {
-        TailorsTweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
+        Tweed currentUserTweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime.AddHours(1));
         _tweedRepositoryMock
             .Setup(m => m.GetAllByAuthorId(currentUserTweed.AuthorId, It.IsAny<int>()))
-            .ReturnsAsync(new List<TailorsTweed> { currentUserTweed, currentUserTweed });
+            .ReturnsAsync(new List<Tweed> { currentUserTweed, currentUserTweed });
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
 
@@ -76,7 +76,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            TailorsTweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
+            Tweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
             return tweed;
         }).ToList();
         _tweedRepositoryMock
@@ -93,7 +93,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            TailorsTweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
+            Tweed tweed = new(authorId: "userId", text: "test", createdAt: FixedDateTime, id: $"tweeds/{i}");
             return tweed;
         }).ToList();
         _tweedRepositoryMock

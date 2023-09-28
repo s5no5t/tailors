@@ -35,7 +35,7 @@ public class TailorsThread
         public List<TweedReference> Replies { get; } = new();
     }
     
-    public OneOf<Success, ThreadError, TweedError> AddTweed(TailorsTweed tweed)
+    public OneOf<Success, ThreadError, TweedError> AddTweed(Tweed tweed)
     {
         if (tweed.Id is null)
             return new TweedError($"Tweed {tweed.Id} is missing Id");
