@@ -1,4 +1,6 @@
-﻿using Raven.Client.Documents;
+﻿using OneOf;
+using OneOf.Types;
+using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.TweedAggregate;
@@ -15,9 +17,10 @@ public sealed class TweedRepository : ITweedRepository
         _session = session;
     }
 
-    public Task<Tweed?> GetById(string id)
+    public async Task<OneOf<Tweed, None>> GetById(string id)
     {
-        return _session.LoadAsync<Tweed>(id)!;
+        var tweed = await _session.LoadAsync<Tweed>(id)!;
+        return tweed is null ? new None() : tweed;
     }
 
     public Task<Dictionary<string, Tweed>> GetByIds(IEnumerable<string> ids)

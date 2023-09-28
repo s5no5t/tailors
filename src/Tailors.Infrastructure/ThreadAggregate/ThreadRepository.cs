@@ -1,3 +1,5 @@
+using OneOf;
+using OneOf.Types;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.ThreadAggregate;
 
@@ -17,8 +19,9 @@ public class ThreadRepository : IThreadRepository
         await _session.StoreAsync(thread);
     }
 
-    public async Task<TailorsThread?> GetById(string threadId)
+    public async Task<OneOf<TailorsThread, None>> GetById(string threadId)
     {
-        return await _session.LoadAsync<TailorsThread>(threadId);
+        var thread = await _session.LoadAsync<TailorsThread>(threadId);
+        return thread is null ? new None() : thread;
     }
 }

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Raven.Client.Documents;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Infrastructure.Test.Helper;
@@ -27,8 +28,8 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         var repository = new TweedRepository(session);
 
         var tweed2 = await repository.GetById(tweed.Id!);
-
-        Assert.Equal(tweed.Id, tweed2?.Id);
+        tweed2.Switch(
+            [AssertionMethod](t) => { Assert.Equal(tweed.Id, t.Id); }, _ => Assert.Fail());
     }
 
     [Fact]
@@ -116,7 +117,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
         using var session = _store.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.Search("noresults");
+        var tweeds = await repository.Search("no-results");
 
         Assert.Empty(tweeds);
     }
@@ -126,7 +127,8 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     {
         using var session = _store.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: FixedDateTime, authorId: "authorId");
+        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: FixedDateTime,
+            authorId: "authorId");
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);

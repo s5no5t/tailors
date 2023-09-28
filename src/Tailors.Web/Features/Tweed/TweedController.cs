@@ -101,8 +101,8 @@ public class TweedController : Controller
     public async Task<IActionResult> Like(string tweedId, bool isCurrent,
         [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
-        var tweed = await _tweedRepository.GetById(tweedId);
-        if (tweed == null)
+        var getResult = await _tweedRepository.GetById(tweedId);
+        if (getResult.TryPickT1(out _, out var tweed))
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
@@ -117,8 +117,8 @@ public class TweedController : Controller
     public async Task<IActionResult> Unlike(string tweedId, bool isCurrent,
         [FromServices] ILikeTweedUseCase likeTweedUseCase)
     {
-        var tweed = await _tweedRepository.GetById(tweedId);
-        if (tweed == null)
+        var getResult = await _tweedRepository.GetById(tweedId);
+        if (getResult.TryPickT1(out _, out var tweed))
             return NotFound();
 
         var currentUserId = _userManager.GetUserId(User);
