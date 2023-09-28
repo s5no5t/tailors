@@ -1,3 +1,5 @@
+using OneOf;
+using OneOf.Types;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.UserFollowsAggregate;
@@ -24,12 +26,13 @@ public class UserFollowsRepository : IUserFollowsRepository
         return result?.FollowerCount ?? 0;
     }
 
-    public async Task<Domain.UserFollowsAggregate.UserFollows?> GetById(string userFollowsId)
+    public async Task<OneOf<UserFollows, None>> GetById(string userFollowsId)
     {
-        return await _session.LoadAsync<Domain.UserFollowsAggregate.UserFollows>(userFollowsId);
+        var userFollows = await _session.LoadAsync<UserFollows>(userFollowsId);
+        return userFollows is null ? new None() : userFollows;
     }
 
-    public async Task Create(Domain.UserFollowsAggregate.UserFollows userFollows)
+    public async Task Create(UserFollows userFollows)
     {
         await _session.StoreAsync(userFollows);
     }
