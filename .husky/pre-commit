@@ -19,6 +19,12 @@
 ## or put your custom commands -------------------
 #echo 'Husky.Net is awesome!'
 
+exec dotnet build "./"
+if [ $? -ne 0 ]; then
+  echo "Solution must build before commit!"
+  exit 1
+fi
+
 exec dotnet test "./" --filter "TestCategory!=Integration" --no-build --nologo
 
 if [ $? -ne 0 ]; then
