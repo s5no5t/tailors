@@ -10,7 +10,7 @@ public record MaxDepthReachedError(string Message);
 
 public class TailorsThread
 {
-    private const int MaxDepth = 64;
+    public const int MaxDepth = 64;
 
     public TailorsThread(string? id = null, string? parentThreadId = null)
     {
