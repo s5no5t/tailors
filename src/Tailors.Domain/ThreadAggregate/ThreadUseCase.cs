@@ -56,9 +56,40 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
         }
 
         var result = await AddToParentTweedThread(tweed);
-        return result;
+        if (result.TryPickT0(out var success, out _))
+            return success;
+        if (result.TryPickT1(out var resourceNotFoundError, out _))
+            return resourceNotFoundError;
+        
+        return await CreateChildThread(tweed);
     }
-    
+
+    private async Task<OneOf<Success, ResourceNotFoundError>> CreateChildThread(Tweed tweed)
+    {
+        if (tweed.ParentTweedId is null)
+            throw new ArgumentException($"Tweed {tweed.Id} is missing ParentTweedId");
+        
+        var getParentTweedResult = await _tweedRepository.GetById(tweed.ParentTweedId);
+        if (getParentTweedResult.TryPickT1(out _, out var parentTweed))
+            return new ResourceNotFoundError($"Tweed {tweed.ParentTweedId} not found");
+
+        if (parentTweed.ThreadId is null)
+            throw new ArgumentException($"Tweed {parentTweed.Id} does not belong to a thread");
+        
+        var getParentTweedThreadResult = await _threadRepository.GetById(parentTweed.ThreadId);
+        if (getParentTweedThreadResult.TryPickT1(out _, out var parentTweedThread))
+            return new ResourceNotFoundError($"Thread {tweed.ThreadId} not found");
+        
+        var childThread = new TailorsThread(parentThreadId: parentTweed.ThreadId);
+        await _threadRepository.Create(childThread);
+        tweed.ThreadId = childThread.Id;
+        childThread.AddTweed(tweed);
+        var addChildThreadResult = parentTweedThread.AddChildThreadReference(tweed.ParentTweedId, childThread.Id!);
+        addChildThreadResult.Switch(_ => {}, error => throw new Exception(error.Message));
+
+        return new Success();
+    }
+
     private async Task AddToNewThread(Tweed tweed)
     {
         TailorsThread newThread = new();
@@ -68,7 +99,7 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
         result.Switch(_ =>  {}, error => throw new Exception(error.Message));
     }
 
-    private async Task<OneOf<Success, ResourceNotFoundError>> AddToParentTweedThread(Tweed tweed)
+    private async Task<OneOf<Success, ResourceNotFoundError, MaxDepthReachedError>> AddToParentTweedThread(Tweed tweed)
     {
         if (tweed.ParentTweedId is null)
             throw new ArgumentException($"Tweed {tweed.Id} is missing ParentTweedId");
@@ -84,18 +115,14 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
         if (getParentTweedThreadResult.TryPickT1(out _, out var parentTweedThread))
             return new ResourceNotFoundError($"Thread {tweed.ThreadId} not found");
 
-        tweed.ThreadId = parentTweed.ThreadId;
-        var result = parentTweedThread.AddTweed(tweed);
-        if (result.TryPickT1(out _, out _)) // max depth reached
+        var parentTweedThreadDepth = parentTweedThread.GetThreadDepth(parentTweed.Id!);
+        if (parentTweedThreadDepth < TailorsThread.MaxTweedReferenceDepth)
         {
-            var childThread = new TailorsThread(parentThreadId: parentTweed.ThreadId);
-            await _threadRepository.Create(childThread);
-            tweed.ThreadId = childThread.Id;
-            childThread.AddTweed(tweed);
-            var addChildThreadResult = parentTweedThread.AddChildThreadReference(tweed.ParentTweedId, childThread.Id!);
-            addChildThreadResult.Switch(_ => {}, error => throw new Exception(error.Message));
+            tweed.ThreadId = parentTweed.ThreadId;
+            var result = parentTweedThread.AddTweed(tweed);
+            return result.Match(s => s, e => throw new Exception(e.Message));
         }
 
-        return new Success();
+        return new MaxDepthReachedError($"Max depth of {TailorsThread.MaxTweedReferenceDepth} reached for thread {parentTweedThread.Id}");
     }
 }
