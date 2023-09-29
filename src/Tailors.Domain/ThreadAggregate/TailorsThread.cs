@@ -69,14 +69,14 @@ public class TailorsThread
             throw new ArgumentException($"Tweed {tweed.Id} already belongs to thread {tweed.ThreadId}");
 
         // This is a root Tweed
-        if (tweed.ParentTweedId is null)
+        if (Root is null)
         {
             Root = new TweedOrThreadReference(tweed.Id, null);
             return new Success();
         }
 
         // This is a reply to a reply
-        var path = FindTweedPath(tweed.ParentTweedId);
+        var path = FindTweedPath(tweed.ParentTweedId!);
         if (path.Count == 0)
             throw new ArgumentException($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
         if (path.Count == MaxDepth)

@@ -228,7 +228,7 @@ public class ThreadOfTweedsUseCaseTest
             e => Assert.Fail(e.Message));
     }
 
-    [Fact(Skip = "TODO: Implement")]
+    [Fact]
     public async Task AddTweedToThread_ShouldCreateSubThread_WhenParentTweedIsInThreadWhereMaxDepthReached()
     {
         var threadWithMaxDepthReached = CreateThreadWithMaxDepthReached();
@@ -241,7 +241,7 @@ public class ThreadOfTweedsUseCaseTest
         _threadRepositoryMock.Setup(t => t.Create(It.IsAny<TailorsThread>()))
             .Callback((TailorsThread t) =>
             {
-                t.Id = "threadId";
+                t.Id = "childThreadId";
                 childThread = t;
             }).Returns(Task.CompletedTask);
         
@@ -254,7 +254,7 @@ public class ThreadOfTweedsUseCaseTest
 
     private TailorsThread CreateThreadWithMaxDepthReached()
     {
-        TailorsThread threadWithMaxDepthReached = new(id: "threadId");
+        TailorsThread threadWithMaxDepthReached = new(id: "parentThreadId");
 
         Tweed rootTweed = new(id: $"tweed-0", authorId: "authorId", createdAt: FixedDateTime,
             text: string.Empty, threadId: threadWithMaxDepthReached.Id);
