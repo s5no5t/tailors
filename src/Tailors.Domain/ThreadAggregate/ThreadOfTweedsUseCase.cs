@@ -86,7 +86,7 @@ public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
 
         tweed.ThreadId = parentTweed.ThreadId;
         var result = parentTweedThread.AddTweed(tweed);
-        if (result.TryPickT1(out _, out _))
+        if (result.TryPickT1(out _, out _)) // max depth reached
         {
             var childThread = new TailorsThread(parentThreadId: parentTweed.ThreadId);
             await _threadRepository.Create(childThread);

@@ -228,24 +228,47 @@ public class ThreadOfTweedsUseCaseTest
             e => Assert.Fail(e.Message));
     }
 
-    [Fact(Skip = "TODO")]
+    [Fact(Skip = "TODO: Implement")]
     public async Task AddTweedToThread_ShouldCreateSubThread_WhenParentTweedIsInThreadWhereMaxDepthReached()
     {
-        Tweed childTweed = new(id: "childTweedId", authorId: "authorId", text: "text", createdAt: FixedDateTime,
-            parentTweedId: "parentTweedId");
-        _tweedRepositoryMock.Setup(t => t.GetById(childTweed.Id!)).ReturnsAsync(childTweed);
-        Tweed parentTweed = new(id: "parentTweedId", authorId: "authorId", createdAt: FixedDateTime,
-            text: string.Empty, threadId: "threadId");
-        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
-        TailorsThread threadWithMaxDepthReached = new(id: "threadId");
-        threadWithMaxDepthReached.AddTweed(parentTweed);
+        var threadWithMaxDepthReached = CreateThreadWithMaxDepthReached();
         _tweedThreadRepositoryMock.Setup(t => t.GetById(threadWithMaxDepthReached.Id!))
             .ReturnsAsync(threadWithMaxDepthReached);
-
+        Tweed childTweed = new(id: "childTweedId", authorId: "authorId", text: "text", createdAt: FixedDateTime,
+            parentTweedId: $"tweed-{TailorsThread.MaxDepth - 1}");
+        _tweedRepositoryMock.Setup(t => t.GetById(childTweed.Id!)).ReturnsAsync(childTweed);
+        TailorsThread? childThread = null;
+        _tweedThreadRepositoryMock.Setup(t => t.Create(It.IsAny<TailorsThread>()))
+            .Callback((TailorsThread t) =>
+            {
+                t.Id = "threadId";
+                childThread = t;
+            }).Returns(Task.CompletedTask);
+        
         var result = await _sut.AddTweedToThread("childTweedId");
 
         result.Switch(
-            _ => { Assert.Equal("childThreadId", childTweed.ThreadId); },
+            _ => { Assert.Equal(childThread!.Id, childTweed.ThreadId); },
             e => Assert.Fail(e.Message));
+    }
+
+    private TailorsThread CreateThreadWithMaxDepthReached()
+    {
+        TailorsThread threadWithMaxDepthReached = new(id: "threadId");
+
+        Tweed rootTweed = new(id: $"tweed-0", authorId: "authorId", createdAt: FixedDateTime,
+            text: string.Empty, threadId: threadWithMaxDepthReached.Id);
+        threadWithMaxDepthReached.AddTweed(rootTweed);
+        _tweedRepositoryMock.Setup(t => t.GetById(rootTweed.Id!)).ReturnsAsync(rootTweed);
+        
+        for (int i = 1; i < TailorsThread.MaxDepth; i++)
+        {
+            Tweed tweed = new(id: $"tweed-{i}", authorId: "authorId", createdAt: FixedDateTime,
+                text: string.Empty, parentTweedId: $"tweed-{i - 1}", threadId: threadWithMaxDepthReached.Id);
+            threadWithMaxDepthReached.AddTweed(tweed);
+            _tweedRepositoryMock.Setup(t => t.GetById(tweed.Id!)).ReturnsAsync(tweed);
+        }
+        
+        return threadWithMaxDepthReached;
     }
 }
