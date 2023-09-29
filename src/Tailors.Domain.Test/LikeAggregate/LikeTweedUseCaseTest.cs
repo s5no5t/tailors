@@ -33,7 +33,9 @@ public class LikeTweedUseCaseTest
     public async Task AddLike_ShouldIncreaseLikesCounter()
     {
         var tweed = new Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
-
+        _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
+            .ReturnsAsync(new UserLikes(userId: "userId"));
+        
         await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
         _tweedLikesRepositoryMock.Verify(t => t.IncreaseLikesCounter(tweed.Id!), Times.Once);
