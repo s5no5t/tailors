@@ -5,7 +5,7 @@ namespace Tailors.Domain.Test.UserFollowsAggregate;
 
 public class FollowUserUseCaseTest
 {
-    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
+    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly FollowUserUseCase _sut;

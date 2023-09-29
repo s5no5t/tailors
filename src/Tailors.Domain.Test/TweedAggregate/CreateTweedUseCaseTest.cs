@@ -6,7 +6,7 @@ namespace Tailors.Domain.Test.TweedAggregate;
 
 public class CreateTweedUseCaseTest
 {
-    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
+    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
     private readonly CreateTweedUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
