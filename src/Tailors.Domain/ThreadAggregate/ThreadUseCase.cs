@@ -92,7 +92,8 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
             await _threadRepository.Create(childThread);
             tweed.ThreadId = childThread.Id;
             childThread.AddTweed(tweed);
-            parentTweedThread.AddChildThreadReference(tweed.ParentTweedId, childThread.Id!);
+            var addChildThreadResult = parentTweedThread.AddChildThreadReference(tweed.ParentTweedId, childThread.Id!);
+            addChildThreadResult.Switch(_ => {}, error => throw new Exception(error.Message));
         }
 
         return new Success();
