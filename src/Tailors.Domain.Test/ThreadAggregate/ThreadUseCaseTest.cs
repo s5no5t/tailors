@@ -6,16 +6,16 @@ using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Domain.Test.ThreadAggregate;
 
-public class ThreadOfTweedsUseCaseTest
+public class ThreadUseCaseTest
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-    private readonly ThreadOfTweedsUseCase _sut;
+    private readonly ThreadUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<IThreadRepository> _threadRepositoryMock = new();
 
-    public ThreadOfTweedsUseCaseTest()
+    public ThreadUseCaseTest()
     {
-        _sut = new ThreadOfTweedsUseCase(_threadRepositoryMock.Object,
+        _sut = new ThreadUseCase(_threadRepositoryMock.Object,
             _tweedRepositoryMock.Object);
     }
 
