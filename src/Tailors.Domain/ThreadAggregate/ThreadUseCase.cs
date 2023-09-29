@@ -9,12 +9,12 @@ public interface IThreadOfTweedsUseCase
     Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId);
 }
 
-public class ThreadOfTweedsUseCase : IThreadOfTweedsUseCase
+public class ThreadUseCase : IThreadOfTweedsUseCase
 {
     private readonly ITweedRepository _tweedRepository;
     private readonly IThreadRepository _threadRepository;
 
-    public ThreadOfTweedsUseCase(IThreadRepository threadRepository,
+    public ThreadUseCase(IThreadRepository threadRepository,
         ITweedRepository tweedRepository)
     {
         _threadRepository = threadRepository;
