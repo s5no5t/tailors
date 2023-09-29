@@ -10,7 +10,8 @@ public record MaxDepthReachedError(string Message);
 
 public class TailorsThread
 {
-    public const int MaxDepth = 64;
+    private const int MaxDepth = 64;
+    public const int MaxTweedReferenceDepth = MaxDepth - 1;
 
     public TailorsThread(string? id = null, string? parentThreadId = null)
     {
@@ -79,8 +80,8 @@ public class TailorsThread
         var path = FindTweedPath(tweed.ParentTweedId!);
         if (path.Count == 0)
             throw new ArgumentException($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
-        if (path.Count == MaxDepth)
-            return new MaxDepthReachedError($"Max depth of {MaxDepth} reached for thread {Id}");
+        if (path.Count == MaxTweedReferenceDepth)
+            return new MaxDepthReachedError($"Max tweed ref depth of {MaxTweedReferenceDepth} reached for thread {Id}");
         var parentTweedRef = path.Last();
         parentTweedRef.AddReply(new TweedOrThreadReference(tweed.Id, null));
         return new Success();
@@ -92,7 +93,7 @@ public class TailorsThread
         if (path.Count == 0)
             throw new ArgumentException($"Tweed {parentTweedId} not found in thread {Id}");
         if (path.Count == MaxDepth)
-            return new MaxDepthReachedError($"Max depth of {MaxDepth} reached for thread {Id}");
+            return new MaxDepthReachedError($"Max depth of {MaxTweedReferenceDepth} reached for thread {Id}");
         var parentTweedRef = path.Last();
         parentTweedRef.AddReply(new TweedOrThreadReference(null, childThreadId));
         return new Success();
@@ -125,5 +126,11 @@ public class TailorsThread
         }
 
         return new ReadOnlyCollection<TweedOrThreadReference>(Array.Empty<TweedOrThreadReference>());
+    }
+
+    public int GetThreadDepth(string tweedId)
+    {
+        var path = FindTweedPath(tweedId);
+        return path.Count;
     }
 }

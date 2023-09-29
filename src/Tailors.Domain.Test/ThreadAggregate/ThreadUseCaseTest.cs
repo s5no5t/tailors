@@ -230,14 +230,14 @@ public class ThreadUseCaseTest
             e => Assert.Fail(e.Message));
     }
 
-    [Fact(Skip = "TODO: Test fails atm")]
+    [Fact]
     public async Task AddTweedToThread_ShouldCreateSubThread_WhenParentTweedIsInThreadWhereMaxDepthReached()
     {
-        var threadWithMaxDepthReached = CreateThreadWithMaxDepthReached();
+        var threadWithMaxDepthReached = CreateThread(TailorsThread.MaxTweedReferenceDepth-1);
         _threadRepositoryMock.Setup(t => t.GetById(threadWithMaxDepthReached.Id!))
             .ReturnsAsync(threadWithMaxDepthReached);
         Tweed childTweed = new(id: "childTweedId", authorId: "authorId", text: "text", createdAt: FixedDateTime,
-            parentTweedId: $"tweed-{TailorsThread.MaxDepth - 1}");
+            parentTweedId: $"tweed-{TailorsThread.MaxTweedReferenceDepth - 1}");
         _tweedRepositoryMock.Setup(t => t.GetById(childTweed.Id!)).ReturnsAsync(childTweed);
         TailorsThread? childThread = null;
         _threadRepositoryMock.Setup(t => t.Create(It.IsAny<TailorsThread>()))
@@ -254,7 +254,7 @@ public class ThreadUseCaseTest
             e => Assert.Fail(e.Message));
     }
 
-    private TailorsThread CreateThreadWithMaxDepthReached()
+    private TailorsThread CreateThread(int depth)
     {
         TailorsThread threadWithMaxDepthReached = new(id: "parentThreadId");
 
@@ -263,7 +263,7 @@ public class ThreadUseCaseTest
         threadWithMaxDepthReached.AddTweed(rootTweed);
         _tweedRepositoryMock.Setup(t => t.GetById(rootTweed.Id!)).ReturnsAsync(rootTweed);
 
-        for (int i = 1; i < TailorsThread.MaxDepth; i++)
+        for (int i = 1; i <= depth; i++)
         {
             Tweed tweed = new(id: $"tweed-{i}", authorId: "authorId", createdAt: FixedDateTime,
                 text: string.Empty, parentTweedId: $"tweed-{i - 1}", threadId: threadWithMaxDepthReached.Id);
