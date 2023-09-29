@@ -33,14 +33,15 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
     }
 
     [Fact]
-    public async Task GetById_WithInvalidId_ShouldReturnNull()
+    public async Task GetById_WithInvalidId_ShouldReturnNone()
     {
         using var session = _store.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
         var tweed = await repository.GetById("invalid");
-
-        Assert.Null(tweed);
+        tweed.Switch(
+            s => Assert.Fail("Should not return a tweed"),
+            n => {});
     }
 
     [Fact]
