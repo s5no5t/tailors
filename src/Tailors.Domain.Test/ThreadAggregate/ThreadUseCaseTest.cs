@@ -128,6 +128,31 @@ public class ThreadUseCaseTest
             e => Assert.Fail(e.Message));
     }
 
+    [Fact(Skip = "not implemented")]
+    public async Task GetThreadTweedsForTweed_ShouldReturnTweeds_WhenThereIsASubThread()
+    {
+        var parentThread = CreateThread(10);
+        _threadRepositoryMock.Setup(t => t.GetById(parentThread.Id!)).ReturnsAsync(parentThread);
+        var childThread = new TailorsThread("childThreadId", parentThread.Id);
+        _threadRepositoryMock.Setup(t => t.GetById(childThread.Id!)).ReturnsAsync(childThread);
+
+        Tweed tweed = new(id: "tweedId", parentTweedId: "tweed-10", threadId: childThread.Id,
+            authorId: "authorId", createdAt: FixedDateTime, text: string.Empty);
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
+        childThread.AddTweed(tweed);
+        
+        var result = await _sut.GetThreadTweedsForTweed("tweedId");
+
+        result.Switch(
+            [AssertionMethod](tweeds) =>
+            {
+                Assert.Equal("rootTweedId", tweeds.First().Id);
+                Assert.Equal("tweedId", tweeds.Last().Id);
+            },
+            e => Assert.Fail(e.Message));
+    }
+    
+    
     [Fact]
     public async Task AddTweedToThread_ShouldCreateThread_WhenThreadIdIsNull()
     {
