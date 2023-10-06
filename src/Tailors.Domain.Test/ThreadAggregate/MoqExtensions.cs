@@ -2,7 +2,7 @@ using Moq;
 
 namespace Tailors.Domain.Test.ThreadAggregate;
 
-public class MoqExtensions
+public static class MoqExtensions
 {
     public static IEnumerable<T> CollectionMatcher<T>(IEnumerable<T> expectation)
     {
