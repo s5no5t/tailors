@@ -18,17 +18,17 @@ public class UserLikes
 
     public string UserId { get; }
 
-    private readonly List<TweedLike> _likes = new ();
-    public IReadOnlyList<TweedLike> Likes  => _likes;
-    
+    private readonly List<TweedLike> _likes = new();
+    public IReadOnlyList<TweedLike> Likes => _likes;
+
     public bool AddLike(string tweedId, DateTime likedAt)
     {
         if (_likes.Any(l => l.TweedId == tweedId))
             return false;
-        _likes.Add(new TweedLike(tweedId: tweedId, createdAt: likedAt));
+        _likes.Add(new TweedLike(tweedId, likedAt));
         return true;
     }
-    
+
     public bool RemoveLike(string tweedId)
     {
         var removedCount = _likes.RemoveAll(lb => lb.TweedId == tweedId);
@@ -49,7 +49,7 @@ public class UserLikes
             CreatedAt = createdAt;
         }
 
-        public string TweedId { get;  }
+        public string TweedId { get; }
         public DateTime CreatedAt { get; }
     }
 }

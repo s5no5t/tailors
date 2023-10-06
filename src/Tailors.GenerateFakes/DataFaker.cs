@@ -47,10 +47,8 @@ internal class DataFaker
         {
             var userFollows = new UserFollows(user.Id!);
             var follows = followsFaker.GenerateBetween(0, users.Count - 1);
-            foreach (var follow in follows)
-            {
-                userFollows.AddFollows(follow.LeaderId, follow.CreatedAt);
-            }
+            foreach (var follow in follows) userFollows.AddFollows(follow.LeaderId, follow.CreatedAt);
+
             await bulkInsert.StoreAsync(userFollows);
         }
 
@@ -93,7 +91,7 @@ internal class DataFaker
         {
             var likes = likesFaker.GenerateBetween(0, tweeds.Count - 1);
             var userLikes = new UserLikes(user.Id!, likes);
-           
+
             await bulkInsert.StoreAsync(userLikes);
         }
 

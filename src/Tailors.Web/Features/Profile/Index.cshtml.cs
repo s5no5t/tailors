@@ -4,7 +4,8 @@ namespace Tailors.Web.Features.Profile;
 
 public class IndexViewModel
 {
-    public IndexViewModel(string userId, string userName, List<TweedViewModel> tweeds, bool currentUserFollows, int followersCount)
+    public IndexViewModel(string userId, string userName, List<TweedViewModel> tweeds, bool currentUserFollows,
+        int followersCount)
     {
         UserId = userId;
         UserName = userName;

@@ -5,11 +5,11 @@ using Tailors.Infrastructure.UserLikesAggregate;
 
 namespace Tailors.Infrastructure.Test.UserLikesAggregate;
 
-[Trait("Category","Integration")]
+[Trait("Category", "Integration")]
 [Collection("RavenDB")]
 public class UserLikesRepositoryTest
 {
-    private static readonly DateTime FixedDateTime = new DateTime(2022, 11, 18, 15, 20, 0);
+    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
     private readonly IDocumentStore _store;
 

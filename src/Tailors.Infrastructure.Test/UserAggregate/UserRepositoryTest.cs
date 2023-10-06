@@ -5,7 +5,7 @@ using Tailors.Infrastructure.UserAggregate;
 
 namespace Tailors.Infrastructure.Test.UserAggregate;
 
-[Trait("Category","Integration")]
+[Trait("Category", "Integration")]
 [Collection("RavenDB")]
 public class UserRepositoryTest
 {

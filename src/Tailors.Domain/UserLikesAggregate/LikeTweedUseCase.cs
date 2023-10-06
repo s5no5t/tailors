@@ -19,7 +19,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
     public async Task AddLike(string tweedId, string userId, DateTime likedAt)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
-        
+
         var added = userLikes.AddLike(tweedId, likedAt);
 
         if (added)
@@ -48,7 +48,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
         if (getUserLikesResult.TryPickT0(out var existingUserLikes, out _))
             return existingUserLikes;
 
-        var userLikes = new UserLikes(userId: userId);
+        var userLikes = new UserLikes(userId);
         await _userLikesRepository.Create(userLikes);
         return userLikes;
     }

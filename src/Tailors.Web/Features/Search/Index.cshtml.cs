@@ -21,6 +21,7 @@ public class UserViewModel
         UserId = userId;
         UserName = userName;
     }
+
     public string UserId { get; set; }
 
     public string UserName { get; set; }
@@ -38,4 +39,3 @@ public class TweedViewModel
 
     public string Text { get; set; }
 }
-

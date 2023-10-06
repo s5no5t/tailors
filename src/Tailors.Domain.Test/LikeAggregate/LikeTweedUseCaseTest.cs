@@ -20,7 +20,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldIncreaseLikes()
     {
-        var userLikes = new UserLikes(userId: "userId");
+        var userLikes = new UserLikes("userId");
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
 
@@ -34,8 +34,8 @@ public class LikeTweedUseCaseTest
     {
         var tweed = new Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
-            .ReturnsAsync(new UserLikes(userId: "userId"));
-        
+            .ReturnsAsync(new UserLikes("userId"));
+
         await _sut.AddLike("tweedId", "userId", FixedDateTime);
 
         _tweedLikesRepositoryMock.Verify(t => t.IncreaseLikesCounter(tweed.Id!), Times.Once);
@@ -44,7 +44,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task AddLike_ShouldNotIncreaseLikes_WhenUserHasAlreadyLiked()
     {
-        var userLikes = new UserLikes(userId: "userId");
+        var userLikes = new UserLikes("userId");
         userLikes.AddLike("tweedId", FixedDateTime);
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
@@ -59,7 +59,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikes()
     {
-        var userLikes = new UserLikes(userId: "userId");
+        var userLikes = new UserLikes("userId");
         userLikes.AddLike("tweedId", FixedDateTime);
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
@@ -72,7 +72,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task RemoveLike_ShouldDecreaseLikesCounter()
     {
-        var userLikes = new UserLikes(userId: "userId");
+        var userLikes = new UserLikes("userId");
         userLikes.AddLike("tweedId", FixedDateTime);
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
@@ -85,7 +85,7 @@ public class LikeTweedUseCaseTest
     [Fact]
     public async Task RemoveLike_ShouldNotDecreaseLikes_WhenUserAlreadyDoesntLike()
     {
-        var userLikes = new UserLikes(userId: "userId");
+        var userLikes = new UserLikes("userId");
         _tweedLikesRepositoryMock.Setup(m => m.GetById(UserLikes.BuildId("userId")))
             .ReturnsAsync(userLikes);
 

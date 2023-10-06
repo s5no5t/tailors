@@ -18,7 +18,7 @@ public class FollowUserUseCaseTest
     [Fact]
     public async Task AddFollower_ShouldAddFollower()
     {
-        UserFollows userFollows = new(userId: "followerId");
+        UserFollows userFollows = new("followerId");
         _userFollowsRepositoryMock
             .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
             .ReturnsAsync(userFollows);
@@ -31,7 +31,7 @@ public class FollowUserUseCaseTest
     [Fact]
     public async Task AddFollower_ShouldNotAddFollower_WhenAlreadyFollowed()
     {
-        UserFollows userFollows = new(userId: "followerId");
+        UserFollows userFollows = new("followerId");
         userFollows.AddFollows("leaderId", FixedDateTime);
         _userFollowsRepositoryMock
             .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
@@ -45,7 +45,7 @@ public class FollowUserUseCaseTest
     [Fact]
     public async Task RemoveFollower_ShouldRemoveFollower()
     {
-        UserFollows userFollows = new(userId: "followerId");
+        UserFollows userFollows = new("followerId");
         userFollows.AddFollows("leaderId", FixedDateTime);
         _userFollowsRepositoryMock
             .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))

@@ -22,7 +22,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
     public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
         DateTime createdAt)
     {
-        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt);
+        Tweed tweed = new(authorId, text, createdAt);
         await _tweedRepository.Create(tweed);
         return tweed;
     }
@@ -36,7 +36,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
             return new ResourceNotFoundError($"Tweed {parentTweedId} not found");
 
         var threadId = parentTweed.ThreadId;
-        Tweed tweed = new(authorId: authorId, text: text, createdAt: createdAt, parentTweedId: parentTweedId,
+        Tweed tweed = new(authorId, text, createdAt, parentTweedId: parentTweedId,
             threadId: threadId);
         await _tweedRepository.Create(tweed);
         return tweed;

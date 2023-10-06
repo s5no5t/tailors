@@ -33,10 +33,10 @@ public class RavenSaveChangesAsyncPageFilterTest
         var pageHandlerExecutedContext = new PageHandlerExecutedContext(pageContext,
             Array.Empty<IFilterMetadata>(), null, model.Object);
         var asyncFilter = new RavenSaveChangesAsyncPageFilter(sessionMock.Object);
-        
+
         await asyncFilter.OnPageHandlerExecutionAsync(pageHandlerExecutingContext,
             () => Task.FromResult(pageHandlerExecutedContext));
-        
+
         sessionMock.Verify(s => s.SaveChangesAsync(default));
     }
 }

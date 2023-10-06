@@ -8,5 +8,6 @@ public interface IThreadRepository
 {
     [MustUseReturnValue]
     Task<OneOf<TailorsThread, None>> GetById(string threadId);
+
     Task Create(TailorsThread thread);
 }

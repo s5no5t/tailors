@@ -8,10 +8,10 @@ public class UsersByUserName : AbstractIndexCreationTask<AppUser>
     public UsersByUserName()
     {
         Map = users => from user in users
-                       select new
-                       {
-                           user.UserName
-                       };
+            select new
+            {
+                user.UserName
+            };
         Index(u => u.UserName, FieldIndexing.Search);
     }
 }
