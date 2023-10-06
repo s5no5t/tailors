@@ -40,8 +40,8 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
 
         var tweed = await repository.GetById("invalid");
         tweed.Switch(
-            s => Assert.Fail("Should not return a tweed"),
-            n => {});
+            _ => Assert.Fail("Should not return a tweed"),
+            _ => {});
     }
 
     [Fact]
