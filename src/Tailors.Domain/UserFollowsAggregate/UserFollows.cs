@@ -8,7 +8,7 @@ public class UserFollows
     {
         UserId = userId;
     }
-    
+
     [JsonConstructor]
     public UserFollows(string userId, List<LeaderReference> follows)
     {
@@ -17,16 +17,16 @@ public class UserFollows
     }
 
     public string UserId { get; }
-    
+
     private readonly List<LeaderReference> _follows = new();
-    public IReadOnlyList<LeaderReference> Follows  => _follows;
-    
+    public IReadOnlyList<LeaderReference> Follows => _follows;
+
     public bool AddFollows(string leaderId, DateTime createdAt)
     {
         if (_follows.Any(f => f.LeaderId == leaderId))
             return false;
 
-        _follows.Add(new LeaderReference(leaderId: leaderId, createdAt: createdAt));
+        _follows.Add(new LeaderReference(leaderId, createdAt));
         return true;
     }
 

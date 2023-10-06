@@ -41,17 +41,17 @@ public class TailorsThread
                 throw new ArgumentException("Either tweedId or threadId must be provided");
             if (tweedId is not null && threadId is not null)
                 throw new ArgumentException("Either tweedId or threadId must be provided, not both");
-            
+
             TweedId = tweedId;
             ThreadId = threadId;
         }
 
         public string? TweedId { get; }
-        
+
         public string? ThreadId { get; }
 
         public IReadOnlyList<TweedOrThreadReference> Replies => _replies;
-        
+
         internal void AddReply(TweedOrThreadReference reference)
         {
             _replies.Add(reference);

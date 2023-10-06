@@ -9,26 +9,27 @@ using Microsoft.AspNetCore.Mvc.Razor;
 [assembly: AspMvcViewLocationFormat("/Features/Shared/{0}.cshtml")]
 [assembly: AspMvcPartialViewLocationFormat("~/Features/{1}/{0}.cshtml")]
 [assembly: AspMvcPartialViewLocationFormat("~/Features/Shared/{0}.cshtml")]
-namespace Tailors.Web.Helper
-{
-    public class FeatureFolderLocationExpander : IViewLocationExpander
-    {
-        public void PopulateValues(ViewLocationExpanderContext context)
-        {
-            // Don't need anything here, but required by the interface
-        }
 
-        public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
+namespace Tailors.Web.Helper;
+
+public class FeatureFolderLocationExpander : IViewLocationExpander
+{
+    public void PopulateValues(ViewLocationExpanderContext context)
+    {
+        // Don't need anything here, but required by the interface
+    }
+
+    public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context,
+        IEnumerable<string> viewLocations)
+    {
+        // The default locations are /Views/{1}/{0}.cshtml and /Views/Shared/{0}.cshtml where {1} is the controller and {0} is the name of the View
+        // Add /Features
+        var customLocations = new List<string>
         {
-            // The default locations are /Views/{1}/{0}.cshtml and /Views/Shared/{0}.cshtml where {1} is the controller and {0} is the name of the View
-            // Add /Features
-            var customLocations = new List<string>
-            {
-                "/Features/{1}/{0}.cshtml",
-                "/Features/Shared/{0}.cshtml"
-            };
-            customLocations.AddRange(viewLocations);
-            return customLocations;
-        }
+            "/Features/{1}/{0}.cshtml",
+            "/Features/Shared/{0}.cshtml"
+        };
+        customLocations.AddRange(viewLocations);
+        return customLocations;
     }
 }

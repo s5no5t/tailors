@@ -60,10 +60,7 @@ static void SetupRavenDbServices(WebApplicationBuilder builder)
 {
     builder.Services.AddRavenDbDocStore(options =>
     {
-        options.BeforeInitializeDocStore = store =>
-        {
-            store.PreInitialize();
-        };
+        options.BeforeInitializeDocStore = store => { store.PreInitialize(); };
         options.AfterInitializeDocStore = store =>
         {
             store.EnsureDatabaseExists();

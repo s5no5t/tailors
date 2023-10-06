@@ -32,10 +32,7 @@ public class ResetPasswordModel : PageModel
 
     public IActionResult OnGet(string code = null)
     {
-        if (code == null)
-        {
-            return BadRequest("A code must be supplied for password reset.");
-        }
+        if (code == null) return BadRequest("A code must be supplied for password reset.");
 
         Input = new InputModel
         {

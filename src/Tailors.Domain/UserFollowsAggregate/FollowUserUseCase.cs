@@ -18,7 +18,7 @@ public class FollowUserUseCase : IFollowUserUseCase
 
     public async Task AddFollower(string leaderId, string followerId, DateTime createdAt)
     {
-        var userFollows= await GetOrCreateUserFollower(followerId);
+        var userFollows = await GetOrCreateUserFollower(followerId);
 
         userFollows.AddFollows(leaderId, createdAt);
     }
@@ -42,7 +42,7 @@ public class FollowUserUseCase : IFollowUserUseCase
         if (getUserFollowsResult.TryPickT0(out var existingUserFollows, out _))
             return existingUserFollows;
 
-        var userFollows = new UserFollows(userId: userId);
+        var userFollows = new UserFollows(userId);
         await _userFollowsRepository.Create(userFollows);
         return userFollows;
     }

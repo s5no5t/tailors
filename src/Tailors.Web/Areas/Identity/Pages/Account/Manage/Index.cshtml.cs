@@ -38,16 +38,15 @@ public class IndexModel : PageModel
     /// </summary>
     [TempData]
     public string StatusMessage { get; set; }
-    
-    [BindProperty]
-    public InputModel Input { get; set; }
+
+    [BindProperty] public InputModel Input { get; set; }
 
     private async Task LoadAsync(AppUser user)
     {
         var userName = await _userManager.GetUserNameAsync(user);
 
         Username = userName;
-        
+
         Input = new InputModel
         {
             Username = userName
@@ -63,7 +62,7 @@ public class IndexModel : PageModel
         await LoadAsync(user);
         return Page();
     }
-    
+
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -91,7 +90,7 @@ public class IndexModel : PageModel
         StatusMessage = "Your profile has been updated";
         return RedirectToPage();
     }
-    
+
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be
     ///     used

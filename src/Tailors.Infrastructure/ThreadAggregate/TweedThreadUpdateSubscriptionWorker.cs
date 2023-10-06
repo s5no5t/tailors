@@ -89,7 +89,8 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
             }
             finally
             {
-                _logger.LogInformation($"Stopping worker {subscriptionWorker.WorkerId} for subscription {SubscriptionName}");
+                _logger.LogInformation(
+                    $"Stopping worker {subscriptionWorker.WorkerId} for subscription {SubscriptionName}");
                 await subscriptionWorker.DisposeAsync();
             }
         }
@@ -120,10 +121,7 @@ public class TweedThreadUpdateSubscriptionWorker : BackgroundService
 
         var result = await threadUseCase.AddTweedToThread(tweed.Id!);
         result.Switch(
-            _ => {},
-            error =>
-            {
-                _logger.LogError(error.Message);
-            });
+            _ => { },
+            error => { _logger.LogError(error.Message); });
     }
 }

@@ -5,7 +5,7 @@ using Tailors.Infrastructure.UserFollowsAggregate;
 
 namespace Tailors.Infrastructure.Test.UserFollowsAggregate;
 
-[Trait("Category","Integration")]
+[Trait("Category", "Integration")]
 [Collection("RavenDB")]
 public class UserFollowsRepositoryTest
 {
@@ -37,8 +37,8 @@ public class UserFollowsRepositoryTest
                 Id = $"follower/${i}"
             };
             await session.StoreAsync(follower);
-            Domain.UserFollowsAggregate.UserFollows userFollows = new(userId: follower.Id);
-            userFollows.AddFollows(leaderId: "leaderId", createdAt: DateTime.UtcNow);
+            Domain.UserFollowsAggregate.UserFollows userFollows = new(follower.Id);
+            userFollows.AddFollows("leaderId", DateTime.UtcNow);
             await session.StoreAsync(userFollows);
         }
 

@@ -32,12 +32,12 @@ public static class RavenDbSetup
 
         return store;
     }
-    
+
     public static void PreInitialize(this IDocumentStore store)
     {
         store.ApplyCustomConventions();
     }
-    
+
     private static void ApplyCustomConventions(this IDocumentStore store)
     {
         store.Conventions.RegisterAsyncIdConvention<Domain.UserLikesAggregate.UserLikes>((_, userLikes) =>
@@ -51,7 +51,7 @@ public static class RavenDbSetup
             return Task.FromResult(Domain.UserFollowsAggregate.UserFollows.BuildId(follows.UserId));
         });
     }
-    
+
     public static void DeployIndexes(this IDocumentStore store)
     {
         new UserFollowsFollowerCount().Execute(store);
