@@ -18,9 +18,9 @@ public class FollowUserUseCaseTest
     [Fact]
     public async Task AddFollower_ShouldAddFollower()
     {
-        Domain.UserFollowsAggregate.UserFollows userFollows = new(userId: "followerId");
+        UserFollows userFollows = new(userId: "followerId");
         _userFollowsRepositoryMock
-            .Setup(m => m.GetById(Domain.UserFollowsAggregate.UserFollows.BuildId(userFollows.UserId)))
+            .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
             .ReturnsAsync(userFollows);
 
         await _sut.AddFollower("leaderId", userFollows.UserId, FixedDateTime);
@@ -31,10 +31,10 @@ public class FollowUserUseCaseTest
     [Fact]
     public async Task AddFollower_ShouldNotAddFollower_WhenAlreadyFollowed()
     {
-        Domain.UserFollowsAggregate.UserFollows userFollows = new(userId: "followerId");
+        UserFollows userFollows = new(userId: "followerId");
         userFollows.AddFollows("leaderId", FixedDateTime);
         _userFollowsRepositoryMock
-            .Setup(m => m.GetById(Domain.UserFollowsAggregate.UserFollows.BuildId(userFollows.UserId)))
+            .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
             .ReturnsAsync(userFollows);
 
         await _sut.AddFollower("leaderId", userFollows.UserId, FixedDateTime);
@@ -45,10 +45,10 @@ public class FollowUserUseCaseTest
     [Fact]
     public async Task RemoveFollower_ShouldRemoveFollower()
     {
-        Domain.UserFollowsAggregate.UserFollows userFollows = new(userId: "followerId");
+        UserFollows userFollows = new(userId: "followerId");
         userFollows.AddFollows("leaderId", FixedDateTime);
         _userFollowsRepositoryMock
-            .Setup(m => m.GetById(Domain.UserFollowsAggregate.UserFollows.BuildId(userFollows.UserId)))
+            .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
             .ReturnsAsync(userFollows);
 
         await _sut.RemoveFollower("leaderId", "followerId");

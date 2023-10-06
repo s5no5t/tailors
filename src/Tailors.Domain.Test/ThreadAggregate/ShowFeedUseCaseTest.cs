@@ -17,7 +17,7 @@ public class ShowFeedUseCaseTest
     public ShowFeedUseCaseTest()
     {
         _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
-            .ReturnsAsync(new List<Domain.UserFollowsAggregate.UserFollows.LeaderReference>());
+            .ReturnsAsync(new List<UserFollows.LeaderReference>());
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
         _tweedRepositoryMock
