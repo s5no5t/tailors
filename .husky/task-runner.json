@@ -18,7 +18,7 @@
          "name": "test",
          "command": "dotnet",
          "group":"pre-commit",
-         "args": ["test", "./", "--filter", "TestCategory!=Integration", "--no-build", "--nologo"],
+         "args": ["test", "./", "--filter", "TestCategory!=Integration", "--no-build", "--nologo"]
       },
       {
          "name": "Welcome",
