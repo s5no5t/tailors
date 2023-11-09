@@ -22,7 +22,7 @@ public class CreateTweedUseCaseTest
         var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
 
         result.Switch(
-            [AssertionMethod](t) => { _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>())); }
+            [AssertionMethod] (t) => { _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>())); }
         );
     }
 
@@ -36,7 +36,7 @@ public class CreateTweedUseCaseTest
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id!);
 
         result.Switch(
-            [AssertionMethod](t) => { _tweedRepositoryMock.Verify(tr => tr.Create(It.IsAny<Tweed>())); },
+            [AssertionMethod] (t) => { _tweedRepositoryMock.Verify(tr => tr.Create(It.IsAny<Tweed>())); },
             e => Assert.Fail(e.Message));
     }
 
@@ -50,7 +50,7 @@ public class CreateTweedUseCaseTest
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");
 
         result.Switch(
-            [AssertionMethod](t) => { Assert.Equal(parentTweed.ThreadId, t.ThreadId); },
+            [AssertionMethod] (t) => { Assert.Equal(parentTweed.ThreadId, t.ThreadId); },
             e => Assert.Fail(e.Message));
     }
 }

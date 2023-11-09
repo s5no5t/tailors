@@ -29,7 +29,7 @@ public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
 
         var tweed2 = await repository.GetById(tweed.Id!);
         tweed2.Switch(
-            [AssertionMethod](t) => { Assert.Equal(tweed.Id, t.Id); }, _ => Assert.Fail());
+            [AssertionMethod] (t) => { Assert.Equal(tweed.Id, t.Id); }, _ => Assert.Fail());
     }
 
     [Fact]

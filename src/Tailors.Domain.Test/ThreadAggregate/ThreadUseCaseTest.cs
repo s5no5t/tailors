@@ -79,7 +79,7 @@ public class ThreadUseCaseTest
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
-        result.Switch([AssertionMethod](s) =>
+        result.Switch([AssertionMethod] (s) =>
             {
                 Assert.Equal("rootTweedId", s[0].Id);
                 Assert.Equal("tweedId", s[1].Id);
@@ -119,7 +119,7 @@ public class ThreadUseCaseTest
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
         result.Switch(
-            [AssertionMethod](s) =>
+            [AssertionMethod] (s) =>
             {
                 Assert.Equal("rootTweedId", s[0].Id);
                 Assert.Equal("parentTweedId", s[1].Id);
@@ -144,7 +144,7 @@ public class ThreadUseCaseTest
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
         result.Switch(
-            [AssertionMethod](tweeds) =>
+            [AssertionMethod] (tweeds) =>
             {
                 Assert.Equal("rootTweedId", tweeds.First().Id);
                 Assert.Equal("tweedId", tweeds.Last().Id);

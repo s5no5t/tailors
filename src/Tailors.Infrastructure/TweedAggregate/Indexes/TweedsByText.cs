@@ -8,11 +8,11 @@ public class TweedsByText : AbstractIndexCreationTask<Tweed>
     public TweedsByText()
     {
         Map = tweeds => from tweed in tweeds
-            select new
-            {
-                tweed.Id,
-                tweed.Text
-            };
+                        select new
+                        {
+                            tweed.Id,
+                            tweed.Text
+                        };
 
         Analyzers.Add(a => a.Text, "StandardAnalyzer");
     }

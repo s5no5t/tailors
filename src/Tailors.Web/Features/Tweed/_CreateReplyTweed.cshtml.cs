@@ -10,5 +10,5 @@ public class CreateReplyTweedViewModel
     [StringLength(280)]
     public string Text { get; set; } = "";
 
-    [BindProperty] [Required] public string ParentTweedId { get; set; } = "";
+    [BindProperty][Required] public string ParentTweedId { get; set; } = "";
 }

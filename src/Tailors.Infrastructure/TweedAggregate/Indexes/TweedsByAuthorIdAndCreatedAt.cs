@@ -8,10 +8,10 @@ public class TweedsByAuthorIdAndCreatedAt : AbstractIndexCreationTask<Tweed>
     public TweedsByAuthorIdAndCreatedAt()
     {
         Map = tweeds => from tweed in tweeds
-            select new
-            {
-                tweed.AuthorId,
-                tweed.CreatedAt
-            };
+                        select new
+                        {
+                            tweed.AuthorId,
+                            tweed.CreatedAt
+                        };
     }
 }
