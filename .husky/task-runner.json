@@ -1,3 +1,34 @@
 {
-   "tasks": []
+   "tasks": [
+      {
+         "name": "dotnet-format",
+         "group": "pre-commit",
+         "command": "dotnet",
+         "args": ["dotnet-format", "--include", "${staged}"],
+         "include": ["**/*.cs", "**/*.vb"]
+      },
+      {
+         "name": "warning-check",
+         "command": "dotnet",
+         "group": "pre-push",
+         "args": ["build", "/warnaserror"],
+         "include": ["**/*.cs", "**/*.vb"]
+      },
+      {
+         "name": "test",
+         "command": "dotnet",
+         "group":"pre-commit",
+         "args": ["test", "./", "--filter", "TestCategory!=Integration", "--no-build", "--nologo"],
+      },
+      {
+         "name": "Welcome",
+         "output": "always",
+         "command": "bash",
+         "args": ["-c", "echo Nice work! 🥂"],
+         "windows": {
+            "command": "cmd",
+            "args": ["/c", "echo Nice work! 🥂"]
+         }
+      }
+   ]
 }
