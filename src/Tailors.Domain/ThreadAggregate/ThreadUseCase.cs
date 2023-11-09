@@ -4,12 +4,7 @@ using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Domain.ThreadAggregate;
 
-public interface IThreadOfTweedsUseCase
-{
-    Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId);
-}
-
-public class ThreadUseCase : IThreadOfTweedsUseCase
+public class ThreadUseCase
 {
     private readonly IThreadRepository _threadRepository;
     private readonly ITweedRepository _tweedRepository;
@@ -21,7 +16,7 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId)
+    public virtual async Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId)
     {
         var getTweedResult = await _tweedRepository.GetById(tweedId);
         if (getTweedResult.TryPickT1(out _, out var tweed))
@@ -40,7 +35,7 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
         return tweeds;
     }
 
-    public async Task<OneOf<Success, ResourceNotFoundError>> AddTweedToThread(string tweedId)
+    public virtual async Task<OneOf<Success, ResourceNotFoundError>> AddTweedToThread(string tweedId)
     {
         var getTweedResult = await _tweedRepository.GetById(tweedId);
         if (getTweedResult.TryPickT1(out _, out var tweed))

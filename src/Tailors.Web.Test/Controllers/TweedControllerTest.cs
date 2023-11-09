@@ -27,7 +27,7 @@ public class TweedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<ILikeTweedUseCase> _likeTweedUseCaseMock = new();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
-    private readonly Mock<IThreadOfTweedsUseCase> _showThreadUseCaseMock = new();
+    private readonly Mock<ThreadUseCase> _showThreadUseCaseMock = new(new Mock<IThreadRepository>().Object, new Mock<ITweedRepository>().Object);
     private readonly TweedController _tweedController;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
 

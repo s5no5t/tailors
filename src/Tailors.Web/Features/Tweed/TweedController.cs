@@ -28,7 +28,7 @@ public class TweedController : Controller
 
     [HttpGet("Tweed/{tweedId}")]
     public async Task<ActionResult> ShowThreadForTweed(string tweedId,
-        [FromServices] IThreadOfTweedsUseCase threadOfTweedsUseCase)
+        [FromServices] ThreadUseCase threadOfTweedsUseCase)
     {
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
