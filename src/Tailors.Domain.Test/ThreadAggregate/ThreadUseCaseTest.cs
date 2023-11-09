@@ -279,6 +279,19 @@ public class ThreadUseCaseTest
             e => Assert.Fail(e.Message));
     }
 
+    [Fact]
+    public async Task AddTweedToThread_ShouldReturn_WhenTweedAlreadyBelongsToThread()
+    {
+        Tweed tweed = new(id: "tweedId", authorId: "authorId", createdAt: FixedDateTime, text: string.Empty, threadId: "threadId");
+        _tweedRepositoryMock.Setup(m => m.GetById(tweed.Id!)).ReturnsAsync(tweed);
+
+        var result = await _sut.AddTweedToThread("tweedId");
+
+        result.Switch(
+            _ => { Assert.Equal("threadId", tweed.ThreadId); },
+            e => Assert.Fail(e.Message));
+    }
+
     private TailorsThread CreateThread(int depth)
     {
         TailorsThread threadWithMaxDepthReached = new("parentThreadId");

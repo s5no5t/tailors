@@ -47,7 +47,7 @@ public class ThreadUseCase : IThreadOfTweedsUseCase
             return new ResourceNotFoundError($"Tweed {tweedId} not found");
 
         if (tweed.ThreadId is not null)
-            throw new ArgumentException($"Tweed {tweed.Id} already belongs to thread {tweed.ThreadId}");
+            return new Success();
 
         if (tweed.ParentTweedId is null)
         {
