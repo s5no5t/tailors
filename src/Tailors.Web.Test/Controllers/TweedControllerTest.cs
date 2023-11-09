@@ -27,7 +27,7 @@ public class TweedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<ILikeTweedUseCase> _likeTweedUseCaseMock = new();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
-    private readonly Mock<ThreadUseCase> _showThreadUseCaseMock = new(new Mock<IThreadRepository>().Object, new Mock<ITweedRepository>().Object);
+    private readonly Mock<ThreadUseCase> _threadUseCaseMock = new(new Mock<IThreadRepository>().Object, new Mock<ITweedRepository>().Object);
     private readonly TweedController _tweedController;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
 
@@ -47,7 +47,7 @@ public class TweedControllerTest
             It.IsAny<string>(),
             It.IsAny<DateTime>(), It.IsAny<string>())).ReturnsAsync(new Tweed(id: "tweedId", text: string.Empty,
             createdAt: FixedDateTime, authorId: "authorId"));
-        _showThreadUseCaseMock
+        _threadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(It.IsAny<string>()))
             .ReturnsAsync(new List<Tweed>());
         _tweedController = new TweedController(_tweedRepositoryMock.Object,
@@ -70,7 +70,7 @@ public class TweedControllerTest
     public async Task ShowThreadForTweed_ShouldReturnViewResult()
     {
         var result =
-            await _tweedController.ShowThreadForTweed("tweedId", _showThreadUseCaseMock.Object);
+            await _tweedController.ShowThreadForTweed("tweedId", _threadUseCaseMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -85,7 +85,7 @@ public class TweedControllerTest
         {
             rootTweed
         };
-        _showThreadUseCaseMock
+        _threadUseCaseMock
             .Setup(t => t.GetThreadTweedsForTweed(rootTweed.Id!)).ReturnsAsync(tweeds);
         _tweedViewModelFactoryMock.Setup(v => v.Create(tweeds, It.IsAny<string>())).ReturnsAsync(
             new List<TweedViewModel>
@@ -97,7 +97,7 @@ public class TweedControllerTest
             });
 
         var result =
-            await _tweedController.ShowThreadForTweed("tweedId", _showThreadUseCaseMock.Object);
+            await _tweedController.ShowThreadForTweed("tweedId", _threadUseCaseMock.Object);
 
         var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal(resultViewModel.Tweeds[0].Id, rootTweed.Id);
@@ -107,7 +107,7 @@ public class TweedControllerTest
     public async Task ShowThreadForTweed_ShouldSetParentTweedId()
     {
         var result = await _tweedController.ShowThreadForTweed(HttpUtility.UrlEncode("tweeds/1"),
-            _showThreadUseCaseMock.Object);
+            _threadUseCaseMock.Object);
 
         var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal("tweeds/1", resultViewModel.CreateReplyTweed.ParentTweedId);
