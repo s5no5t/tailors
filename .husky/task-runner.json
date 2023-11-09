@@ -4,15 +4,15 @@
          "name": "dotnet-format",
          "group": "pre-commit",
          "command": "dotnet",
-         "args": ["dotnet-format", "--include", "${staged}"],
-         "include": ["**/*.cs", "**/*.vb"]
+         "args": ["format", "--include", "${staged}"],
+         "include": ["**/*.cs"]
       },
       {
          "name": "warning-check",
          "command": "dotnet",
          "group": "pre-push",
          "args": ["build", "/warnaserror"],
-         "include": ["**/*.cs", "**/*.vb"]
+         "include": ["**/*.cs"]
       },
       {
          "name": "test",
