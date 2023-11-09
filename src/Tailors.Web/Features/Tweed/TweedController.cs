@@ -28,13 +28,13 @@ public class TweedController : Controller
 
     [HttpGet("Tweed/{tweedId}")]
     public async Task<ActionResult> ShowThreadForTweed(string tweedId,
-        [FromServices] ThreadUseCase threadOfTweedsUseCase)
+        [FromServices] ThreadUseCase threadUseCase)
     {
         var decodedTweedId =
             HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var threadTweeds = await threadOfTweedsUseCase.GetThreadTweedsForTweed(decodedTweedId);
-        return await threadTweeds.Match<Task<ActionResult>>(
+        var threadTweedsResult = await threadUseCase.GetThreadTweedsForTweed(decodedTweedId);
+        return await threadTweedsResult.Match<Task<ActionResult>>(
             async tweeds =>
             {
                 ShowThreadForTweedViewModel viewModel = new()
