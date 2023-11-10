@@ -38,7 +38,7 @@ public class ProfileController : Controller
         var userTweeds = await _tweedRepository.GetAllByAuthorId(userId, PageSize);
 
         var currentUserId = _userManager.GetUserId(User)!;
-        var currentUserFollows = await _followUserUseCase.GetFollows(currentUserId!);
+        var currentUserFollows = await _followUserUseCase.GetFollows(currentUserId);
 
         var viewModel = new IndexViewModel(
             userId,

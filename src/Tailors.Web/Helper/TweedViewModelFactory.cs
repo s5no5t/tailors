@@ -29,7 +29,7 @@ public class TweedViewModelFactory
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
         var likesCount = await _userLikesRepository.GetLikesCounter(tweed.Id!);
         var currentUserLikesTweed =
-            await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId!);
+            await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId);
 
         TweedViewModel viewModel = new()
         {
