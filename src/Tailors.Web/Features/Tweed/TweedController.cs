@@ -59,7 +59,7 @@ public class TweedController : Controller
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateTweedViewModel viewModel,
-        [FromServices] ICreateTweedUseCase createTweedUseCase,
+        [FromServices] CreateTweedUseCase createTweedUseCase,
         [FromServices] INotificationManager notificationManager)
     {
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
@@ -78,7 +78,7 @@ public class TweedController : Controller
 
     [HttpPost]
     public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel,
-        [FromServices] ICreateTweedUseCase createTweedUseCase,
+        [FromServices] CreateTweedUseCase createTweedUseCase,
         [FromServices] INotificationManager notificationManager)
     {
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);

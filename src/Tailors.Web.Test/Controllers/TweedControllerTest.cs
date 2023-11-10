@@ -22,7 +22,7 @@ namespace Tailors.Web.Test.Controllers;
 public class TweedControllerTest
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-    private readonly Mock<ICreateTweedUseCase> _createTweedUseCaseMock = new();
+    private readonly Mock<CreateTweedUseCase> _createTweedUseCaseMock;
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly Mock<ILikeTweedUseCase> _likeTweedUseCaseMock = new();
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
@@ -38,6 +38,7 @@ public class TweedControllerTest
     public TweedControllerTest()
     {
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
+        _createTweedUseCaseMock = new Mock<CreateTweedUseCase>(_tweedRepositoryMock.Object);
         _createTweedUseCaseMock.Setup(t =>
                 t.CreateRootTweed(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<DateTime>()))

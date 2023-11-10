@@ -2,15 +2,7 @@ using OneOf;
 
 namespace Tailors.Domain.TweedAggregate;
 
-public interface ICreateTweedUseCase
-{
-    Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text, DateTime createdAt);
-
-    Task<OneOf<Tweed, ResourceNotFoundError>> CreateReplyTweed(string authorId, string text,
-        DateTime createdAt, string parentTweedId);
-}
-
-public class CreateTweedUseCase : ICreateTweedUseCase
+public class CreateTweedUseCase
 {
     private readonly ITweedRepository _tweedRepository;
 
@@ -19,7 +11,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
+    public virtual async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
         DateTime createdAt)
     {
         Tweed tweed = new(authorId, text, createdAt);
@@ -27,7 +19,7 @@ public class CreateTweedUseCase : ICreateTweedUseCase
         return tweed;
     }
 
-    public async Task<OneOf<Tweed, ResourceNotFoundError>> CreateReplyTweed(string authorId,
+    public virtual async Task<OneOf<Tweed, ResourceNotFoundError>> CreateReplyTweed(string authorId,
         string text,
         DateTime createdAt, string parentTweedId)
     {
