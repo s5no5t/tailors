@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OneOf.Types;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
@@ -37,9 +36,8 @@ public class FeedControllerTest
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
         _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(new AppUser { UserName = "author" });
-        var userFollowsRepository = new Mock<IUserFollowsRepository>();
-        userFollowsRepository.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new None());
-        FollowUserUseCase followUserUseCase = new(userFollowsRepository.Object);
+        var userFollowsRepository = new UserFollowsRepositoryMock();
+        FollowUserUseCase followUserUseCase = new(userFollowsRepository);
         var showFeedUseCase = new ShowFeedUseCase(_tweedRepositoryMock, followUserUseCase);
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock,
