@@ -14,12 +14,12 @@ namespace Tailors.Web.Features.Tweed;
 public class TweedController : Controller
 {
     private readonly ITweedRepository _tweedRepository;
-    private readonly ITweedViewModelFactory _tweedViewModelFactory;
+    private readonly TweedViewModelFactory _tweedViewModelFactory;
     private readonly UserManager<AppUser> _userManager;
 
     public TweedController(ITweedRepository tweedRepository,
         UserManager<AppUser> userManager,
-        ITweedViewModelFactory tweedViewModelFactory)
+        TweedViewModelFactory tweedViewModelFactory)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;

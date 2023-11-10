@@ -8,15 +8,7 @@ using Tailors.Web.Features.Shared;
 
 namespace Tailors.Web.Helper;
 
-public interface ITweedViewModelFactory
-{
-    Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false);
-
-    Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
-        string currentTweedId = "none");
-}
-
-public class TweedViewModelFactory : ITweedViewModelFactory
+public class TweedViewModelFactory
 {
     private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly IUserLikesRepository _userLikesRepository;
@@ -31,7 +23,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _userManager = userManager;
     }
 
-    public virtual async Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)
+    public async Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)
     {
         var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
@@ -53,7 +45,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         return viewModel;
     }
 
-    public virtual async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
+    public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
         string currentTweedId = "none")
     {
         List<TweedViewModel> tweedViewModels = new();

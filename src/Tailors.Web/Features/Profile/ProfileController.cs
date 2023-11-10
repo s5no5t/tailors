@@ -14,12 +14,12 @@ public class ProfileController : Controller
     private const int PageSize = 100;
     private readonly FollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
-    private readonly ITweedViewModelFactory _tweedViewModelFactory;
+    private readonly TweedViewModelFactory _tweedViewModelFactory;
     private readonly IUserFollowsRepository _userFollowsRepository;
     private readonly UserManager<AppUser> _userManager;
 
     public ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
-        ITweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
+        TweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
         FollowUserUseCase followUserUseCase)
     {
         _tweedRepository = tweedRepository;
