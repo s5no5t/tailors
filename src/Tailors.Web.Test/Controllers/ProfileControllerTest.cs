@@ -8,6 +8,7 @@ using Moq;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserLikesAggregate;
 using Tailors.Web.Features.Profile;
 using Tailors.Web.Helper;
 using Tailors.Web.Test.TestHelper;
@@ -33,7 +34,6 @@ public class ProfileControllerTest
     private readonly Mock<ITweedRepository> _tweedRepositoryMock;
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
-    private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
 
     public ProfileControllerTest()
     {
@@ -42,7 +42,6 @@ public class ProfileControllerTest
         _userManagerMock.Setup(u =>
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);
-
         _userFollowsRepositoryMock.Setup(u => u.GetById(It.IsAny<string>()))
             .ReturnsAsync(new UserFollows("currentUser"));
         _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
@@ -50,13 +49,16 @@ public class ProfileControllerTest
         _followUserUseCaseMock = new Mock<FollowUserUseCase>(_userFollowsRepositoryMock.Object);
         _followUserUseCaseMock.Setup(u => u.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
-
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
+        var viewModelFactory = new TweedViewModelFactory(
+            new Mock<IUserLikesRepository>().Object,
+            new LikeTweedUseCase(new Mock<IUserLikesRepository>().Object),
+            _userManagerMock.Object);
 
         _sut = new ProfileController(_tweedRepositoryMock.Object,
-            _userManagerMock.Object, _viewModelFactoryMock.Object,
+            _userManagerMock.Object, viewModelFactory,
             _userFollowsRepositoryMock.Object, _followUserUseCaseMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
