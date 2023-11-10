@@ -10,8 +10,9 @@ public class CreateTweedViewModelTest
     [Fact]
     public void ValidatesTextRequired()
     {
-        CreateTweedViewModel viewModel = new();
-        var result = viewModel.Validate();
+        CreateTweedViewModel sut = new();
+
+        var result = sut.Validate();
 
         Assert.Equal(ModelValidationState.Invalid, result["text"]!.ValidationState);
     }
@@ -19,12 +20,12 @@ public class CreateTweedViewModelTest
     [Fact]
     public void ValidatesTextTooLong()
     {
-        CreateTweedViewModel viewModel = new()
+        CreateTweedViewModel sut = new()
         {
             Text = new string('a', 281)
         };
 
-        var result = viewModel.Validate();
+        var result = sut.Validate();
 
         Assert.Equal(ModelValidationState.Invalid, result["text"]!.ValidationState);
     }

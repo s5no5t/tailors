@@ -34,14 +34,14 @@ public class RavenSaveChangesAsyncActionFilterTest
             new Dictionary<string, object>()!,
             model.Object);
 
-        var asyncFilter = new RavenSaveChangesAsyncActionFilter(sessionMock.Object);
+        var sut = new RavenSaveChangesAsyncActionFilter(sessionMock.Object);
 
         var controller = new Mock<Controller>();
 
         var executedContext =
             new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), controller.Object);
 
-        await asyncFilter.OnActionExecutionAsync(executingContext,
+        await sut.OnActionExecutionAsync(executingContext,
             () => Task.FromResult(executedContext));
 
         sessionMock.Verify(s => s.SaveChangesAsync(default));

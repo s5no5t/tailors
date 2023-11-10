@@ -10,9 +10,9 @@ public class CreateReplyTweedViewModelTest
     [Fact]
     public void ValidatesParentTweedId()
     {
-        CreateReplyTweedViewModel createReplyTweedViewModel = new();
+        CreateReplyTweedViewModel sut = new();
 
-        var result = createReplyTweedViewModel.Validate();
+        var result = sut.Validate();
 
         Assert.Equal(ModelValidationState.Invalid, result["parentTweedId"]!.ValidationState);
     }
@@ -20,9 +20,9 @@ public class CreateReplyTweedViewModelTest
     [Fact]
     public void ValidatesText()
     {
-        CreateReplyTweedViewModel createReplyTweedViewModel = new();
+        CreateReplyTweedViewModel sut = new();
 
-        var result = createReplyTweedViewModel.Validate();
+        var result = sut.Validate();
 
         Assert.Equal(ModelValidationState.Invalid, result["text"]!.ValidationState);
     }

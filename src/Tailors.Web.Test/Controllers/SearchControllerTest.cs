@@ -13,7 +13,7 @@ namespace Tailors.Web.Test.Controllers;
 
 public class SearchControllerTest
 {
-    private readonly SearchController _searchController = new();
+    private readonly SearchController _sut = new();
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
@@ -36,7 +36,7 @@ public class SearchControllerTest
     [Fact]
     public void Index_ShouldReturnView()
     {
-        var result = _searchController.Index();
+        var result = _sut.Index();
 
         Assert.IsType<ViewResult>(result);
     }
@@ -51,7 +51,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
-        var result = await _searchController.Results("userId", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
+        var result = await _sut.Results("userId", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -71,7 +71,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
-        var result = await _searchController.Results("userId", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
+        var result = await _sut.Results("userId", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -89,7 +89,7 @@ public class SearchControllerTest
                 new(id: "tweedId", authorId: "authorId", text: string.Empty, createdAt: DateTime.Now)
             });
 
-        var result = await _searchController.Results("term", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
+        var result = await _sut.Results("term", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;

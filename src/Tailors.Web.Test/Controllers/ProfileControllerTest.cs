@@ -24,13 +24,12 @@ public class ProfileControllerTest
 
     private readonly Mock<FollowUserUseCase> _followUserUseCaseMock;
 
-    private readonly ProfileController _profileController;
-
     private readonly AppUser _profileUser = new()
     {
         Id = "user"
     };
 
+    private readonly ProfileController _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock;
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
@@ -56,7 +55,7 @@ public class ProfileControllerTest
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
 
-        _profileController = new ProfileController(_tweedRepositoryMock.Object,
+        _sut = new ProfileController(_tweedRepositoryMock.Object,
             _userManagerMock.Object, _viewModelFactoryMock.Object,
             _userFollowsRepositoryMock.Object, _followUserUseCaseMock.Object)
         {
@@ -75,7 +74,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldLoadTweeds()
     {
-        await _profileController.Index("user");
+        await _sut.Index("user");
 
         _tweedRepositoryMock.Verify(t => t.GetAllByAuthorId("user", It.IsAny<int>()));
     }
@@ -85,7 +84,7 @@ public class ProfileControllerTest
     {
         _userManagerMock.Setup(u => u.FindByIdAsync("unknownUser")).ReturnsAsync((AppUser)null!);
 
-        var result = await _profileController.Index("unknownUser");
+        var result = await _sut.Index("unknownUser");
 
         Assert.IsType<NotFoundResult>(result);
     }
@@ -95,7 +94,7 @@ public class ProfileControllerTest
     {
         _profileUser.UserName = "UserName";
 
-        var result = await _profileController.Index("user");
+        var result = await _sut.Index("user");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -113,7 +112,7 @@ public class ProfileControllerTest
         };
         _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
 
-        var result = await _profileController.Index("user");
+        var result = await _sut.Index("user");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -128,7 +127,7 @@ public class ProfileControllerTest
         _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
 
-        var result = await _profileController.Index("user");
+        var result = await _sut.Index("user");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -140,7 +139,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetUserId()
     {
-        var result = await _profileController.Index("user");
+        var result = await _sut.Index("user");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -155,7 +154,7 @@ public class ProfileControllerTest
         _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount("user")).ReturnsAsync(10);
         _profileUser.Id = "user";
 
-        var result = await _profileController.Index("user");
+        var result = await _sut.Index("user");
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -169,7 +168,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Follow_ShouldReturnNotFound_WhenUserIdNotFound()
     {
-        var result = await _profileController.Follow("unknownUser");
+        var result = await _sut.Follow("unknownUser");
         Assert.IsType<NotFoundResult>(result);
     }
 
@@ -179,7 +178,7 @@ public class ProfileControllerTest
         _userManagerMock.Setup(u => u.FindByIdAsync("currentUser"))
             .ReturnsAsync(_currentUser);
 
-        var result = await _profileController.Follow("currentUser");
+        var result = await _sut.Follow("currentUser");
 
         Assert.IsType<BadRequestObjectResult>(result);
     }
@@ -187,7 +186,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Follow_ShouldAddFollower()
     {
-        await _profileController.Follow("user");
+        await _sut.Follow("user");
 
         _followUserUseCaseMock.Verify(t =>
             t.AddFollower("user", "currentUser", It.IsAny<DateTime>()));
@@ -196,7 +195,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Follow_ShouldRedirectToIndex()
     {
-        var result = await _profileController.Follow("user");
+        var result = await _sut.Follow("user");
 
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("user", ((RedirectToActionResult)result).RouteValues!["userId"]);
@@ -205,14 +204,14 @@ public class ProfileControllerTest
     [Fact]
     public async Task Unfollow_ShouldReturnNotFound_WhenLeaderIdNotFound()
     {
-        var result = await _profileController.Unfollow("unknownUser");
+        var result = await _sut.Unfollow("unknownUser");
         Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
     public async Task Unfollow_ShouldAddFollower()
     {
-        await _profileController.Unfollow("user");
+        await _sut.Unfollow("user");
 
         _followUserUseCaseMock.Verify(t =>
             t.RemoveFollower("user", "currentUser"));
@@ -221,7 +220,7 @@ public class ProfileControllerTest
     [Fact]
     public async Task Unfollow_ShouldRedirectToIndex()
     {
-        var result = await _profileController.Unfollow("user");
+        var result = await _sut.Unfollow("user");
 
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("user", ((RedirectToActionResult)result).RouteValues!["userId"]);

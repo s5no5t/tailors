@@ -21,9 +21,8 @@ namespace Tailors.Web.Test.Controllers;
 public class FeedControllerTest
 {
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-
-    private readonly FeedController _feedController;
     private readonly Mock<ShowFeedUseCase> _showFeedUseCaseMock;
+    private readonly FeedController _sut;
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
@@ -46,7 +45,7 @@ public class FeedControllerTest
         _viewModelFactoryMock.Setup(v => v.Create(tweed, false))
             .ReturnsAsync(new TweedViewModel());
 
-        _feedController = new FeedController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
+        _sut = new FeedController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
             _viewModelFactoryMock.Object)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
@@ -64,7 +63,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Index_ShouldReturnIndexViewModel()
     {
-        var result = await _feedController.Index();
+        var result = await _sut.Index();
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -74,7 +73,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Index_ShouldReturnPage0()
     {
-        var result = await _feedController.Index();
+        var result = await _sut.Index();
 
         var model = ((result as ViewResult)!.Model as IndexViewModel)!;
         Assert.Equal(0, model.Feed.Page);
@@ -96,7 +95,7 @@ public class FeedControllerTest
                 }
             });
 
-        var result = await _feedController.Index();
+        var result = await _sut.Index();
 
         var model = ((result as ViewResult)!.Model as IndexViewModel)!;
         Assert.Equal(tweed.Id, model.Feed.Tweeds[0].Id);
@@ -105,7 +104,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Feed_ShouldReturnFeedPartialViewModel()
     {
-        var result = await _feedController.Feed();
+        var result = await _sut.Feed();
 
         Assert.IsType<PartialViewResult>(result);
         var resultAsView = (PartialViewResult)result;
@@ -115,7 +114,7 @@ public class FeedControllerTest
     [Fact]
     public async Task Feed_ShouldReturnPage1_WhenPageIs1()
     {
-        var result = await _feedController.Feed(1);
+        var result = await _sut.Feed(1);
 
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
 
@@ -138,7 +137,7 @@ public class FeedControllerTest
                 }
             });
 
-        var result = await _feedController.Feed();
+        var result = await _sut.Feed();
 
         var model = ((result as PartialViewResult)!.Model as FeedViewModel)!;
         Assert.Equal(tweed.Id, model.Tweeds[0].Id);
@@ -152,9 +151,9 @@ public class FeedControllerTest
             text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
-        _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
+        _sut.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
 
-        var result = await _feedController.NewTweedsNotification(instant);
+        var result = await _sut.NewTweedsNotification(instant);
 
         var resultViewModel = (NewTweedsNotificationViewModel)((PartialViewResult)result).Model!;
         Assert.True(resultViewModel.NewTweedsAvailable);
@@ -168,9 +167,9 @@ public class FeedControllerTest
             text: string.Empty);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", 0, It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
-        _feedController.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
+        _sut.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
 
-        var result = await _feedController.NewTweedsNotification(instant);
+        var result = await _sut.NewTweedsNotification(instant);
 
         var resultViewModel = (NewTweedsNotificationViewModel)((PartialViewResult)result).Model!;
         Assert.False(resultViewModel.NewTweedsAvailable);
@@ -182,6 +181,6 @@ public class FeedControllerTest
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
 
         await Assert.ThrowsAsync<Exception>(async () =>
-            await _feedController.NewTweedsNotification(instant));
+            await _sut.NewTweedsNotification(instant));
     }
 }

@@ -34,8 +34,9 @@ public class NotificationManagerTest
     [Fact]
     public void AppendSuccess_ShouldAppendCookie()
     {
-        var manager = new NotificationManager(_mockHttpContextAccessor.Object);
-        manager.AppendSuccess("success");
+        var sut = new NotificationManager(_mockHttpContextAccessor.Object);
+
+        sut.AppendSuccess("success");
 
         _responseCookiesMock.Verify(c => c.Append("notification-success", "success"));
     }
@@ -45,24 +46,26 @@ public class NotificationManagerTest
     {
         var value = "success";
         _requestCookiesMock.Setup(r => r.TryGetValue("notification-success", out value));
-        var manager = new NotificationManager(_mockHttpContextAccessor.Object);
 
-        Assert.Equal("success", manager.SuccessMessage);
+        var sut = new NotificationManager(_mockHttpContextAccessor.Object);
+
+        Assert.Equal("success", sut.SuccessMessage);
     }
 
     [Fact]
     public void SuccessMessage_ShouldReturnNull_WhenNoCookieIsSet()
     {
-        var manager = new NotificationManager(_mockHttpContextAccessor.Object);
+        var sut = new NotificationManager(_mockHttpContextAccessor.Object);
 
-        Assert.Null(manager.SuccessMessage);
+        Assert.Null(sut.SuccessMessage);
     }
 
     [Fact]
     public void Clear_ShouldDeleteCookie()
     {
-        var manager = new NotificationManager(_mockHttpContextAccessor.Object);
-        manager.Clear();
+        var sut = new NotificationManager(_mockHttpContextAccessor.Object);
+
+        sut.Clear();
 
         _responseCookiesMock.Verify(c => c.Delete("notification-success"));
     }
