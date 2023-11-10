@@ -15,9 +15,10 @@ public class ShowFeedUseCaseTest
 
     public ShowFeedUseCaseTest()
     {
-        Mock<FollowUserUseCase> followsServiceMock = new(new Mock<IUserFollowsRepository>().Object);
-        followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
-            .ReturnsAsync(new List<UserFollows.LeaderReference>());
+        Mock<IUserFollowsRepository> userFollowsRepositoryMock = new();
+        userFollowsRepositoryMock.Setup(m => m.GetById(It.IsAny<string>()))
+            .ReturnsAsync(new UserFollows("userId/Follows"));
+        FollowUserUseCase followsUserUseCase = new(userFollowsRepositoryMock.Object);
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
         _tweedRepositoryMock
@@ -26,7 +27,7 @@ public class ShowFeedUseCaseTest
         _tweedRepositoryMock
             .Setup(m => m.GetRecentTweeds(It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
-        _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, followsServiceMock.Object);
+        _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, followsUserUseCase);
     }
 
     [Fact]
