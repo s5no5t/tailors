@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Tailors.Web.Test.Views;
 
-public class CreateViewModelTest
+public class CreateTweedViewModelTest
 {
     [Fact]
     public void ValidatesTextRequired()
