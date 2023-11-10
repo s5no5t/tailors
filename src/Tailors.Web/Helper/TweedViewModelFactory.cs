@@ -18,20 +18,17 @@ public interface ITweedViewModelFactory
 
 public class TweedViewModelFactory : ITweedViewModelFactory
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly IUserLikesRepository _userLikesRepository;
     private readonly UserManager<AppUser> _userManager;
 
     public TweedViewModelFactory(IUserLikesRepository userLikesRepository,
         LikeTweedUseCase likeTweedUseCase,
-        UserManager<AppUser> userManager,
-        IHttpContextAccessor httpContextAccessor)
+        UserManager<AppUser> userManager)
     {
         _userLikesRepository = userLikesRepository;
         _likeTweedUseCase = likeTweedUseCase;
         _userManager = userManager;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public virtual async Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)

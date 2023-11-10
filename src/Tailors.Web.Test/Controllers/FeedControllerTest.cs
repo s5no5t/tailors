@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -47,8 +46,7 @@ public class FeedControllerTest
         Mock<IUserLikesRepository> userLikesRepositoryMock = new();
         userLikesRepositoryMock.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new None());
         var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock.Object,
-            new LikeTweedUseCase(userLikesRepositoryMock.Object), _userManagerMock.Object,
-            new Mock<IHttpContextAccessor>().Object);
+            new LikeTweedUseCase(userLikesRepositoryMock.Object), _userManagerMock.Object);
 
         _sut = new FeedController(_showFeedUseCaseMock.Object, _userManagerMock.Object,
             viewModelFactory)
