@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OneOf.Types;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
@@ -32,7 +31,7 @@ public class ProfileControllerTest
 
     private readonly ProfileController _sut;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
-    private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
+    private readonly UserFollowsRepositoryMock _userFollowsRepositoryMock = new();
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
     public ProfileControllerTest()
@@ -42,18 +41,14 @@ public class ProfileControllerTest
         _userManagerMock.Setup(u =>
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);
-        _userFollowsRepositoryMock.Setup(u => u.GetById(It.IsAny<string>()))
-            .ReturnsAsync(new None());
-        _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
-            .ReturnsAsync(0);
-        _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock.Object);
+        _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock);
         var viewModelFactory = new TweedViewModelFactory(
             new UserLikesRepositoryMock(),
             new LikeTweedUseCase(new UserLikesRepositoryMock()),
             _userManagerMock.Object);
 
         _sut = new ProfileController(_tweedRepositoryMock, _userManagerMock.Object, viewModelFactory,
-            _userFollowsRepositoryMock.Object, _followUserUseCase)
+            _userFollowsRepositoryMock, _followUserUseCase)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -110,8 +105,7 @@ public class ProfileControllerTest
     {
         UserFollows userFollows = new("currentUser");
         userFollows.AddFollows(_profileUser.Id!, DateTime.UtcNow);
-        _userFollowsRepositoryMock.Setup(u => u.GetById("currentUser/Follows"))
-            .ReturnsAsync(userFollows);
+        await _userFollowsRepositoryMock.Create(userFollows);
 
         var result = await _sut.Index("user");
 
@@ -149,7 +143,9 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetFollowersCount()
     {
-        _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount("user")).ReturnsAsync(10);
+        UserFollows userFollows = new("user");
+        userFollows.AddFollows("otherUser", DateTime.UtcNow);
+        await _userFollowsRepositoryMock.Create(userFollows);
         _profileUser.Id = "user";
 
         var result = await _sut.Index("user");
@@ -158,9 +154,7 @@ public class ProfileControllerTest
         var resultAsView = (ViewResult)result;
         Assert.IsType<IndexViewModel>(resultAsView.Model);
         var viewModel = (IndexViewModel)resultAsView.Model!;
-        Assert.Equal(10, viewModel.FollowersCount);
-
-        _userFollowsRepositoryMock.Verify(u => u.GetFollowerCount("user"));
+        Assert.Equal(1, viewModel.FollowersCount);
     }
 
     [Fact]
@@ -185,8 +179,7 @@ public class ProfileControllerTest
     public async Task Follow_ShouldAddFollower()
     {
         UserFollows userFollows = new("currentUser");
-        _userFollowsRepositoryMock.Setup(u => u.GetById("currentUser/Follows"))
-            .ReturnsAsync(userFollows);
+        await _userFollowsRepositoryMock.Create(userFollows);
 
         await _sut.Follow("user");
 
@@ -214,8 +207,7 @@ public class ProfileControllerTest
     {
         UserFollows userFollows = new("currentUser");
         userFollows.AddFollows(_profileUser.Id!, DateTime.UtcNow);
-        _userFollowsRepositoryMock.Setup(u => u.GetById("currentUser/Follows"))
-            .ReturnsAsync(userFollows);
+        await _userFollowsRepositoryMock.Create(userFollows);
 
         await _sut.Unfollow("user");
 

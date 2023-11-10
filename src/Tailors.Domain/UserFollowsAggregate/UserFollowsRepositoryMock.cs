@@ -26,6 +26,12 @@ public class UserFollowsRepositoryMock : IUserFollowsRepository
 
     public Task<int> GetFollowerCount(string userId)
     {
-        throw new NotImplementedException();
+        var follows = _userFollows
+            .FirstOrDefault(u => u.Value.UserId == userId);
+
+        if (follows.Value is null)
+            return Task.FromResult(0);
+
+        return Task.FromResult(follows.Value.Follows.Count);
     }
 }

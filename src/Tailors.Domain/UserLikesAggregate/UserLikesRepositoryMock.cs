@@ -29,7 +29,6 @@ public class UserLikesRepositoryMock : IUserLikesRepository
     public Task<long> GetLikesCounter(string tweedId)
     {
         _likesCounter.TryGetValue(tweedId, out var likesCounter);
-
         return Task.FromResult(likesCounter);
     }
 
