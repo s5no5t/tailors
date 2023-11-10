@@ -24,7 +24,7 @@ public class TweedControllerTest
     private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _sut;
-    private readonly Mock<IThreadRepository> _threadRepositoryMock = new();
+    private readonly ThreadRepositoryMock _threadRepositoryMock = new();
     private readonly ThreadUseCase _threadUseCase;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
@@ -39,7 +39,7 @@ public class TweedControllerTest
         _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(new AppUser { UserName = "author" });
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock);
-        _threadUseCase = new ThreadUseCase(_threadRepositoryMock.Object, _tweedRepositoryMock);
+        _threadUseCase = new ThreadUseCase(_threadRepositoryMock, _tweedRepositoryMock);
         TweedViewModelFactory tweedViewModelFactory =
             new(userLikesRepositoryMock, _likeTweedUseCase, _userManagerMock.Object);
 
@@ -79,8 +79,7 @@ public class TweedControllerTest
         await _tweedRepositoryMock.Create(rootTweed);
         var thread = new TailorsThread("threadId");
         thread.AddTweed(rootTweed);
-        _threadRepositoryMock.Setup(t => t.GetById(rootTweed.ThreadId!))
-            .ReturnsAsync(thread);
+        await _threadRepositoryMock.Create(thread);
 
         var result =
             await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
