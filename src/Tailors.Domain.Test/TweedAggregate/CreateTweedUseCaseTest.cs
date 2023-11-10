@@ -1,5 +1,4 @@
 using JetBrains.Annotations;
-using Moq;
 using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Domain.Test.TweedAggregate;
@@ -9,11 +8,11 @@ public class CreateTweedUseCaseTest
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
     private readonly CreateTweedUseCase _sut;
-    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
+    private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
     public CreateTweedUseCaseTest()
     {
-        _sut = new CreateTweedUseCase(_tweedRepositoryMock.Object);
+        _sut = new CreateTweedUseCase(_tweedRepositoryMock);
     }
 
     [Fact]
@@ -21,9 +20,8 @@ public class CreateTweedUseCaseTest
     {
         var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
 
-        result.Switch(
-            [AssertionMethod] (t) => { _tweedRepositoryMock.Verify(s => s.Create(It.IsAny<Tweed>())); }
-        );
+        var tweed = await _tweedRepositoryMock.GetById(result.AsT0.Id!);
+        Assert.NotNull(tweed.AsT0);
     }
 
     [Fact]
@@ -31,13 +29,12 @@ public class CreateTweedUseCaseTest
     {
         Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
             createdAt: FixedDateTime, text: string.Empty);
-        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
+        await _tweedRepositoryMock.Create(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id!);
 
-        result.Switch(
-            [AssertionMethod] (t) => { _tweedRepositoryMock.Verify(tr => tr.Create(It.IsAny<Tweed>())); },
-            e => Assert.Fail(e.Message));
+        var tweed = await _tweedRepositoryMock.GetById(result.AsT0.Id!);
+        Assert.NotNull(tweed.AsT0);
     }
 
     [Fact]
@@ -45,7 +42,7 @@ public class CreateTweedUseCaseTest
     {
         Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
             createdAt: FixedDateTime, text: string.Empty);
-        _tweedRepositoryMock.Setup(t => t.GetById(parentTweed.Id!)).ReturnsAsync(parentTweed);
+        await _tweedRepositoryMock.Create(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");
 
