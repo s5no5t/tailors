@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +31,7 @@ public class ProfileControllerTest
     };
 
     private readonly ProfileController _sut;
-    private readonly Mock<ITweedRepository> _tweedRepositoryMock;
+    private readonly TweedRepositoryMock _tweedRepositoryMock = new();
     private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
@@ -48,16 +47,13 @@ public class ProfileControllerTest
         _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
             .ReturnsAsync(0);
         _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock.Object);
-        _tweedRepositoryMock = new Mock<ITweedRepository>();
-        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
         var viewModelFactory = new TweedViewModelFactory(
             new UserLikesRepositoryMock(),
             new LikeTweedUseCase(new UserLikesRepositoryMock()),
             _userManagerMock.Object);
 
-        _sut = new ProfileController(_tweedRepositoryMock.Object,
-            _userManagerMock.Object, viewModelFactory, _userFollowsRepositoryMock.Object, _followUserUseCase)
+        _sut = new ProfileController(_tweedRepositoryMock, _userManagerMock.Object, viewModelFactory,
+            _userFollowsRepositoryMock.Object, _followUserUseCase)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -74,9 +70,15 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldLoadTweeds()
     {
-        await _sut.Index("user");
+        await _tweedRepositoryMock.Create(new Tweed("user", "text", DateTime.UtcNow));
 
-        _tweedRepositoryMock.Verify(t => t.GetAllByAuthorId("user", It.IsAny<int>()));
+        var result = await _sut.Index("user");
+
+        Assert.IsType<ViewResult>(result);
+        var resultAsView = (ViewResult)result;
+        Assert.IsType<IndexViewModel>(resultAsView.Model);
+        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.Equal("user", viewModel.Tweeds[0].AuthorId);
     }
 
     [Fact]

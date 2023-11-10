@@ -26,7 +26,8 @@ public class TweedRepositoryMock : ITweedRepository
 
     public Task<List<Tweed>> GetAllByAuthorId(string authorId, int count)
     {
-        throw new NotImplementedException();
+        var tweeds = _tweeds.Where(t => t.Value.AuthorId == authorId).Select(t => t.Value).ToList();
+        return Task.FromResult(tweeds);
     }
 
     public Task Create(Tweed tweed)
