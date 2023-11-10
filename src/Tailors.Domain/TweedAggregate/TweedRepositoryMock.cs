@@ -48,11 +48,19 @@ public class TweedRepositoryMock : ITweedRepository
 
     public Task<List<Tweed>> GetRecentTweeds(int count)
     {
-        throw new NotImplementedException();
+        var tweeds = _tweeds
+            .OrderByDescending(t => t.Value.CreatedAt)
+            .Take(count)
+            .Select(t => t.Value).ToList();
+        return Task.FromResult(tweeds);
     }
 
     public Task<List<Tweed>> GetFollowerTweeds(List<string> followedUserIds, int count)
     {
-        throw new NotImplementedException();
+        var tweeds = _tweeds
+            .Where(t => followedUserIds.Contains(t.Value.AuthorId))
+            .Take(count)
+            .Select(t => t.Value).ToList();
+        return Task.FromResult(tweeds);
     }
 }
