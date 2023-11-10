@@ -38,9 +38,8 @@ public class FeedControllerTest
         _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(new AppUser { UserName = "author" });
         var tweed = new Tweed("author", id: "twedId", createdAt: DateTime.Now, text: string.Empty);
-        Mock<FollowUserUseCase> followUserUseCaseMock = new(new Mock<IUserFollowsRepository>().Object);
-        _showFeedUseCaseMock =
-            new Mock<ShowFeedUseCase>(new Mock<ITweedRepository>().Object, followUserUseCaseMock.Object);
+        FollowUserUseCase followUserUseCase = new(new Mock<IUserFollowsRepository>().Object);
+        _showFeedUseCaseMock = new Mock<ShowFeedUseCase>(new Mock<ITweedRepository>().Object, followUserUseCase);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         Mock<IUserLikesRepository> userLikesRepositoryMock = new();
