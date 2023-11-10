@@ -39,7 +39,8 @@ public class TweedRepositoryMock : ITweedRepository
 
     public Task<List<Tweed>> Search(string term)
     {
-        throw new NotImplementedException();
+        var tweeds = _tweeds.Where(t => t.Value.Text.Contains(term)).Select(t => t.Value).ToList();
+        return Task.FromResult(tweeds);
     }
 
     public Task<List<Tweed>> GetRecentTweeds(int count)

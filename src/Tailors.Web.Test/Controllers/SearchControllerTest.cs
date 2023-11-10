@@ -14,15 +14,13 @@ namespace Tailors.Web.Test.Controllers;
 public class SearchControllerTest
 {
     private readonly SearchController _sut = new();
-    private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
+    private readonly TweedRepositoryMock _tweedRepositoryMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
 
     public SearchControllerTest()
     {
         _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
             .ReturnsAsync(new List<AppUser>());
-        _tweedRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<Tweed>());
     }
 
     [Fact]
@@ -51,7 +49,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
-        var result = await _sut.Results("userId", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
+        var result = await _sut.Results("userId", _tweedRepositoryMock, _userRepositoryMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -71,7 +69,7 @@ public class SearchControllerTest
         _userRepositoryMock.Setup(u => u.Search("userId"))
             .ReturnsAsync(new List<AppUser> { user });
 
-        var result = await _sut.Results("userId", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
+        var result = await _sut.Results("userId", _tweedRepositoryMock, _userRepositoryMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -83,13 +81,10 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchTweeds()
     {
-        _tweedRepositoryMock.Setup(u => u.Search("term")).ReturnsAsync(
-            new List<Tweed>
-            {
-                new(id: "tweedId", authorId: "authorId", text: string.Empty, createdAt: DateTime.Now)
-            });
+        await _tweedRepositoryMock.Create(new Tweed(id: "tweedId", authorId: "authorId", text: "term",
+            createdAt: DateTime.Now));
 
-        var result = await _sut.Results("term", _tweedRepositoryMock.Object, _userRepositoryMock.Object);
+        var result = await _sut.Results("term", _tweedRepositoryMock, _userRepositoryMock.Object);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
