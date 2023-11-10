@@ -99,7 +99,7 @@ public class TweedController : Controller
 
     [HttpPost]
     public async Task<IActionResult> Like(string tweedId, bool isCurrent,
-        [FromServices] ILikeTweedUseCase likeTweedUseCase)
+        [FromServices] LikeTweedUseCase likeTweedUseCase)
     {
         var getResult = await _tweedRepository.GetById(tweedId);
         if (getResult.TryPickT1(out _, out var tweed))
@@ -115,7 +115,7 @@ public class TweedController : Controller
 
     [HttpPost]
     public async Task<IActionResult> Unlike(string tweedId, bool isCurrent,
-        [FromServices] ILikeTweedUseCase likeTweedUseCase)
+        [FromServices] LikeTweedUseCase likeTweedUseCase)
     {
         var getResult = await _tweedRepository.GetById(tweedId);
         if (getResult.TryPickT1(out _, out var tweed))

@@ -19,12 +19,12 @@ public interface ITweedViewModelFactory
 public class TweedViewModelFactory : ITweedViewModelFactory
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILikeTweedUseCase _likeTweedUseCase;
+    private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly IUserLikesRepository _userLikesRepository;
     private readonly UserManager<AppUser> _userManager;
 
     public TweedViewModelFactory(IUserLikesRepository userLikesRepository,
-        ILikeTweedUseCase likeTweedUseCase,
+        LikeTweedUseCase likeTweedUseCase,
         UserManager<AppUser> userManager,
         IHttpContextAccessor httpContextAccessor)
     {

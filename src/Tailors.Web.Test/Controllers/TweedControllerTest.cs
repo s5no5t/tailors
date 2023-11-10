@@ -24,7 +24,7 @@ public class TweedControllerTest
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
     private readonly Mock<CreateTweedUseCase> _createTweedUseCaseMock;
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly Mock<ILikeTweedUseCase> _likeTweedUseCaseMock = new();
+    private readonly Mock<LikeTweedUseCase> _likeTweedUseCaseMock;
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly Mock<IThreadRepository> _threadRepositoryMock = new();
     private readonly ThreadUseCase _threadUseCase;
@@ -37,6 +37,9 @@ public class TweedControllerTest
 
     public TweedControllerTest()
     {
+        Mock<IUserLikesRepository> userLikesRepository = new();
+        userLikesRepository.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new UserLikes("currentUser"));
+        _likeTweedUseCaseMock = new Mock<LikeTweedUseCase>(userLikesRepository.Object);
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _createTweedUseCaseMock = new Mock<CreateTweedUseCase>(_tweedRepositoryMock.Object);
         _createTweedUseCaseMock.Setup(t =>

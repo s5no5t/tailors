@@ -1,13 +1,6 @@
 namespace Tailors.Domain.UserLikesAggregate;
 
-public interface ILikeTweedUseCase
-{
-    Task AddLike(string tweedId, string userId, DateTime likedAt);
-    Task RemoveLike(string tweedId, string userId);
-    Task<bool> DoesUserLikeTweed(string tweedId, string userId);
-}
-
-public class LikeTweedUseCase : ILikeTweedUseCase
+public class LikeTweedUseCase
 {
     private readonly IUserLikesRepository _userLikesRepository;
 
@@ -16,7 +9,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
         _userLikesRepository = userLikesRepository;
     }
 
-    public async Task AddLike(string tweedId, string userId, DateTime likedAt)
+    public virtual async Task AddLike(string tweedId, string userId, DateTime likedAt)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
 
@@ -26,7 +19,7 @@ public class LikeTweedUseCase : ILikeTweedUseCase
             _userLikesRepository.IncreaseLikesCounter(tweedId);
     }
 
-    public async Task RemoveLike(string tweedId, string userId)
+    public virtual async Task RemoveLike(string tweedId, string userId)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
         var removed = userLikes.RemoveLike(tweedId);
