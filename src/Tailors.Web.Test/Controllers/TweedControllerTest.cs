@@ -123,7 +123,7 @@ public class TweedControllerTest
 
         await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
 
-        var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 0);
+        var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 1);
         Assert.NotEmpty(tweeds);
     }
 
@@ -174,7 +174,7 @@ public class TweedControllerTest
 
         await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
 
-        var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 0);
+        var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 1);
         Assert.NotEmpty(tweeds);
     }
 

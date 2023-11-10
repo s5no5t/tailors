@@ -26,7 +26,10 @@ public class TweedRepositoryMock : ITweedRepository
 
     public Task<List<Tweed>> GetAllByAuthorId(string authorId, int count)
     {
-        var tweeds = _tweeds.Where(t => t.Value.AuthorId == authorId).Select(t => t.Value).ToList();
+        var tweeds = _tweeds
+            .Where(t => t.Value.AuthorId == authorId)
+            .Take(count)
+            .Select(t => t.Value).ToList();
         return Task.FromResult(tweeds);
     }
 
