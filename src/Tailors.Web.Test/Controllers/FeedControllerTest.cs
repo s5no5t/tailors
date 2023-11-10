@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +23,7 @@ public class FeedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly FeedController _sut;
 
-    private readonly Mock<ITweedRepository> _tweedRepositoryMock;
+    private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
@@ -41,14 +40,7 @@ public class FeedControllerTest
         var userFollowsRepository = new Mock<IUserFollowsRepository>();
         userFollowsRepository.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new None());
         FollowUserUseCase followUserUseCase = new(userFollowsRepository.Object);
-        _tweedRepositoryMock = new Mock<ITweedRepository>();
-        _tweedRepositoryMock.Setup(t => t.GetFollowerTweeds(It.IsAny<List<string>>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
-        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
-        _tweedRepositoryMock.Setup(t => t.GetRecentTweeds(It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed>());
-        var showFeedUseCase = new ShowFeedUseCase(_tweedRepositoryMock.Object, followUserUseCase);
+        var showFeedUseCase = new ShowFeedUseCase(_tweedRepositoryMock, followUserUseCase);
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock,
             new LikeTweedUseCase(userLikesRepositoryMock), _userManagerMock.Object);
@@ -90,8 +82,7 @@ public class FeedControllerTest
     public async Task Index_ShouldReturnTweeds()
     {
         var tweed = new Tweed("currentUser", id: "tweedId", createdAt: DateTime.Now, text: string.Empty);
-        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { tweed });
+        await _tweedRepositoryMock.Create(tweed);
 
         var result = await _sut.Index();
 
@@ -123,8 +114,7 @@ public class FeedControllerTest
     public async Task Feed_ShouldReturnTweeds()
     {
         var tweed = new Tweed("currentUser", id: "tweedId", createdAt: DateTime.Now, text: string.Empty);
-        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { tweed });
+        await _tweedRepositoryMock.Create(tweed);
 
         var result = await _sut.Feed();
 
@@ -138,8 +128,7 @@ public class FeedControllerTest
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
         var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(5), authorId: "authorId",
             text: string.Empty);
-        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { tweed });
+        await _tweedRepositoryMock.Create(tweed);
         _sut.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
 
         var result = await _sut.NewTweedsNotification(instant);
@@ -154,8 +143,7 @@ public class FeedControllerTest
         var instant = new DateTime(2023, 5, 22, 10, 0, 0);
         var tweed = new Tweed(id: "tweedId", createdAt: instant.AddMinutes(-5), authorId: "authorId",
             text: string.Empty);
-        _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
-            .ReturnsAsync(new List<Tweed> { tweed });
+        await _tweedRepositoryMock.Create(tweed);
         _sut.ControllerContext.HttpContext.Request.Headers["Hx-Request"] = "true";
 
         var result = await _sut.NewTweedsNotification(instant);
