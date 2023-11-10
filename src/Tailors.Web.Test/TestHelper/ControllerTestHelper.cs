@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using System.Security.Claims;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +9,11 @@ internal static class ControllerTestHelper
 {
     internal static ClaimsPrincipal BuildPrincipal()
     {
-        var displayName = "User name";
-        var identity = new GenericIdentity(displayName);
+        IEnumerable<Claim>? claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, "currentUser")
+        };
+        var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
         return principal;
     }

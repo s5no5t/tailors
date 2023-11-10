@@ -2,9 +2,7 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
@@ -24,26 +22,23 @@ public class FeedControllerTest
 
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
-    private readonly Mock<UserManager<AppUser>> _userManagerMock =
-        UserManagerMockHelper.MockUserManager<AppUser>();
-
     public FeedControllerTest()
     {
+        var store = new UserStoreMock();
+        var userManagerMock = UserManagerMockHelper.CreateUserManager(store);
         var user = new AppUser
         {
             Id = "currentUser"
         };
-        _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
-        _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
-            .ReturnsAsync(new AppUser { UserName = "author" });
+        store.Create(user);
         var userFollowsRepository = new UserFollowsRepositoryMock();
         FollowUserUseCase followUserUseCase = new(userFollowsRepository);
         var showFeedUseCase = new ShowFeedUseCase(_tweedRepositoryMock, followUserUseCase);
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock,
-            new LikeTweedUseCase(userLikesRepositoryMock), _userManagerMock.Object);
+            new LikeTweedUseCase(userLikesRepositoryMock), userManagerMock);
 
-        _sut = new FeedController(showFeedUseCase, _userManagerMock.Object, viewModelFactory)
+        _sut = new FeedController(showFeedUseCase, userManagerMock, viewModelFactory)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
         };
