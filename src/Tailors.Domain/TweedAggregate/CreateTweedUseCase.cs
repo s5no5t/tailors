@@ -11,7 +11,7 @@ public class CreateTweedUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public virtual async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
+    public async Task<OneOf<Tweed>> CreateRootTweed(string authorId, string text,
         DateTime createdAt)
     {
         Tweed tweed = new(authorId, text, createdAt);
@@ -19,7 +19,7 @@ public class CreateTweedUseCase
         return tweed;
     }
 
-    public virtual async Task<OneOf<Tweed, ResourceNotFoundError>> CreateReplyTweed(string authorId,
+    public async Task<OneOf<Tweed, ResourceNotFoundError>> CreateReplyTweed(string authorId,
         string text,
         DateTime createdAt, string parentTweedId)
     {

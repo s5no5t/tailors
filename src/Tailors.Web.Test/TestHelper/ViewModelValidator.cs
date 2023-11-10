@@ -1,25 +1,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Tailors.Web.Test.TestHelper;
 
-public static class ViewModelValidator
+internal static class ViewModelValidator
 {
-    public static void Validate(this PageModel viewModel)
-    {
-        var validationContext = new ValidationContext(viewModel, null, null);
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(viewModel, validationContext, validationResults, true);
-        foreach (var validationResult in validationResults)
-            viewModel.ModelState.AddModelError(
-                validationResult.MemberNames.FirstOrDefault() ?? string.Empty,
-                validationResult.ErrorMessage!);
-    }
-
-    public static ModelStateDictionary Validate(this object viewModel)
+    internal static ModelStateDictionary Validate(this object viewModel)
     {
         var validationContext = new ValidationContext(viewModel, null, null);
         var validationResults = new List<ValidationResult>();
@@ -31,5 +20,16 @@ public static class ViewModelValidator
                 validationResult.ErrorMessage!);
 
         return modelStateDictionary;
+    }
+
+    internal static void ValidateViewModel(this ControllerBase controller, object viewModel)
+    {
+        var validationContext = new ValidationContext(viewModel, null, null);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(viewModel, validationContext, validationResults, true);
+        foreach (var validationResult in validationResults)
+            controller.ModelState.AddModelError(
+                validationResult.MemberNames.FirstOrDefault() ?? string.Empty,
+                validationResult.ErrorMessage!);
     }
 }
