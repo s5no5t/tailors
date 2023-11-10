@@ -52,8 +52,8 @@ public class ProfileControllerTest
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
         var viewModelFactory = new TweedViewModelFactory(
-            new Mock<IUserLikesRepository>().Object,
-            new LikeTweedUseCase(new Mock<IUserLikesRepository>().Object),
+            new UserLikesRepositoryMock(),
+            new LikeTweedUseCase(new UserLikesRepositoryMock()),
             _userManagerMock.Object);
 
         _sut = new ProfileController(_tweedRepositoryMock.Object,

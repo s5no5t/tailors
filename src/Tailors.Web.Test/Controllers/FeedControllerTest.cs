@@ -49,10 +49,9 @@ public class FeedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetRecentTweeds(It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
         var showFeedUseCase = new ShowFeedUseCase(_tweedRepositoryMock.Object, followUserUseCase);
-        Mock<IUserLikesRepository> userLikesRepositoryMock = new();
-        userLikesRepositoryMock.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new None());
-        var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock.Object,
-            new LikeTweedUseCase(userLikesRepositoryMock.Object), _userManagerMock.Object);
+        UserLikesRepositoryMock userLikesRepositoryMock = new();
+        var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock,
+            new LikeTweedUseCase(userLikesRepositoryMock), _userManagerMock.Object);
 
         _sut = new FeedController(showFeedUseCase, _userManagerMock.Object, viewModelFactory)
         {

@@ -35,16 +35,15 @@ public class TweedControllerTest
 
     public TweedControllerTest()
     {
-        Mock<IUserLikesRepository> userLikesRepository = new();
-        userLikesRepository.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new UserLikes("currentUser"));
-        _likeTweedUseCase = new LikeTweedUseCase(userLikesRepository.Object);
+        UserLikesRepositoryMock userLikesRepositoryMock = new();
+        _likeTweedUseCase = new LikeTweedUseCase(userLikesRepositoryMock);
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(new AppUser { UserName = "author" });
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock.Object);
         _threadUseCase = new ThreadUseCase(_threadRepositoryMock.Object, _tweedRepositoryMock.Object);
         TweedViewModelFactory tweedViewModelFactory =
-            new(userLikesRepository.Object, _likeTweedUseCase, _userManagerMock.Object);
+            new(userLikesRepositoryMock, _likeTweedUseCase, _userManagerMock.Object);
 
         _sut = new TweedController(_tweedRepositoryMock.Object, _userManagerMock.Object, tweedViewModelFactory)
         {
@@ -245,7 +244,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Tweed tweed = new("author", string.Empty, FixedDateTime);
+        Tweed tweed = new("author", string.Empty, FixedDateTime, "123");
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
@@ -268,7 +267,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldReturnPartialView()
     {
-        Tweed tweed = new("authorId", string.Empty, FixedDateTime);
+        Tweed tweed = new("authorId", string.Empty, FixedDateTime, "123");
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("authorId")).ReturnsAsync(new AppUser());
 

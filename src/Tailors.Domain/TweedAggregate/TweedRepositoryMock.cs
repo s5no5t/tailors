@@ -1,8 +1,7 @@
 using OneOf;
 using OneOf.Types;
-using Tailors.Domain.TweedAggregate;
 
-namespace Tailors.Domain.Test.TweedAggregate;
+namespace Tailors.Domain.TweedAggregate;
 
 public class TweedRepositoryMock : ITweedRepository
 {

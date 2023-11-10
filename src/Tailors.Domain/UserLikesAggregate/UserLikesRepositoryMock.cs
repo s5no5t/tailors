@@ -1,8 +1,7 @@
 using OneOf;
 using OneOf.Types;
-using Tailors.Domain.UserLikesAggregate;
 
-namespace Tailors.Domain.Test.LikeAggregate;
+namespace Tailors.Domain.UserLikesAggregate;
 
 public class UserLikesRepositoryMock : IUserLikesRepository
 {
