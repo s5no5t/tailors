@@ -19,7 +19,7 @@ public class LikeTweedUseCase
             _userLikesRepository.IncreaseLikesCounter(tweedId);
     }
 
-    public virtual async Task RemoveLike(string tweedId, string userId)
+    public async Task RemoveLike(string tweedId, string userId)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
         var removed = userLikes.RemoveLike(tweedId);
