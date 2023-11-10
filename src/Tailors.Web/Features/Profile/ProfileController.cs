@@ -12,7 +12,7 @@ namespace Tailors.Web.Features.Profile;
 public class ProfileController : Controller
 {
     private const int PageSize = 100;
-    private readonly IFollowUserUseCase _followUserUseCase;
+    private readonly FollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
     private readonly IUserFollowsRepository _userFollowsRepository;
@@ -20,7 +20,7 @@ public class ProfileController : Controller
 
     public ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
         ITweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
-        IFollowUserUseCase followUserUseCase)
+        FollowUserUseCase followUserUseCase)
     {
         _tweedRepository = tweedRepository;
         _userManager = userManager;

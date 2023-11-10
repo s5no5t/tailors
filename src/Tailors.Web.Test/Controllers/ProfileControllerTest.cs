@@ -8,9 +8,9 @@ using Moq;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
-using Tailors.Web.Test.TestHelper;
 using Tailors.Web.Features.Profile;
 using Tailors.Web.Helper;
+using Tailors.Web.Test.TestHelper;
 using Xunit;
 
 namespace Tailors.Web.Test.Controllers;
@@ -22,7 +22,7 @@ public class ProfileControllerTest
         Id = "currentUser"
     };
 
-    private readonly Mock<IFollowUserUseCase> _followUserUseCaseMock = new();
+    private readonly Mock<FollowUserUseCase> _followUserUseCaseMock;
 
     private readonly ProfileController _profileController;
 
@@ -44,8 +44,11 @@ public class ProfileControllerTest
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);
 
+        _userFollowsRepositoryMock.Setup(u => u.GetById(It.IsAny<string>()))
+            .ReturnsAsync(new UserFollows("currentUser"));
         _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
             .ReturnsAsync(0);
+        _followUserUseCaseMock = new Mock<FollowUserUseCase>(_userFollowsRepositoryMock.Object);
         _followUserUseCaseMock.Setup(u => u.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
 
