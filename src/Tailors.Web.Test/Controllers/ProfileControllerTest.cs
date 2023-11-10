@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using OneOf.Types;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
@@ -23,7 +24,7 @@ public class ProfileControllerTest
         Id = "currentUser"
     };
 
-    private readonly Mock<FollowUserUseCase> _followUserUseCaseMock;
+    private readonly FollowUserUseCase _followUserUseCase;
 
     private readonly AppUser _profileUser = new()
     {
@@ -43,12 +44,10 @@ public class ProfileControllerTest
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);
         _userFollowsRepositoryMock.Setup(u => u.GetById(It.IsAny<string>()))
-            .ReturnsAsync(new UserFollows("currentUser"));
+            .ReturnsAsync(new None());
         _userFollowsRepositoryMock.Setup(u => u.GetFollowerCount(It.IsAny<string>()))
             .ReturnsAsync(0);
-        _followUserUseCaseMock = new Mock<FollowUserUseCase>(_userFollowsRepositoryMock.Object);
-        _followUserUseCaseMock.Setup(u => u.GetFollows(It.IsAny<string>()))
-            .ReturnsAsync(new List<UserFollows.LeaderReference>());
+        _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock.Object);
         _tweedRepositoryMock = new Mock<ITweedRepository>();
         _tweedRepositoryMock.Setup(t => t.GetAllByAuthorId("user", It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
@@ -58,8 +57,7 @@ public class ProfileControllerTest
             _userManagerMock.Object);
 
         _sut = new ProfileController(_tweedRepositoryMock.Object,
-            _userManagerMock.Object, viewModelFactory,
-            _userFollowsRepositoryMock.Object, _followUserUseCaseMock.Object)
+            _userManagerMock.Object, viewModelFactory, _userFollowsRepositoryMock.Object, _followUserUseCase)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
@@ -108,11 +106,10 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsTrue_WhenCurrentUserIsFollower()
     {
-        var follows = new List<UserFollows.LeaderReference>
-        {
-            new(_profileUser.Id!, DateTime.UtcNow)
-        };
-        _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!)).ReturnsAsync(follows);
+        UserFollows userFollows = new("currentUser");
+        userFollows.AddFollows(_profileUser.Id!, DateTime.UtcNow);
+        _userFollowsRepositoryMock.Setup(u => u.GetById("currentUser/Follows"))
+            .ReturnsAsync(userFollows);
 
         var result = await _sut.Index("user");
 
@@ -126,9 +123,6 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldSetCurrentUserFollowsIsFalse_WhenCurrentUserIsNotFollower()
     {
-        _followUserUseCaseMock.Setup(f => f.GetFollows(_currentUser.Id!))
-            .ReturnsAsync(new List<UserFollows.LeaderReference>());
-
         var result = await _sut.Index("user");
 
         Assert.IsType<ViewResult>(result);
@@ -188,10 +182,13 @@ public class ProfileControllerTest
     [Fact]
     public async Task Follow_ShouldAddFollower()
     {
+        UserFollows userFollows = new("currentUser");
+        _userFollowsRepositoryMock.Setup(u => u.GetById("currentUser/Follows"))
+            .ReturnsAsync(userFollows);
+
         await _sut.Follow("user");
 
-        _followUserUseCaseMock.Verify(t =>
-            t.AddFollower("user", "currentUser", It.IsAny<DateTime>()));
+        Assert.Contains(await _followUserUseCase.GetFollows("currentUser"), l => l.LeaderId == "user");
     }
 
     [Fact]
@@ -211,12 +208,16 @@ public class ProfileControllerTest
     }
 
     [Fact]
-    public async Task Unfollow_ShouldAddFollower()
+    public async Task Unfollow_ShouldRemoveFollower()
     {
+        UserFollows userFollows = new("currentUser");
+        userFollows.AddFollows(_profileUser.Id!, DateTime.UtcNow);
+        _userFollowsRepositoryMock.Setup(u => u.GetById("currentUser/Follows"))
+            .ReturnsAsync(userFollows);
+
         await _sut.Unfollow("user");
 
-        _followUserUseCaseMock.Verify(t =>
-            t.RemoveFollower("user", "currentUser"));
+        Assert.DoesNotContain(await _followUserUseCase.GetFollows("currentUser"), l => l.LeaderId == "user");
     }
 
     [Fact]
