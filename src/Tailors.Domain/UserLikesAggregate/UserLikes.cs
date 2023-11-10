@@ -4,6 +4,8 @@ namespace Tailors.Domain.UserLikesAggregate;
 
 public class UserLikes
 {
+    private readonly List<TweedLike> _likes = new();
+
     public UserLikes(string userId)
     {
         UserId = userId;
@@ -16,9 +18,9 @@ public class UserLikes
         _likes = likes;
     }
 
-    public string UserId { get; }
+    public string? Id { get; set; }
 
-    private readonly List<TweedLike> _likes = new();
+    public string UserId { get; }
     public IReadOnlyList<TweedLike> Likes => _likes;
 
     public bool AddLike(string tweedId, DateTime likedAt)
