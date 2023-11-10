@@ -9,14 +9,14 @@ public class FollowUserUseCase
         _userFollowsRepository = userFollowsRepository;
     }
 
-    public virtual async Task AddFollower(string leaderId, string followerId, DateTime createdAt)
+    public async Task AddFollower(string leaderId, string followerId, DateTime createdAt)
     {
         var userFollows = await GetOrCreateUserFollower(followerId);
 
         userFollows.AddFollows(leaderId, createdAt);
     }
 
-    public virtual async Task RemoveFollower(string leaderId, string followerId)
+    public async Task RemoveFollower(string leaderId, string followerId)
     {
         var follower = await GetOrCreateUserFollower(followerId);
         follower.RemoveFollows(leaderId);
