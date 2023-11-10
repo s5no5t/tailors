@@ -16,7 +16,7 @@ public class ThreadUseCase
         _tweedRepository = tweedRepository;
     }
 
-    public virtual async Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId)
+    public async Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId)
     {
         var getTweedResult = await _tweedRepository.GetById(tweedId);
         if (getTweedResult.TryPickT1(out _, out var tweed))
@@ -35,7 +35,7 @@ public class ThreadUseCase
         return tweeds;
     }
 
-    public virtual async Task<OneOf<Success, ResourceNotFoundError>> AddTweedToThread(string tweedId)
+    public async Task<OneOf<Success, ResourceNotFoundError>> AddTweedToThread(string tweedId)
     {
         var getTweedResult = await _tweedRepository.GetById(tweedId);
         if (getTweedResult.TryPickT1(out _, out var tweed))

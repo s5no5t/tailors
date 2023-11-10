@@ -14,7 +14,7 @@ public class ShowFeedUseCase
         _followUserUseCase = followUserUseCase;
     }
 
-    public virtual async Task<List<Tweed>> GetFeed(string userId, int page, int pageSize)
+    public async Task<List<Tweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 
