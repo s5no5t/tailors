@@ -3,12 +3,7 @@ using Tailors.Domain.UserFollowsAggregate;
 
 namespace Tailors.Domain.ThreadAggregate;
 
-public interface IShowFeedUseCase
-{
-    Task<List<Tweed>> GetFeed(string userId, int page, int pageSize);
-}
-
-public class ShowFeedUseCase : IShowFeedUseCase
+public class ShowFeedUseCase
 {
     private readonly FollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
@@ -19,7 +14,7 @@ public class ShowFeedUseCase : IShowFeedUseCase
         _followUserUseCase = followUserUseCase;
     }
 
-    public async Task<List<Tweed>> GetFeed(string userId, int page, int pageSize)
+    public virtual async Task<List<Tweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 

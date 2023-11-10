@@ -14,11 +14,11 @@ namespace Tailors.Web.Features.Feed;
 public class FeedController : Controller
 {
     private const int PageSize = 20;
-    private readonly IShowFeedUseCase _showFeedUseCase;
+    private readonly ShowFeedUseCase _showFeedUseCase;
     private readonly ITweedViewModelFactory _tweedViewModelFactory;
     private readonly UserManager<AppUser> _userManager;
 
-    public FeedController(IShowFeedUseCase showFeedUseCase, UserManager<AppUser> userManager,
+    public FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser> userManager,
         ITweedViewModelFactory tweedViewModelFactory)
     {
         _showFeedUseCase = showFeedUseCase;

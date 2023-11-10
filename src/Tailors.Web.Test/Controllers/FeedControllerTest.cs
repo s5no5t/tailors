@@ -9,10 +9,11 @@ using Moq;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
-using Tailors.Web.Test.TestHelper;
+using Tailors.Domain.UserFollowsAggregate;
 using Tailors.Web.Features.Feed;
 using Tailors.Web.Features.Shared;
 using Tailors.Web.Helper;
+using Tailors.Web.Test.TestHelper;
 using Xunit;
 
 namespace Tailors.Web.Test.Controllers;
@@ -22,7 +23,7 @@ public class FeedControllerTest
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
 
     private readonly FeedController _feedController;
-    private readonly Mock<IShowFeedUseCase> _showFeedUseCaseMock = new();
+    private readonly Mock<ShowFeedUseCase> _showFeedUseCaseMock;
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
@@ -37,6 +38,9 @@ public class FeedControllerTest
         };
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns(user.Id);
         var tweed = new Tweed("author", id: "twedId", createdAt: DateTime.Now, text: string.Empty);
+        Mock<FollowUserUseCase> followUserUseCaseMock = new(new Mock<IUserFollowsRepository>().Object);
+        _showFeedUseCaseMock =
+            new Mock<ShowFeedUseCase>(new Mock<ITweedRepository>().Object, followUserUseCaseMock.Object);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
         _viewModelFactoryMock.Setup(v => v.Create(tweed, false))
