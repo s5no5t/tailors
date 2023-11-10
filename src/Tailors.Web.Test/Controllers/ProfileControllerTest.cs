@@ -1,9 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
@@ -32,22 +30,21 @@ public class ProfileControllerTest
     private readonly ProfileController _sut;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
     private readonly UserFollowsRepositoryMock _userFollowsRepositoryMock = new();
-    private readonly Mock<UserManager<AppUser>> _userManagerMock;
 
     public ProfileControllerTest()
     {
-        _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
-        var currentUserPrincipal = ControllerTestHelper.BuildPrincipal("currentUser");
-        _userManagerMock.Setup(u =>
-            u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
-        _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);
+        var store = new UserStoreMock();
+        store.Create(_currentUser);
+        store.Create(_profileUser);
+        var userManagerMock = UserManagerMockHelper.CreateUserManager(store);
+        var currentUserPrincipal = ControllerTestHelper.BuildPrincipal(_currentUser.Id!);
         _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock);
         var viewModelFactory = new TweedViewModelFactory(
             new UserLikesRepositoryMock(),
             new LikeTweedUseCase(new UserLikesRepositoryMock()),
-            _userManagerMock.Object);
+            userManagerMock);
 
-        _sut = new ProfileController(_tweedRepositoryMock, _userManagerMock.Object, viewModelFactory,
+        _sut = new ProfileController(_tweedRepositoryMock, userManagerMock, viewModelFactory,
             _userFollowsRepositoryMock, _followUserUseCase)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
@@ -79,8 +76,6 @@ public class ProfileControllerTest
     [Fact]
     public async Task Index_ShouldReturnNotFound_WhenUserIdDoesntExist()
     {
-        _userManagerMock.Setup(u => u.FindByIdAsync("unknownUser")).ReturnsAsync((AppUser)null!);
-
         var result = await _sut.Index("unknownUser");
 
         Assert.IsType<NotFoundResult>(result);
@@ -167,9 +162,6 @@ public class ProfileControllerTest
     [Fact]
     public async Task Follow_ShouldReturnBadRequest_WhenTryingToFollowCurrentUser()
     {
-        _userManagerMock.Setup(u => u.FindByIdAsync("currentUser"))
-            .ReturnsAsync(_currentUser);
-
         var result = await _sut.Follow("currentUser");
 
         Assert.IsType<BadRequestObjectResult>(result);
