@@ -11,7 +11,6 @@ using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserLikesAggregate;
-using Tailors.Web.Features.Shared;
 using Tailors.Web.Features.Tweed;
 using Tailors.Web.Helper;
 using Tailors.Web.Test.TestHelper;
@@ -30,7 +29,6 @@ public class TweedControllerTest
     private readonly Mock<IThreadRepository> _threadRepositoryMock = new();
     private readonly ThreadUseCase _threadUseCase;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
-    private readonly Mock<ITweedViewModelFactory> _tweedViewModelFactoryMock = new();
 
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
@@ -41,10 +39,14 @@ public class TweedControllerTest
         userLikesRepository.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new UserLikes("currentUser"));
         _likeTweedUseCase = new LikeTweedUseCase(userLikesRepository.Object);
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
+        _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
+            .ReturnsAsync(new AppUser { UserName = "author" });
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock.Object);
         _threadUseCase = new ThreadUseCase(_threadRepositoryMock.Object, _tweedRepositoryMock.Object);
-        _sut = new TweedController(_tweedRepositoryMock.Object,
-            _userManagerMock.Object, _tweedViewModelFactoryMock.Object)
+        TweedViewModelFactory tweedViewModelFactory =
+            new(userLikesRepository.Object, _likeTweedUseCase, _userManagerMock.Object);
+
+        _sut = new TweedController(_tweedRepositoryMock.Object, _userManagerMock.Object, tweedViewModelFactory)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
             Url = new Mock<IUrlHelper>().Object
@@ -75,17 +77,18 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweed()
     {
-        var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
+        var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
+            threadId: "threadId");
         _tweedRepositoryMock.Setup(t => t.GetById(rootTweed.Id!)).ReturnsAsync(rootTweed);
-        _tweedViewModelFactoryMock.Setup(v => v.Create(It.IsAny<List<Tweed>>(), It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(
-                new List<TweedViewModel>
-                {
-                    new()
-                    {
-                        Id = "tweedId"
-                    }
-                });
+        _tweedRepositoryMock.Setup(t => t.GetByIds(new[] { rootTweed.Id! })).ReturnsAsync(
+            new Dictionary<string, Tweed>
+            {
+                { rootTweed.Id!, rootTweed }
+            });
+        var thread = new TailorsThread("threadId");
+        thread.AddTweed(rootTweed);
+        _threadRepositoryMock.Setup(t => t.GetById(rootTweed.ThreadId!))
+            .ReturnsAsync(thread);
 
         var result =
             await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
