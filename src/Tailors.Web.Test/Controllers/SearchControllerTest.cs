@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Web.Features.Search;
@@ -15,13 +13,7 @@ public class SearchControllerTest
 {
     private readonly SearchController _sut = new();
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
-    private readonly Mock<IUserRepository> _userRepositoryMock = new();
-
-    public SearchControllerTest()
-    {
-        _userRepositoryMock.Setup(u => u.Search(It.IsAny<string>()))
-            .ReturnsAsync(new List<AppUser>());
-    }
+    private readonly UserRepositoryMock _userRepositoryMock = new();
 
     [Fact]
     public void RequiresAuthorization()
@@ -44,12 +36,12 @@ public class SearchControllerTest
     {
         AppUser user = new()
         {
-            Id = "userId"
+            Id = "userId",
+            UserName = "UserName"
         };
-        _userRepositoryMock.Setup(u => u.Search("userId"))
-            .ReturnsAsync(new List<AppUser> { user });
+        await _userRepositoryMock.Create(user);
 
-        var result = await _sut.Results("userId", _tweedRepositoryMock, _userRepositoryMock.Object);
+        var result = await _sut.Results("UserName", _tweedRepositoryMock, _userRepositoryMock);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -66,10 +58,9 @@ public class SearchControllerTest
             Id = "userId",
             UserName = "UserName"
         };
-        _userRepositoryMock.Setup(u => u.Search("userId"))
-            .ReturnsAsync(new List<AppUser> { user });
+        await _userRepositoryMock.Create(user);
 
-        var result = await _sut.Results("userId", _tweedRepositoryMock, _userRepositoryMock.Object);
+        var result = await _sut.Results("UserName", _tweedRepositoryMock, _userRepositoryMock);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -84,7 +75,7 @@ public class SearchControllerTest
         await _tweedRepositoryMock.Create(new Tweed(id: "tweedId", authorId: "authorId", text: "term",
             createdAt: DateTime.Now));
 
-        var result = await _sut.Results("term", _tweedRepositoryMock, _userRepositoryMock.Object);
+        var result = await _sut.Results("term", _tweedRepositoryMock, _userRepositoryMock);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
