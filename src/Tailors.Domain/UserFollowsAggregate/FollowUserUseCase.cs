@@ -1,13 +1,6 @@
 namespace Tailors.Domain.UserFollowsAggregate;
 
-public interface IFollowUserUseCase
-{
-    Task AddFollower(string leaderId, string followerId, DateTime createdAt);
-    Task RemoveFollower(string leaderId, string followerId);
-    Task<IReadOnlyList<UserFollows.LeaderReference>> GetFollows(string userId);
-}
-
-public class FollowUserUseCase : IFollowUserUseCase
+public class FollowUserUseCase
 {
     private readonly IUserFollowsRepository _userFollowsRepository;
 
