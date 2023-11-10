@@ -1,4 +1,3 @@
-using Moq;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
@@ -15,10 +14,8 @@ public class ShowFeedUseCaseTest
 
     public ShowFeedUseCaseTest()
     {
-        Mock<IUserFollowsRepository> userFollowsRepositoryMock = new();
-        userFollowsRepositoryMock.Setup(m => m.GetById(It.IsAny<string>()))
-            .ReturnsAsync(new UserFollows("userId/Follows"));
-        FollowUserUseCase followsUserUseCase = new(userFollowsRepositoryMock.Object);
+        UserFollowsRepositoryMock userFollowsRepositoryMock = new();
+        FollowUserUseCase followsUserUseCase = new(userFollowsRepositoryMock);
         _sut = new ShowFeedUseCase(_tweedRepositoryMock, followsUserUseCase);
     }
 
