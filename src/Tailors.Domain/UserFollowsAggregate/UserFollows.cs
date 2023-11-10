@@ -4,6 +4,8 @@ namespace Tailors.Domain.UserFollowsAggregate;
 
 public class UserFollows
 {
+    private readonly List<LeaderReference> _follows = new();
+
     public UserFollows(string userId)
     {
         UserId = userId;
@@ -16,9 +18,8 @@ public class UserFollows
         _follows = follows;
     }
 
+    public string? Id { get; set; }
     public string UserId { get; }
-
-    private readonly List<LeaderReference> _follows = new();
     public IReadOnlyList<LeaderReference> Follows => _follows;
 
     public bool AddFollows(string leaderId, DateTime createdAt)

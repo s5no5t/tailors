@@ -1,4 +1,3 @@
-using Moq;
 using Tailors.Domain.UserFollowsAggregate;
 
 namespace Tailors.Domain.Test.UserFollowsAggregate;
@@ -6,22 +5,20 @@ namespace Tailors.Domain.Test.UserFollowsAggregate;
 public class FollowUserUseCaseTest
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-
-    private readonly Mock<IUserFollowsRepository> _userFollowsRepositoryMock = new();
     private readonly FollowUserUseCase _sut;
+
+    private readonly UserFollowsRepositoryMock _userFollowsRepositoryMock = new();
 
     public FollowUserUseCaseTest()
     {
-        _sut = new FollowUserUseCase(_userFollowsRepositoryMock.Object);
+        _sut = new FollowUserUseCase(_userFollowsRepositoryMock);
     }
 
     [Fact]
     public async Task AddFollower_ShouldAddFollower()
     {
         UserFollows userFollows = new("followerId");
-        _userFollowsRepositoryMock
-            .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
-            .ReturnsAsync(userFollows);
+        await _userFollowsRepositoryMock.Create(userFollows);
 
         await _sut.AddFollower("leaderId", userFollows.UserId, FixedDateTime);
 
@@ -33,9 +30,7 @@ public class FollowUserUseCaseTest
     {
         UserFollows userFollows = new("followerId");
         userFollows.AddFollows("leaderId", FixedDateTime);
-        _userFollowsRepositoryMock
-            .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
-            .ReturnsAsync(userFollows);
+        await _userFollowsRepositoryMock.Create(userFollows);
 
         await _sut.AddFollower("leaderId", userFollows.UserId, FixedDateTime);
 
@@ -47,9 +42,7 @@ public class FollowUserUseCaseTest
     {
         UserFollows userFollows = new("followerId");
         userFollows.AddFollows("leaderId", FixedDateTime);
-        _userFollowsRepositoryMock
-            .Setup(m => m.GetById(UserFollows.BuildId(userFollows.UserId)))
-            .ReturnsAsync(userFollows);
+        await _userFollowsRepositoryMock.Create(userFollows);
 
         await _sut.RemoveFollower("leaderId", "followerId");
 
