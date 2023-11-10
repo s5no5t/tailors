@@ -105,11 +105,11 @@ public class TweedController : Controller
         if (getResult.TryPickT1(out _, out var tweed))
             return NotFound();
 
-        var currentUserId = _userManager.GetUserId(User);
+        var currentUserId = _userManager.GetUserId(User)!;
         var now = DateTime.UtcNow;
-        await likeTweedUseCase.AddLike(tweedId, currentUserId!, now);
+        await likeTweedUseCase.AddLike(tweedId, currentUserId, now);
 
-        var viewModel = await _tweedViewModelFactory.Create(tweed, isCurrent);
+        var viewModel = await _tweedViewModelFactory.Create(tweed, currentUserId, isCurrent);
         return PartialView("_Tweed", viewModel);
     }
 
@@ -121,10 +121,10 @@ public class TweedController : Controller
         if (getResult.TryPickT1(out _, out var tweed))
             return NotFound();
 
-        var currentUserId = _userManager.GetUserId(User);
-        await likeTweedUseCase.RemoveLike(tweedId, currentUserId!);
+        var currentUserId = _userManager.GetUserId(User)!;
+        await likeTweedUseCase.RemoveLike(tweedId, currentUserId);
 
-        var viewModel = await _tweedViewModelFactory.Create(tweed, isCurrent);
+        var viewModel = await _tweedViewModelFactory.Create(tweed, currentUserId, isCurrent);
         return PartialView("_Tweed", viewModel);
     }
 }

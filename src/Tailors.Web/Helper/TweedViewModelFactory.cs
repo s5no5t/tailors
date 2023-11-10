@@ -10,9 +10,9 @@ namespace Tailors.Web.Helper;
 
 public interface ITweedViewModelFactory
 {
-    Task<TweedViewModel> Create(Tweed tweed, bool isCurrent = false);
+    Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false);
 
-    Task<List<TweedViewModel>> Create(List<Tweed> tweeds,
+    Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
         string currentTweedId = "none");
 }
 
@@ -34,13 +34,11 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public virtual async Task<TweedViewModel> Create(Tweed tweed, bool isCurrent = false)
+    public virtual async Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)
     {
         var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
         var likesCount = await _userLikesRepository.GetLikesCounter(tweed.Id!);
-
-        var currentUserId = _userManager.GetUserId(_httpContextAccessor.HttpContext!.User);
         var currentUserLikesTweed =
             await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId!);
 
@@ -58,13 +56,13 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         return viewModel;
     }
 
-    public virtual async Task<List<TweedViewModel>> Create(List<Tweed> tweeds,
+    public virtual async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
         string currentTweedId = "none")
     {
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in tweeds)
         {
-            var tweedViewModel = await Create(tweed, tweed.Id == currentTweedId);
+            var tweedViewModel = await Create(tweed, currentUserId, tweed.Id == currentTweedId);
             tweedViewModels.Add(tweedViewModel);
         }
 

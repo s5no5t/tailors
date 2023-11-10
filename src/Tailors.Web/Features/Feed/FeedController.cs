@@ -67,7 +67,7 @@ public class FeedController : Controller
         var viewModel = new FeedViewModel
         {
             Page = page,
-            Tweeds = await _tweedViewModelFactory.Create(feed),
+            Tweeds = await _tweedViewModelFactory.Create(feed, currentUserId),
             NextPageExists = feed.Count == PageSize
         };
         return viewModel;

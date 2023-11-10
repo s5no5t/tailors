@@ -77,14 +77,15 @@ public class TweedControllerTest
     {
         var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
         _tweedRepositoryMock.Setup(t => t.GetById(rootTweed.Id!)).ReturnsAsync(rootTweed);
-        _tweedViewModelFactoryMock.Setup(v => v.Create(It.IsAny<List<Tweed>>(), It.IsAny<string>())).ReturnsAsync(
-            new List<TweedViewModel>
-            {
-                new()
+        _tweedViewModelFactoryMock.Setup(v => v.Create(It.IsAny<List<Tweed>>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(
+                new List<TweedViewModel>
                 {
-                    Id = "tweedId"
-                }
-            });
+                    new()
+                    {
+                        Id = "tweedId"
+                    }
+                });
 
         var result =
             await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
