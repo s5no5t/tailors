@@ -29,7 +29,7 @@ public class FollowUserUseCase : IFollowUserUseCase
         follower.RemoveFollows(leaderId);
     }
 
-    public async Task<IReadOnlyList<UserFollows.LeaderReference>> GetFollows(string followerId)
+    public virtual async Task<IReadOnlyList<UserFollows.LeaderReference>> GetFollows(string followerId)
     {
         var follower = await GetOrCreateUserFollower(followerId);
         return follower.Follows;

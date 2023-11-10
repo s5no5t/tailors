@@ -10,10 +10,10 @@ public interface IShowFeedUseCase
 
 public class ShowFeedUseCase : IShowFeedUseCase
 {
-    private readonly IFollowUserUseCase _followUserUseCase;
+    private readonly FollowUserUseCase _followUserUseCase;
     private readonly ITweedRepository _tweedRepository;
 
-    public ShowFeedUseCase(ITweedRepository tweedRepository, IFollowUserUseCase followUserUseCase)
+    public ShowFeedUseCase(ITweedRepository tweedRepository, FollowUserUseCase followUserUseCase)
     {
         _tweedRepository = tweedRepository;
         _followUserUseCase = followUserUseCase;

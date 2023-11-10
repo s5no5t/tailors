@@ -10,13 +10,13 @@ public class ShowFeedUseCaseTest
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
-    private readonly Mock<IFollowUserUseCase> _followsServiceMock = new();
     private readonly ShowFeedUseCase _sut;
     private readonly Mock<ITweedRepository> _tweedRepositoryMock = new();
 
     public ShowFeedUseCaseTest()
     {
-        _followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
+        Mock<FollowUserUseCase> followsServiceMock = new(new Mock<IUserFollowsRepository>().Object);
+        followsServiceMock.Setup(m => m.GetFollows(It.IsAny<string>()))
             .ReturnsAsync(new List<UserFollows.LeaderReference>());
         _tweedRepositoryMock.Setup(m => m.GetAllByAuthorId(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
@@ -26,7 +26,7 @@ public class ShowFeedUseCaseTest
         _tweedRepositoryMock
             .Setup(m => m.GetRecentTweeds(It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed>());
-        _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, _followsServiceMock.Object);
+        _sut = new ShowFeedUseCase(_tweedRepositoryMock.Object, followsServiceMock.Object);
     }
 
     [Fact]
