@@ -37,7 +37,7 @@ public class ProfileControllerTest
     public ProfileControllerTest()
     {
         _userManagerMock = UserManagerMockHelper.MockUserManager<AppUser>();
-        var currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
+        var currentUserPrincipal = ControllerTestHelper.BuildPrincipal("currentUser");
         _userManagerMock.Setup(u =>
             u.GetUserId(currentUserPrincipal)).Returns(_currentUser.Id!);
         _userManagerMock.Setup(u => u.FindByIdAsync("user")).ReturnsAsync(_profileUser);

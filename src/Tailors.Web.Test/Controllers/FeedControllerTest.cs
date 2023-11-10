@@ -1,5 +1,4 @@
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,6 @@ namespace Tailors.Web.Test.Controllers;
 
 public class FeedControllerTest
 {
-    private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
     private readonly FeedController _sut;
 
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
@@ -37,10 +35,11 @@ public class FeedControllerTest
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock,
             new LikeTweedUseCase(userLikesRepositoryMock), userManagerMock);
+        var currentUserPrincipal = ControllerTestHelper.BuildPrincipal(user.Id);
 
         _sut = new FeedController(showFeedUseCase, userManagerMock, viewModelFactory)
         {
-            ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
+            ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };
     }
 

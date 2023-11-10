@@ -7,11 +7,11 @@ namespace Tailors.Web.Test.TestHelper;
 
 internal static class ControllerTestHelper
 {
-    internal static ClaimsPrincipal BuildPrincipal()
+    internal static ClaimsPrincipal BuildPrincipal(string userId)
     {
         IEnumerable<Claim>? claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, "currentUser")
+            new(ClaimTypes.NameIdentifier, userId)
         };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);

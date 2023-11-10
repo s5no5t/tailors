@@ -20,7 +20,7 @@ public class TweedControllerTest
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
     private readonly CreateTweedUseCase _createTweedUseCase;
-    private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
+    private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal("currentUser");
     private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly TweedController _sut;
