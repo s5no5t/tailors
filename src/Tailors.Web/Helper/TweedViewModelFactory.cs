@@ -34,7 +34,7 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TweedViewModel> Create(Tweed tweed, bool isCurrent)
+    public virtual async Task<TweedViewModel> Create(Tweed tweed, bool isCurrent = false)
     {
         var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await _userManager.FindByIdAsync(tweed.AuthorId);
@@ -58,8 +58,8 @@ public class TweedViewModelFactory : ITweedViewModelFactory
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds,
-        string currentTweedId)
+    public virtual async Task<List<TweedViewModel>> Create(List<Tweed> tweeds,
+        string currentTweedId = "none")
     {
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in tweeds)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -10,6 +11,7 @@ using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserLikesAggregate;
 using Tailors.Web.Features.Feed;
 using Tailors.Web.Features.Shared;
 using Tailors.Web.Helper;
@@ -27,7 +29,7 @@ public class FeedControllerTest
     private readonly Mock<UserManager<AppUser>> _userManagerMock =
         UserManagerMockHelper.MockUserManager<AppUser>();
 
-    private readonly Mock<ITweedViewModelFactory> _viewModelFactoryMock = new();
+    private readonly Mock<TweedViewModelFactory> _viewModelFactoryMock;
 
     public FeedControllerTest()
     {
@@ -42,6 +44,10 @@ public class FeedControllerTest
             new Mock<ShowFeedUseCase>(new Mock<ITweedRepository>().Object, followUserUseCaseMock.Object);
         _showFeedUseCaseMock.Setup(t => t.GetFeed("currentUser", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Tweed> { tweed });
+        Mock<IUserLikesRepository> userLikesRepositoryMock = new();
+        _viewModelFactoryMock = new Mock<TweedViewModelFactory>(userLikesRepositoryMock.Object,
+            new LikeTweedUseCase(userLikesRepositoryMock.Object), _userManagerMock.Object,
+            new Mock<IHttpContextAccessor>().Object);
         _viewModelFactoryMock.Setup(v => v.Create(tweed, false))
             .ReturnsAsync(new TweedViewModel());
 
