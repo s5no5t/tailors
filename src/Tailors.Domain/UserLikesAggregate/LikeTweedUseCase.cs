@@ -9,7 +9,7 @@ public class LikeTweedUseCase
         _userLikesRepository = userLikesRepository;
     }
 
-    public virtual async Task AddLike(string tweedId, string userId, DateTime likedAt)
+    public async Task AddLike(string tweedId, string userId, DateTime likedAt)
     {
         var userLikes = await GetOrCreateUserLikes(userId);
 

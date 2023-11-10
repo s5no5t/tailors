@@ -24,7 +24,7 @@ public class TweedControllerTest
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
     private readonly Mock<CreateTweedUseCase> _createTweedUseCaseMock;
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal();
-    private readonly Mock<LikeTweedUseCase> _likeTweedUseCaseMock;
+    private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly Mock<INotificationManager> _notificationManagerMock = new();
     private readonly Mock<IThreadRepository> _threadRepositoryMock = new();
     private readonly ThreadUseCase _threadUseCase;
@@ -39,7 +39,7 @@ public class TweedControllerTest
     {
         Mock<IUserLikesRepository> userLikesRepository = new();
         userLikesRepository.Setup(u => u.GetById(It.IsAny<string>())).ReturnsAsync(new UserLikes("currentUser"));
-        _likeTweedUseCaseMock = new Mock<LikeTweedUseCase>(userLikesRepository.Object);
+        _likeTweedUseCase = new LikeTweedUseCase(userLikesRepository.Object);
         _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
         _createTweedUseCaseMock = new Mock<CreateTweedUseCase>(_tweedRepositoryMock.Object);
         _createTweedUseCaseMock.Setup(t =>
@@ -251,13 +251,12 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Tweed tweed = new("author", string.Empty, FixedDateTime);
+        Tweed tweed = new("author", string.Empty, FixedDateTime, "123");
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        await _tweedController.Like("123", false, _likeTweedUseCaseMock.Object);
+        await _tweedController.Like("123", false, _likeTweedUseCase);
 
-        _likeTweedUseCaseMock.Verify(u =>
-            u.AddLike("123", "currentUser", It.IsAny<DateTime>()));
+        Assert.True(await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, "currentUser"));
     }
 
     [Fact]
@@ -267,7 +266,7 @@ public class TweedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
-        var result = await _tweedController.Like("123", false, _likeTweedUseCaseMock.Object);
+        var result = await _tweedController.Like("123", false, _likeTweedUseCase);
 
         Assert.IsType<PartialViewResult>(result);
     }
@@ -275,12 +274,12 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Tweed tweed = new("author", string.Empty, FixedDateTime);
+        Tweed tweed = new("author", string.Empty, FixedDateTime, "123");
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
 
-        await _tweedController.Unlike("123", false, _likeTweedUseCaseMock.Object);
+        await _tweedController.Unlike("123", false, _likeTweedUseCase);
 
-        _likeTweedUseCaseMock.Verify(u => u.RemoveLike("123", "currentUser"));
+        Assert.False(await _likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, "currentUser"));
     }
 
     [Fact]
@@ -290,7 +289,7 @@ public class TweedControllerTest
         _tweedRepositoryMock.Setup(t => t.GetById("123")).ReturnsAsync(tweed);
         _userManagerMock.Setup(u => u.FindByIdAsync("authorId")).ReturnsAsync(new AppUser());
 
-        var result = await _tweedController.Unlike("123", false, _likeTweedUseCaseMock.Object);
+        var result = await _tweedController.Unlike("123", false, _likeTweedUseCase);
 
         Assert.IsType<PartialViewResult>(result);
     }
