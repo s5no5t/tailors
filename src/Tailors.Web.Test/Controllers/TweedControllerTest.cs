@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
@@ -43,8 +42,7 @@ public class TweedControllerTest
 
         _sut = new TweedController(_tweedRepositoryMock, userManager, tweedViewModelFactory)
         {
-            ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
-            Url = new Mock<IUrlHelper>().Object
+            ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
         };
     }
 
