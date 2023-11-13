@@ -10,6 +10,7 @@ using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserLikesAggregate;
 using Tailors.Web.Features.Tweed;
 using Tailors.Web.Helper;
+using Tailors.Web.Test.Helper;
 using Tailors.Web.Test.TestHelper;
 using Xunit;
 
@@ -21,7 +22,7 @@ public class TweedControllerTest
     private readonly CreateTweedUseCase _createTweedUseCase;
     private readonly ClaimsPrincipal _currentUserPrincipal = ControllerTestHelper.BuildPrincipal("currentUser");
     private readonly LikeTweedUseCase _likeTweedUseCase;
-    private readonly Mock<INotificationManager> _notificationManagerMock = new();
+    private readonly NotificationManagerMock _notificationManagerMock;
     private readonly TweedController _sut;
     private readonly ThreadRepositoryMock _threadRepositoryMock = new();
     private readonly ThreadUseCase _threadUseCase;
@@ -29,6 +30,7 @@ public class TweedControllerTest
 
     public TweedControllerTest()
     {
+        _notificationManagerMock = new NotificationManagerMock();
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         _likeTweedUseCase = new LikeTweedUseCase(userLikesRepositoryMock);
         var store = new UserStoreMock();
@@ -103,7 +105,7 @@ public class TweedControllerTest
         {
             Text = "test"
         };
-        var result = await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+        var result = await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.IsType<RedirectToActionResult>(result);
     }
@@ -116,7 +118,7 @@ public class TweedControllerTest
             Text = "test"
         };
 
-        await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+        await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 1);
         Assert.NotEmpty(tweeds);
@@ -129,9 +131,9 @@ public class TweedControllerTest
         {
             Text = "test"
         };
-        await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+        await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
-        _notificationManagerMock.Verify(n => n.AppendSuccess("Tweed Posted"));
+        Assert.Equal("Tweed Posted", _notificationManagerMock.SuccessMessage);
     }
 
     [Fact]
@@ -149,7 +151,7 @@ public class TweedControllerTest
         };
 
         var result =
-            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.IsType<RedirectToActionResult>(result);
     }
@@ -167,7 +169,7 @@ public class TweedControllerTest
             ParentTweedId = "parentTweedId"
         };
 
-        await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+        await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 1);
         Assert.NotEmpty(tweeds);
@@ -186,9 +188,9 @@ public class TweedControllerTest
             Text = "test",
             ParentTweedId = "parentTweedId"
         };
-        await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+        await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
 
-        _notificationManagerMock.Verify(n => n.AppendSuccess("Reply Posted"));
+        Assert.Equal("Reply Posted", _notificationManagerMock.SuccessMessage);
     }
 
     [Fact]
@@ -201,7 +203,7 @@ public class TweedControllerTest
         _sut.ValidateViewModel(viewModel);
 
         var result =
-            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.IsType<PartialViewResult>(result);
     }
@@ -216,7 +218,7 @@ public class TweedControllerTest
         };
 
         var result =
-            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock.Object);
+            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.IsType<BadRequestResult>(result);
     }
