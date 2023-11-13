@@ -9,9 +9,9 @@ internal static class ControllerTestHelper
 {
     internal static ClaimsPrincipal BuildPrincipal(string userId)
     {
-        IEnumerable<Claim>? claims = new List<Claim>
+        List<Claim> claims = new()
         {
-            new(ClaimTypes.NameIdentifier, userId)
+            new Claim(ClaimTypes.NameIdentifier, userId)
         };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
