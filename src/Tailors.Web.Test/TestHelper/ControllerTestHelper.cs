@@ -20,17 +20,11 @@ internal static class ControllerTestHelper
 
     internal static ControllerContext BuildControllerContext(ClaimsPrincipal user)
     {
-        // var urlHelperMock = new Mock<IUrlHelper>();
-        // var urlHelperFactoryMock = new Mock<IUrlHelperFactory>();
-        // urlHelperFactoryMock.Setup(u => u.GetUrlHelper(It.IsAny<ActionContext>())).Returns(urlHelperMock.Object);
-        // var serviceProviderMock = new Mock<IServiceProvider>();
-        // serviceProviderMock.Setup(sp => sp.GetService(typeof(IUrlHelperFactory))).Returns(urlHelperFactoryMock.Object);
         var controllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext
             {
                 User = user
-                //RequestServices = serviceProviderMock.Object
             }
         };
         return controllerContext;
