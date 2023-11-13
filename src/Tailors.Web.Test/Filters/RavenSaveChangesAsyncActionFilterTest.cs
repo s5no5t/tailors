@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
-using Moq;
-using Raven.Client.Documents.Session;
 using Tailors.Web.Filters;
 using Xunit;
 
@@ -19,31 +17,28 @@ public class RavenSaveChangesAsyncActionFilterTest
     [Fact]
     public async Task OnActionExecutionAsync_ShouldCallSaveChangesAsync()
     {
-        var sessionMock = new Mock<IAsyncDocumentSession>();
+        var sessionMock = new SessionMock();
 
         var actionContext = new ActionContext(
             new DefaultHttpContext(),
             new RouteData(),
             new PageActionDescriptor(),
             new ModelStateDictionary());
-        var model = new Mock<PageModel>();
 
         var executingContext = new ActionExecutingContext(
             actionContext,
             Array.Empty<IFilterMetadata>(),
             new Dictionary<string, object>()!,
-            model.Object);
+            new object());
 
-        var sut = new RavenSaveChangesAsyncActionFilter(sessionMock.Object);
-
-        var controller = new Mock<Controller>();
+        var sut = new RavenSaveChangesAsyncActionFilter(sessionMock);
 
         var executedContext =
-            new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), controller.Object);
+            new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), new object());
 
         await sut.OnActionExecutionAsync(executingContext,
             () => Task.FromResult(executedContext));
 
-        sessionMock.Verify(s => s.SaveChangesAsync(default));
+        Assert.True(sessionMock.ChangesSaved);
     }
 }
