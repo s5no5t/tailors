@@ -2,7 +2,6 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Tailors.Domain.ThreadAggregate;
@@ -28,22 +27,19 @@ public class TweedControllerTest
     private readonly ThreadUseCase _threadUseCase;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
-    private readonly Mock<UserManager<AppUser>> _userManagerMock =
-        UserManagerMockHelper.MockUserManager<AppUser>();
-
     public TweedControllerTest()
     {
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         _likeTweedUseCase = new LikeTweedUseCase(userLikesRepositoryMock);
-        _userManagerMock.Setup(u => u.GetUserId(_currentUserPrincipal)).Returns("currentUser");
-        _userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
-            .ReturnsAsync(new AppUser { UserName = "author" });
+        var store = new UserStoreMock();
+        store.Create(new AppUser { UserName = "currentUser" });
+        store.Create(new AppUser { Id = "authorId", UserName = "author" });
+        var userManagerMock = UserManagerBuilder.CreateUserManager(store);
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock);
         _threadUseCase = new ThreadUseCase(_threadRepositoryMock, _tweedRepositoryMock);
-        TweedViewModelFactory tweedViewModelFactory =
-            new(userLikesRepositoryMock, _likeTweedUseCase, _userManagerMock.Object);
+        TweedViewModelFactory tweedViewModelFactory = new(userLikesRepositoryMock, _likeTweedUseCase, userManagerMock);
 
-        _sut = new TweedController(_tweedRepositoryMock, _userManagerMock.Object, tweedViewModelFactory)
+        _sut = new TweedController(_tweedRepositoryMock, userManagerMock, tweedViewModelFactory)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal),
             Url = new Mock<IUrlHelper>().Object
@@ -228,7 +224,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldIncreaseLikes()
     {
-        Tweed tweed = new("author", string.Empty, FixedDateTime, "123");
+        Tweed tweed = new("authorId", string.Empty, FixedDateTime, "123");
         await _tweedRepositoryMock.Create(tweed);
 
         await _sut.Like("123", false, _likeTweedUseCase);
@@ -239,9 +235,8 @@ public class TweedControllerTest
     [Fact]
     public async Task Like_ShouldReturnPartialView()
     {
-        Tweed tweed = new("author", string.Empty, FixedDateTime, "123");
+        Tweed tweed = new("authorId", string.Empty, FixedDateTime, "123");
         await _tweedRepositoryMock.Create(tweed);
-        _userManagerMock.Setup(u => u.FindByIdAsync("author")).ReturnsAsync(new AppUser());
 
         var result = await _sut.Like("123", false, _likeTweedUseCase);
 
@@ -251,7 +246,7 @@ public class TweedControllerTest
     [Fact]
     public async Task Unlike_ShouldDecreaseLikes()
     {
-        Tweed tweed = new("author", string.Empty, FixedDateTime, "123");
+        Tweed tweed = new("authorId", string.Empty, FixedDateTime, "123");
         await _tweedRepositoryMock.Create(tweed);
 
         await _sut.Unlike("123", false, _likeTweedUseCase);
@@ -264,7 +259,6 @@ public class TweedControllerTest
     {
         Tweed tweed = new("authorId", string.Empty, FixedDateTime, "123");
         await _tweedRepositoryMock.Create(tweed);
-        _userManagerMock.Setup(u => u.FindByIdAsync("authorId")).ReturnsAsync(new AppUser());
 
         var result = await _sut.Unlike("123", false, _likeTweedUseCase);
 

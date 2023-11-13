@@ -36,7 +36,7 @@ public class ProfileControllerTest
         var store = new UserStoreMock();
         store.Create(_currentUser);
         store.Create(_profileUser);
-        var userManagerMock = UserManagerMockHelper.CreateUserManager(store);
+        var userManagerMock = UserManagerBuilder.CreateUserManager(store);
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal(_currentUser.Id!);
         _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock);
         var viewModelFactory = new TweedViewModelFactory(

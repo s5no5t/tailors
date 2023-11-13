@@ -4,22 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Moq;
 using Tailors.Domain.UserAggregate;
 
 namespace Tailors.Web.Test.TestHelper;
 
-internal static class UserManagerMockHelper
+internal static class UserManagerBuilder
 {
-    internal static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
-    {
-        var store = new Mock<IUserStore<TUser>>();
-        var mgr = new Mock<UserManager<TUser>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
-        mgr.Object.UserValidators.Add(new UserValidator<TUser>());
-        mgr.Object.PasswordValidators.Add(new PasswordValidator<TUser>());
-        return mgr;
-    }
-
     internal static UserManager<TUser> CreateUserManager<TUser>(IUserStore<TUser> store) where TUser : class
     {
         var mgr = new UserManager<TUser>(store, null!, null!, null!, null!, null!, null!, null!, null!);

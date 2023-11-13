@@ -23,7 +23,7 @@ public class FeedControllerTest
     public FeedControllerTest()
     {
         var store = new UserStoreMock();
-        var userManagerMock = UserManagerMockHelper.CreateUserManager(store);
+        var userManagerMock = UserManagerBuilder.CreateUserManager(store);
         var user = new AppUser
         {
             Id = "currentUser"
