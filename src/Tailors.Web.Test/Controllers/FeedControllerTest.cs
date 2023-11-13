@@ -23,7 +23,7 @@ public class FeedControllerTest
     public FeedControllerTest()
     {
         var store = new UserStoreMock();
-        var userManagerMock = UserManagerBuilder.CreateUserManager(store);
+        var userManager = UserManagerBuilder.CreateUserManager(store);
         var user = new AppUser
         {
             Id = "currentUser"
@@ -34,10 +34,10 @@ public class FeedControllerTest
         var showFeedUseCase = new ShowFeedUseCase(_tweedRepositoryMock, followUserUseCase);
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         var viewModelFactory = new TweedViewModelFactory(userLikesRepositoryMock,
-            new LikeTweedUseCase(userLikesRepositoryMock), userManagerMock);
+            new LikeTweedUseCase(userLikesRepositoryMock), userManager);
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal(user.Id);
 
-        _sut = new FeedController(showFeedUseCase, userManagerMock, viewModelFactory)
+        _sut = new FeedController(showFeedUseCase, userManager, viewModelFactory)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
         };

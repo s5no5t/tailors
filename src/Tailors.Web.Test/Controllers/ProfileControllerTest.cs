@@ -36,15 +36,15 @@ public class ProfileControllerTest
         var store = new UserStoreMock();
         store.Create(_currentUser);
         store.Create(_profileUser);
-        var userManagerMock = UserManagerBuilder.CreateUserManager(store);
+        var userManager = UserManagerBuilder.CreateUserManager(store);
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal(_currentUser.Id!);
         _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock);
         var viewModelFactory = new TweedViewModelFactory(
             new UserLikesRepositoryMock(),
             new LikeTweedUseCase(new UserLikesRepositoryMock()),
-            userManagerMock);
+            userManager);
 
-        _sut = new ProfileController(_tweedRepositoryMock, userManagerMock, viewModelFactory,
+        _sut = new ProfileController(_tweedRepositoryMock, userManager, viewModelFactory,
             _userFollowsRepositoryMock, _followUserUseCase)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)
