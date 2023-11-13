@@ -17,7 +17,7 @@ public class RavenSaveChangesAsyncActionFilterTest
     [Fact]
     public async Task OnActionExecutionAsync_ShouldCallSaveChangesAsync()
     {
-        var sessionMock = new SessionMock();
+        var sessionMock = new AsyncDocumentSessionMock();
 
         var actionContext = new ActionContext(
             new DefaultHttpContext(),
