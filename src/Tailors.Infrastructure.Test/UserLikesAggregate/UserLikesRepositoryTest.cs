@@ -9,15 +9,14 @@ namespace Tailors.Infrastructure.Test.UserLikesAggregate;
 [Collection("RavenDB")]
 public class UserLikesRepositoryTest(RavenTestDbFixture ravenDb)
 {
-    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-
     private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
 
     [Fact]
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
     {
         using var session = _store.OpenAsyncSession();
-        var tweed = new Tweed(id: "tweedId", text: string.Empty, authorId: "authorId", createdAt: FixedDateTime);
+        var tweed = new Tweed(id: "tweedId", text: string.Empty, authorId: "authorId",
+            createdAt: TestData.FixedDateTime);
         await session.StoreAsync(tweed);
         session.CountersFor(tweed.Id).Increment("Likes");
         await session.SaveChangesAsync();

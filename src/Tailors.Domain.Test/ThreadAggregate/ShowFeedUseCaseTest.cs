@@ -7,8 +7,6 @@ namespace Tailors.Domain.Test.ThreadAggregate;
 
 public class ShowFeedUseCaseTest
 {
-    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-
     private readonly ShowFeedUseCase _sut;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
@@ -22,7 +20,7 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByCurrentUser()
     {
-        Tweed currentUserTweed = new("userId", "test", FixedDateTime.AddHours(1));
+        Tweed currentUserTweed = new("userId", "test", TestData.FixedDateTime.AddHours(1));
         await _tweedRepositoryMock.Create(currentUserTweed);
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
@@ -35,7 +33,7 @@ public class ShowFeedUseCaseTest
     {
         var followedUser = new AppUser();
 
-        Tweed followedUserTweed = new(followedUser.Id!, "test", FixedDateTime.AddHours(1));
+        Tweed followedUserTweed = new(followedUser.Id!, "test", TestData.FixedDateTime.AddHours(1));
         await _tweedRepositoryMock.Create(followedUserTweed);
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);
@@ -48,7 +46,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            Tweed tweed = new("userId", "test", FixedDateTime, $"tweeds/{i}");
+            Tweed tweed = new("userId", "test", TestData.FixedDateTime, $"tweeds/{i}");
             return tweed;
         }).ToList();
         foreach (var ownTweed in ownTweeds) await _tweedRepositoryMock.Create(ownTweed);
@@ -63,7 +61,7 @@ public class ShowFeedUseCaseTest
     {
         var ownTweeds = Enumerable.Range(0, 25).Select(i =>
         {
-            Tweed tweed = new("userId", "test", FixedDateTime, $"tweeds/{i}");
+            Tweed tweed = new("userId", "test", TestData.FixedDateTime, $"tweeds/{i}");
             return tweed;
         }).ToList();
         foreach (var ownTweed in ownTweeds) await _tweedRepositoryMock.Create(ownTweed);

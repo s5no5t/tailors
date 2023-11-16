@@ -5,8 +5,6 @@ namespace Tailors.Domain.Test.TweedAggregate;
 
 public class CreateTweedUseCaseTest
 {
-    private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-
     private readonly CreateTweedUseCase _sut;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
@@ -18,7 +16,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateRootTweed_SavesTweed()
     {
-        var result = await _sut.CreateRootTweed("authorId", "text", FixedDateTime);
+        var result = await _sut.CreateRootTweed("authorId", "text", TestData.FixedDateTime);
 
         var tweed = await _tweedRepositoryMock.GetById(result.AsT0.Id!);
         Assert.NotNull(tweed.AsT0);
@@ -28,10 +26,10 @@ public class CreateTweedUseCaseTest
     public async Task CreateReplyTweed_SavesTweed()
     {
         Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
-            createdAt: FixedDateTime, text: string.Empty);
+            createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(parentTweed);
 
-        var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, parentTweed.Id!);
+        var result = await _sut.CreateReplyTweed("authorId", "text", TestData.FixedDateTime, parentTweed.Id!);
 
         var tweed = await _tweedRepositoryMock.GetById(result.AsT0.Id!);
         Assert.NotNull(tweed.AsT0);
@@ -41,10 +39,10 @@ public class CreateTweedUseCaseTest
     public async Task CreateReplyTweed_SetsThreadId()
     {
         Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
-            createdAt: FixedDateTime, text: string.Empty);
+            createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(parentTweed);
 
-        var result = await _sut.CreateReplyTweed("authorId", "text", FixedDateTime, "parentTweedId");
+        var result = await _sut.CreateReplyTweed("authorId", "text", TestData.FixedDateTime, "parentTweedId");
 
         result.Switch(
             [AssertionMethod] (t) => { Assert.Equal(parentTweed.ThreadId, t.ThreadId); },
