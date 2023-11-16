@@ -7,18 +7,11 @@ using Tailors.Infrastructure.UserFollowsAggregate.Indexes;
 
 namespace Tailors.Infrastructure.UserFollowsAggregate;
 
-public class UserFollowsRepository : IUserFollowsRepository
+public class UserFollowsRepository(IAsyncDocumentSession session) : IUserFollowsRepository
 {
-    private readonly IAsyncDocumentSession _session;
-
-    public UserFollowsRepository(IAsyncDocumentSession session)
-    {
-        _session = session;
-    }
-
     public async Task<int> GetFollowerCount(string userId)
     {
-        var result = await _session
+        var result = await session
             .Query<UserFollowsFollowerCount.Result, UserFollowsFollowerCount>()
             .Where(r => r.UserId == userId)
             .FirstOrDefaultAsync();
@@ -28,12 +21,12 @@ public class UserFollowsRepository : IUserFollowsRepository
 
     public async Task<OneOf<UserFollows, None>> GetById(string userFollowsId)
     {
-        var userFollows = await _session.LoadAsync<UserFollows>(userFollowsId);
+        var userFollows = await session.LoadAsync<UserFollows>(userFollowsId);
         return userFollows is null ? new None() : userFollows;
     }
 
     public async Task Create(UserFollows userFollows)
     {
-        await _session.StoreAsync(userFollows);
+        await session.StoreAsync(userFollows);
     }
 }

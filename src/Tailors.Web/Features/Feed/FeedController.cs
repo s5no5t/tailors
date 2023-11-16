@@ -11,24 +11,15 @@ using Tailors.Web.Helper;
 namespace Tailors.Web.Features.Feed;
 
 [Authorize]
-public class FeedController : Controller
+public class FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser> userManager,
+        TweedViewModelFactory tweedViewModelFactory)
+    : Controller
 {
     private const int PageSize = 20;
-    private readonly ShowFeedUseCase _showFeedUseCase;
-    private readonly TweedViewModelFactory _tweedViewModelFactory;
-    private readonly UserManager<AppUser> _userManager;
-
-    public FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser> userManager,
-        TweedViewModelFactory tweedViewModelFactory)
-    {
-        _showFeedUseCase = showFeedUseCase;
-        _userManager = userManager;
-        _tweedViewModelFactory = tweedViewModelFactory;
-    }
 
     public async Task<IActionResult> Index()
     {
-        var currentUserId = _userManager.GetUserId(User)!;
+        var currentUserId = userManager.GetUserId(User)!;
 
         var feedViewModel = await BuildFeedViewModel(0, currentUserId);
         var viewModel = new IndexViewModel
@@ -40,7 +31,7 @@ public class FeedController : Controller
 
     public async Task<IActionResult> Feed(int page = 0)
     {
-        var currentUserId = _userManager.GetUserId(User)!;
+        var currentUserId = userManager.GetUserId(User)!;
 
         var viewModel = await BuildFeedViewModel(page, currentUserId);
         return PartialView("_Feed", viewModel);
@@ -51,8 +42,8 @@ public class FeedController : Controller
         if (!Request.IsHtmx())
             throw new Exception("HTMX request expected");
 
-        var currentUserId = _userManager.GetUserId(User)!;
-        var feed = await _showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
+        var currentUserId = userManager.GetUserId(User)!;
+        var feed = await showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
         var mostRecentFeedItem = feed.First();
 
         if (mostRecentFeedItem.CreatedAt > since)
@@ -63,11 +54,11 @@ public class FeedController : Controller
 
     private async Task<FeedViewModel> BuildFeedViewModel(int page, string currentUserId)
     {
-        var feed = await _showFeedUseCase.GetFeed(currentUserId, page, PageSize);
+        var feed = await showFeedUseCase.GetFeed(currentUserId, page, PageSize);
         var viewModel = new FeedViewModel
         {
             Page = page,
-            Tweeds = await _tweedViewModelFactory.Create(feed, currentUserId),
+            Tweeds = await tweedViewModelFactory.Create(feed, currentUserId),
             NextPageExists = feed.Count == PageSize
         };
         return viewModel;
