@@ -7,14 +7,9 @@ namespace Tailors.Infrastructure.Test.UserAggregate;
 
 [Trait("Category", "Integration")]
 [Collection("RavenDB")]
-public class UserRepositoryTest
+public class UserRepositoryTest(RavenTestDbFixture ravenDb)
 {
-    private readonly IDocumentStore _store;
-
-    public UserRepositoryTest(RavenTestDbFixture ravenDb)
-    {
-        _store = ravenDb.CreateDocumentStore();
-    }
+    private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
 
     [Fact]
     public async Task SearchUsers_ShouldReturnEmptyList_WhenNoResults()

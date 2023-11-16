@@ -8,15 +8,10 @@ namespace Tailors.Infrastructure.Test.TweedAggregate;
 
 [Trait("Category", "Integration")]
 [Collection("RavenDB")]
-public class TweedRepositoryTest : IClassFixture<RavenTestDbFixture>
+public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<RavenTestDbFixture>
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
-    private readonly IDocumentStore _store;
-
-    public TweedRepositoryTest(RavenTestDbFixture ravenDb)
-    {
-        _store = ravenDb.CreateDocumentStore();
-    }
+    private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
 
     [Fact]
     public async Task GetById_ShouldReturnTweed()

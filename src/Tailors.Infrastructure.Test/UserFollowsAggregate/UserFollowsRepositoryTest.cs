@@ -7,14 +7,9 @@ namespace Tailors.Infrastructure.Test.UserFollowsAggregate;
 
 [Trait("Category", "Integration")]
 [Collection("RavenDB")]
-public class UserFollowsRepositoryTest
+public class UserFollowsRepositoryTest(RavenTestDbFixture ravenDb)
 {
-    private readonly IDocumentStore _store;
-
-    public UserFollowsRepositoryTest(RavenTestDbFixture ravenDb)
-    {
-        _store = ravenDb.CreateDocumentStore();
-    }
+    private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
 
     [Theory]
     [InlineData(0)]

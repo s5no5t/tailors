@@ -7,16 +7,11 @@ namespace Tailors.Infrastructure.Test.UserLikesAggregate;
 
 [Trait("Category", "Integration")]
 [Collection("RavenDB")]
-public class UserLikesRepositoryTest
+public class UserLikesRepositoryTest(RavenTestDbFixture ravenDb)
 {
     private static readonly DateTime FixedDateTime = new(2022, 11, 18, 15, 20, 0);
 
-    private readonly IDocumentStore _store;
-
-    public UserLikesRepositoryTest(RavenTestDbFixture ravenDb)
-    {
-        _store = ravenDb.CreateDocumentStore();
-    }
+    private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
 
     [Fact]
     public async Task GetLikesCount_ShouldReturn1_WhenTweedHasLike()
