@@ -1,8 +1,8 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Web", "src\Tailors.Web\Tailors.Web.csproj", "{86C0350E-D372-4F39-813A-5CF58F29178F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tailors.Web", "src\Tailors.Web\Tailors.Web.csproj", "{86C0350E-D372-4F39-813A-5CF58F29178F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Web.Test", "src\Tailors.Web.Test\Tailors.Web.Test.csproj", "{C07E8FBB-1A17-47FB-82C1-A9653A244B08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tailors.Web.Test", "src\Tailors.Web.Test\Tailors.Web.Test.csproj", "{C07E8FBB-1A17-47FB-82C1-A9653A244B08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.GenerateFakes", "src\Tailors.GenerateFakes\Tailors.GenerateFakes.csproj", "{A580B502-4FC4-4BA4-9088-667B24EA73C5}"
 EndProject
