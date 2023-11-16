@@ -3,29 +3,20 @@ using Tailors.Domain.UserFollowsAggregate;
 
 namespace Tailors.Domain.ThreadAggregate;
 
-public class ShowFeedUseCase
+public class ShowFeedUseCase(ITweedRepository tweedRepository, FollowUserUseCase followUserUseCase)
 {
-    private readonly FollowUserUseCase _followUserUseCase;
-    private readonly ITweedRepository _tweedRepository;
-
-    public ShowFeedUseCase(ITweedRepository tweedRepository, FollowUserUseCase followUserUseCase)
-    {
-        _tweedRepository = tweedRepository;
-        _followUserUseCase = followUserUseCase;
-    }
-
     public async Task<List<Tweed>> GetFeed(string userId, int page, int pageSize)
     {
         const int feedSize = 100;
 
-        var ownTweeds = await _tweedRepository.GetAllByAuthorId(userId, feedSize);
+        var ownTweeds = await tweedRepository.GetAllByAuthorId(userId, feedSize);
 
-        var follows = await _followUserUseCase.GetFollows(userId);
+        var follows = await followUserUseCase.GetFollows(userId);
         var followedUserIds = follows.Select(f => f.LeaderId).ToList();
-        var followerTweeds = await _tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
+        var followerTweeds = await tweedRepository.GetFollowerTweeds(followedUserIds, feedSize);
 
         var numExtraTweeds = feedSize - ownTweeds.Count - followerTweeds.Count;
-        var extraTweeds = await _tweedRepository.GetRecentTweeds(numExtraTweeds);
+        var extraTweeds = await tweedRepository.GetRecentTweeds(numExtraTweeds);
 
         var tweeds = new List<Tweed>();
         tweeds.AddRange(ownTweeds);

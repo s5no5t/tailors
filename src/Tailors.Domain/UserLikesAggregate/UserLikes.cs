@@ -43,15 +43,9 @@ public class UserLikes
         return $"{userId}/Likes";
     }
 
-    public class TweedLike
+    public class TweedLike(string tweedId, DateTime createdAt)
     {
-        public TweedLike(string tweedId, DateTime createdAt)
-        {
-            TweedId = tweedId;
-            CreatedAt = createdAt;
-        }
-
-        public string TweedId { get; }
-        public DateTime CreatedAt { get; }
+        public string TweedId { get; } = tweedId;
+        public DateTime CreatedAt { get; } = createdAt;
     }
 }

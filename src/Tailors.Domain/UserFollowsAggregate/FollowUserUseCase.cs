@@ -1,14 +1,7 @@
 namespace Tailors.Domain.UserFollowsAggregate;
 
-public class FollowUserUseCase
+public class FollowUserUseCase(IUserFollowsRepository userFollowsRepository)
 {
-    private readonly IUserFollowsRepository _userFollowsRepository;
-
-    public FollowUserUseCase(IUserFollowsRepository userFollowsRepository)
-    {
-        _userFollowsRepository = userFollowsRepository;
-    }
-
     public async Task AddFollower(string leaderId, string followerId, DateTime createdAt)
     {
         var userFollows = await GetOrCreateUserFollower(followerId);
@@ -31,12 +24,12 @@ public class FollowUserUseCase
     private async Task<UserFollows> GetOrCreateUserFollower(string userId)
     {
         var userFollowsId = UserFollows.BuildId(userId);
-        var getUserFollowsResult = await _userFollowsRepository.GetById(userFollowsId);
+        var getUserFollowsResult = await userFollowsRepository.GetById(userFollowsId);
         if (getUserFollowsResult.TryPickT0(out var existingUserFollows, out _))
             return existingUserFollows;
 
         var userFollows = new UserFollows(userId);
-        await _userFollowsRepository.Create(userFollows);
+        await userFollowsRepository.Create(userFollows);
         return userFollows;
     }
 }

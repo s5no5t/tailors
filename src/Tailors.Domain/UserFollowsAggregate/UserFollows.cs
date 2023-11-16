@@ -42,15 +42,9 @@ public class UserFollows
         return $"{userId}/Follows";
     }
 
-    public class LeaderReference
+    public class LeaderReference(string leaderId, DateTime createdAt)
     {
-        public LeaderReference(string leaderId, DateTime createdAt)
-        {
-            LeaderId = leaderId;
-            CreatedAt = createdAt;
-        }
-
-        public string LeaderId { get; }
-        public DateTime CreatedAt { get; }
+        public string LeaderId { get; } = leaderId;
+        public DateTime CreatedAt { get; } = createdAt;
     }
 }

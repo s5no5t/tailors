@@ -4,40 +4,31 @@ using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Domain.ThreadAggregate;
 
-public class ThreadUseCase
+public class ThreadUseCase(IThreadRepository threadRepository,
+    ITweedRepository tweedRepository)
 {
-    private readonly IThreadRepository _threadRepository;
-    private readonly ITweedRepository _tweedRepository;
-
-    public ThreadUseCase(IThreadRepository threadRepository,
-        ITweedRepository tweedRepository)
-    {
-        _threadRepository = threadRepository;
-        _tweedRepository = tweedRepository;
-    }
-
     public async Task<OneOf<List<Tweed>, ResourceNotFoundError>> GetThreadTweedsForTweed(string tweedId)
     {
-        var getTweedResult = await _tweedRepository.GetById(tweedId);
+        var getTweedResult = await tweedRepository.GetById(tweedId);
         if (getTweedResult.TryPickT1(out _, out var tweed))
             return new ResourceNotFoundError($"Tweed {tweedId} not found");
 
         if (tweed.ThreadId is null)
             return new List<Tweed>();
 
-        var getThreadResult = await _threadRepository.GetById(tweed.ThreadId!);
+        var getThreadResult = await threadRepository.GetById(tweed.ThreadId!);
         if (getThreadResult.TryPickT1(out _, out var thread))
             return new ResourceNotFoundError($"Thread {tweed.ThreadId} not found");
 
         var tweedPath = thread.FindTweedPath(tweed.Id!);
-        var tweedsByIds = await _tweedRepository.GetByIds(tweedPath.Select(t => t.TweedId!));
+        var tweedsByIds = await tweedRepository.GetByIds(tweedPath.Select(t => t.TweedId!));
         var tweeds = tweedsByIds.Values.Select(t => t).ToList();
         return tweeds;
     }
 
     public async Task<OneOf<Success, ResourceNotFoundError>> AddTweedToThread(string tweedId)
     {
-        var getTweedResult = await _tweedRepository.GetById(tweedId);
+        var getTweedResult = await tweedRepository.GetById(tweedId);
         if (getTweedResult.TryPickT1(out _, out var tweed))
             return new ResourceNotFoundError($"Tweed {tweedId} not found");
 
@@ -64,19 +55,19 @@ public class ThreadUseCase
         if (tweed.ParentTweedId is null)
             throw new ArgumentException($"Tweed {tweed.Id} is missing ParentTweedId");
 
-        var getParentTweedResult = await _tweedRepository.GetById(tweed.ParentTweedId);
+        var getParentTweedResult = await tweedRepository.GetById(tweed.ParentTweedId);
         if (getParentTweedResult.TryPickT1(out _, out var parentTweed))
             return new ResourceNotFoundError($"Tweed {tweed.ParentTweedId} not found");
 
         if (parentTweed.ThreadId is null)
             throw new ArgumentException($"Tweed {parentTweed.Id} does not belong to a thread");
 
-        var getParentTweedThreadResult = await _threadRepository.GetById(parentTweed.ThreadId);
+        var getParentTweedThreadResult = await threadRepository.GetById(parentTweed.ThreadId);
         if (getParentTweedThreadResult.TryPickT1(out _, out var parentTweedThread))
             return new ResourceNotFoundError($"Thread {tweed.ThreadId} not found");
 
         var childThread = new TailorsThread(parentThreadId: parentTweed.ThreadId);
-        await _threadRepository.Create(childThread);
+        await threadRepository.Create(childThread);
         tweed.ThreadId = childThread.Id;
         childThread.AddTweed(tweed);
         var addChildThreadResult = parentTweedThread.AddChildThreadReference(tweed.ParentTweedId, childThread.Id!);
@@ -88,7 +79,7 @@ public class ThreadUseCase
     private async Task AddToNewThread(Tweed tweed)
     {
         TailorsThread newThread = new();
-        await _threadRepository.Create(newThread);
+        await threadRepository.Create(newThread);
         tweed.ThreadId = newThread.Id;
         var result = newThread.AddTweed(tweed);
         result.Switch(_ => { }, error => throw new Exception(error.Message));
@@ -99,14 +90,14 @@ public class ThreadUseCase
         if (tweed.ParentTweedId is null)
             throw new ArgumentException($"Tweed {tweed.Id} is missing ParentTweedId");
 
-        var getParentTweedResult = await _tweedRepository.GetById(tweed.ParentTweedId);
+        var getParentTweedResult = await tweedRepository.GetById(tweed.ParentTweedId);
         if (getParentTweedResult.TryPickT1(out _, out var parentTweed))
             return new ResourceNotFoundError($"Tweed {tweed.ParentTweedId} not found");
 
         if (parentTweed.ThreadId is null)
             throw new ArgumentException($"Tweed {parentTweed.Id} does not belong to a thread");
 
-        var getParentTweedThreadResult = await _threadRepository.GetById(parentTweed.ThreadId);
+        var getParentTweedThreadResult = await threadRepository.GetById(parentTweed.ThreadId);
         if (getParentTweedThreadResult.TryPickT1(out _, out var parentTweedThread))
             return new ResourceNotFoundError($"Thread {tweed.ThreadId} not found");
 
