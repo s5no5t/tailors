@@ -8,27 +8,19 @@ namespace Tailors.Domain.ThreadAggregate;
 
 public record MaxDepthReachedError(string Message);
 
-public class TailorsThread
+public class TailorsThread(string? id = null, string? parentThreadId = null)
 {
     private const int MaxDepth = 64;
     public const int MaxTweedReferenceDepth = MaxDepth - 1;
 
-    public TailorsThread(string? id = null, string? parentThreadId = null)
-    {
-        Id = id;
-        ParentThreadId = parentThreadId;
-    }
-
     [JsonConstructor]
-    public TailorsThread(string id, TweedOrThreadReference? root, string? parentThreadId)
+    public TailorsThread(string id, TweedOrThreadReference? root, string? parentThreadId) : this(id, parentThreadId)
     {
-        Id = id;
         Root = root;
-        ParentThreadId = parentThreadId;
     }
 
-    public string? Id { get; set; }
-    public string? ParentThreadId { get; }
+    public string? Id { get; set; } = id;
+    public string? ParentThreadId { get; } = parentThreadId;
     public TweedOrThreadReference? Root { get; private set; }
 
     public class TweedOrThreadReference

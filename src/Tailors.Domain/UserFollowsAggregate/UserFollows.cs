@@ -2,24 +2,18 @@ using Newtonsoft.Json;
 
 namespace Tailors.Domain.UserFollowsAggregate;
 
-public class UserFollows
+public class UserFollows(string userId)
 {
     private readonly List<LeaderReference> _follows = new();
 
-    public UserFollows(string userId)
-    {
-        UserId = userId;
-    }
-
     [JsonConstructor]
-    public UserFollows(string userId, List<LeaderReference> follows)
+    public UserFollows(string userId, List<LeaderReference> follows) : this(userId)
     {
-        UserId = userId;
         _follows = follows;
     }
 
     public string? Id { get; set; }
-    public string UserId { get; }
+    public string UserId { get; } = userId;
     public IReadOnlyList<LeaderReference> Follows => _follows;
 
     public bool AddFollows(string leaderId, DateTime createdAt)

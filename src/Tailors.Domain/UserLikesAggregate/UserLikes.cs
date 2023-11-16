@@ -2,25 +2,19 @@ using Newtonsoft.Json;
 
 namespace Tailors.Domain.UserLikesAggregate;
 
-public class UserLikes
+public class UserLikes(string userId)
 {
     private readonly List<TweedLike> _likes = new();
 
-    public UserLikes(string userId)
-    {
-        UserId = userId;
-    }
-
     [JsonConstructor]
-    public UserLikes(string userId, List<TweedLike> likes)
+    public UserLikes(string userId, List<TweedLike> likes) : this(userId)
     {
-        UserId = userId;
         _likes = likes;
     }
 
     public string? Id { get; set; }
 
-    public string UserId { get; }
+    public string UserId { get; } = userId;
     public IReadOnlyList<TweedLike> Likes => _likes;
 
     public bool AddLike(string tweedId, DateTime likedAt)
