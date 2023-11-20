@@ -33,7 +33,7 @@ Find more info about how this app is structured under [STRUCTURE.md](./STRUCTURE
 
 ## Build & Run
 
-1. Install [dotnet 7](https://dotnet.microsoft.com/en-us/download)
+1. Install [dotnet 8](https://dotnet.microsoft.com/en-us/download)
 2. Install [Docker](https://www.docker.com/)
 3. Start RavenDB
 
