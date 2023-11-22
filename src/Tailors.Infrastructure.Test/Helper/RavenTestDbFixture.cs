@@ -1,21 +1,36 @@
 using Raven.Client.Documents;
-using Raven.TestDriver;
+using Testcontainers.RavenDb;
 
 namespace Tailors.Infrastructure.Test.Helper;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class RavenTestDbFixture : RavenTestDriver
+public class RavenTestDbFixture : IAsyncLifetime
 {
-    public IDocumentStore CreateDocumentStore()
+    public IDocumentStore DocumentStore { get; private set; } = null!;
+
+    public async Task InitializeAsync()
     {
-        var store = GetDocumentStore();
-        store.DeployIndexes();
-        return store;
+        var ravenDbContainer = new RavenDbBuilder()
+            .WithImage("ravendb/ravendb:latest")
+            .Build();
+        await ravenDbContainer.StartAsync();
+
+        DocumentStore = new DocumentStore
+        {
+            Urls = new[] { ravenDbContainer.GetConnectionString() },
+            Database = "Tailors"
+        };
+
+        DocumentStore.PreInitialize();
+        DocumentStore.Initialize();
+        DocumentStore.EnsureDatabaseExists();
+        DocumentStore.DeployIndexes();
     }
 
-    protected override void PreInitialize(IDocumentStore documentStore)
+    public Task DisposeAsync()
     {
-        documentStore.PreInitialize();
+        DocumentStore.Dispose();
+        return Task.CompletedTask;
     }
 }
 

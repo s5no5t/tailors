@@ -1,4 +1,3 @@
-using Raven.Client.Documents;
 using Tailors.Domain.UserAggregate;
 using Tailors.Infrastructure.Test.Helper;
 using Tailors.Infrastructure.UserAggregate;
@@ -9,12 +8,10 @@ namespace Tailors.Infrastructure.Test.UserAggregate;
 [Collection("RavenDB")]
 public class UserRepositoryTest(RavenTestDbFixture ravenDb)
 {
-    private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
-
     [Fact]
     public async Task SearchUsers_ShouldReturnEmptyList_WhenNoResults()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         await session.StoreAsync(new AppUser
         {
             UserName = "UserName"
@@ -30,7 +27,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
     [Fact]
     public async Task SearchUsers_ShouldFindMatchingUser()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
         await session.StoreAsync(new AppUser
         {
@@ -47,7 +44,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
     [Fact]
     public async Task SearchUsers_ShouldFindMatchingUser_WhenUserNamePrefixGiven()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
         await session.StoreAsync(new AppUser
         {
@@ -64,7 +61,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
     [Fact]
     public async Task SearchUsers_ShouldReturn20Users()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 21; i++)
         {

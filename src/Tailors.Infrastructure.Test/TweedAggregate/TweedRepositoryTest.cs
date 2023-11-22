@@ -1,5 +1,4 @@
 using JetBrains.Annotations;
-using Raven.Client.Documents;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Infrastructure.Test.Helper;
 using Tailors.Infrastructure.TweedAggregate;
@@ -10,12 +9,10 @@ namespace Tailors.Infrastructure.Test.TweedAggregate;
 [Collection("RavenDB")]
 public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<RavenTestDbFixture>
 {
-    private readonly IDocumentStore _store = ravenDb.CreateDocumentStore();
-
     [Fact]
     public async Task GetById_ShouldReturnTweed()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         Tweed tweed = new(text: "test", createdAt: TestData.FixedDateTime, authorId: "authorId");
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
@@ -29,7 +26,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task GetById_WithInvalidId_ShouldReturnNone()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
         var tweed = await repository.GetById("invalid");
@@ -41,14 +38,14 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task GetTweedsForUser_ShouldReturnTweeds()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new("user", "test", TestData.FixedDateTime);
+        Tweed tweed = new("user1", "test", TestData.FixedDateTime);
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetAllByAuthorId("user", 10);
+        var tweeds = await repository.GetAllByAuthorId("user1", 10);
 
         Assert.NotEmpty(tweeds);
     }
@@ -56,17 +53,17 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task GetTweedsForUser_ShouldReturnOrderedTweeds()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed olderTweed = new("user1", "older tweed", TestData.FixedDateTime);
+        Tweed olderTweed = new("user2", "older tweed", TestData.FixedDateTime);
         await session.StoreAsync(olderTweed);
         var recent = TestData.FixedDateTime.AddHours(1);
-        Tweed recentTweed = new("user1", "recent tweed", recent);
+        Tweed recentTweed = new("user2", "recent tweed", recent);
         await session.StoreAsync(recentTweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetAllByAuthorId("user1", 10);
+        var tweeds = await repository.GetAllByAuthorId("user2", 10);
 
         Assert.Equal(recentTweed, tweeds[0]);
         Assert.Equal(olderTweed, tweeds[1]);
@@ -75,18 +72,18 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task GetTweedsForUser_ShouldReturn20Tweeds()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 25; i++)
         {
-            Tweed tweed = new("user1", "test", TestData.FixedDateTime);
+            Tweed tweed = new("user3", "test", TestData.FixedDateTime);
             await session.StoreAsync(tweed);
         }
 
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetAllByAuthorId("user1", 20);
+        var tweeds = await repository.GetAllByAuthorId("user3", 20);
 
         Assert.Equal(20, tweeds.Count);
     }
@@ -94,14 +91,15 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task GetTweedsForUser_ShouldNotReturnTweedsFromOtherUsers()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new("user2", "test", TestData.FixedDateTime);
+
+        Tweed tweed = new("user4", "test", TestData.FixedDateTime);
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetAllByAuthorId("user1", 10);
+        var tweeds = await repository.GetAllByAuthorId("userWithoutTweedsId", 10);
 
         Assert.Empty(tweeds);
     }
@@ -109,7 +107,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task Search_ShouldReturnEmptyList_WhenNoResults()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
         var tweeds = await repository.Search("no-results");
@@ -120,7 +118,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     [Fact]
     public async Task Search_ShouldReturnResult_WhenTermIsFound()
     {
-        using var session = _store.OpenAsyncSession();
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
         Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: TestData.FixedDateTime,
             authorId: "authorId");
