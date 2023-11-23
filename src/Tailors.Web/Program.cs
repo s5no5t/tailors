@@ -5,11 +5,17 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Trace;
 using Raven.DependencyInjection;
 using Raven.Identity;
+using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
+using Tailors.Domain.UserFollowsAggregate;
+using Tailors.Domain.UserLikesAggregate;
 using Tailors.Infrastructure;
 using Tailors.Infrastructure.ThreadAggregate;
 using Tailors.Infrastructure.TweedAggregate;
+using Tailors.Infrastructure.UserAggregate;
+using Tailors.Infrastructure.UserFollowsAggregate;
+using Tailors.Infrastructure.UserLikesAggregate;
 using Tailors.Web.Areas.Identity;
 using Tailors.Web.Filters;
 using Tailors.Web.Helper;
@@ -151,10 +157,16 @@ static void SetupOpenTelemetry(WebApplicationBuilder builder)
 
 static void SetupAssemblyScanning(WebApplicationBuilder builder)
 {
-    builder.Services.Scan(scan =>
-    {
-        scan.FromCallingAssembly().AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(Tweed)).AddClasses().AsMatchingInterface();
-        scan.FromAssembliesOf(typeof(TweedRepository)).AddClasses().AsMatchingInterface();
-    });
+    builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
+    builder.Services.AddScoped<ITweedRepository, TweedRepository>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IUserFollowsRepository, UserFollowsRepository>();
+    builder.Services.AddScoped<IUserLikesRepository, UserLikesRepository>();
+    builder.Services.AddScoped<INotificationManager, NotificationManager>();
+    builder.Services.AddScoped<FollowUserUseCase>();
+    builder.Services.AddScoped<ShowFeedUseCase>();
+    builder.Services.AddScoped<ThreadUseCase>();
+    builder.Services.AddScoped<CreateTweedUseCase>();
+    builder.Services.AddScoped<LikeTweedUseCase>();
+    builder.Services.AddScoped<TweedViewModelFactory>();
 }
