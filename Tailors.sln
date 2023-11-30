@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Infrastructure", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.Infrastructure.Test", "src\Tailors.Infrastructure.Test\Tailors.Infrastructure.Test.csproj", "{481F1989-46E8-49D3-B487-B5072EAD2EA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailors.BlazorWeb", "src\Tailors.BlazorWeb\Tailors.BlazorWeb.csproj", "{3387AEC3-1505-4A22-BAC1-79928D7BD5B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{481F1989-46E8-49D3-B487-B5072EAD2EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{481F1989-46E8-49D3-B487-B5072EAD2EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{481F1989-46E8-49D3-B487-B5072EAD2EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3387AEC3-1505-4A22-BAC1-79928D7BD5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3387AEC3-1505-4A22-BAC1-79928D7BD5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3387AEC3-1505-4A22-BAC1-79928D7BD5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3387AEC3-1505-4A22-BAC1-79928D7BD5B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
