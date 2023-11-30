@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Tailors.BlazorWeb.Data;
+using Tailors.Domain.UserAggregate;
 
 namespace Tailors.BlazorWeb.Components.Account;
 

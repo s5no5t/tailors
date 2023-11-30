@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Tailors.BlazorWeb.Components.Account.Pages;
 using Tailors.BlazorWeb.Components.Account.Pages.Manage;
-using Tailors.BlazorWeb.Data;
+using Tailors.Domain.UserAggregate;
 
 namespace Microsoft.AspNetCore.Routing;
 

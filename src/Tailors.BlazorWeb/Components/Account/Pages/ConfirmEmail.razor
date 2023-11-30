@@ -1,9 +1,8 @@
 ﻿@page "/Account/ConfirmEmail"
-
-@using System.Text
+@using Tailors.Domain.UserAggregate
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using Tailors.BlazorWeb.Data
+@using System.Text
 
 @inject UserManager<AppUser> UserManager
 @inject IdentityRedirectManager RedirectManager
@@ -11,19 +10,16 @@
 <PageTitle>Confirm email</PageTitle>
 
 <h1>Confirm email</h1>
-<StatusMessage Message="@statusMessage" />
+<StatusMessage Message="@statusMessage"/>
 
 @code {
     private string? statusMessage;
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromQuery]
-    private string? UserId { get; set; }
+    [SupplyParameterFromQuery] private string? UserId { get; }
 
-    [SupplyParameterFromQuery]
-    private string? Code { get; set; }
+    [SupplyParameterFromQuery] private string? Code { get; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,4 +41,5 @@
             statusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
         }
     }
+
 }

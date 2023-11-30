@@ -12,11 +12,15 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0"/>
-        <PackageReference Include="RavenDB.Identity" Version="8.0.9" />
+        <PackageReference Include="RavenDB.Identity" Version="8.0.9"/>
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="Data\app.db"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Tailors.Domain\Tailors.Domain.csproj"/>
     </ItemGroup>
 
 </Project>
