@@ -16,7 +16,7 @@
 <div class="row">
     <div class="col-md-4">
         <section>
-            <StatusMessage Message="@errorMessage"/>
+            <StatusMessage Message="@_errorMessage"/>
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator/>
                 <h2>Use a local account to log in.</h2>
@@ -65,7 +65,7 @@
 </div>
 
 @code {
-    private string? errorMessage;
+    private string? _errorMessage;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
@@ -105,7 +105,7 @@
         }
         else
         {
-            errorMessage = "Error: Invalid login attempt.";
+            _errorMessage = "Error: Invalid login attempt.";
         }
     }
 

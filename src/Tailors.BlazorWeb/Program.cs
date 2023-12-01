@@ -38,6 +38,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddIdentityCore<AppUser>(options =>
         options.SignIn.RequireConfirmedAccount = true)
     .AddSignInManager()
+    .AddDefaultTokenProviders()
     .AddRavenDbIdentityStores<AppUser>();
 
 builder.Services.AddSingleton<IEmailSender<AppUser>, IdentityNoOpEmailSender>();
