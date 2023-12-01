@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Raven.DependencyInjection;
 using Raven.Identity;
+using Tailors.BlazorWeb;
 using Tailors.BlazorWeb.Components;
 using Tailors.BlazorWeb.Components.Account;
 using Tailors.Domain.ThreadAggregate;
@@ -68,6 +69,8 @@ app.MapRazorComponents<App>();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.UseMiddleware<RavenSaveChangesMiddleware>();
 
 app.Run();
 
