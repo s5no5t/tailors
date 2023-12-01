@@ -1,8 +1,9 @@
 ﻿@page "/Account/ConfirmEmail"
-@using Tailors.Domain.UserAggregate
+
+@using System.Text
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using System.Text
+@using Tailors.Domain.UserAggregate
 
 @inject UserManager<AppUser> UserManager
 @inject IdentityRedirectManager RedirectManager
@@ -17,9 +18,9 @@
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromQuery] private string? UserId { get; }
+    [SupplyParameterFromQuery] private string? UserId { get; set; }
 
-    [SupplyParameterFromQuery] private string? Code { get; }
+    [SupplyParameterFromQuery] private string? Code { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

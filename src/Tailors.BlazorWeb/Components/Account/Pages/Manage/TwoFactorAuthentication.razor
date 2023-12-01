@@ -1,7 +1,8 @@
 ﻿@page "/Account/Manage/TwoFactorAuthentication"
-@using Tailors.Domain.UserAggregate
-@using Microsoft.AspNetCore.Identity
+
 @using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Identity
+@using Tailors.Domain.UserAggregate
 
 @inject UserManager<AppUser> UserManager
 @inject SignInManager<AppUser> SignInManager

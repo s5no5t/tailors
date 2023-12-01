@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using Tailors.Domain.UserAggregate;
+@using Tailors.Domain.UserAggregate
 
 @inject SignInManager<AppUser> SignInManager
 
@@ -34,4 +34,5 @@
     {
         hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
     }
+
 }

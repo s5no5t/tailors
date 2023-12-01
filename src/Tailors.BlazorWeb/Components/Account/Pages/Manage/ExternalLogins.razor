@@ -1,7 +1,8 @@
 ﻿@page "/Account/Manage/ExternalLogins"
+
 @using Microsoft.AspNetCore.Authentication
-@using Tailors.Domain.UserAggregate
 @using Microsoft.AspNetCore.Identity
+@using Tailors.Domain.UserAggregate
 
 @inject UserManager<AppUser> UserManager
 @inject SignInManager<AppUser> SignInManager
@@ -76,7 +77,7 @@
 
     [SupplyParameterFromForm] private string? ProviderKey { get; set; }
 
-    [SupplyParameterFromQuery] private string? Action { get; }
+    [SupplyParameterFromQuery] private string? Action { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

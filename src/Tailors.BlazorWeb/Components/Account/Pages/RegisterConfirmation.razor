@@ -1,8 +1,9 @@
 ﻿@page "/Account/RegisterConfirmation"
-@using Tailors.Domain.UserAggregate
+
+@using System.Text
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using System.Text
+@using Tailors.Domain.UserAggregate
 
 @inject UserManager<AppUser> UserManager
 @inject IEmailSender<AppUser> EmailSender
@@ -33,9 +34,9 @@ else
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromQuery] private string? Email { get; }
+    [SupplyParameterFromQuery] private string? Email { get; set; }
 
-    [SupplyParameterFromQuery] private string? ReturnUrl { get; }
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
