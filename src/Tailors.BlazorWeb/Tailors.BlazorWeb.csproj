@@ -17,6 +17,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Tailors.Domain\Tailors.Domain.csproj"/>
+        <ProjectReference Include="..\Tailors.Infrastructure\Tailors.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>
