@@ -7,28 +7,19 @@ using Tailors.Domain.UserLikesAggregate;
 
 namespace Tailors.GenerateFakes;
 
-internal class DataFaker
+internal class DataFaker(IDocumentStore documentStore, DataFakerSettings settings)
 {
-    private readonly IDocumentStore _documentStore;
-    private readonly DataFakerSettings _settings;
-    private readonly Faker _faker;
-
-    public DataFaker(IDocumentStore documentStore, DataFakerSettings settings)
-    {
-        _documentStore = documentStore;
-        _settings = settings;
-        _faker = new Faker();
-    }
+    private readonly Faker _faker = new();
 
     internal async Task<List<AppUser>> CreateFakeUsers()
     {
-        await using var bulkInsert = _documentStore.BulkInsert();
+        await using var bulkInsert = documentStore.BulkInsert();
 
         var userFaker = new Faker<AppUser>()
             .RuleFor(u => u.UserName, (f, _) => f.Internet.UserName())
             .RuleFor(u => u.Email, (f, _) => f.Internet.ExampleEmail());
 
-        var numberOfUsers = _settings.NumberOfUsers;
+        var numberOfUsers = settings.NumberOfUsers;
         var users = userFaker.Generate(numberOfUsers);
         foreach (var user in users) await bulkInsert.StoreAsync(user);
         Console.WriteLine("{0} Users created", users.Count);
@@ -38,7 +29,7 @@ internal class DataFaker
 
     internal async Task CreateFakeFollows(List<AppUser> users)
     {
-        await using var bulkInsert = _documentStore.BulkInsert();
+        await using var bulkInsert = documentStore.BulkInsert();
         var f = new Faker();
 
         foreach (var user in users)
@@ -56,10 +47,10 @@ internal class DataFaker
 
     internal async Task<List<Tweed>> CreateFakeTweeds(List<AppUser> users)
     {
-        await using var bulkInsert = _documentStore.BulkInsert();
-        var numTweeds = _settings.NumberOfTweeds;
+        await using var bulkInsert = documentStore.BulkInsert();
+        var numTweeds = settings.NumberOfTweeds;
 
-        List<Tweed> tweeds = new();
+        List<Tweed> tweeds = [];
         for (var i = 0; i < numTweeds; i++)
         {
             var tweed = new Tweed(_faker.PickRandom(users).Id!,
@@ -78,7 +69,7 @@ internal class DataFaker
 
     internal async Task CreateFakeLikes(List<AppUser> users, List<Tweed> tweeds)
     {
-        await using var bulkInsert = _documentStore.BulkInsert();
+        await using var bulkInsert = documentStore.BulkInsert();
 
         foreach (var user in users)
         {
