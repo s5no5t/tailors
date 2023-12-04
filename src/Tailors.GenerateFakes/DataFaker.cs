@@ -12,11 +12,13 @@ internal class DataFaker
 {
     private readonly IDocumentStore _documentStore;
     private readonly DataFakerSettings _settings;
+    private readonly Faker _faker;
 
     public DataFaker(IDocumentStore documentStore, DataFakerSettings settings)
     {
         _documentStore = documentStore;
         _settings = settings;
+        _faker = new Faker();
     }
 
     internal async Task<List<AppUser>> CreateFakeUsers()
@@ -38,16 +40,14 @@ internal class DataFaker
     internal async Task CreateFakeFollows(List<AppUser> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
-
-        var followsFaker = new Faker<UserFollows.LeaderReference>()
-            .RuleFor(f => f.LeaderId, f => f.PickRandom(users).Id)
-            .RuleFor(f => f.CreatedAt, f => f.Date.Past());
+        var f = new Faker();
 
         foreach (var user in users)
         {
             var userFollows = new UserFollows(user.Id!);
-            var follows = followsFaker.GenerateBetween(0, users.Count - 1);
-            foreach (var follow in follows) userFollows.AddFollows(follow.LeaderId, follow.CreatedAt);
+
+            for (var i = 0; i < f.Random.Int(0, users.Count - 1); i++)
+                userFollows.AddFollows(f.PickRandom(users).Id!, f.Date.Past());
 
             await bulkInsert.StoreAsync(userFollows);
         }
@@ -58,23 +58,20 @@ internal class DataFaker
     internal async Task<List<Tweed>> CreateFakeTweeds(List<AppUser> users)
     {
         await using var bulkInsert = _documentStore.BulkInsert();
-
-        var threadFaker = new Faker<TailorsThread>();
-
-        var numThreads = _settings.NumberOfTweeds;
-        var threads = threadFaker.Generate(numThreads);
-        foreach (var thread in threads) await bulkInsert.StoreAsync(thread);
-
-        var tweedFaker = new Faker<Tweed>()
-            .RuleFor(t => t.CreatedAt, f => f.Date.Past())
-            .RuleFor(t => t.Text, f => f.Lorem.Paragraph(1))
-            .RuleFor(t => t.AuthorId, f => f.PickRandom(users).Id)
-            .RuleFor(t => t.ThreadId, f => threads[f.IndexFaker].Id);
-
         var numTweeds = _settings.NumberOfTweeds;
-        var tweeds = tweedFaker.Generate(numTweeds);
-        foreach (var tweed in tweeds) await bulkInsert.StoreAsync(tweed);
-        Console.WriteLine("{0} Tweeds created", tweeds.Count);
+
+        List<Tweed> tweeds = new();
+        for (var i = 0; i < numTweeds; i++)
+        {
+            var tweed = new Tweed(_faker.PickRandom(users).Id!,
+                _faker.Lorem.Paragraph(1),
+                _faker.Date.Past(),
+                null, null, null);
+            await bulkInsert.StoreAsync(tweed);
+            tweeds.Add(tweed);
+        }
+
+        Console.WriteLine("{0} Tweeds created", numTweeds);
 
         return tweeds;
     }
@@ -83,14 +80,12 @@ internal class DataFaker
     {
         await using var bulkInsert = _documentStore.BulkInsert();
 
-        var likesFaker = new Faker<UserLikes.TweedLike>()
-            .RuleFor(f => f.TweedId, f => f.PickRandom(tweeds).Id)
-            .RuleFor(f => f.CreatedAt, f => f.Date.Past());
-
         foreach (var user in users)
         {
-            var likes = likesFaker.GenerateBetween(0, tweeds.Count - 1);
-            var userLikes = new UserLikes(user.Id!, likes);
+            var userLikes = new UserLikes(user.Id!);
+
+            var numLikes = _faker.Random.Int(0, tweeds.Count - 1);
+            for (var i = 0; i < numLikes; i++) userLikes.AddLike(_faker.PickRandom(tweeds).Id!, _faker.Date.Past());
 
             await bulkInsert.StoreAsync(userLikes);
         }
