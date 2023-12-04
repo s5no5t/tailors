@@ -27,7 +27,7 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
     {
         private readonly List<TweedOrThreadReference> _replies = new();
 
-        public TweedOrThreadReference(string? tweedId, string? threadId)
+        internal TweedOrThreadReference(string? tweedId, string? threadId)
         {
             if (tweedId is null && threadId is null)
                 throw new ArgumentException("Either tweedId or threadId must be provided");
@@ -38,15 +38,27 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
             ThreadId = threadId;
         }
 
+        [JsonConstructor]
+        public TweedOrThreadReference(string? tweedId, string? threadId, List<TweedOrThreadReference> replies) : this(
+            tweedId, threadId)
+        {
+            _replies = replies;
+        }
+
         public string? TweedId { get; }
 
         public string? ThreadId { get; }
 
         public IReadOnlyList<TweedOrThreadReference> Replies => _replies;
 
-        internal void AddReply(TweedOrThreadReference reference)
+        internal void AddReplyTweed(string tweedId)
         {
-            _replies.Add(reference);
+            _replies.Add(new TweedOrThreadReference(tweedId, null));
+        }
+
+        internal void AddReplyChildThread(string childThreadId)
+        {
+            _replies.Add(new TweedOrThreadReference(null, childThreadId));
         }
     }
 
@@ -71,11 +83,12 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
         // This is a reply to a reply
         var path = FindTweedPath(tweed.ParentTweedId!);
         if (path.Count == 0)
-            throw new ArgumentException($"Parent tweed {tweed.ParentTweedId} of tweed {tweed.Id} not found in thread {Id}");
+            throw new ArgumentException(
+                $"Parent tweed {tweed.ParentTweedId} of tweed {tweed.Id} not found in thread {Id}");
         if (path.Count == MaxTweedReferenceDepth)
             return new MaxDepthReachedError($"Max tweed ref depth of {MaxTweedReferenceDepth} reached for thread {Id}");
         var parentTweedRef = path.Last();
-        parentTweedRef.AddReply(new TweedOrThreadReference(tweed.Id, null));
+        parentTweedRef.AddReplyTweed(tweed.Id);
         return new Success();
     }
 
@@ -87,7 +100,7 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
         if (path.Count == MaxDepth)
             return new MaxDepthReachedError($"Max depth of {MaxTweedReferenceDepth} reached for thread {Id}");
         var parentTweedRef = path.Last();
-        parentTweedRef.AddReply(new TweedOrThreadReference(null, childThreadId));
+        parentTweedRef.AddReplyChildThread(childThreadId);
         return new Success();
     }
 
@@ -97,10 +110,7 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
             return new ReadOnlyCollection<TweedOrThreadReference>(Array.Empty<TweedOrThreadReference>());
 
         Queue<List<TweedOrThreadReference>> queue = new();
-        queue.Enqueue(new List<TweedOrThreadReference>
-        {
-            Root
-        });
+        queue.Enqueue([Root]);
 
         while (queue.Count > 0)
         {

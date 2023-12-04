@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using Tailors.Domain.ThreadAggregate;
+using Tailors.Domain.TweedAggregate;
 using Tailors.Infrastructure.Test.Helper;
 using Tailors.Infrastructure.ThreadAggregate;
 
@@ -15,6 +16,9 @@ public class ThreadRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Ra
         using (var session = ravenDb.DocumentStore.OpenAsyncSession())
         {
             TailorsThread thread = new("test");
+            thread.AddTweed(new Tweed("authorId", "test", TestData.FixedDateTime, "tweedId", threadId: "test"));
+            thread.AddTweed(new Tweed("authorId", "test", TestData.FixedDateTime, "tweedId2", threadId: "test",
+                parentTweedId: "tweedId"));
             await session.StoreAsync(thread);
             await session.SaveChangesAsync();
         }
@@ -24,7 +28,7 @@ public class ThreadRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Ra
             var repository = new ThreadRepository(session);
             var thread2 = await repository.GetById("test");
             thread2.Switch(
-                [AssertionMethod] (t) => { }, _ => Assert.Fail());
+                [AssertionMethod] (t) => { Assert.Equal("tweedId2", t.Root!.Replies[0].TweedId); }, _ => Assert.Fail());
         }
     }
 
