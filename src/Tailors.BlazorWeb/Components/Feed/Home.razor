@@ -1,0 +1,42 @@
+@page "/{page:int?}"
+@using Microsoft.AspNetCore.Authorization
+@using Tailors.BlazorWeb.Components.Account
+@using Tailors.Domain.ThreadAggregate
+@using Tailors.Domain.TweedAggregate
+@inject ShowFeedUseCase ShowFeedUseCase
+@inject IdentityUserAccessor UserAccessor
+@attribute [Authorize]
+
+<PageTitle>Home</PageTitle>
+
+@foreach (var tweed in _feed)
+{
+    <TweedComponent Model="tweed"/>
+}
+
+@if (_nextPageExists)
+{
+    <div hx-get="/Feed/@(Page + 1)"
+         hx-trigger="revealed"
+         hx-swap="beforebegin">
+    </div>
+}
+
+@code
+{
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+    [Parameter] public int Page { get; set; }
+
+    private List<Tweed> _feed = new();
+    private bool _nextPageExists;
+
+    private const int PageSize = 20;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+
+        _feed = await ShowFeedUseCase.GetFeed(user.Id!, Page, PageSize);
+        _nextPageExists = _feed.Count == PageSize;
+    }
+}
