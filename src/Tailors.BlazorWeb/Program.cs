@@ -45,7 +45,7 @@ builder.Services.AddIdentityCore<AppUser>(options =>
 builder.Services.AddSingleton<IEmailSender<AppUser>, IdentityNoOpEmailSender>();
 
 SetupRavenDbServices(builder);
-SetupAssemblyScanning(builder);
+RegisterServices(builder);
 
 var app = builder.Build();
 
@@ -88,7 +88,7 @@ static void SetupRavenDbServices(WebApplicationBuilder builder)
     builder.Services.AddRavenDbAsyncSession();
 }
 
-static void SetupAssemblyScanning(WebApplicationBuilder builder)
+static void RegisterServices(WebApplicationBuilder builder)
 {
     builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
     builder.Services.AddScoped<ITweedRepository, TweedRepository>();
