@@ -1,6 +1,5 @@
 using Bogus;
 using Raven.Client.Documents;
-using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
@@ -66,7 +65,9 @@ internal class DataFaker
             var tweed = new Tweed(_faker.PickRandom(users).Id!,
                 _faker.Lorem.Paragraph(1),
                 _faker.Date.Past(),
-                null, null, null);
+                null,
+                tweeds.Count > 0 && _faker.Random.Bool() ? _faker.PickRandom(tweeds).Id : null,
+                null);
             await bulkInsert.StoreAsync(tweed);
             tweeds.Add(tweed);
         }
