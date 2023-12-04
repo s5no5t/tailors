@@ -71,7 +71,7 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
         // This is a reply to a reply
         var path = FindTweedPath(tweed.ParentTweedId!);
         if (path.Count == 0)
-            throw new ArgumentException($"Tweed {tweed.ParentTweedId} not found in thread {Id}");
+            throw new ArgumentException($"Parent tweed {tweed.ParentTweedId} of tweed {tweed.Id} not found in thread {Id}");
         if (path.Count == MaxTweedReferenceDepth)
             return new MaxDepthReachedError($"Max tweed ref depth of {MaxTweedReferenceDepth} reached for thread {Id}");
         var parentTweedRef = path.Last();
