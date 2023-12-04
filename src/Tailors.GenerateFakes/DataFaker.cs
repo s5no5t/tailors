@@ -66,8 +66,7 @@ internal class DataFaker
                 _faker.Lorem.Paragraph(1),
                 _faker.Date.Past(),
                 null,
-                tweeds.Count > 0 && _faker.Random.Bool() ? tweeds[i - 1].Id : null,
-                null);
+                tweeds.Count > 0 && _faker.Random.Bool() ? tweeds[i - 1].Id : null);
             await bulkInsert.StoreAsync(tweed);
             tweeds.Add(tweed);
         }
