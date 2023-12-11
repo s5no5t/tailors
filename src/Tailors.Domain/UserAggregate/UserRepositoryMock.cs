@@ -1,3 +1,6 @@
+using OneOf;
+using OneOf.Types;
+
 namespace Tailors.Domain.UserAggregate;
 
 public class UserRepositoryMock : IUserRepository
@@ -9,6 +12,11 @@ public class UserRepositoryMock : IUserRepository
     {
         var users = _users.Values.Where(u => u.UserName.Contains(term)).ToList();
         return Task.FromResult(users);
+    }
+
+    public Task<OneOf<AppUser, None>> GetById(string tweedAuthorId)
+    {
+        throw new NotImplementedException();
     }
 
     public Task Create(AppUser appUser)

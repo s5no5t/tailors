@@ -1,5 +1,118 @@
 @using Tailors.Domain.TweedAggregate
+@using System.Globalization
+@using Humanizer
+@using Microsoft.AspNetCore.Identity
+@using Raven.Client.Documents
+@using Tailors.BlazorWeb.Components.Account
+@using Tailors.Domain.UserAggregate
+@using Tailors.Domain.UserLikesAggregate
+@using Tailors.Infrastructure.UserLikesAggregate
+@inject IdentityUserAccessor UserAccessor
+@inject IUserLikesRepository UserLikesRepository
+@inject LikeTweedUseCase LikeTweedUseCase
+@inject IUserRepository AppUserRepository
+
+<div class="d-flex flex-column p-2 tweed @(CanNavigate ? "tweed--can-navigate-true" : "")"
+     @{
+         if (CanNavigate)
+         {
+             <text>hx-get="/ShowThreadForTweed/@Tweed?.Id"
+                 hx-target="body" hx-swap="outerHTML" hx-push-url="true"</text>
+         }
+     }>
+    <div>
+        <a class="link-secondary fw-bold" href="/Profile/@Tweed?.AuthorId">@_authorUserName</a>
+        <small class="text-muted">@_humanizedCreatedAt</small>
+    </div>
+    <div class="mt-1 mb-1">
+        @Tweed?.Text
+    </div>
+    <div>
+        @if (_currentUserLikesTweed)
+        {
+            <span hx-post="/Tweed/@Tweed?.Id/Unlike"
+                  hx-target="closest .tweed"
+                  hx-swap="outerHTML"
+                  hx-sync="closest div.tweed:drop"
+                  hx-push-url="false"
+                  class="mt-2">
+                <i class="bi bi-heart-fill" style="font-size: 1em"></i>
+            </span>
+        }
+        else
+        {
+            <span hx-post="/Tweed/@Tweed?.Id/Like"
+                  hx-target="closest .tweed"
+                  hx-swap="outerHTML"
+                  hx-sync="closest div.tweed:drop"
+                  hx-push-url="false"
+                  class="mt-2">
+                <i class="bi bi-heart" style="font-size: 1em"></i>
+            </span>
+        }
+        <span>@_likesCount</span>
+    </div>
+</div>
 
 @code {
-    [Parameter] public Tweed? Model { get; set; }
+    [Parameter] public Tweed? Tweed { get; set; }
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+    [Parameter] public bool CanNavigate { get; set; } = true;
+
+    private string _humanizedCreatedAt = string.Empty;
+    private bool _currentUserLikesTweed;
+    private long _likesCount;
+    private string _authorUserName = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Tweed is not null)
+        {
+            _humanizedCreatedAt = Tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
+            Console.WriteLine("TweedComponent Current Thread ID:" + Thread.CurrentThread.ManagedThreadId);
+            //var author = await UserManager.FindByIdAsync(Tweed.AuthorId);
+            var authorResult = await AppUserRepository.GetById(Tweed.AuthorId!);
+
+            _authorUserName = authorResult.AsT0.UserName;
+
+            _likesCount = await UserLikesRepository.GetLikesCounter(Tweed.Id!);
+
+            var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+            _currentUserLikesTweed = await LikeTweedUseCase.DoesUserLikeTweed(Tweed.Id!, user.Id!);
+        }
+    }
+
+    /*
+    public class TweedComponentViewModel
+    {
+        public string? AuthorId { get; set; }
+        public string? Author { get; set; }
+        public string? Text { get; set; }
+        public string? CreatedAt { get; set; }
+        public string? Id { get; set; }
+        public long? LikesCount { get; set; }
+        public bool LikedByCurrentUser { get; set; }
+        public bool IsCurrentTweed { get; set; }
+    }
+
+    public async Task<TweedComponentViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)
+    {
+        var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
+        var author = await UserManager.FindByIdAsync(tweed.AuthorId);
+        var likesCount = await UserLikesRepository.GetLikesCounter(tweed.Id!);
+        var currentUserLikesTweed = await LikeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId);
+
+        TweedComponentViewModel viewModel = new()
+        {
+            Id = tweed.Id,
+            Text = tweed.Text,
+            CreatedAt = humanizedCreatedAt,
+            AuthorId = tweed.AuthorId,
+            LikesCount = likesCount,
+            LikedByCurrentUser = currentUserLikesTweed,
+            Author = author!.UserName,
+            IsCurrentTweed = isCurrent
+        };
+        return viewModel;
+    }*/
 }

@@ -1,3 +1,5 @@
+using OneOf;
+using OneOf.Types;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Tailors.Domain.UserAggregate;
@@ -12,5 +14,13 @@ public class UserRepository(IAsyncDocumentSession session) : IUserRepository
         return await session.Query<AppUser, UsersByUserName>()
             .Search(u => u.UserName, $"{term}*")
             .Take(20).ToListAsync();
+    }
+
+    public async Task<OneOf<AppUser, None>> GetById(string tweedAuthorId)
+    {
+        var appUser = await session.LoadAsync<AppUser>(tweedAuthorId);
+        if (appUser is not null)
+            return appUser;
+        return new None();
     }
 }

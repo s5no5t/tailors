@@ -85,7 +85,7 @@ static void SetupRavenDbServices(WebApplicationBuilder builder)
             store.DeployIndexes();
         };
     });
-    builder.Services.AddRavenDbAsyncSession();
+    //builder.Services.AddRavenDbAsyncSession();
 }
 
 static void RegisterServices(WebApplicationBuilder builder)

@@ -7,6 +7,7 @@ internal sealed class IdentityUserAccessor(UserManager<AppUser> userManager, Ide
 {
     public async Task<AppUser> GetRequiredUserAsync(HttpContext context)
     {
+        Console.WriteLine("IdentityUserAccessor Current Thread ID:" + Thread.CurrentThread.ManagedThreadId);
         var user = await userManager.GetUserAsync(context.User);
 
         if (user is null)
