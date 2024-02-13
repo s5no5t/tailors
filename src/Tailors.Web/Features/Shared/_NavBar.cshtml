@@ -1,41 +1,16 @@
 @using Tailors.Domain.UserAggregate
 @inject SignInManager<AppUser> SignInManager
 
-<nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" asp-area="" asp-controller="Feed" asp-action="Index">
-            <img src="/images/tweed.png" alt="Tweed Logo" width="24" height="24"/>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse">
-            <ul class="navbar-nav">
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Tweed" asp-action="Create">Create</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Search" asp-action="Index">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Account</a>
-                    </li>
-                    <li class="nav-item">
-                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Feed")" method="post">
-                            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                        </form>
-                    </li>
-                }
-            </ul>
-        </div>
-    </div>
-</nav>
+<a asp-area="" asp-controller="Feed" asp-action="Index">
+    <img src="/images/tweed.png" alt="Tweed Logo" width="24" height="24"/>
+</a>
 
-<style>
-    body {
-      padding-top: 60px;
-    }
-</style>
+@if (SignInManager.IsSignedIn(User))
+{
+    <sl-button-group label="Alignment">
+        <sl-button href="/Tweed/Create">Create</sl-button>
+        <sl-button href="/Search">Search</sl-button>
+        <sl-button href="/Identity/Account/Manage">Account</sl-button>
+        <sl-button href="/Account/Logout">Logout</sl-button>
+    </sl-button-group>
+}
