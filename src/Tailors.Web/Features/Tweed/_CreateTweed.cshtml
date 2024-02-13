@@ -2,26 +2,17 @@
 @model Tailors.Web.Features.Tweed.CreateTweedViewModel
 
 <form method="post" action="@Url.Action("Create")">
-    <div class="mb-3">
-        <label for="text" class="form-label">Text</label>
 
-        @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
-        {
-            <textarea rows="5" class="form-control is-invalid" 
-                id="text" value="@Model.Text"
-                name="Text" aria-describedby="validationTextFeedback"></textarea>
-            <div id="validationTextFeedback" class="invalid-feedback">
-                Please enter a text.
-            </div>
-        }
-        else
-        {
-            <textarea rows="5" class="form-control"
-                id="text" value="@Model.Text" name="Text"></textarea>
-        }
-    </div>
+    @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
+    {
+        <sl-textarea name="Text" label="Text" rows="5" value="@Model.Text"></sl-textarea>
+    }
+    else
+    {
+        <sl-textarea name="Text" label="Text" rows="5" placeholder="Type something" value="@Model.Text"></sl-textarea>
+    }
 
-    <button type="submit" class="btn btn-primary">
+    <sl-button type="submit" variant="primary">
         Submit
-    </button>
+    </sl-button>
 </form>
