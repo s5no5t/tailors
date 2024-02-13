@@ -33,7 +33,7 @@ public class ThreadUseCaseTest
             text: string.Empty, threadId: "threadId");
         await _tweedRepositoryMock.Create(rootTweed);
         TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed);
+        thread.AddTweed(rootTweed.Id!);
         await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.GetThreadTweedsForTweed("rootTweedId");
@@ -54,8 +54,8 @@ public class ThreadUseCaseTest
         await _tweedRepositoryMock.Create(tweed);
 
         TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed);
-        thread.AddTweed(tweed);
+        thread.AddTweed(rootTweed.Id!);
+        thread.AddTweed(tweed.Id!, tweed.ParentTweedId);
         await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
@@ -84,10 +84,10 @@ public class ThreadUseCaseTest
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
 
         TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed);
-        thread.AddTweed(parentTweed);
-        thread.AddTweed(tweed);
-        thread.AddTweed(otherTweed);
+        thread.AddTweed(rootTweed.Id!);
+        thread.AddTweed(parentTweed.Id!, parentTweed.ParentTweedId);
+        thread.AddTweed(tweed.Id!, tweed.ParentTweedId);
+        thread.AddTweed(otherTweed.Id!, otherTweed.ParentTweedId);
         await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
@@ -113,7 +113,7 @@ public class ThreadUseCaseTest
         Tweed tweed = new(id: "tweedId", parentTweedId: "tweed-10", threadId: childThread.Id,
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(tweed);
-        childThread.AddTweed(tweed);
+        childThread.AddTweed(tweed.Id!, tweed.ParentTweedId);
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
@@ -164,7 +164,7 @@ public class ThreadUseCaseTest
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(tweed);
         TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed);
+        thread.AddTweed(rootTweed.Id!);
         await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.AddTweedToThread("tweedId");
@@ -188,8 +188,8 @@ public class ThreadUseCaseTest
         await _tweedRepositoryMock.Create(tweed);
 
         TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed);
-        thread.AddTweed(replyTweed);
+        thread.AddTweed(rootTweed.Id!);
+        thread.AddTweed(replyTweed.Id!, replyTweed.ParentTweedId);
         await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.AddTweedToThread("tweedId");
@@ -210,7 +210,7 @@ public class ThreadUseCaseTest
             text: string.Empty, threadId: "threadId");
         await _tweedRepositoryMock.Create(parentTweed);
         TailorsThread thread = new("threadId");
-        thread.AddTweed(parentTweed);
+        thread.AddTweed(parentTweed.Id!);
         await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.AddTweedToThread("childTweedId");
@@ -257,14 +257,14 @@ public class ThreadUseCaseTest
 
         Tweed rootTweed = new(id: "tweed-0", authorId: "authorId", createdAt: TestData.FixedDateTime,
             text: string.Empty, threadId: threadWithMaxDepthReached.Id);
-        threadWithMaxDepthReached.AddTweed(rootTweed);
+        threadWithMaxDepthReached.AddTweed(rootTweed.Id!);
         await _tweedRepositoryMock.Create(rootTweed);
 
         for (var i = 1; i <= depth; i++)
         {
             Tweed tweed = new(id: $"tweed-{i}", authorId: "authorId", createdAt: TestData.FixedDateTime,
                 text: string.Empty, parentTweedId: $"tweed-{i - 1}", threadId: threadWithMaxDepthReached.Id);
-            threadWithMaxDepthReached.AddTweed(tweed);
+            threadWithMaxDepthReached.AddTweed(tweed.Id!, tweed.ParentTweedId);
             await _tweedRepositoryMock.Create(tweed);
         }
 

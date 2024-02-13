@@ -74,7 +74,7 @@ public class TweedControllerTest
             threadId: "threadId");
         await _tweedRepositoryMock.Create(rootTweed);
         var thread = new TailorsThread("threadId");
-        thread.AddTweed(rootTweed);
+        thread.AddTweed(rootTweed.Id!);
         await _threadRepositoryMock.Create(thread);
 
         var result =

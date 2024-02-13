@@ -69,7 +69,7 @@ public class ThreadUseCase(IThreadRepository threadRepository,
         var childThread = new TailorsThread(parentThreadId: parentTweed.ThreadId);
         await threadRepository.Create(childThread);
         tweed.ThreadId = childThread.Id;
-        childThread.AddTweed(tweed);
+        childThread.AddTweed(tweed.Id!, tweed.ParentTweedId);
         var addChildThreadResult = parentTweedThread.AddChildThreadReference(tweed.ParentTweedId, childThread.Id!);
         addChildThreadResult.Switch(_ => { }, error => throw new Exception(error.Message));
 
@@ -81,7 +81,7 @@ public class ThreadUseCase(IThreadRepository threadRepository,
         TailorsThread newThread = new();
         await threadRepository.Create(newThread);
         tweed.ThreadId = newThread.Id;
-        var result = newThread.AddTweed(tweed);
+        var result = newThread.AddTweed(tweed.Id!, tweed.ParentTweedId!);
         result.Switch(_ => { }, error => throw new Exception(error.Message));
     }
 
@@ -105,7 +105,7 @@ public class ThreadUseCase(IThreadRepository threadRepository,
         if (parentTweedThreadDepth < TailorsThread.MaxTweedReferenceDepth)
         {
             tweed.ThreadId = parentTweed.ThreadId;
-            var result = parentTweedThread.AddTweed(tweed);
+            var result = parentTweedThread.AddTweed(tweed.Id!, tweed.ParentTweedId!);
             return result.Match(s => s, e => throw new Exception(e.Message));
         }
 

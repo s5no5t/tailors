@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
-using Tailors.Domain.TweedAggregate;
 
 namespace Tailors.Domain.ThreadAggregate;
 
@@ -62,33 +61,26 @@ public class TailorsThread(string? id = null, string? parentThreadId = null)
         }
     }
 
-    public OneOf<Success, MaxDepthReachedError> AddTweed(Tweed tweed)
+    public OneOf<Success, MaxDepthReachedError> AddTweed(string tweedId, string? parentTweedId = null)
     {
-        if (tweed.Id is null)
-            throw new ArgumentException($"Tweed {tweed.Id} is missing Id");
-
-        if (tweed.ThreadId is null)
-            throw new ArgumentException($"Tweed {tweed.Id} is missing ThreadId");
-
-        if (tweed.ThreadId != Id)
-            throw new ArgumentException($"Tweed {tweed.Id} already belongs to thread {tweed.ThreadId}");
-
         // This is a root Tweed
         if (Root is null)
         {
-            Root = new TweedOrThreadReference(tweed.Id, null);
+            Root = new TweedOrThreadReference(tweedId, null);
             return new Success();
         }
 
+        if (parentTweedId is null) throw new ArgumentNullException($"Parent tweed id is null but must not be when tweed {tweedId} isn't root");
+
         // This is a reply to a reply
-        var path = FindTweedPath(tweed.ParentTweedId!);
+        var path = FindTweedPath(parentTweedId);
         if (path.Count == 0)
             throw new ArgumentException(
-                $"Parent tweed {tweed.ParentTweedId} of tweed {tweed.Id} not found in thread {Id}");
+                $"Parent tweed {parentTweedId} of tweed {tweedId} not found in thread {Id}");
         if (path.Count == MaxTweedReferenceDepth)
             return new MaxDepthReachedError($"Max tweed ref depth of {MaxTweedReferenceDepth} reached for thread {Id}");
         var parentTweedRef = path.Last();
-        parentTweedRef.AddReplyTweed(tweed.Id);
+        parentTweedRef.AddReplyTweed(tweedId);
         return new Success();
     }
 

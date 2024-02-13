@@ -16,9 +16,8 @@ public class ThreadRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Ra
         using (var session = ravenDb.DocumentStore.OpenAsyncSession())
         {
             TailorsThread thread = new("test");
-            thread.AddTweed(new Tweed("authorId", "test", TestData.FixedDateTime, "tweedId", threadId: "test"));
-            thread.AddTweed(new Tweed("authorId", "test", TestData.FixedDateTime, "tweedId2", threadId: "test",
-                parentTweedId: "tweedId"));
+            thread.AddTweed("tweedId");
+            thread.AddTweed("tweedId2", "tweedId");
             await session.StoreAsync(thread);
             await session.SaveChangesAsync();
         }
