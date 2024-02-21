@@ -69,8 +69,7 @@ public class TweedControllerTest
     [Fact]
     public async Task ShowThreadForTweed_ShouldReturnTweed()
     {
-        var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
-            threadId: "threadId");
+        var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
         await _tweedRepositoryMock.Create(rootTweed);
 
         var result = await _sut.ShowThreadForTweed("tweedId", _threadUseCase);

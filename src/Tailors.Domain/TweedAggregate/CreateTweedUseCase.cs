@@ -20,9 +20,9 @@ public class CreateTweedUseCase(ITweedRepository tweedRepository)
         if (getParentTweedResult.TryPickT1(out _, out var parentTweed))
             return new ResourceNotFoundError($"Tweed {parentTweedId} not found");
 
-        var threadId = parentTweed.ThreadId;
-        Tweed tweed = new(authorId, text, createdAt, parentTweedId: parentTweedId,
-            threadId: threadId);
+        Tweed tweed = new(authorId, text, createdAt);
+        tweed.AddLeadingTweedIds(parentTweed.LeadingTweedIds);
+        tweed.AddLeadingTweedId(parentTweedId);
         await tweedRepository.Create(tweed);
         return tweed;
     }

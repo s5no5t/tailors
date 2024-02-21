@@ -25,8 +25,7 @@ public class CreateTweedUseCaseTest
     [Fact]
     public async Task CreateReplyTweed_SavesTweed()
     {
-        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
-            createdAt: TestData.FixedDateTime, text: string.Empty);
+        Tweed parentTweed = new(id: "parentTweedId", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", TestData.FixedDateTime, parentTweed.Id!);
@@ -36,16 +35,15 @@ public class CreateTweedUseCaseTest
     }
 
     [Fact]
-    public async Task CreateReplyTweed_SetsThreadId()
+    public async Task CreateReplyTweed_SetsLeadingThreadIds()
     {
-        Tweed parentTweed = new(id: "parentTweedId", threadId: "threadId", authorId: "authorId",
-            createdAt: TestData.FixedDateTime, text: string.Empty);
+        Tweed parentTweed = new(id: "parentTweedId", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(parentTweed);
 
         var result = await _sut.CreateReplyTweed("authorId", "text", TestData.FixedDateTime, "parentTweedId");
 
         result.Switch(
-            [AssertionMethod] (t) => { Assert.Equal(parentTweed.ThreadId, t.ThreadId); },
+            [AssertionMethod] (t) => { Assert.Equal(parentTweed.Id, t.LeadingTweedIds[0]); },
             e => Assert.Fail(e.Message));
     }
 }
