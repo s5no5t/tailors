@@ -1,51 +1,26 @@
 # Structure
 
-The code is structured into components. Components are built around bounded contexts of the app, not file types. 
-Layering is done within each component. 
+The repo contains these main projects:
 
-## Components
-
-There are 4 main components:
-* `Tailors.User` for user identity and following other users
-* `Tailors.Thread` for tweeds and threads
-* `Tailors.Like` for liking tweeds
-* `Tailors.Web` for app config, views, event handling
+* `Tailors.Domain` contains domain models for the different domains used in the app
+* `Tailors.Infrastructure` contains data access code
+* `Tailors.Web` contains the web app including views and controllers
 
 ```mermaid
     C4Component
     title Component diagram for Tailors
-    Container_Boundary(backend, "Tailors App") {
-        Component(user, "User", "C# Library", "Signin, profile, following other users")
-        Component(web, "Web", "HTMX + ASP.NET Core MVC", "App config, views, event handling")
-        Component(thread, "Threads", "C# Library", "Business logic an data access for tweeds")
-        Component(like, "Likes", "C# Library", "Business logic and data access for likes")
+    Container_Boundary(Tailors, "Tailors App") {
+        Component(Tailors.Web, "Web", "HTMX + ASP.NET Core MVC", "app config, views, event handling")
+        Component(Tailors.Domain, "Domain", "C# Library", "auth, tweeds, followers, likes")
+        Component(Tailors.Infrastructure, "Infrastructure", "C# Library", "database access")
 
-        Rel(web, like, "Uses")
-        Rel(web, thread, "Uses")
-        Rel(web, user, "Uses")
-        Rel(like, db, "Access Tweed Likes", "HTTPS")
-        Rel(thread, db, "Access Tweeds and Threads", "HTTPS")
-        Rel(user, db, "Access Users", "HTTPS")
+        Rel(Tailors.Web, Tailors.Domain, "Uses")
+        Rel(Tailors.Web, Tailors.Infrastructure, "Uses")
+        Rel(Tailors.Infrastructure, Tailors.Domain, "Uses")
     }
 
-    ContainerDb(db, "Database", "RavenDB", "Stores Users, Tweeds, Threads, Likes, Follows")
+    ContainerDb(db, "Database", "RavenDB", "Stores Users, Tweeds, Likes, Follows")
+    Rel(Tailors, db, "Uses")
     
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
-
-## Layering
-
-The `Tailors.Web` component follows standard ASP.NET Core MVC folder structure for controllers and views. 
-It has dependencies on other components that contain business logic 
-
-The other components each come with two main folders:
-* `Domain` contains business logic, aggregate objects, and repository interfaces for data access.
-* `Infrastructure` contains implementations for above repositories for data access
-
-## Tests
-
-Each component has a corresponding test component with tests for domains (business logic) and 
-infrastructure (data access).
-
-Infrastructure tests use [RavenTestDriver](https://ravendb.net/docs/article-page/5.3/csharp/start/test-driver) 
-for managing a real RavenDB instance.
