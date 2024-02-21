@@ -4,6 +4,7 @@ WORKDIR /App
 # Copy everything
 COPY . ./
 # Restore as distinct layers
+ENV HUSKY="0"
 RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out ./src/Tailors.Web/Tailors.Web.csproj
