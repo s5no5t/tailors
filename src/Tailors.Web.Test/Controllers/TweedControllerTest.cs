@@ -23,7 +23,6 @@ public class TweedControllerTest
     private readonly LikeTweedUseCase _likeTweedUseCase;
     private readonly NotificationManagerMock _notificationManagerMock;
     private readonly TweedController _sut;
-    private readonly ThreadRepositoryMock _threadRepositoryMock = new();
     private readonly ThreadUseCase _threadUseCase;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
 
@@ -73,12 +72,8 @@ public class TweedControllerTest
         var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             threadId: "threadId");
         await _tweedRepositoryMock.Create(rootTweed);
-        var thread = new TailorsThread("threadId");
-        thread.AddTweed(rootTweed.Id!);
-        await _threadRepositoryMock.Create(thread);
 
-        var result =
-            await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
+        var result = await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
 
         var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal(rootTweed.Id, resultViewModel.Tweeds[0].Id);

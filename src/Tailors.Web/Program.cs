@@ -11,7 +11,6 @@ using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
 using Tailors.Domain.UserLikesAggregate;
 using Tailors.Infrastructure;
-using Tailors.Infrastructure.ThreadAggregate;
 using Tailors.Infrastructure.TweedAggregate;
 using Tailors.Infrastructure.UserAggregate;
 using Tailors.Infrastructure.UserFollowsAggregate;
@@ -155,7 +154,6 @@ static void SetupOpenTelemetry(WebApplicationBuilder builder)
 
 static void SetupAssemblyScanning(WebApplicationBuilder builder)
 {
-    builder.Services.AddScoped<IThreadRepository, ThreadRepository>();
     builder.Services.AddScoped<ITweedRepository, TweedRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IUserFollowsRepository, UserFollowsRepository>();
