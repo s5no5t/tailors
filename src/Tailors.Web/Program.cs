@@ -43,8 +43,6 @@ SetupIdentity(builder);
 SetupOpenTelemetry(builder);
 SetupAssemblyScanning(builder);
 
-builder.Services.AddHostedService<TweedThreadUpdateSubscriptionWorker>();
-
 var app = builder.Build();
 
 app.UseForwardedHeaders();
