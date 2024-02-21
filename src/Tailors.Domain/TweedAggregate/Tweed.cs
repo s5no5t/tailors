@@ -22,4 +22,9 @@ public class Tweed(string authorId, string text, DateTime createdAt, string? id 
 
     private readonly List<string> _leadingTweedIds = [];
     public IReadOnlyList<string> LeadingTweedIds => _leadingTweedIds;
+
+    public void AddLeadingTweedId(string leadingTweedId)
+    {
+        _leadingTweedIds.Add(leadingTweedId);
+    }
 }

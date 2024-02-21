@@ -13,15 +13,9 @@ public class ThreadUseCase(IThreadRepository threadRepository,
         if (getTweedResult.TryPickT1(out _, out var tweed))
             return new ResourceNotFoundError($"Tweed {tweedId} not found");
 
-        if (tweed.ThreadId is null)
-            return new List<Tweed>();
-
-        var getThreadResult = await threadRepository.GetById(tweed.ThreadId!);
-        if (getThreadResult.TryPickT1(out _, out var thread))
-            return new ResourceNotFoundError($"Thread {tweed.ThreadId} not found");
-
-        var tweedPath = thread.FindTweedPath(tweed.Id!);
-        var tweedsByIds = await tweedRepository.GetByIds(tweedPath.Select(t => t.TweedId!));
+        var tweedPath = tweed.LeadingTweedIds.ToList();
+        tweedPath.Add(tweedId);
+        var tweedsByIds = await tweedRepository.GetByIds(tweedPath);
         var tweeds = tweedsByIds.Values.Select(t => t).ToList();
         return tweeds;
     }

@@ -32,9 +32,6 @@ public class ThreadUseCaseTest
         Tweed rootTweed = new(id: "rootTweedId", authorId: "authorId", createdAt: TestData.FixedDateTime,
             text: string.Empty, threadId: "threadId");
         await _tweedRepositoryMock.Create(rootTweed);
-        TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed.Id!);
-        await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.GetThreadTweedsForTweed("rootTweedId");
 
@@ -51,12 +48,8 @@ public class ThreadUseCaseTest
         await _tweedRepositoryMock.Create(rootTweed);
         Tweed tweed = new(id: "tweedId", parentTweedId: rootTweed.Id!, threadId: "threadId",
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        tweed.AddLeadingTweedId(rootTweed.Id!);
         await _tweedRepositoryMock.Create(tweed);
-
-        TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed.Id!);
-        thread.AddTweed(tweed.Id!, tweed.ParentTweedId);
-        await _threadRepositoryMock.Create(thread);
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
@@ -76,19 +69,16 @@ public class ThreadUseCaseTest
         await _tweedRepositoryMock.Create(rootTweed);
         Tweed parentTweed = new(id: "parentTweedId", parentTweedId: "rootTweedId", threadId: "threadId",
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        parentTweed.AddLeadingTweedId(rootTweed.Id!);
         await _tweedRepositoryMock.Create(parentTweed);
         Tweed tweed = new(id: "tweedId", parentTweedId: "parentTweedId", threadId: "threadId",
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        tweed.AddLeadingTweedId(rootTweed.Id!);
+        tweed.AddLeadingTweedId(parentTweed.Id!);
         await _tweedRepositoryMock.Create(tweed);
         Tweed otherTweed = new(id: "otherTweedId", parentTweedId: "rootTweedId", threadId: "threadId",
             authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
-
-        TailorsThread thread = new("threadId");
-        thread.AddTweed(rootTweed.Id!);
-        thread.AddTweed(parentTweed.Id!, parentTweed.ParentTweedId);
-        thread.AddTweed(tweed.Id!, tweed.ParentTweedId);
-        thread.AddTweed(otherTweed.Id!, otherTweed.ParentTweedId);
-        await _threadRepositoryMock.Create(thread);
+        otherTweed.AddLeadingTweedId(rootTweed.Id!);
 
         var result = await _sut.GetThreadTweedsForTweed("tweedId");
 
