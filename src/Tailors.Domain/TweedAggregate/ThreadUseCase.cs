@@ -1,7 +1,6 @@
 using OneOf;
-using Tailors.Domain.TweedAggregate;
 
-namespace Tailors.Domain.ThreadAggregate;
+namespace Tailors.Domain.TweedAggregate;
 
 public class ThreadUseCase(ITweedRepository tweedRepository)
 {

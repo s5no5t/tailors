@@ -1,8 +1,7 @@
 using JetBrains.Annotations;
-using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 
-namespace Tailors.Domain.Test.ThreadAggregate;
+namespace Tailors.Domain.Test.TweedAggregate;
 
 public class ThreadUseCaseTest
 {

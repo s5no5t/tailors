@@ -1,9 +1,8 @@
-using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
 
-namespace Tailors.Domain.Test.ThreadAggregate;
+namespace Tailors.Domain.Test.TweedAggregate;
 
 public class ShowFeedUseCaseTest
 {

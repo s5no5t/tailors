@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Trace;
 using Raven.DependencyInjection;
 using Raven.Identity;
-using Tailors.Domain.ThreadAggregate;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;

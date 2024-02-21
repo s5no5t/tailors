@@ -1,7 +1,6 @@
-using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserFollowsAggregate;
 
-namespace Tailors.Domain.ThreadAggregate;
+namespace Tailors.Domain.TweedAggregate;
 
 public class ShowFeedUseCase(ITweedRepository tweedRepository, FollowUserUseCase followUserUseCase)
 {
