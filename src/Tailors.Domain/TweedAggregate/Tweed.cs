@@ -5,9 +5,8 @@ namespace Tailors.Domain.TweedAggregate;
 public class Tweed(string authorId, string text, DateTime createdAt, string? id = null)
 {
     [JsonConstructor]
-    public Tweed(string authorId, string text, DateTime createdAt, List<string> leadingTweedIds, string? id = null,
-        string? parentTweedId = null,
-        string? threadId = null) : this(authorId, text, createdAt, id)
+    public Tweed(string authorId, string text, DateTime createdAt, List<string> leadingTweedIds, string? id = null)
+        : this(authorId, text, createdAt, id)
     {
         _leadingTweedIds = leadingTweedIds;
     }

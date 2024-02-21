@@ -53,12 +53,15 @@ internal class DataFaker(IDocumentStore documentStore, DataFakerSettings setting
         List<Tweed> tweeds = [];
         for (var i = 0; i < numTweeds; i++)
         {
-            var tweed = new Tweed(_faker.PickRandom(users).Id!,
-                _faker.Lorem.Paragraph(1),
-                _faker.Date.Past(),
-                new List<string>(),
-                null,
-                tweeds.Count > 0 && _faker.Random.Bool() ? tweeds[i - 1].Id : null);
+            var tweed = new Tweed(_faker.PickRandom(users).Id!, _faker.Lorem.Paragraph(1), _faker.Date.Past());
+
+            var parentTweed = tweeds.Count > 0 && _faker.Random.Bool() ? tweeds[i - 1] : null;
+            if (parentTweed is not null)
+            {
+                tweed.AddLeadingTweedIds(parentTweed.LeadingTweedIds);
+                tweed.AddLeadingTweedId(parentTweed.Id!);
+            }
+
             await bulkInsert.StoreAsync(tweed);
             tweeds.Add(tweed);
         }
