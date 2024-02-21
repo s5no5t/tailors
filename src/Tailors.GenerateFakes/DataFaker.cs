@@ -56,6 +56,7 @@ internal class DataFaker(IDocumentStore documentStore, DataFakerSettings setting
             var tweed = new Tweed(_faker.PickRandom(users).Id!,
                 _faker.Lorem.Paragraph(1),
                 _faker.Date.Past(),
+                new List<string>(),
                 null,
                 tweeds.Count > 0 && _faker.Random.Bool() ? tweeds[i - 1].Id : null);
             await bulkInsert.StoreAsync(tweed);
