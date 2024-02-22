@@ -1,7 +1,13 @@
 @model Tailors.Web.Features.Shared.TweedViewModel
 
+@{
+    var tweedUrl = Url.Action("ShowThreadForTweed", "Tweed", new { tweedId = Model.Id });
+    var likeTweedUrl = Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed });
+    var unlikeTweedUrl = Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed });
+}
+
 <div class="d-flex flex-column p-2 tweed @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
-     @(!Model.IsCurrentTweed ? $"hx-get={Url.Action("ShowThreadForTweed", "Tweed", new { tweedId = Model.Id })} hx-target=body hx-swap=outerHTML hx-push-url=true" : "")>
+     @(!Model.IsCurrentTweed ? $"hx-get={tweedUrl} hx-target=body hx-swap=outerHTML hx-push-url=true" : "")>
     <div>
         <a class="link-secondary fw-bold" asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId">@Model.Author</a>
         <small class="text-muted">@Model.CreatedAt</small>
@@ -10,7 +16,7 @@
         @Model.Text
     </div>
     <div>
-        <span hx-post="@(Model.LikedByCurrentUser ? Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed }) : Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed }))"
+        <span hx-post="@(Model.LikedByCurrentUser ? likeTweedUrl : unlikeTweedUrl)"
               hx-target="closest .tweed"
               hx-swap="outerHTML"
               hx-sync="closest div.tweed:drop"
