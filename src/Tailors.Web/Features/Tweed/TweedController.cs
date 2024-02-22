@@ -33,7 +33,7 @@ public class TweedController(ITweedRepository tweedRepository,
 
         ShowThreadForTweedViewModel viewModel = new()
         {
-            LeadingTweeds = await tweedViewModelFactory.Create(leadingTweeds, currentUserId!),
+            LeadingTweeds = await tweedViewModelFactory.Create(leadingTweeds, currentUserId!, decodedTweedId),
             CreateReplyTweed = new CreateReplyTweedViewModel
             {
                 ParentTweedId = decodedTweedId
