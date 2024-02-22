@@ -120,8 +120,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: TestData.FixedDateTime,
-            authorId: "authorId");
+        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: TestData.FixedDateTime, authorId: "authorId");
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
@@ -131,16 +130,33 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
         Assert.Equal("tweedId", tweeds[0].Id);
     }
 
-
     [Fact]
     public async Task GetReplyTweeds_ShouldReturnEmptyList_WhenNoResults()
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
-
         var repository = new TweedRepository(session);
 
         var tweeds = await repository.GetReplyTweeds("tweedId");
 
         Assert.Empty(tweeds);
+    }
+
+    [Fact]
+    public async Task GetReplyTweeds_ShouldReturnTweed_WhenItsLeadingTweedsContainTweedId()
+    {
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+        Tweed tweed = new(text: "", id: "tweedWithReplyId", createdAt: TestData.FixedDateTime, authorId: "authorId");
+        await session.StoreAsync(tweed);
+        Tweed replyTweed = new(text: "", id: "replyTweedId", createdAt: TestData.FixedDateTime, authorId: "authorId");
+        replyTweed.AddLeadingTweedId(tweed.Id!);
+        await session.StoreAsync(replyTweed);
+        await session.SaveChangesAsync();
+        var repository = new TweedRepository(session);
+
+        var foundReplyTweeds = await repository.GetReplyTweeds(tweed.Id!);
+
+        Assert.NotEmpty(foundReplyTweeds);
+        Assert.Equal(replyTweed.Id, foundReplyTweeds[0].Id);
     }
 }

@@ -57,7 +57,11 @@ public sealed class TweedRepository(IAsyncDocumentSession session) : ITweedRepos
 
     public async Task<List<Tweed>> GetReplyTweeds(string tweedId)
     {
-        return [];
+        var replyTweeds = await session.Query<Tweed>()
+            .Where(t => t.LeadingTweedIds.Contains(tweedId))
+            .Include(t => t.AuthorId)
+            .ToListAsync();
+        return replyTweeds;
     }
 
     public async Task<List<Tweed>> GetRecentTweeds(int count)
