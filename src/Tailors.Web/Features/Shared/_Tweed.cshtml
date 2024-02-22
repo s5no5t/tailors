@@ -4,12 +4,13 @@
     var tweedUrl = Url.Action("ShowThreadForTweed", "Tweed", new { tweedId = Model.Id });
     var likeTweedUrl = Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed });
     var unlikeTweedUrl = Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed });
+    var authorProfileUrl = Url.Action("Index", "Profile", new { userId = Model.AuthorId });
 }
 
 <div class="d-flex flex-column p-2 tweed @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
      @(!Model.IsCurrentTweed ? $"hx-get={tweedUrl} hx-target=body hx-swap=outerHTML hx-push-url=true" : "")>
     <div>
-        <a class="link-secondary fw-bold" asp-controller="Profile" asp-action="Index" asp-route-userid="@Model.AuthorId">@Model.Author</a>
+        <a class="link-secondary fw-bold" href="@authorProfileUrl">@Model.Author</a>
         <small class="text-muted">@Model.CreatedAt</small>
     </div>
     <div class="mt-1 mb-1">
