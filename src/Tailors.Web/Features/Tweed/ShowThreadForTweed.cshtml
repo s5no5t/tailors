@@ -10,3 +10,8 @@
 }
 
 <partial name="_CreateReplyTweed" model="@Model.CreateReplyTweed"/>
+
+@foreach (var tweed in Model.ReplyTweeds)
+{
+    <partial name="_Tweed" model="tweed"/>
+}

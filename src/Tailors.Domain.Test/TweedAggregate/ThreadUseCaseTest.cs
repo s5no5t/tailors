@@ -81,4 +81,30 @@ public class ThreadUseCaseTest
             },
             e => Assert.Fail(e.Message));
     }
+
+    [Fact]
+    public async Task GetReplyTweedsForTweed_ShouldReturnFail_WhenThereIsNoTweed()
+    {
+        var result = await _sut.GetReplyTweedsForTweed("unknownTweedId");
+
+        result.Switch(
+            _ => Assert.Fail("Should not return success"),
+            _ => { });
+    }
+
+    [Fact]
+    public async Task GetReplyTweedsForTweed_ShouldReturnReplyTweed()
+    {
+        Tweed tweed = new(id: "tweedId", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        await _tweedRepositoryMock.Create(tweed);
+        Tweed replyTweed = new(id: "replyTweedId", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        replyTweed.AddLeadingTweedId(tweed.Id!);
+        await _tweedRepositoryMock.Create(replyTweed);
+
+        var result = await _sut.GetReplyTweedsForTweed("tweedId");
+
+        result.Switch(
+            t => Assert.Equal("replyTweedId", t[0].Id),
+            e => Assert.Fail(e.Message));
+    }
 }

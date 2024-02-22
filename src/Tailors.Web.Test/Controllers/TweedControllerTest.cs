@@ -66,7 +66,7 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task ShowThreadForTweed_ShouldReturnTweed()
+    public async Task ShowThreadForTweed_ShouldReturnLeadingTweed()
     {
         var rootTweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
         await _tweedRepositoryMock.Create(rootTweed);
@@ -75,6 +75,21 @@ public class TweedControllerTest
 
         var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
         Assert.Equal(rootTweed.Id, resultViewModel.LeadingTweeds[0].Id);
+    }
+
+    [Fact]
+    public async Task ShowThreadForTweed_ShouldReturnReplyTweed()
+    {
+        var tweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
+        await _tweedRepositoryMock.Create(tweed);
+        var replyTweed = new Tweed(id: "replyTweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
+        replyTweed.AddLeadingTweedId(tweed.Id!);
+        await _tweedRepositoryMock.Create(replyTweed);
+
+        var result = await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
+
+        var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
+        Assert.Equal(replyTweed.Id, resultViewModel.ReplyTweeds[0].Id);
     }
 
     [Fact]

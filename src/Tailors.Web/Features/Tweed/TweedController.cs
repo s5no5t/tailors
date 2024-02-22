@@ -19,24 +19,26 @@ public class TweedController(ITweedRepository tweedRepository,
     public async Task<ActionResult> ShowThreadForTweed(string tweedId,
         [FromServices] ThreadUseCase threadUseCase)
     {
-        var decodedTweedId =
-            HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
+        var decodedTweedId = HttpUtility.UrlDecode(tweedId); // ASP.NET Core doesn't auto-decode parameters
 
-        var threadTweedsResult = await threadUseCase.GetThreadTweedsForTweed(decodedTweedId);
-        return await threadTweedsResult.Match<Task<ActionResult>>(
-            async tweeds =>
+        var leadingTweedsResult = await threadUseCase.GetThreadTweedsForTweed(decodedTweedId);
+        var replyTweedsResult = await threadUseCase.GetReplyTweedsForTweed(decodedTweedId);
+
+        if (!leadingTweedsResult.TryPickT0(out var leadingTweeds, out _))
+            return NotFound();
+        if (!replyTweedsResult.TryPickT0(out var replyTweeds, out _))
+            return NotFound();
+
+        ShowThreadForTweedViewModel viewModel = new()
+        {
+            LeadingTweeds = await tweedViewModelFactory.Create(leadingTweeds, decodedTweedId),
+            CreateReplyTweed = new CreateReplyTweedViewModel
             {
-                ShowThreadForTweedViewModel viewModel = new()
-                {
-                    LeadingTweeds = await tweedViewModelFactory.Create(tweeds, decodedTweedId),
-                    CreateReplyTweed = new CreateReplyTweedViewModel
-                    {
-                        ParentTweedId = decodedTweedId
-                    }
-                };
-                return View(viewModel);
+                ParentTweedId = decodedTweedId
             },
-            _ => Task.FromResult<ActionResult>(NotFound()));
+            ReplyTweeds = await tweedViewModelFactory.Create(replyTweeds, decodedTweedId)
+        };
+        return View(viewModel);
     }
 
     [HttpGet("Tweed/Create")]
