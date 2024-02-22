@@ -74,7 +74,7 @@ public class TweedControllerTest
         var result = await _sut.ShowThreadForTweed("tweedId", _threadUseCase);
 
         var resultViewModel = (ShowThreadForTweedViewModel)((ViewResult)result).Model!;
-        Assert.Equal(rootTweed.Id, resultViewModel.Tweeds[0].Id);
+        Assert.Equal(rootTweed.Id, resultViewModel.LeadingTweeds[0].Id);
     }
 
     [Fact]
