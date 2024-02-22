@@ -10,28 +10,14 @@
         @Model.Text
     </div>
     <div>
-        @if (Model.LikedByCurrentUser)
-        {
-            <span hx-post="@Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed })"
-                  hx-target="closest .tweed"
-                  hx-swap="outerHTML"
-                  hx-sync="closest div.tweed:drop"
-                  hx-push-url="false"
-                  class="mt-2">
-                <i class="bi bi-heart-fill" style="font-size: 1em"></i>
-            </span>
-        }
-        else
-        {
-            <span hx-post="@Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed })"
-                  hx-target="closest .tweed"
-                  hx-swap="outerHTML"
-                  hx-sync="closest div.tweed:drop"
-                  hx-push-url="false"
-                  class="mt-2">
-                <i class="bi bi-heart" style="font-size: 1em"></i>
-            </span>
-        }
+        <span hx-post="@(Model.LikedByCurrentUser ? Url.Action("Unlike", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed }) : Url.Action("Like", "Tweed", new { tweedId = Model.Id, isCurrent = Model.IsCurrentTweed }))"
+              hx-target="closest .tweed"
+              hx-swap="outerHTML"
+              hx-sync="closest div.tweed:drop"
+              hx-push-url="false"
+              class="mt-2">
+            <i class="bi @(Model.LikedByCurrentUser ? "bi-heart-fill" : "bi-heart")" style="font-size: 1em"></i>
+        </span>
         <span> @Model.LikesCount</span>
     </div>
 </div>
