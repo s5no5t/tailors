@@ -29,14 +29,16 @@ public class TweedController(ITweedRepository tweedRepository,
         if (!replyTweedsResult.TryPickT0(out var replyTweeds, out _))
             return NotFound();
 
+        var currentUserId = userManager.GetUserId(User);
+
         ShowThreadForTweedViewModel viewModel = new()
         {
-            LeadingTweeds = await tweedViewModelFactory.Create(leadingTweeds, decodedTweedId),
+            LeadingTweeds = await tweedViewModelFactory.Create(leadingTweeds, currentUserId!),
             CreateReplyTweed = new CreateReplyTweedViewModel
             {
                 ParentTweedId = decodedTweedId
             },
-            ReplyTweeds = await tweedViewModelFactory.Create(replyTweeds, decodedTweedId)
+            ReplyTweeds = await tweedViewModelFactory.Create(replyTweeds, currentUserId!)
         };
         return View(viewModel);
     }

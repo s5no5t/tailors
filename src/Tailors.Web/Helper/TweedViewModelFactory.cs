@@ -45,8 +45,7 @@ public class TweedViewModelFactory
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
-        string currentTweedId = "none")
+    public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId, string currentTweedId = "none")
     {
         List<TweedViewModel> tweedViewModels = new();
         foreach (var tweed in tweeds)
