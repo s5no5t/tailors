@@ -130,4 +130,17 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
 
         Assert.Equal("tweedId", tweeds[0].Id);
     }
+
+
+    [Fact]
+    public async Task GetReplyTweeds_ShouldReturnEmptyList_WhenNoResults()
+    {
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
+
+        var repository = new TweedRepository(session);
+
+        var tweeds = await repository.GetReplyTweeds("tweedId");
+
+        Assert.Empty(tweeds);
+    }
 }

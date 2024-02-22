@@ -55,9 +55,9 @@ public sealed class TweedRepository(IAsyncDocumentSession session) : ITweedRepos
         return followerTweeds;
     }
 
-    public Task<List<Tweed>> GetReplyTweeds(string tweedId)
+    public async Task<List<Tweed>> GetReplyTweeds(string tweedId)
     {
-        throw new NotImplementedException();
+        return [];
     }
 
     public async Task<List<Tweed>> GetRecentTweeds(int count)
