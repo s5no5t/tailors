@@ -93,18 +93,25 @@ public class ThreadUseCaseTest
     }
 
     [Fact]
-    public async Task GetReplyTweedsForTweed_ShouldReturnReplyTweed()
+    public async Task GetReplyTweedsForTweed_ShouldReturnReplyTweeds()
     {
         Tweed tweed = new(id: "tweedId", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
         await _tweedRepositoryMock.Create(tweed);
-        Tweed replyTweed = new(id: "replyTweedId", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
-        replyTweed.AddLeadingTweedId(tweed.Id!);
-        await _tweedRepositoryMock.Create(replyTweed);
+        Tweed replyTweed1 = new(id: "replyTweed1Id", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        replyTweed1.AddLeadingTweedId(tweed.Id!);
+        await _tweedRepositoryMock.Create(replyTweed1);
+        Tweed replyTweed2 = new(id: "replyTweed2Id", authorId: "authorId", createdAt: TestData.FixedDateTime, text: string.Empty);
+        replyTweed2.AddLeadingTweedId(tweed.Id!);
+        await _tweedRepositoryMock.Create(replyTweed2);
 
         var result = await _sut.GetReplyTweedsForTweed("tweedId");
 
         result.Switch(
-            t => Assert.Equal("replyTweedId", t[0].Id),
+            t =>
+            {
+                Assert.Equal("replyTweed1Id", t[0].Id);
+                Assert.Equal("replyTweed2Id", t[1].Id);
+            },
             e => Assert.Fail(e.Message));
     }
 }

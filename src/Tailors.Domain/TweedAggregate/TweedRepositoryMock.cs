@@ -63,4 +63,12 @@ public class TweedRepositoryMock : ITweedRepository
             .Select(t => t.Value).ToList();
         return Task.FromResult(tweeds);
     }
+
+    public Task<List<Tweed>> GetReplyTweeds(string tweedId)
+    {
+        var tweeds = _tweeds
+            .Where(t => t.Value.LeadingTweedIds.Contains(tweedId))
+            .Select(t => t.Value).ToList();
+        return Task.FromResult(tweeds);
+    }
 }
