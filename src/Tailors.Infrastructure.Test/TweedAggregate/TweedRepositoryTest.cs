@@ -36,7 +36,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     }
 
     [Fact]
-    public async Task GetTweedsForUser_ShouldReturnTweeds()
+    public async Task GetAllByAuthorId_ShouldReturnTweeds()
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -51,7 +51,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     }
 
     [Fact]
-    public async Task GetTweedsForUser_ShouldReturnOrderedTweeds()
+    public async Task GetAllByAuthorId_ShouldReturnOrderedTweeds()
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -70,7 +70,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     }
 
     [Fact]
-    public async Task GetTweedsForUser_ShouldReturn20Tweeds()
+    public async Task GetAllByAuthorId_ShouldReturn20Tweeds()
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
@@ -89,7 +89,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     }
 
     [Fact]
-    public async Task GetTweedsForUser_ShouldNotReturnTweedsFromOtherUsers()
+    public async Task GetAllByAuthorId_ShouldNotReturnTweedsFromOtherUsers()
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
