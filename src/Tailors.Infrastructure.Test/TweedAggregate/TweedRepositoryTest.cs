@@ -136,7 +136,7 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         var repository = new TweedRepository(session);
 
-        var tweeds = await repository.GetReplyTweeds(["tweedId"]);
+        var tweeds = await repository.GetUpTo20ReplyTweeds(["tweedId"]);
 
         Assert.Empty(tweeds);
     }
@@ -154,9 +154,30 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 
-        var foundReplyTweeds = await repository.GetReplyTweeds([tweed.Id!]);
+        var foundReplyTweeds = await repository.GetUpTo20ReplyTweeds([tweed.Id!]);
 
         Assert.NotEmpty(foundReplyTweeds);
         Assert.Equal(replyTweed.Id, foundReplyTweeds[0].Id);
+    }
+
+    [Fact]
+    public async Task GetReplyTweeds_ShouldLimitCountTo20()
+    {
+        using var session = ravenDb.DocumentStore.OpenAsyncSession();
+        session.Advanced.WaitForIndexesAfterSaveChanges();
+        Tweed tweed = new(text: "", id: "tweedWithManyRepliesId", createdAt: TestData.FixedDateTime, authorId: "authorId");
+        await session.StoreAsync(tweed);
+        for (int i = 0; i < 25; i++)
+        {
+            Tweed replyTweed = new(text: "", id: $"replyTweed{i}", createdAt: TestData.FixedDateTime, authorId: "authorId");
+            replyTweed.AddLeadingTweedId(tweed.Id!);
+            await session.StoreAsync(replyTweed);
+        }
+        await session.SaveChangesAsync();
+        var repository = new TweedRepository(session);
+
+        var foundReplyTweeds = await repository.GetUpTo20ReplyTweeds([tweed.Id!]);
+
+        Assert.Equal(20, foundReplyTweeds.Count);
     }
 }

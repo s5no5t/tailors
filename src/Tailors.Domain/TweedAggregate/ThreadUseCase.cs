@@ -26,7 +26,7 @@ public class ThreadUseCase(ITweedRepository tweedRepository)
         var leadingTweedIds = tweed.LeadingTweedIds.ToList();
         leadingTweedIds.Add(tweedId);
 
-        var replyTweeds = await tweedRepository.GetReplyTweeds(leadingTweedIds);
+        var replyTweeds = await tweedRepository.GetUpTo20ReplyTweeds(leadingTweedIds);
         return replyTweeds;
     }
 }

@@ -64,7 +64,7 @@ public class TweedRepositoryMock : ITweedRepository
         return Task.FromResult(tweeds);
     }
 
-    public Task<List<Tweed>> GetReplyTweeds(IReadOnlyCollection<string> leadingTweedIds)
+    public Task<List<Tweed>> GetUpTo20ReplyTweeds(IReadOnlyCollection<string> leadingTweedIds)
     {
         var tweeds = _tweeds
             .Where(t => t.Value.LeadingTweedIds.HasPrefix(leadingTweedIds))
