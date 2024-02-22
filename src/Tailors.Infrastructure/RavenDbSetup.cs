@@ -58,5 +58,6 @@ public static class RavenDbSetup
         new UsersByUserName().Execute(store);
         new TweedsByAuthorIdAndCreatedAt().Execute(store);
         new TweedsByText().Execute(store);
+        new TweedsByLeadingTweedIdsString().Execute(store);
     }
 }

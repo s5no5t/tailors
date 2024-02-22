@@ -55,10 +55,12 @@ public sealed class TweedRepository(IAsyncDocumentSession session) : ITweedRepos
         return followerTweeds;
     }
 
-    public async Task<List<Tweed>> GetReplyTweeds(string tweedId)
+    public async Task<List<Tweed>> GetReplyTweeds(IReadOnlyCollection<string> leadingTweedIds)
     {
-        var replyTweeds = await session.Query<Tweed>()
-            .Where(t => t.LeadingTweedIds.Contains(tweedId))
+        var prefix = string.Join(",", leadingTweedIds);
+        var replyTweeds = await session.Query<TweedsByLeadingTweedIdsString.Result, TweedsByLeadingTweedIdsString>()
+            .Where(t => t.LeadingTweedIdsString.StartsWith(prefix))
+            .OfType<Tweed>()
             .Include(t => t.AuthorId)
             .ToListAsync();
         return replyTweeds;

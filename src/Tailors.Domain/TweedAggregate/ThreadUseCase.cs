@@ -23,7 +23,10 @@ public class ThreadUseCase(ITweedRepository tweedRepository)
         if (getTweedResult.TryPickT1(out _, out var tweed))
             return new ResourceNotFoundError($"Tweed {tweedId} not found");
 
-        var replyTweeds = await tweedRepository.GetReplyTweeds(tweedId);
+        var leadingTweedIds = tweed.LeadingTweedIds.ToList();
+        leadingTweedIds.Add(tweedId);
+
+        var replyTweeds = await tweedRepository.GetReplyTweeds(leadingTweedIds);
         return replyTweeds;
     }
 }

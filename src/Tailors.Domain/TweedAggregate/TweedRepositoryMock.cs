@@ -64,11 +64,20 @@ public class TweedRepositoryMock : ITweedRepository
         return Task.FromResult(tweeds);
     }
 
-    public Task<List<Tweed>> GetReplyTweeds(string tweedId)
+    public Task<List<Tweed>> GetReplyTweeds(IReadOnlyCollection<string> leadingTweedIds)
     {
         var tweeds = _tweeds
-            .Where(t => t.Value.LeadingTweedIds.Contains(tweedId))
+            .Where(t => t.Value.LeadingTweedIds.HasPrefix(leadingTweedIds))
             .Select(t => t.Value).ToList();
         return Task.FromResult(tweeds);
+    }
+}
+
+internal static class CollectionExtensions
+{
+    internal static bool HasPrefix(this IReadOnlyCollection<string> leadingTweedIds, IReadOnlyCollection<string> prefix)
+    {
+        return leadingTweedIds.Count >= prefix.Count
+               && leadingTweedIds.Take(prefix.Count).SequenceEqual(prefix);
     }
 }

@@ -27,5 +27,5 @@ public interface ITweedRepository
     Task<List<Tweed>> GetFollowerTweeds(List<string> followedUserIds, int count);
 
     [MustUseReturnValue]
-    Task<List<Tweed>> GetReplyTweeds(string tweedId);
+    Task<List<Tweed>> GetReplyTweeds(IReadOnlyCollection<string> leadingTweedIds);
 }
