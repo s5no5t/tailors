@@ -2,7 +2,8 @@
   "devDependencies": {
     "tailwindcss": "^3.4.1"
   },
-    "scripts": {
-        "build:css": "tailwindcss --input ./wwwroot/css/site.css --output ./wwwroot/css/output.css"
-    }
+  "scripts": {
+      "build:css": "tailwindcss --input ./wwwroot/css/site.css --output ./wwwroot/css/output.css",
+      "watch:css": "tailwindcss --input ./wwwroot/css/site.css --output ./wwwroot/css/output.css --watch"
+  }
 }
