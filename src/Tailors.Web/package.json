@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "tailwindcss": "^3.4.1"
-  }
+  },
+    "scripts": {
+        "tailwindcss": "tailwindcss --input ./wwwroot/css/site.css --output ./wwwroot/css/output.css"
+    }
 }
