@@ -3,8 +3,6 @@
     ViewData["Title"] = "Create Tweed";
 }
 
-<h1 class="mb-4">@ViewData["Title"]</h1>
-
-<form method="post" asp-action="Create">
+<form method="post" action="@Url.Action(action: "Create")">
     <partial name="_CreateTweed" model="@Model.CreateTweed"/>
 </form>
