@@ -120,7 +120,8 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: TestData.FixedDateTime, authorId: "authorId");
+        Tweed tweed = new(text: "Here is a word included.", id: "tweedId", createdAt: TestData.FixedDateTime,
+            authorId: "authorId");
         await session.StoreAsync(tweed);
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
@@ -165,14 +166,17 @@ public class TweedRepositoryTest(RavenTestDbFixture ravenDb) : IClassFixture<Rav
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        Tweed tweed = new(text: "", id: "tweedWithManyRepliesId", createdAt: TestData.FixedDateTime, authorId: "authorId");
+        Tweed tweed = new(text: "", id: "tweedWithManyRepliesId", createdAt: TestData.FixedDateTime,
+            authorId: "authorId");
         await session.StoreAsync(tweed);
-        for (int i = 0; i < 25; i++)
+        for (var i = 0; i < 25; i++)
         {
-            Tweed replyTweed = new(text: "", id: $"replyTweed{i}", createdAt: TestData.FixedDateTime, authorId: "authorId");
+            Tweed replyTweed = new(text: "", id: $"replyTweed{i}", createdAt: TestData.FixedDateTime,
+                authorId: "authorId");
             replyTweed.AddLeadingTweedId(tweed.Id!);
             await session.StoreAsync(replyTweed);
         }
+
         await session.SaveChangesAsync();
         var repository = new TweedRepository(session);
 

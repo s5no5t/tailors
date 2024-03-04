@@ -8,8 +8,9 @@ using Tailors.Web.Helper;
 namespace Tailors.Web.Features.Tweed;
 
 [Authorize]
-public class TweedController(ITweedRepository tweedRepository,
-        TweedViewModelFactory tweedViewModelFactory)
+public class TweedController(
+    ITweedRepository tweedRepository,
+    TweedViewModelFactory tweedViewModelFactory)
     : Controller
 {
     [HttpGet("Tweed/{tweedId}")]

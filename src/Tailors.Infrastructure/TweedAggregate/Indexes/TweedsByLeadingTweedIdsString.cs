@@ -5,11 +5,6 @@ namespace Tailors.Infrastructure.TweedAggregate.Indexes;
 
 public class TweedsByLeadingTweedIdsString : AbstractIndexCreationTask<Tweed>
 {
-    public class Result
-    {
-        public string LeadingTweedIdsString { get; set; } = string.Empty;
-    }
-
     public TweedsByLeadingTweedIdsString()
     {
         Map = tweeds => from tweed in tweeds
@@ -17,5 +12,10 @@ public class TweedsByLeadingTweedIdsString : AbstractIndexCreationTask<Tweed>
                         {
                             LeadingTweedIdsString = string.Join(",", tweed.LeadingTweedIds)
                         };
+    }
+
+    public class Result
+    {
+        public string LeadingTweedIdsString { get; set; } = string.Empty;
     }
 }

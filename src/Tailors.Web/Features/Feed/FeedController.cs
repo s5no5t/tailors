@@ -9,8 +9,9 @@ using Tailors.Web.Helper;
 namespace Tailors.Web.Features.Feed;
 
 [Authorize]
-public class FeedController(ShowFeedUseCase showFeedUseCase,
-        TweedViewModelFactory tweedViewModelFactory)
+public class FeedController(
+    ShowFeedUseCase showFeedUseCase,
+    TweedViewModelFactory tweedViewModelFactory)
     : Controller
 {
     private const int PageSize = 20;

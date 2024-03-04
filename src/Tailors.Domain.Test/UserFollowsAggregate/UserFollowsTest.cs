@@ -1,3 +1,5 @@
+using Tailors.Domain.UserFollowsAggregate;
+
 namespace Tailors.Domain.Test.UserFollowsAggregate;
 
 public class UserFollowsTest
@@ -7,7 +9,7 @@ public class UserFollowsTest
     {
         var userId = "User/123-A";
 
-        var followsId = Domain.UserFollowsAggregate.UserFollows.BuildId(userId);
+        var followsId = UserFollows.BuildId(userId);
 
         Assert.Equal($"{userId}/Follows", followsId);
     }

@@ -31,11 +31,12 @@ public class TweedControllerTest
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         _likeTweedUseCase = new LikeTweedUseCase(userLikesRepositoryMock);
         var userRepositoryMock = new UserRepositoryMock();
-        userRepositoryMock.Create(new("CurrentUserName", 0, "user@example.com", "currentUser"));
-        userRepositoryMock.Create(new("author", 0, "author@example.com", "authorId"));
+        userRepositoryMock.Create(new AppUser("CurrentUserName", 0, "user@example.com", "currentUser"));
+        userRepositoryMock.Create(new AppUser("author", 0, "author@example.com", "authorId"));
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock);
         _threadUseCase = new ThreadUseCase(_tweedRepositoryMock);
-        TweedViewModelFactory tweedViewModelFactory = new(userLikesRepositoryMock, _likeTweedUseCase, userRepositoryMock);
+        TweedViewModelFactory tweedViewModelFactory =
+            new(userLikesRepositoryMock, _likeTweedUseCase, userRepositoryMock);
 
         _sut = new TweedController(_tweedRepositoryMock, tweedViewModelFactory)
         {
@@ -81,7 +82,8 @@ public class TweedControllerTest
     {
         var tweed = new Tweed(id: "tweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
         await _tweedRepositoryMock.Create(tweed);
-        var replyTweed = new Tweed(id: "replyTweedId", text: string.Empty, createdAt: FixedDateTime, authorId: "authorId");
+        var replyTweed = new Tweed(id: "replyTweedId", text: string.Empty, createdAt: FixedDateTime,
+            authorId: "authorId");
         replyTweed.AddLeadingTweedId(tweed.Id!);
         await _tweedRepositoryMock.Create(replyTweed);
 

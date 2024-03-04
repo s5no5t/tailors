@@ -10,6 +10,7 @@ public class AuthenticationUseCase(IUserRepository userRepository)
             user = AppUser.FromGithub(githubId, githubUsername);
             await userRepository.Create(user);
         }
+
         return user;
     }
 }

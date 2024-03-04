@@ -45,23 +45,25 @@ builder.Services.AddAuthentication(options =>
         options.LogoutPath = "/signout";
     })
     .AddGitHub(options =>
-{
-    options.ClientId = builder.Configuration["GitHub:ClientId"] ?? throw new ArgumentException("GitHub:ClientId is missing");
-    options.ClientSecret = builder.Configuration["GitHub:ClientSecret"] ?? throw new ArgumentException("GitHub:ClientSecret is missing");
-
-    options.SaveTokens = true;
-
-    options.Events.OnCreatingTicket = async context =>
     {
-        var githubId = context.User.GetProperty("id").GetInt64();
-        var githubUsername = context.User.GetProperty("login").GetString();
-        if (githubUsername is null) throw new InvalidOperationException("username is null");
+        options.ClientId = builder.Configuration["GitHub:ClientId"] ??
+                           throw new ArgumentException("GitHub:ClientId is missing");
+        options.ClientSecret = builder.Configuration["GitHub:ClientSecret"] ??
+                               throw new ArgumentException("GitHub:ClientSecret is missing");
 
-        var user = await FindOrCreateAppUser(context, githubId, githubUsername);
+        options.SaveTokens = true;
 
-        context.Identity!.AddClaim(new Claim(ClaimsPrincipalExtensions.UrnTailorsAppUserId, user.Id!));
-    };
-});
+        options.Events.OnCreatingTicket = async context =>
+        {
+            var githubId = context.User.GetProperty("id").GetInt64();
+            var githubUsername = context.User.GetProperty("login").GetString();
+            if (githubUsername is null) throw new InvalidOperationException("username is null");
+
+            var user = await FindOrCreateAppUser(context, githubId, githubUsername);
+
+            context.Identity!.AddClaim(new Claim(ClaimsPrincipalExtensions.UrnTailorsAppUserId, user.Id!));
+        };
+    });
 
 SetupRavenDbServices(builder);
 SetupOpenTelemetry(builder);
@@ -126,7 +128,8 @@ static void SetupAssemblyScanning(WebApplicationBuilder builder)
     builder.Services.AddScoped<TweedViewModelFactory>();
 }
 
-async Task<AppUser> FindOrCreateAppUser(OAuthCreatingTicketContext oAuthCreatingTicketContext, long githubId, string githubUsername)
+async Task<AppUser> FindOrCreateAppUser(OAuthCreatingTicketContext oAuthCreatingTicketContext, long githubId,
+    string githubUsername)
 {
     var session = oAuthCreatingTicketContext.HttpContext.RequestServices.GetRequiredService<IDocumentStore>();
     using var asyncSession = session.OpenAsyncSession();

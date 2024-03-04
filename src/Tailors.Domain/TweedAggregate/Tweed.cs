@@ -4,6 +4,8 @@ namespace Tailors.Domain.TweedAggregate;
 
 public class Tweed(string authorId, string text, DateTime createdAt, string? id = null)
 {
+    private readonly List<string> _leadingTweedIds = [];
+
     [JsonConstructor]
     public Tweed(string authorId, string text, DateTime createdAt, List<string> leadingTweedIds, string? id = null)
         : this(authorId, text, createdAt, id)
@@ -15,8 +17,6 @@ public class Tweed(string authorId, string text, DateTime createdAt, string? id 
     public string Text { get; } = text;
     public DateTime CreatedAt { get; } = createdAt;
     public string AuthorId { get; } = authorId;
-
-    private readonly List<string> _leadingTweedIds = [];
     public IReadOnlyList<string> LeadingTweedIds => _leadingTweedIds;
 
     public void AddLeadingTweedId(string leadingTweedId)

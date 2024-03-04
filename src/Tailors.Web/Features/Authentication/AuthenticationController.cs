@@ -7,22 +7,19 @@ namespace Tailors.Web.Features.Authentication;
 public class AuthenticationController : Controller
 {
     [HttpGet("~/signin")]
-    public async Task<IActionResult> SignIn() => View("SignIn", await HttpContext.GetExternalProvidersAsync());
+    public async Task<IActionResult> SignIn()
+    {
+        return View("SignIn", await HttpContext.GetExternalProvidersAsync());
+    }
 
     [HttpPost("~/signin")]
     public async Task<IActionResult> SignIn([FromForm] string provider)
     {
         // Note: the "provider" parameter corresponds to the external
         // authentication provider chosen by the user agent.
-        if (string.IsNullOrWhiteSpace(provider))
-        {
-            return BadRequest();
-        }
+        if (string.IsNullOrWhiteSpace(provider)) return BadRequest();
 
-        if (!await HttpContext.IsProviderSupportedAsync(provider))
-        {
-            return BadRequest();
-        }
+        if (!await HttpContext.IsProviderSupportedAsync(provider)) return BadRequest();
 
         // Instruct the middleware corresponding to the requested external identity
         // provider to redirect the user agent to its own authorization endpoint.

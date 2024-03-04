@@ -8,9 +8,12 @@ using Tailors.Web.Helper;
 namespace Tailors.Web.Features.Profile;
 
 [Authorize]
-public class ProfileController(ITweedRepository tweedRepository, IUserRepository userRepository,
-        TweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
-        FollowUserUseCase followUserUseCase)
+public class ProfileController(
+    ITweedRepository tweedRepository,
+    IUserRepository userRepository,
+    TweedViewModelFactory tweedViewModelFactory,
+    IUserFollowsRepository userFollowsRepository,
+    FollowUserUseCase followUserUseCase)
     : Controller
 {
     private const int PageSize = 100;
