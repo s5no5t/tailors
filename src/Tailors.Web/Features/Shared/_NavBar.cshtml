@@ -1,5 +1,4 @@
 @using Tailors.Domain.UserAggregate
-@inject SignInManager<AppUser> SignInManager
 
 <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-light">
     <div class="container-fluid">
@@ -12,7 +11,7 @@
         </button>
         <div class="navbar-collapse collapse">
             <ul class="navbar-nav">
-                @if (SignInManager.IsSignedIn(User))
+                @if (User.Identity?.IsAuthenticated == true )
                 {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-controller="Tweed" asp-action="Create">Create</a>
@@ -21,10 +20,7 @@
                         <a class="nav-link text-dark" asp-controller="Search" asp-action="Index">Search</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Account</a>
-                    </li>
-                    <li class="nav-item">
-                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Feed")" method="post">
+                        <form class="form-inline" action="@Url.Action(action: "SignOutCurrentUser", controller: "Authentication", values: new { ReturnUrl = Url.Action("Index", "Feed") })" method="post">
                             <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
                         </form>
                     </li>

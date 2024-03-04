@@ -13,4 +13,21 @@ public class UserRepository(IAsyncDocumentSession session) : IUserRepository
             .Search(u => u.UserName, $"{term}*")
             .Take(20).ToListAsync();
     }
+
+    public async Task<AppUser?> GetById(string id)
+    {
+        return await session.LoadAsync<AppUser>(id)!;
+    }
+
+    public async Task Create(AppUser user)
+    {
+        await session.StoreAsync(user);
+    }
+
+    public async Task<AppUser?> FindByGithubId(long githubId)
+    {
+        return await session.Query<AppUser>()
+            .Where(u => u.GithubId == githubId)
+            .FirstOrDefaultAsync();
+    }
 }

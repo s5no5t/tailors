@@ -11,10 +11,20 @@ public class UserRepositoryMock : IUserRepository
         return Task.FromResult(users);
     }
 
+    public Task<AppUser?> GetById(string id)
+    {
+        return Task.FromResult(_users.GetValueOrDefault(id));
+    }
+
     public Task Create(AppUser appUser)
     {
         appUser.Id ??= _random.Next().ToString();
         _users.Add(appUser.Id, appUser);
         return Task.CompletedTask;
+    }
+
+    public Task<AppUser?> FindByGithubId(long githubId)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,6 +1,5 @@
 using System.Globalization;
 using Humanizer;
-using Microsoft.AspNetCore.Identity;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserLikesAggregate;
@@ -11,12 +10,12 @@ namespace Tailors.Web.Helper;
 public class TweedViewModelFactory(
     IUserLikesRepository userLikesRepository,
     LikeTweedUseCase likeTweedUseCase,
-    UserManager<AppUser> userManager)
+    IUserRepository userRepository)
 {
     public async Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)
     {
         var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
-        var author = await userManager.FindByIdAsync(tweed.AuthorId);
+        var author = await userRepository.GetById(tweed.AuthorId);
         var likesCount = await userLikesRepository.GetLikesCounter(tweed.Id!);
         var currentUserLikesTweed =
             await likeTweedUseCase.DoesUserLikeTweed(tweed.Id!, currentUserId);
@@ -29,7 +28,7 @@ public class TweedViewModelFactory(
             AuthorId = tweed.AuthorId,
             LikesCount = likesCount,
             LikedByCurrentUser = currentUserLikesTweed,
-            Author = author!.UserName,
+            Author = author?.UserName,
             IsCurrentTweed = isCurrent
         };
         return viewModel;

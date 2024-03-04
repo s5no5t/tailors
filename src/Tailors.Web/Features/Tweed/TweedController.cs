@@ -1,9 +1,7 @@
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Domain.TweedAggregate;
-using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserLikesAggregate;
 using Tailors.Web.Helper;
 
@@ -11,7 +9,6 @@ namespace Tailors.Web.Features.Tweed;
 
 [Authorize]
 public class TweedController(ITweedRepository tweedRepository,
-        UserManager<AppUser> userManager,
         TweedViewModelFactory tweedViewModelFactory)
     : Controller
 {
@@ -29,7 +26,7 @@ public class TweedController(ITweedRepository tweedRepository,
         if (!replyTweedsResult.TryPickT0(out var replyTweeds, out _))
             return NotFound();
 
-        var currentUserId = userManager.GetUserId(User);
+        var currentUserId = User.GetId();
 
         ShowThreadForTweedViewModel viewModel = new()
         {
@@ -57,7 +54,7 @@ public class TweedController(ITweedRepository tweedRepository,
     {
         if (!ModelState.IsValid) return PartialView("_CreateTweed", viewModel);
 
-        var currentUserId = userManager.GetUserId(User);
+        var currentUserId = User.GetId();
         var now = DateTime.UtcNow;
 
         var tweed = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
@@ -76,7 +73,7 @@ public class TweedController(ITweedRepository tweedRepository,
     {
         if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
 
-        var currentUserId = userManager.GetUserId(User);
+        var currentUserId = User.GetId();
         var now = DateTime.UtcNow;
         var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
             viewModel.ParentTweedId);
@@ -98,7 +95,7 @@ public class TweedController(ITweedRepository tweedRepository,
         if (getResult.TryPickT1(out _, out var tweed))
             return NotFound();
 
-        var currentUserId = userManager.GetUserId(User)!;
+        var currentUserId = User.GetId();
         var now = DateTime.UtcNow;
         await likeTweedUseCase.AddLike(tweedId, currentUserId, now);
 
@@ -114,7 +111,7 @@ public class TweedController(ITweedRepository tweedRepository,
         if (getResult.TryPickT1(out _, out var tweed))
             return NotFound();
 
-        var currentUserId = userManager.GetUserId(User)!;
+        var currentUserId = User.GetId();
         await likeTweedUseCase.RemoveLike(tweedId, currentUserId);
 
         var viewModel = await tweedViewModelFactory.Create(tweed, currentUserId, isCurrent);

@@ -15,17 +15,11 @@ namespace Tailors.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly AppUser _currentUser = new()
-    {
-        Id = "currentUser"
-    };
+    private readonly AppUser _currentUser = new("CurrentUserName", 0, "user@example.com", "currentUser");
 
     private readonly FollowUserUseCase _followUserUseCase;
 
-    private readonly AppUser _profileUser = new()
-    {
-        Id = "user"
-    };
+    private readonly AppUser _profileUser = new("UserName", 0, "user@example.com", "user");
 
     private readonly ProfileController _sut;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();
@@ -33,18 +27,17 @@ public class ProfileControllerTest
 
     public ProfileControllerTest()
     {
-        var store = new UserStoreMock();
-        store.Create(_currentUser);
-        store.Create(_profileUser);
-        var userManager = UserManagerBuilder.CreateUserManager(store);
+        var userRepositoryMock = new UserRepositoryMock();
+        userRepositoryMock.Create(_currentUser);
+        userRepositoryMock.Create(_profileUser);
         var currentUserPrincipal = ControllerTestHelper.BuildPrincipal(_currentUser.Id!);
         _followUserUseCase = new FollowUserUseCase(_userFollowsRepositoryMock);
         var viewModelFactory = new TweedViewModelFactory(
             new UserLikesRepositoryMock(),
             new LikeTweedUseCase(new UserLikesRepositoryMock()),
-            userManager);
+            userRepositoryMock);
 
-        _sut = new ProfileController(_tweedRepositoryMock, userManager, viewModelFactory,
+        _sut = new ProfileController(_tweedRepositoryMock, userRepositoryMock, viewModelFactory,
             _userFollowsRepositoryMock, _followUserUseCase)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(currentUserPrincipal)

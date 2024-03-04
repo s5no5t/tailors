@@ -1,5 +1,4 @@
 using Tailors.Domain.TweedAggregate;
-using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
 
 namespace Tailors.Domain.Test.TweedAggregate;
@@ -30,9 +29,7 @@ public class ShowFeedUseCaseTest
     [Fact]
     public async Task GetFeed_ShouldReturnTweedsByFollowedUsers()
     {
-        var followedUser = new AppUser();
-
-        Tweed followedUserTweed = new(followedUser.Id!, "test", TestData.FixedDateTime.AddHours(1));
+        Tweed followedUserTweed = new("followedUserId", "test", TestData.FixedDateTime.AddHours(1));
         await _tweedRepositoryMock.Create(followedUserTweed);
 
         var tweeds = await _sut.GetFeed("userId", 0, 20);

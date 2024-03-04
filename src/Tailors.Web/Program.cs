@@ -1,10 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Trace;
+using Raven.Client.Documents;
 using Raven.DependencyInjection;
-using Raven.Identity;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
@@ -14,10 +15,8 @@ using Tailors.Infrastructure.TweedAggregate;
 using Tailors.Infrastructure.UserAggregate;
 using Tailors.Infrastructure.UserFollowsAggregate;
 using Tailors.Infrastructure.UserLikesAggregate;
-using Tailors.Web.Areas.Identity;
 using Tailors.Web.Filters;
 using Tailors.Web.Helper;
-using IdentityRole = Raven.Identity.IdentityRole;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +35,35 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/signin";
+        options.LogoutPath = "/signout";
+    })
+    .AddGitHub(options =>
+{
+    options.ClientId = builder.Configuration["GitHub:ClientId"] ?? throw new ArgumentException("GitHub:ClientId is missing");
+    options.ClientSecret = builder.Configuration["GitHub:ClientSecret"] ?? throw new ArgumentException("GitHub:ClientSecret is missing");
+
+    options.SaveTokens = true;
+
+    options.Events.OnCreatingTicket = async context =>
+    {
+        var githubId = context.User.GetProperty("id").GetInt64();
+        var githubUsername = context.User.GetProperty("login").GetString();
+        if (githubUsername is null) throw new InvalidOperationException("username is null");
+
+        var user = await FindOrCreateAppUser(context, githubId, githubUsername);
+
+        context.Identity!.AddClaim(new Claim(ClaimsPrincipalExtensions.UrnTailorsAppUserId, user.Id!));
+    };
+});
+
 SetupRavenDbServices(builder);
-SetupIdentity(builder);
 SetupOpenTelemetry(builder);
 SetupAssemblyScanning(builder);
 
@@ -72,73 +98,6 @@ static void SetupRavenDbServices(WebApplicationBuilder builder)
     builder.Services.AddRavenDbAsyncSession();
 }
 
-static void SetupIdentity(WebApplicationBuilder builder)
-{
-    builder.Services.AddScoped<IEmailSender, EmailSender>();
-
-    builder.Services
-        .AddIdentity<AppUser, IdentityRole>(options =>
-        {
-            options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-        })
-        .AddRavenDbIdentityStores<AppUser,
-            IdentityRole>(
-            _ => // empty options is a workaround for an exception in case this param is null
-            {
-            })
-        .AddDefaultTokenProviders();
-
-    builder.Services.ConfigureApplicationCookie(
-        options =>
-        {
-            options.LoginPath = "/Identity/Account/login";
-            options.Events = new CookieAuthenticationEvents
-            {
-                OnRedirectToLogin = context =>
-                {
-                    const string hxRedirectHeader = "Hx-Redirect";
-                    const string hxRequestHeader = "Hx-Request";
-                    const string hxBoostedHeader = "Hx-Boosted";
-
-                    if (IsHtmxRequest(context.Request))
-                    {
-                        context.Response.StatusCode = 401;
-                        if (IsHtmxBoostedRequest(context.Request))
-                            context.Response.Headers[hxRedirectHeader] = context.RedirectUri;
-                    }
-                    else
-                    {
-                        context.Response.Redirect(context.RedirectUri);
-                    }
-
-                    return Task.CompletedTask;
-
-                    static bool IsHtmxRequest(HttpRequest request)
-                    {
-                        return string.Equals(request.Headers[hxRequestHeader], "true",
-                            StringComparison.Ordinal);
-                    }
-
-                    static bool IsHtmxBoostedRequest(HttpRequest request)
-                    {
-                        return string.Equals(request.Headers[hxBoostedHeader], "true");
-                    }
-                }
-            };
-        });
-
-    builder.Services.Configure<IdentityOptions>(options =>
-    {
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequiredLength = 6;
-        options.Password.RequiredUniqueChars = 1;
-    });
-}
-
 static void SetupOpenTelemetry(WebApplicationBuilder builder)
 {
     var honeycombOptions = builder.Configuration.GetHoneycombOptions();
@@ -163,5 +122,17 @@ static void SetupAssemblyScanning(WebApplicationBuilder builder)
     builder.Services.AddScoped<ThreadUseCase>();
     builder.Services.AddScoped<CreateTweedUseCase>();
     builder.Services.AddScoped<LikeTweedUseCase>();
+    builder.Services.AddScoped<AuthenticationUseCase>();
     builder.Services.AddScoped<TweedViewModelFactory>();
+}
+
+async Task<AppUser> FindOrCreateAppUser(OAuthCreatingTicketContext oAuthCreatingTicketContext, long githubId, string githubUsername)
+{
+    var session = oAuthCreatingTicketContext.HttpContext.RequestServices.GetRequiredService<IDocumentStore>();
+    using var asyncSession = session.OpenAsyncSession();
+    IUserRepository userRepository = new UserRepository(asyncSession);
+    var authenticationUseCase = new AuthenticationUseCase(userRepository);
+    var appUser = await authenticationUseCase.EnsureUserExistsForGithubUser(githubId, githubUsername);
+    await asyncSession.SaveChangesAsync();
+    return appUser;
 }

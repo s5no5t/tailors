@@ -30,15 +30,14 @@ public class TweedControllerTest
         _notificationManagerMock = new NotificationManagerMock();
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         _likeTweedUseCase = new LikeTweedUseCase(userLikesRepositoryMock);
-        var store = new UserStoreMock();
-        store.Create(new AppUser { UserName = "currentUser" });
-        store.Create(new AppUser { Id = "authorId", UserName = "author" });
-        var userManager = UserManagerBuilder.CreateUserManager(store);
+        var userRepositoryMock = new UserRepositoryMock();
+        userRepositoryMock.Create(new("CurrentUserName", 0, "user@example.com", "currentUser"));
+        userRepositoryMock.Create(new("author", 0, "author@example.com", "authorId"));
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock);
         _threadUseCase = new ThreadUseCase(_tweedRepositoryMock);
-        TweedViewModelFactory tweedViewModelFactory = new(userLikesRepositoryMock, _likeTweedUseCase, userManager);
+        TweedViewModelFactory tweedViewModelFactory = new(userLikesRepositoryMock, _likeTweedUseCase, userRepositoryMock);
 
-        _sut = new TweedController(_tweedRepositoryMock, userManager, tweedViewModelFactory)
+        _sut = new TweedController(_tweedRepositoryMock, tweedViewModelFactory)
         {
             ControllerContext = ControllerTestHelper.BuildControllerContext(_currentUserPrincipal)
         };

@@ -1,17 +1,15 @@
 ﻿using System.Diagnostics;
 using Htmx;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Domain.TweedAggregate;
-using Tailors.Domain.UserAggregate;
 using Tailors.Web.Features.Shared;
 using Tailors.Web.Helper;
 
 namespace Tailors.Web.Features.Feed;
 
 [Authorize]
-public class FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser> userManager,
+public class FeedController(ShowFeedUseCase showFeedUseCase,
         TweedViewModelFactory tweedViewModelFactory)
     : Controller
 {
@@ -19,7 +17,7 @@ public class FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser
 
     public async Task<IActionResult> Index()
     {
-        var currentUserId = userManager.GetUserId(User)!;
+        var currentUserId = User.GetId();
 
         var feedViewModel = await BuildFeedViewModel(0, currentUserId);
         var viewModel = new IndexViewModel
@@ -31,7 +29,7 @@ public class FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser
 
     public async Task<IActionResult> Feed(int page = 0)
     {
-        var currentUserId = userManager.GetUserId(User)!;
+        var currentUserId = User.GetId();
 
         var viewModel = await BuildFeedViewModel(page, currentUserId);
         return PartialView("_Feed", viewModel);
@@ -42,7 +40,7 @@ public class FeedController(ShowFeedUseCase showFeedUseCase, UserManager<AppUser
         if (!Request.IsHtmx())
             throw new Exception("HTMX request expected");
 
-        var currentUserId = userManager.GetUserId(User)!;
+        var currentUserId = User.GetId();
         var feed = await showFeedUseCase.GetFeed(currentUserId, 0, PageSize);
         var mostRecentFeedItem = feed.First();
 

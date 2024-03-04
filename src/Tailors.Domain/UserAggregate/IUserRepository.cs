@@ -6,4 +6,9 @@ public interface IUserRepository
 {
     [MustUseReturnValue]
     Task<List<AppUser>> Search(string term);
+    [MustUseReturnValue]
+    Task<AppUser?> GetById(string id);
+    Task Create(AppUser user);
+    [MustUseReturnValue]
+    Task<AppUser?> FindByGithubId(long githubId);
 }

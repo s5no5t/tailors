@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
@@ -9,7 +8,7 @@ using Tailors.Web.Helper;
 namespace Tailors.Web.Features.Profile;
 
 [Authorize]
-public class ProfileController(ITweedRepository tweedRepository, UserManager<AppUser> userManager,
+public class ProfileController(ITweedRepository tweedRepository, IUserRepository userRepository,
         TweedViewModelFactory tweedViewModelFactory, IUserFollowsRepository userFollowsRepository,
         FollowUserUseCase followUserUseCase)
     : Controller
@@ -18,13 +17,13 @@ public class ProfileController(ITweedRepository tweedRepository, UserManager<App
 
     public async Task<IActionResult> Index(string userId)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        var user = await userRepository.GetById(userId);
         if (user == null)
             return NotFound();
 
         var userTweeds = await tweedRepository.GetAllByAuthorId(userId, PageSize);
 
-        var currentUserId = userManager.GetUserId(User)!;
+        var currentUserId = User.GetId();
         var currentUserFollows = await followUserUseCase.GetFollows(currentUserId);
 
         var viewModel = new IndexViewModel(
@@ -41,11 +40,11 @@ public class ProfileController(ITweedRepository tweedRepository, UserManager<App
     [HttpPost]
     public async Task<IActionResult> Follow(string userId)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        var user = await userRepository.GetById(userId);
         if (user == null)
             return NotFound();
 
-        var currentUserId = userManager.GetUserId(User);
+        var currentUserId = User.GetId();
         if (userId == currentUserId)
             return BadRequest("Following yourself isn't allowed");
 
@@ -61,11 +60,11 @@ public class ProfileController(ITweedRepository tweedRepository, UserManager<App
     [HttpPost]
     public async Task<IActionResult> Unfollow(string userId)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        var user = await userRepository.GetById(userId);
         if (user == null)
             return NotFound();
 
-        var currentUserId = userManager.GetUserId(User);
+        var currentUserId = User.GetId();
 
         await followUserUseCase.RemoveFollower(userId, currentUserId!);
 

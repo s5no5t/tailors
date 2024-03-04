@@ -7,10 +7,13 @@ var config = new ConfigurationBuilder()
     .Build();
 
 var ravenSettings = config.GetRequiredSection("RavenSettings").Get<RavenSettings>();
+if (ravenSettings is null)
+    throw new ArgumentNullException(nameof(ravenSettings));
 using var store = DocumentStoreHelper.OpenDocumentStore(ravenSettings);
 
-var dataFakerSettings =
-    config.GetRequiredSection("DataFakerSettings").Get<DataFakerSettings>();
+var dataFakerSettings = config.GetRequiredSection("DataFakerSettings").Get<DataFakerSettings>();
+if (dataFakerSettings is null)
+    throw new ArgumentNullException(nameof(dataFakerSettings));
 
 var dataFaker = new DataFaker(store, dataFakerSettings);
 
