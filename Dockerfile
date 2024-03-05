@@ -2,16 +2,16 @@ FROM node:lts-alpine as node-build-env
 WORKDIR /App
 
 # Copy everything
-COPY . ./
-RUN cd ./src/Tailors.Web && npm ci
-RUN cd ./src/Tailors.Web && npm run build:css
+COPY ./src/Tailors.Web ./
+RUN npm ci
+RUN npm run build:css
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /App
 
 # Copy everything
 COPY . ./
-COPY --from=node-build-env /App/src/Tailors.Web/wwwroot/css/site.css /App/src/Tailors.Web/wwwroot/css/site.css 
+COPY --from=node-build-env /App/wwwroot/css/site.css /App/src/Tailors.Web/wwwroot/css/site.css 
 # Restore as distinct layers
 ENV HUSKY="0"
 RUN dotnet restore
