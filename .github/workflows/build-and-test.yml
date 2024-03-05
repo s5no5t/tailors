@@ -7,12 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts"
       - name: Setup dotnet
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "6.0.x"
-      - name: Install dependencies
+      - name: Install dotnet dependencies
         run: dotnet restore
+      - name: Install node dependencies
+        run: npm ci
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
