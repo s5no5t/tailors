@@ -22,8 +22,6 @@ using Tailors.Web.Helper;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages()
-    .AddMvcOptions(options => options.Filters.Add<RavenSaveChangesAsyncPageFilter>());
 builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
@@ -92,7 +90,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     "default",
     "{controller=Feed}/{action=Index}/{id?}");
-app.MapRazorPages();
 app.Run();
 
 static void SetupRavenDbServices(WebApplicationBuilder builder)
