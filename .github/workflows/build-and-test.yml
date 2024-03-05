@@ -20,6 +20,9 @@ jobs:
       - name: Install node dependencies
         run: npm ci
         working-directory: ./src/Tailors.Web
+      - name: Build Tailwind
+        run: npm run build:css
+        working-directory: ./src/Tailors.Web
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
