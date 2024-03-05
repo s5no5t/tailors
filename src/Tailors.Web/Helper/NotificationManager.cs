@@ -7,21 +7,15 @@ public interface INotificationManager
     void Clear();
 }
 
-public sealed class NotificationManager : INotificationManager
+public sealed class NotificationManager(IHttpContextAccessor httpContextAccessor) : INotificationManager
 {
     private const string NotificationSuccessCookieName = "notification-success";
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public NotificationManager(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
 
     public string? SuccessMessage
     {
         get
         {
-            _httpContextAccessor.HttpContext!.Request.Cookies.TryGetValue(
+            httpContextAccessor.HttpContext!.Request.Cookies.TryGetValue(
                 NotificationSuccessCookieName,
                 out var successMessage);
             return successMessage;
@@ -30,12 +24,12 @@ public sealed class NotificationManager : INotificationManager
 
     public void AppendSuccess(string message)
     {
-        _httpContextAccessor.HttpContext!.Response.Cookies.Append(NotificationSuccessCookieName,
+        httpContextAccessor.HttpContext!.Response.Cookies.Append(NotificationSuccessCookieName,
             message);
     }
 
     public void Clear()
     {
-        _httpContextAccessor.HttpContext!.Response.Cookies.Delete(NotificationSuccessCookieName);
+        httpContextAccessor.HttpContext!.Response.Cookies.Delete(NotificationSuccessCookieName);
     }
 }
