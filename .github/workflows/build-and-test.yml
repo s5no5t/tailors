@@ -10,7 +10,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version-file: "./src/Tailors.Web/package-lock.json"
+          node-version-file: "package.json"
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
