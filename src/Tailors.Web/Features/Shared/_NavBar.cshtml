@@ -1,14 +1,19 @@
-@using Tailors.Domain.UserAggregate
+@{
+    var feedUrl = Url.Action(action: "Index", controller: "Feed");
+    var createTweedUrl = Url.Action(action: "Create", controller: "Tweed");
+    var searchUrl = Url.Action(action: "Index", controller: "Search");
+    var signoutUrl = Url.Action(action: "SignOutCurrentUser", controller: "Authentication", values: new { ReturnUrl = Url.Action("Index", "Feed") });
+}
 
-<nav class="mt-2 ml-2 flex gap-2">
-    <a class="" asp-area="" asp-controller="Feed" asp-action="Index">
+<nav class="mt-2 ml-2 flex gap-4 p-3">
+    <a href="@feedUrl">
         <img src="/images/tweed.png" alt="Tweed Logo" width="24" height="24"/>
     </a>
     @if (User.Identity?.IsAuthenticated == true)
     {
-        <a class="" asp-controller="Tweed" asp-action="Create">Create</a>
-        <a class="" asp-controller="Search" asp-action="Index">Search</a>
-        <form class="form-inline" action="@Url.Action(action: "SignOutCurrentUser", controller: "Authentication", values: new { ReturnUrl = Url.Action("Index", "Feed") })" method="post">
+        <a href="@createTweedUrl">Create</a>
+        <a href="@searchUrl">Search</a>
+        <form class="form-inline" action="@signoutUrl" method="post">
             <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
         </form>
     }
