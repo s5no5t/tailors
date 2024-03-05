@@ -7,24 +7,30 @@
     var authorProfileUrl = Url.Action("Index", "Profile", new { userId = Model.AuthorId });
 }
 
-<div class="d-flex flex-column p-2 tweed @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
+<div class="p-3 @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
      @(!Model.IsCurrentTweed ? $"hx-get={tweedUrl} hx-target=body hx-swap=outerHTML hx-push-url=true" : "")>
-    <div>
-        <a class="link-secondary fw-bold" href="@authorProfileUrl">@Model.Author</a>
-        <small class="text-muted">@Model.CreatedAt</small>
+
+    <div class='flex gap-2'>
+        <div class='rounded-full overflow-hidden'>
+            <img src="images/face-thumb.jpg" width="50" height="50"/>
+        </div>
+        <div class='flex flex-col'>
+            <div class='flex gap-1'>
+                <p class='text-base text-black font-bold'>@Model.Author</p>
+            </div>
+            <a href="@authorProfileUrl" class='text-base text-slate-gray mt-1'>@Model.Author</a>
+        </div>
     </div>
-    <div class="mt-1 mb-1">
+
+    <p class='text-base leading-6 my-2'>
         @Model.Text
-    </div>
-    <div>
-        <span hx-post="@(Model.LikedByCurrentUser ? likeTweedUrl : unlikeTweedUrl)"
-              hx-target="closest .tweed"
-              hx-swap="outerHTML"
-              hx-sync="closest div.tweed:drop"
-              hx-push-url="false"
-              class="mt-2">
-            <i class="bi @(Model.LikedByCurrentUser ? "bi-heart-fill" : "bi-heart")" style="font-size: 1em"></i>
-        </span>
-        <span> @Model.LikesCount</span>
+    </p>
+
+    <div class='flex gap-2'>
+        <p class='text-sm text-slate-gray'>@Model.CreatedAt</p>
+        <p class='text-sm text-slate-gray'>
+            <span class='font-bold mr-1'>232.303</span>
+            Mal angezeigt
+        </p>
     </div>
 </div>
