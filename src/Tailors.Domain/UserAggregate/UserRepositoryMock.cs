@@ -23,7 +23,7 @@ public class UserRepositoryMock : IUserRepository
         return Task.CompletedTask;
     }
 
-    public Task<AppUser?> FindByGithubId(long githubId)
+    public Task<AppUser?> FindByEmail(string email)
     {
         throw new NotImplementedException();
     }

@@ -15,11 +15,11 @@ namespace Tailors.Web.Test.Controllers;
 
 public class ProfileControllerTest
 {
-    private readonly AppUser _currentUser = new("CurrentUserName", 0, "user@example.com", "currentUser");
+    private readonly AppUser _currentUser = new("CurrentUserName", "user@example.com", "currentUser");
 
     private readonly FollowUserUseCase _followUserUseCase;
 
-    private readonly AppUser _profileUser = new("UserName", 0, "user@example.com", "user");
+    private readonly AppUser _profileUser = new("UserName", "user@example.com", "user");
 
     private readonly ProfileController _sut;
     private readonly TweedRepositoryMock _tweedRepositoryMock = new();

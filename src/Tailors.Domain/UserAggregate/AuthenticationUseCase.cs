@@ -2,12 +2,12 @@ namespace Tailors.Domain.UserAggregate;
 
 public class AuthenticationUseCase(IUserRepository userRepository)
 {
-    public async Task<AppUser> EnsureUserExistsForGithubUser(long githubId, string githubUsername)
+    public async Task<AppUser> EnsureUserExists(string email, string userName)
     {
-        var user = await userRepository.FindByGithubId(githubId);
+        var user = await userRepository.FindByEmail(email);
         if (user is null)
         {
-            user = AppUser.FromGithub(githubId, githubUsername);
+            user = new AppUser(userName, email);
             await userRepository.Create(user);
         }
 

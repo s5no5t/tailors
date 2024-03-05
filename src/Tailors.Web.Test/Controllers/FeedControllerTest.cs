@@ -22,7 +22,7 @@ public class FeedControllerTest
     public FeedControllerTest()
     {
         var userRepositoryMock = new UserRepositoryMock();
-        var user = new AppUser("UserName", 0, "user@example.com", "currentUser");
+        var user = new AppUser("UserName", "user@example.com", "currentUser");
         userRepositoryMock.Create(user);
         var userFollowsRepository = new UserFollowsRepositoryMock();
         FollowUserUseCase followUserUseCase = new(userFollowsRepository);

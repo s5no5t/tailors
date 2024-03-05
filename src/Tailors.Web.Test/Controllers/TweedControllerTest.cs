@@ -31,8 +31,8 @@ public class TweedControllerTest
         UserLikesRepositoryMock userLikesRepositoryMock = new();
         _likeTweedUseCase = new LikeTweedUseCase(userLikesRepositoryMock);
         var userRepositoryMock = new UserRepositoryMock();
-        userRepositoryMock.Create(new AppUser("CurrentUserName", 0, "user@example.com", "currentUser"));
-        userRepositoryMock.Create(new AppUser("author", 0, "author@example.com", "authorId"));
+        userRepositoryMock.Create(new AppUser("CurrentUserName", "user@example.com", "currentUser"));
+        userRepositoryMock.Create(new AppUser("author", "author@example.com", "authorId"));
         _createTweedUseCase = new CreateTweedUseCase(_tweedRepositoryMock);
         _threadUseCase = new ThreadUseCase(_tweedRepositoryMock);
         TweedViewModelFactory tweedViewModelFactory =

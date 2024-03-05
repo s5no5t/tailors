@@ -24,10 +24,10 @@ public class UserRepository(IAsyncDocumentSession session) : IUserRepository
         await session.StoreAsync(user);
     }
 
-    public async Task<AppUser?> FindByGithubId(long githubId)
+    public async Task<AppUser?> FindByEmail(string email)
     {
         return await session.Query<AppUser>()
-            .Where(u => u.GithubId == githubId)
+            .Where(u => u.Email == email)
             .FirstOrDefaultAsync();
     }
 }

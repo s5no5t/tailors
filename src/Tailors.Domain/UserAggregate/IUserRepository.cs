@@ -13,5 +13,5 @@ public interface IUserRepository
     Task Create(AppUser user);
 
     [MustUseReturnValue]
-    Task<AppUser?> FindByGithubId(long githubId);
+    Task<AppUser?> FindByEmail(string email);
 }

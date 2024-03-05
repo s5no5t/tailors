@@ -12,7 +12,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
     public async Task SearchUsers_ShouldReturnEmptyList_WhenNoResults()
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
-        await session.StoreAsync(new AppUser("UserName", 0));
+        await session.StoreAsync(new AppUser("UserName", "user@example.com"));
         await session.SaveChangesAsync();
         UserRepository repository = new(session);
 
@@ -26,7 +26,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        await session.StoreAsync(new AppUser("UserName", 0));
+        await session.StoreAsync(new AppUser("UserName", "user@example.com"));
         await session.SaveChangesAsync();
         UserRepository repository = new(session);
 
@@ -40,7 +40,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
     {
         using var session = ravenDb.DocumentStore.OpenAsyncSession();
         session.Advanced.WaitForIndexesAfterSaveChanges();
-        await session.StoreAsync(new AppUser("UserName", 0));
+        await session.StoreAsync(new AppUser("UserName", "user@example.com"));
         await session.SaveChangesAsync();
         UserRepository repository = new(session);
 
@@ -56,7 +56,7 @@ public class UserRepositoryTest(RavenTestDbFixture ravenDb)
         session.Advanced.WaitForIndexesAfterSaveChanges();
         for (var i = 0; i < 21; i++)
         {
-            await session.StoreAsync(new AppUser($"User-{i}", 0));
+            await session.StoreAsync(new AppUser($"User-{i}", "user@example.com"));
             await session.SaveChangesAsync();
         }
 

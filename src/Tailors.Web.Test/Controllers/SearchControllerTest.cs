@@ -34,7 +34,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldSearchUsers()
     {
-        AppUser user = new("UserName", 0, "user@example.com", "userId");
+        AppUser user = new("UserName", "user@example.com", "userId");
         await _userRepositoryMock.Create(user);
 
         var result = await _sut.Results("UserName", _tweedRepositoryMock, _userRepositoryMock);
@@ -49,7 +49,7 @@ public class SearchControllerTest
     [Fact]
     public async Task Results_ShouldReturnUserName()
     {
-        AppUser user = new("UserName", 0, "user@example.com", "userId");
+        AppUser user = new("UserName", "user@example.com", "userId");
         await _userRepositoryMock.Create(user);
 
         var result = await _sut.Results("UserName", _tweedRepositoryMock, _userRepositoryMock);

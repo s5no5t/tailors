@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Octokit;
 using OpenTelemetry.Trace;
 using Raven.Client.Documents;
 using Raven.DependencyInjection;
@@ -55,11 +56,19 @@ builder.Services.AddAuthentication(options =>
 
         options.Events.OnCreatingTicket = async context =>
         {
-            var githubId = context.User.GetProperty("id").GetInt64();
             var githubUsername = context.User.GetProperty("login").GetString();
             if (githubUsername is null) throw new InvalidOperationException("username is null");
 
-            var user = await FindOrCreateAppUser(context, githubId, githubUsername);
+            var gitHubClient = new GitHubClient(new ProductHeaderValue("tailors"))
+            {
+                Credentials = new Credentials(context.AccessToken)
+            };
+
+            var emails = await gitHubClient.User.Email.GetAll();
+            var primaryEmail = emails.FirstOrDefault(e => e.Primary);
+            if (primaryEmail is null) throw new InvalidOperationException("No primary email found");
+
+            var user = await FindOrCreateAppUser(context, primaryEmail.Email, githubUsername);
 
             context.Identity!.AddClaim(new Claim(ClaimsPrincipalExtensions.UrnTailorsAppUserId, user.Id!));
         };
@@ -128,14 +137,14 @@ static void SetupAssemblyScanning(WebApplicationBuilder builder)
     builder.Services.AddScoped<TweedViewModelFactory>();
 }
 
-async Task<AppUser> FindOrCreateAppUser(OAuthCreatingTicketContext oAuthCreatingTicketContext, long githubId,
-    string githubUsername)
+async Task<AppUser> FindOrCreateAppUser(OAuthCreatingTicketContext oAuthCreatingTicketContext, string email,
+    string userName)
 {
     var session = oAuthCreatingTicketContext.HttpContext.RequestServices.GetRequiredService<IDocumentStore>();
     using var asyncSession = session.OpenAsyncSession();
     IUserRepository userRepository = new UserRepository(asyncSession);
     var authenticationUseCase = new AuthenticationUseCase(userRepository);
-    var appUser = await authenticationUseCase.EnsureUserExistsForGithubUser(githubId, githubUsername);
+    var appUser = await authenticationUseCase.EnsureUserExists(email, userName);
     await asyncSession.SaveChangesAsync();
     return appUser;
 }
