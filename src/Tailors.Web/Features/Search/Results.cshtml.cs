@@ -1,3 +1,5 @@
+using Tailors.Web.Features.Shared;
+
 namespace Tailors.Web.Features.Search;
 
 public class ResultsViewModel(
@@ -18,11 +20,4 @@ public class UserViewModel(string userId, string userName)
     public string UserId { get; } = userId;
 
     public string UserName { get; } = userName;
-}
-
-public class TweedViewModel(string tweedId, string text)
-{
-    public string TweedId { get; } = tweedId;
-
-    public string Text { get; } = text;
 }
