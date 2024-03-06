@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserLikesAggregate;
+using Tailors.Web.Features.Shared;
 using Tailors.Web.Helper;
 
 namespace Tailors.Web.Features.Tweed;
@@ -38,13 +39,6 @@ public class TweedController(
             },
             ReplyTweeds = await tweedViewModelFactory.Create(replyTweeds, currentUserId!)
         };
-        return View(viewModel);
-    }
-
-    [HttpGet("Tweed/Create")]
-    public IActionResult Create()
-    {
-        CreateViewModel viewModel = new();
         return View(viewModel);
     }
 

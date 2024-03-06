@@ -1,8 +1,0 @@
-@model Tailors.Web.Features.Tweed.CreateViewModel
-@{
-    ViewData["Title"] = "Create Tweed";
-}
-
-<form method="post" action="@Url.Action(action: "Create")">
-    <partial name="_CreateTweed" model="@Model.CreateTweed"/>
-</form>

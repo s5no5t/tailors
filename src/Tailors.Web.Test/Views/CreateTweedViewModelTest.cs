@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Tailors.Web.Features.Shared;
 using Tailors.Web.Features.Tweed;
 using Tailors.Web.Test.TestHelper;
 using Xunit;

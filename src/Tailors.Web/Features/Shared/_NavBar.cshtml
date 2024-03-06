@@ -1,6 +1,5 @@
 @{
     var feedUrl = Url.Action(action: "Index", controller: "Feed");
-    var createTweedUrl = Url.Action(action: "Create", controller: "Tweed");
     var searchUrl = Url.Action(action: "Results", controller: "Search", new { searchKind = ViewData["SearchKind"] });
     var signOutUrl = Url.Action(action: "SignOutCurrentUser", controller: "Authentication", values: new { ReturnUrl = Url.Action("Index", "Feed") });
 }
@@ -12,10 +11,9 @@
              width="24"
              height="24"/>
     </a>
+
     @if (User.Identity?.IsAuthenticated == true)
     {
-        <a href="@createTweedUrl">Create</a>
-
         <div class="flex">
             <input hx-get="@searchUrl"
                    hx-trigger="input changed delay:500ms, search"

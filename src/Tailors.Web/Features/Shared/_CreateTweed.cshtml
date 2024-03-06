@@ -1,14 +1,14 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-@model Tailors.Web.Features.Tweed.CreateTweedViewModel
+@model Tailors.Web.Features.Shared.CreateTweedViewModel
 
 <div class="m-3">
-    <form method="post" action="@Url.Action("Create")">
+    <form method="post" action="@Url.Action(controller: "Tweed", action: "Create")">
         <div class="mb-3">
             @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
             {
                 <textarea rows="5" class="px-3 py-3 placeholder-slate-500 text-slate-800 rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full" 
                 id="text" value="@Model.Text"
-                name="Text" aria-describedby="validationTextFeedback"></textarea>
+                name="Text" aria-describedby="validationTextFeedback" required></textarea>
                 <div id="validationTextFeedback" class="invalid-feedback">
                     Please enter a text.
                 </div>
@@ -16,7 +16,7 @@
             else
             {
                 <textarea rows="5" class="px-3 py-3 placeholder-slate-500 text-slate-800 rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full" placeholder="What's happening?"
-                id="text" value="@Model.Text" name="Text"></textarea>
+                id="text" value="@Model.Text" name="Text" required></textarea>
             }
         </div>
 
