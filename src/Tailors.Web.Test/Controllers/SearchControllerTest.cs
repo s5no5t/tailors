@@ -24,14 +24,6 @@ public class SearchControllerTest
     }
 
     [Fact]
-    public void Index_ShouldReturnView()
-    {
-        var result = _sut.Index();
-
-        Assert.IsType<ViewResult>(result);
-    }
-
-    [Fact]
     public async Task Results_ShouldSearchUsers()
     {
         AppUser user = new("UserName", "user@example.com", "userId");
@@ -41,8 +33,8 @@ public class SearchControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<IndexViewModel>(resultAsView.Model);
-        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.IsType<ResultsViewModel>(resultAsView.Model);
+        var viewModel = (ResultsViewModel)resultAsView.Model!;
         Assert.Contains(viewModel.FoundUsers, u => u.UserId == user.Id);
     }
 
@@ -56,8 +48,8 @@ public class SearchControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<IndexViewModel>(resultAsView.Model);
-        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.IsType<ResultsViewModel>(resultAsView.Model);
+        var viewModel = (ResultsViewModel)resultAsView.Model!;
         Assert.Equal("UserName", viewModel.FoundUsers[0].UserName);
     }
 
@@ -71,8 +63,8 @@ public class SearchControllerTest
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
-        Assert.IsType<IndexViewModel>(resultAsView.Model);
-        var viewModel = (IndexViewModel)resultAsView.Model!;
+        Assert.IsType<ResultsViewModel>(resultAsView.Model);
+        var viewModel = (ResultsViewModel)resultAsView.Model!;
         Assert.Contains(viewModel.FoundTweeds, t => t.TweedId == "tweedId");
     }
 }

@@ -1,32 +1,9 @@
-@using IndexViewModel = Tailors.Web.Features.Search.IndexViewModel
-@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using IndexViewModel = Tailors.Web.Features.Search.ResultsViewModel
 @model IndexViewModel
 @{
     ViewData["Title"] = "Search";
+    ViewData["SearchTerm"] = Model.Term;
 }
-
-<h1 class="mb-4">@ViewData["Title"]</h1>
-
-<form method="get" asp-action="Results">
-    <div class="mb-3">
-        <label for="text" class="form-label">Term</label>
-        @if (ViewData.ModelState.GetValidationState("term") == ModelValidationState.Invalid)
-        {
-            <input type="text" class="form-control is-invalid"
-                   id="term" value="@Model.Term"
-                   name="Term" aria-describedby="validationTermFeedback"/>
-            <div id="validationTermFeedback" class="invalid-feedback">
-                Please enter a search term.
-            </div>
-        }
-        else
-        {
-            <input type="text" class="form-control"
-                   id="term" value="@Model.Term" name="Term"/>
-        }
-    </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
 
 <div class="mt-3">
     @if (!string.IsNullOrWhiteSpace(Model.Term))
