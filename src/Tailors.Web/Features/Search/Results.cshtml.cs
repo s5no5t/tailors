@@ -1,22 +1,28 @@
 namespace Tailors.Web.Features.Search;
 
-public class ResultsViewModel(string? term, List<UserViewModel> foundUsers, List<TweedViewModel> foundTweeds)
+public class ResultsViewModel(
+    string term,
+    SearchKind kind,
+    List<UserViewModel> foundUsers,
+    List<TweedViewModel> foundTweeds)
 {
-    public string? Term { get; set; } = term;
+    public string Term { get; } = term;
+
+    public SearchKind Kind { get; } = kind;
     public List<UserViewModel> FoundUsers { get; init; } = foundUsers;
     public List<TweedViewModel> FoundTweeds { get; init; } = foundTweeds;
 }
 
 public class UserViewModel(string userId, string userName)
 {
-    public string UserId { get; set; } = userId;
+    public string UserId { get; } = userId;
 
-    public string UserName { get; set; } = userName;
+    public string UserName { get; } = userName;
 }
 
 public class TweedViewModel(string tweedId, string text)
 {
-    public string TweedId { get; set; } = tweedId;
+    public string TweedId { get; } = tweedId;
 
-    public string Text { get; set; } = text;
+    public string Text { get; } = text;
 }

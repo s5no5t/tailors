@@ -7,26 +7,34 @@ using Tailors.Domain.UserAggregate;
 
 namespace Tailors.Web.Features.Search;
 
+public enum SearchKind
+{
+    Users = 0,
+    Tweeds = 1
+}
+
 [Authorize]
 public class SearchController : Controller
 {
     public async Task<IActionResult> Results(
         [FromQuery] [Required] [StringLength(50, MinimumLength = 3)] [RegularExpression(@"^[\w\s]*$")]
         string term,
+        [FromQuery] SearchKind? searchKind,
         [FromServices] ITweedRepository tweedRepository,
         [FromServices] IUserRepository userRepository)
     {
         if (!ModelState.IsValid)
         {
             if (Request.IsHtmx())
-                return PartialView("Results", new ResultsViewModel(term, [], []));
-            return View("Results", new ResultsViewModel(term, [], []));
+                return PartialView("Results", new ResultsViewModel(term, SearchKind.Users, [], []));
+            return View("Results", new ResultsViewModel(term, SearchKind.Users, [], []));
         }
 
         var users = await userRepository.Search(term);
         var tweeds = await tweedRepository.Search(term);
         ResultsViewModel viewModel = new(
             term,
+            searchKind ?? SearchKind.Users,
             users.Select(u => new UserViewModel(u.Id!, u.UserName)).ToList(),
             tweeds.Select(t => new TweedViewModel(t.Id!, t.Text)).ToList()
         );

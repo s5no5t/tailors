@@ -29,7 +29,7 @@ public class SearchControllerTest
         AppUser user = new("UserName", "user@example.com", "userId");
         await _userRepositoryMock.Create(user);
 
-        var result = await _sut.Results("UserName", _tweedRepositoryMock, _userRepositoryMock);
+        var result = await _sut.Results("UserName", SearchKind.Users, _tweedRepositoryMock, _userRepositoryMock);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -44,7 +44,7 @@ public class SearchControllerTest
         AppUser user = new("UserName", "user@example.com", "userId");
         await _userRepositoryMock.Create(user);
 
-        var result = await _sut.Results("UserName", _tweedRepositoryMock, _userRepositoryMock);
+        var result = await _sut.Results("UserName", SearchKind.Users, _tweedRepositoryMock, _userRepositoryMock);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;
@@ -59,7 +59,7 @@ public class SearchControllerTest
         await _tweedRepositoryMock.Create(new Tweed(id: "tweedId", authorId: "authorId", text: "term",
             createdAt: DateTime.Now));
 
-        var result = await _sut.Results("term", _tweedRepositoryMock, _userRepositoryMock);
+        var result = await _sut.Results("term", SearchKind.Tweeds, _tweedRepositoryMock, _userRepositoryMock);
 
         Assert.IsType<ViewResult>(result);
         var resultAsView = (ViewResult)result;

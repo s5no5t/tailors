@@ -1,43 +1,78 @@
 @using IndexViewModel = Tailors.Web.Features.Search.ResultsViewModel
+@using Tailors.Web.Features.Search
 @model IndexViewModel
 @{
     ViewData["Title"] = "Search";
     ViewData["SearchTerm"] = Model.Term;
+    ViewData["SearchKind"] = Model.Kind.ToString().ToLower();
+
+    var usersTabUrl = Url.Action(action: "Results", controller: "Search", new { searchKind = "users", term = Model.Term });
+    var tweedsTabUrl = Url.Action(action: "Results", controller: "Search", new { searchKind = "tweeds", term = Model.Term });
 }
 
+<div role="tablist">
+    <button hx-get="@usersTabUrl"
+            hx-target="#main"
+            hx-push-url="true"
+            role="tab">
+        Users
+    </button>
+    <button hx-get="@tweedsTabUrl"
+            hx-target="#main"
+            hx-push-url="true"
+            role="tab">
+        Tweeds
+    </button>
+</div>
+
 <div class="mt-3">
-    @if (!string.IsNullOrWhiteSpace(Model.Term))
+
+    @switch (Model.Kind)
     {
-        <h2>Users found:</h2>
+        case SearchKind.Users:
 
-        @if (Model.FoundUsers.Any())
-        {
-            @foreach (var user in Model.FoundUsers)
+            @if (Model.FoundUsers.Any())
             {
-                <div>
-                    <a asp-controller="Profile" asp-action="Index" asp-route-userId="@user.UserId">@user.UserName</a>
-                </div>
+                @foreach (var user in Model.FoundUsers)
+                {
+                    <div>
+                        <a asp-controller="Profile"
+                           asp-action="Index"
+                           asp-route-userId="@user.UserId">
+                            @user.UserName
+                        </a>
+                    </div>
+                }
             }
-        }
-        else
-        {
-            <p>No users found</p>
-        }
-
-        <h2>Tweeds found:</h2>
-
-        @if (Model.FoundTweeds.Any())
-        {
-            @foreach (var tweed in Model.FoundTweeds)
+            else
             {
-                <div>
-                    <a asp-controller="Tweed" asp-action="ShowThreadForTweed" asp-route-tweedId="@tweed.TweedId">@tweed.Text</a>
-                </div>
+                <p>No users found</p>
             }
-        }
-        else
-        {
-            <p>No tweeds found</p>
-        }
+
+            break;
+        case SearchKind.Tweeds:
+
+            @if (Model.FoundTweeds.Any())
+            {
+                @foreach (var tweed in Model.FoundTweeds)
+                {
+                    <div>
+                        <a asp-controller="Tweed"
+                           asp-action="ShowThreadForTweed"
+                           asp-route-tweedId="@tweed.TweedId">
+                            @tweed.Text
+                        </a>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No tweeds found</p>
+            }
+
+            break;
+        default:
+            throw new ArgumentException("Invalid search type");
     }
+
 </div>
