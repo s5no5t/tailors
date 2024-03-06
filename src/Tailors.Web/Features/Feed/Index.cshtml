@@ -4,6 +4,9 @@
     ViewData["Title"] = "Home";
 }
 
-<div hx-get="@Url.Action("NewTweedsNotification", new { since = DateTime.UtcNow })" hx-trigger="every 10s"></div>
+<div hx-get="@Url.Action("NewTweedsNotification", new { since = DateTime.UtcNow })"
+     hx-trigger="every 10s">
+</div>
 
-<partial name="_Feed" model="Model.Feed"/>
+<partial name="_Feed"
+         model="Model.Feed" />

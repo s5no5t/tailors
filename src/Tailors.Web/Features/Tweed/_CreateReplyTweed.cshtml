@@ -1,16 +1,21 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @model Tailors.Web.Features.Tweed.CreateReplyTweedViewModel
 
-<form method="post" action="@Url.Action("CreateReply")">
+<form method="post"
+      action="@Url.Action("CreateReply")">
     <div class="mb-3">
-        <label for="text" class="form-label">Text</label>
+        <label for="text"
+               class="form-label">
+            Text
+        </label>
 
         @if (ViewData.ModelState.GetValidationState("text") == ModelValidationState.Invalid)
         {
             <textarea rows="5" class="form-control is-invalid" 
                 id="text" value="@Model.Text"
                 name="Text" aria-describedby="validationTextFeedback"></textarea>
-            <div id="validationTextFeedback" class="invalid-feedback">
+            <div id="validationTextFeedback"
+                 class="invalid-feedback">
                 Please enter a text.
             </div>
         }
@@ -21,9 +26,12 @@
         }
     </div>
 
-    <input type="hidden" name="ParentTweedId" value="@Model.ParentTweedId"/>
+    <input type="hidden"
+           name="ParentTweedId"
+           value="@Model.ParentTweedId" />
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit"
+            class="btn btn-primary">
         Submit
     </button>
 </form>

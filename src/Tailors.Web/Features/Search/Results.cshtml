@@ -6,8 +6,8 @@
     ViewData["SearchTerm"] = Model.Term;
     ViewData["SearchKind"] = Model.Kind.ToString().ToLower();
 
-    var usersTabUrl = Url.Action(action: "Results", controller: "Search", new { searchKind = "users", term = Model.Term });
-    var tweedsTabUrl = Url.Action(action: "Results", controller: "Search", new { searchKind = "tweeds", term = Model.Term });
+    var usersTabUrl = Url.Action("Results", "Search", new { searchKind = "users", term = Model.Term });
+    var tweedsTabUrl = Url.Action("Results", "Search", new { searchKind = "tweeds", term = Model.Term });
 }
 
 <div role="tablist"
@@ -79,7 +79,7 @@
                 @foreach (var tweed in Model.FoundTweeds)
                 {
                     <partial name="_Tweed"
-                             model="tweed"/>
+                             model="tweed" />
                 }
             }
             else

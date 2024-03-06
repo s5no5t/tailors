@@ -1,7 +1,7 @@
 @{
-    var feedUrl = Url.Action(action: "Index", controller: "Feed");
-    var searchUrl = Url.Action(action: "Results", controller: "Search", new { searchKind = ViewData["SearchKind"] });
-    var signOutUrl = Url.Action(action: "SignOutCurrentUser", controller: "Authentication", values: new { ReturnUrl = Url.Action("Index", "Feed") });
+    var feedUrl = Url.Action("Index", "Feed");
+    var searchUrl = Url.Action("Results", "Search", new { searchKind = ViewData["SearchKind"] });
+    var signOutUrl = Url.Action("SignOutCurrentUser", "Authentication", new { ReturnUrl = Url.Action("Index", "Feed") });
 }
 
 <nav class="mt-2 ml-2 flex gap-4 p-3">
@@ -9,7 +9,7 @@
         <img src="/images/tweed.png"
              alt="Tweed Logo"
              width="24"
-             height="24"/>
+             height="24" />
     </a>
 
     @if (User.Identity?.IsAuthenticated == true)
@@ -23,7 +23,7 @@
                    type="search"
                    class="text-base text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent pl-8"
                    name="Term"
-                   value="@ViewData["SearchTerm"]"/>
+                   value="@ViewData["SearchTerm"]" />
             <svg xmlns="http://www.w3.org/2000/svg"
                  fill="none"
                  viewBox="0 0 24 24"
@@ -32,7 +32,7 @@
                  class="w-6 h-6 absolute">
                 <path stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
         </div>
 

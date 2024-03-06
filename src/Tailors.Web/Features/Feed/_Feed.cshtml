@@ -1,10 +1,12 @@
 @model Tailors.Web.Features.Feed.FeedViewModel
 
-<partial name="_CreateTweed" model="@Model.CreateTweed"/>
+<partial name="_CreateTweed"
+         model="@Model.CreateTweed" />
 
 @foreach (var tweed in Model.Tweeds)
 {
-    <partial name="_Tweed" model="tweed"/>
+    <partial name="_Tweed"
+             model="tweed" />
 }
 
 @if (Model.NextPageExists)

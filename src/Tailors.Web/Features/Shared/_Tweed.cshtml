@@ -10,8 +10,8 @@
 <div class="tweed p-3 @(!Model.IsCurrentTweed ? "tweed--can-navigate-true" : "")"
      @(!Model.IsCurrentTweed ? $"hx-get={tweedUrl} hx-target=body hx-swap=outerHTML hx-push-url=true" : "")>
 
-    <div class='flex gap-2'>
-        <div class='rounded-full overflow-hidden'>
+    <div class="flex gap-2">
+        <div class="rounded-full overflow-hidden">
             <svg xmlns="http://www.w3.org/2000/svg"
                  fill="none"
                  viewBox="0 0 24 24"
@@ -24,13 +24,13 @@
             </svg>
         </div>
         <a href="@authorProfileUrl"
-           class='text-base text-slate-gray font-bold'>
+           class="text-base text-slate-gray font-bold">
             @Model.Author
         </a>
-        <p class='text-sm text-slate-gray'>@Model.CreatedAt</p>
+        <p class="text-sm text-slate-gray">@Model.CreatedAt</p>
     </div>
 
-    <p class='text-base leading-6 my-2'>
+    <p class="text-base leading-6 my-2">
         @Model.Text
     </p>
 
