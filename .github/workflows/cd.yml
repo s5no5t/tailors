@@ -1,9 +1,9 @@
-name: build and test
+name: CD
 
-on: [push]
+on: [ push ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,3 +27,13 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Test
         run: dotnet test --no-restore --verbosity normal
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
