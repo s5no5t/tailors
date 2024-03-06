@@ -29,8 +29,8 @@ public class SearchController(
         if (!ModelState.IsValid)
         {
             if (Request.IsHtmx())
-                return PartialView("Results", new ResultsViewModel(term, SearchKind.Users, [], []));
-            return View("Results", new ResultsViewModel(term, SearchKind.Users, [], []));
+                return PartialView("Results", new ResultsViewModel(term, searchKind ?? SearchKind.Users, [], []));
+            return View("Results", new ResultsViewModel(term, searchKind ?? SearchKind.Users, [], []));
         }
 
         var currentUserId = User.GetId();
