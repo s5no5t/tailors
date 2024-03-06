@@ -13,8 +13,7 @@ public class CreateTweedUseCase(ITweedRepository tweedRepository)
     }
 
     public async Task<OneOf<Tweed, ResourceNotFoundError>> CreateReplyTweed(string authorId,
-        string text,
-        DateTime createdAt, string parentTweedId)
+        string text, DateTime createdAt, string parentTweedId)
     {
         var getParentTweedResult = await tweedRepository.GetById(parentTweedId);
         if (getParentTweedResult.TryPickT1(out _, out var parentTweed))

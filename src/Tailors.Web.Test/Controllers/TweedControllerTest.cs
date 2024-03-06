@@ -145,88 +145,71 @@ public class TweedControllerTest
     }
 
     [Fact]
-    public async Task CreateReply_ShouldReturnRedirect()
+    public async Task Create_ShouldReturnRedirect_WhenTweedIsReply()
     {
         await _tweedRepositoryMock.Create(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             id: "rootTweedId"));
         await _tweedRepositoryMock.Create(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             id: "parentTweedId"));
 
-        CreateReplyTweedViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
             Text = "test",
             ParentTweedId = "parentTweedId"
         };
 
-        var result =
-            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
+        var result = await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.IsType<RedirectToActionResult>(result);
     }
 
     [Fact]
-    public async Task CreateReply_ShouldSaveReplyTweed()
+    public async Task Create_ShouldSaveReplyTweed_WhenTweedIsReply()
     {
         await _tweedRepositoryMock.Create(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             id: "rootTweedId"));
         await _tweedRepositoryMock.Create(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             id: "parentTweedId"));
-        CreateReplyTweedViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
             Text = "text",
             ParentTweedId = "parentTweedId"
         };
 
-        await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
+        await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         var tweeds = await _tweedRepositoryMock.GetAllByAuthorId("currentUser", 1);
         Assert.NotEmpty(tweeds);
     }
 
     [Fact]
-    public async Task CreateReply_ShouldSetSuccessMessage()
+    public async Task Create_ShouldSetSuccessMessage_WhenTweedIsReply()
     {
         await _tweedRepositoryMock.Create(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             id: "rootTweedId"));
         await _tweedRepositoryMock.Create(new Tweed(text: string.Empty, createdAt: FixedDateTime, authorId: "authorId",
             id: "parentTweedId"));
 
-        CreateReplyTweedViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
             Text = "test",
             ParentTweedId = "parentTweedId"
         };
-        await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
+        await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.Equal("Reply Posted", _notificationManagerMock.SuccessMessage);
     }
 
     [Fact]
-    public async Task CreateReply_ShouldReturnPartialView_WhenParentTweedIdIsMissing()
+    public async Task Create_ShouldReturnBadRequest_WhenTweedIsReply_WhenParentTweedDoesntExist()
     {
-        CreateReplyTweedViewModel viewModel = new()
-        {
-            Text = "test"
-        };
-        _sut.ValidateViewModel(viewModel);
-
-        var result =
-            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
-
-        Assert.IsType<PartialViewResult>(result);
-    }
-
-    [Fact]
-    public async Task CreateReply_ShouldReturnBadRequest_WhenParentTweedDoesntExist()
-    {
-        CreateReplyTweedViewModel viewModel = new()
+        CreateTweedViewModel viewModel = new()
         {
             Text = "test",
             ParentTweedId = "nonExistingTweed"
         };
 
-        var result =
-            await _sut.CreateReply(viewModel, _createTweedUseCase, _notificationManagerMock);
+        var result = await _sut.Create(viewModel, _createTweedUseCase, _notificationManagerMock);
 
         Assert.IsType<BadRequestResult>(result);
     }

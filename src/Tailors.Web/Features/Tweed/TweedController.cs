@@ -33,7 +33,7 @@ public class TweedController(
         ShowThreadForTweedViewModel viewModel = new()
         {
             LeadingTweeds = await tweedViewModelFactory.Create(leadingTweeds, currentUserId!, decodedTweedId),
-            CreateReplyTweed = new CreateReplyTweedViewModel
+            CreateReplyTweed = new CreateTweedViewModel
             {
                 ParentTweedId = decodedTweedId
             },
@@ -52,34 +52,29 @@ public class TweedController(
         var currentUserId = User.GetId();
         var now = DateTime.UtcNow;
 
-        var tweed = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
-        return tweed.Match<ActionResult>(
-            _ =>
-            {
-                notificationManager.AppendSuccess("Tweed Posted");
-                return RedirectToAction("Index", "Feed");
-            });
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateReply(CreateReplyTweedViewModel viewModel,
-        [FromServices] CreateTweedUseCase createTweedUseCase,
-        [FromServices] INotificationManager notificationManager)
-    {
-        if (!ModelState.IsValid) return PartialView("_CreateReplyTweed", viewModel);
-
-        var currentUserId = User.GetId();
-        var now = DateTime.UtcNow;
-        var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
-            viewModel.ParentTweedId);
-        return tweed.Match<ActionResult>(
-            _ =>
-            {
-                notificationManager.AppendSuccess("Reply Posted");
-                return RedirectToAction("Index", "Feed");
-            }
-            ,
-            _ => BadRequest());
+        if (viewModel.ParentTweedId is null)
+        {
+            var tweed = await createTweedUseCase.CreateRootTweed(currentUserId!, viewModel.Text, now);
+            return tweed.Match<ActionResult>(
+                _ =>
+                {
+                    notificationManager.AppendSuccess("Tweed Posted");
+                    return RedirectToAction("Index", "Feed");
+                });
+        }
+        else
+        {
+            var tweed = await createTweedUseCase.CreateReplyTweed(currentUserId!, viewModel.Text, now,
+                viewModel.ParentTweedId);
+            return tweed.Match<ActionResult>(
+                _ =>
+                {
+                    notificationManager.AppendSuccess("Reply Posted");
+                    return RedirectToAction("Index", "Feed");
+                }
+                ,
+                _ => BadRequest());
+        }
     }
 
     [HttpPost]
