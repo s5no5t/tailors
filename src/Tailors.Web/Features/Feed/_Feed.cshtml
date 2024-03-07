@@ -1,18 +1,44 @@
 @model Tailors.Web.Features.Feed.FeedViewModel
 
 <partial name="_CreateTweed"
-         model="@Model.CreateTweed" />
+         model="@Model.CreateTweed"/>
 
-@foreach (var tweed in Model.Tweeds)
-{
-    <partial name="_Tweed"
-             model="tweed" />
-}
+<div x-data="data"
+     x-on:scroll.window.throttle="checkTweedsVisibility">
 
-@if (Model.NextPageExists)
-{
-    <div hx-get="@Url.Action("Feed", new { page = Model.Page + 1 })"
-         hx-trigger="revealed"
-         hx-swap="beforebegin">
-    </div>
-}
+    <script>
+        const data = {
+            recentlyViewsTweedIds: [],
+            checkTweedsVisibility() {
+                this.$dispatch('check-display');
+            }
+        };
+        
+        function isElementInViewport (el) {
+            const rect = el.getBoundingClientRect();
+        
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+            );
+        }
+    </script>
+
+    @foreach (var tweed in Model.Tweeds)
+    {
+        <div @@check-display.window="if (isElementInViewport($el)) { recentlyViewsTweedIds.push('@tweed.Id'); }">
+            <partial name="_Tweed"
+                     model="tweed"/>
+        </div>
+    }
+
+    @if (Model.NextPageExists)
+    {
+        <div hx-get="@Url.Action("Feed", new { page = Model.Page + 1 })"
+             hx-trigger="revealed"
+             hx-swap="beforebegin">
+        </div>
+    }
+</div>
