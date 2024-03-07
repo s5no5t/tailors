@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+          content="width=device-width, initial-scale=1.0"/>
 
     <title>@ViewData["Title"] - Tailors</title>
 
@@ -16,21 +16,21 @@
 
     <link rel="stylesheet"
           href="~/css/site.css"
-          asp-append-version="true" />
+          asp-append-version="true"/>
     <link rel="stylesheet"
           href="~/Tailors.Web.styles.css"
-          asp-append-version="true" />
+          asp-append-version="true"/>
 </head>
 <body>
 
 <header>
-    <partial name="_NavBar" />
+    <partial name="_NavBar"/>
 </header>
 
 <main role="main"
-      class="mx-2"
+      class="max-w-screen-xl mx-auto p-4"
       id="main">
-    <partial name="_Notification" />
+    <partial name="_Notification"/>
     @RenderBody()
 </main>
 
