@@ -4,7 +4,11 @@
 @if (NotificationManager.SuccessMessage != null)
 {
     <div role="alert"
-         class="fixed bottom-3 right-3 shadow p-3 rounded-xl flex gap-2">
+         class="fixed bottom-3 right-3 shadow p-3 rounded-xl flex gap-2"
+         x-data="{ show: true }"
+         x-show="show"
+         x-init="setTimeout(() => show = false, 3000)"
+         x-transition.duration.500ms>
         <svg xmlns="http://www.w3.org/2000/svg"
              fill="none"
              viewBox="0 0 24 24"
@@ -13,7 +17,7 @@
              class="w-6 h-6 text-green-600">
             <path stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
         </svg>
         <p class="text-green-600">@NotificationManager.SuccessMessage</p>
     </div>
