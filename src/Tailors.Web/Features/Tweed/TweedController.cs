@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserLikesAggregate;
-using Tailors.Web.Features.Shared;
 using Tailors.Web.Helper;
 
 namespace Tailors.Web.Features.Tweed;
