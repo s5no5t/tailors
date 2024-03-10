@@ -4,8 +4,8 @@ namespace Tailors.Web.Features.Feed;
 
 public class FeedViewModel
 {
-    public CreateTweedViewModel CreateTweed { get; set; } = new();
-    public int Page { get; set; }
-    public List<TweedViewModel> Tweeds { get; init; } = new();
-    public bool NextPageExists { get; set; } = true;
+    public CreateTweedViewModel CreateTweed { get; init; } = new();
+    public int Page { get; init; }
+    public List<TweedViewModel> Tweeds { get; init; } = [];
+    public bool NextPageExists { get; init; } = true;
 }

@@ -4,7 +4,7 @@ namespace Tailors.Web.Features.Tweed;
 
 public class ShowThreadForTweedViewModel
 {
-    public List<TweedViewModel> LeadingTweeds { get; set; } = new();
-    public CreateTweedViewModel CreateReplyTweed { get; set; } = new();
-    public List<TweedViewModel> ReplyTweeds { get; set; } = new();
+    public List<TweedViewModel> LeadingTweeds { get; init; } = [];
+    public CreateTweedViewModel CreateReplyTweed { get; init; } = new();
+    public List<TweedViewModel> ReplyTweeds { get; init; } = [];
 }

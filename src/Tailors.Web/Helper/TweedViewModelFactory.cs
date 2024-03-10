@@ -37,7 +37,7 @@ public class TweedViewModelFactory(
     public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
         string currentTweedId = "none")
     {
-        List<TweedViewModel> tweedViewModels = new();
+        List<TweedViewModel> tweedViewModels = [];
         foreach (var tweed in tweeds)
         {
             var tweedViewModel = await Create(tweed, currentUserId, tweed.Id == currentTweedId);

@@ -2,12 +2,12 @@ namespace Tailors.Web.Features.Tweed;
 
 public class TweedViewModel
 {
-    public string? AuthorId { get; set; }
-    public string? Author { get; set; }
-    public string? Text { get; set; }
-    public string? CreatedAt { get; set; }
-    public string? Id { get; set; }
-    public long? LikesCount { get; set; }
-    public bool LikedByCurrentUser { get; set; }
-    public bool IsCurrentTweed { get; set; }
+    public string? AuthorId { get; init; }
+    public string? Author { get; init; }
+    public string? Text { get; init; }
+    public string? CreatedAt { get; init; }
+    public string? Id { get; init; }
+    public long? LikesCount { get; init; }
+    public bool LikedByCurrentUser { get; init; }
+    public bool IsCurrentTweed { get; init; }
 }

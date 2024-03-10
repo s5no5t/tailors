@@ -8,7 +8,7 @@ public class CreateTweedViewModel
     [BindProperty]
     [Required]
     [StringLength(280)]
-    public string Text { get; set; } = "";
+    public string Text { get; init; } = "";
 
-    [BindProperty] public string? ParentTweedId { get; set; }
+    [BindProperty] public string? ParentTweedId { get; init; }
 }
