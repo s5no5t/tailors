@@ -3,7 +3,7 @@ using Humanizer;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserLikesAggregate;
-using Tailors.Web.Features.Shared;
+using Tailors.Web.Features.Tweed;
 
 namespace Tailors.Web.Helper;
 

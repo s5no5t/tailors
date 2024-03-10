@@ -1,4 +1,4 @@
-namespace Tailors.Web.Features.Shared;
+namespace Tailors.Web.Features.Tweed;
 
 public class TweedViewModel
 {

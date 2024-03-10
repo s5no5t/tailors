@@ -1,4 +1,4 @@
-using Tailors.Web.Features.Shared;
+using Tailors.Web.Features.Tweed;
 
 namespace Tailors.Web.Features.Search;
 

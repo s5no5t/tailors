@@ -1,11 +1,11 @@
 @model Tailors.Web.Features.Feed.FeedViewModel
 
-<partial name="_CreateTweed"
+<partial name="/Features/Tweed/_CreateTweed.cshtml"
          model="@Model.CreateTweed" />
 
 @foreach (var tweed in Model.Tweeds)
 {
-    <partial name="_Tweed"
+    <partial name="/Features/Tweed/_Tweed.cshtml"
              model="tweed" />
 }
 

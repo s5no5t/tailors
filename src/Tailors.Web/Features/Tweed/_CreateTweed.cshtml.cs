@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tailors.Web.Features.Shared;
+namespace Tailors.Web.Features.Tweed;
 
 public class CreateTweedViewModel
 {
