@@ -30,8 +30,12 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+    // Work around issue with X-Forwarded-For header forwarding
+    // Should be the fly.io networks, but it's not clear which addresses these are
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
 });
 
 builder.Services.AddAuthentication(options =>
