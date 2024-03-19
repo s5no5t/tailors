@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Octokit;
 using OpenTelemetry.Trace;
@@ -23,7 +24,11 @@ using Tailors.Web.Helper;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(o => o.Filters.Add<RavenSaveChangesAsyncActionFilter>());
+builder.Services.AddControllersWithViews(o =>
+{
+    o.Filters.Add<RavenSaveChangesAsyncActionFilter>();
+    o.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+});
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationExpanders.Add(new FeatureFolderLocationExpander());

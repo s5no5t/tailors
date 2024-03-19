@@ -66,6 +66,7 @@
                     <form class="form-inline"
                           action="@signOutUrl"
                           method="post">
+                        @Html.AntiForgeryToken()
                         <button type="submit"
                                 class="nav-link btn btn-link text-dark dark:text-white">
                             Logout

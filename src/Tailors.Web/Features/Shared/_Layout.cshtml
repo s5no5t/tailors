@@ -12,7 +12,11 @@
           href="/images/favicon.png"
           sizes="192x192">
 
+    <meta name="htmx-config"
+          includeAspNetAntiforgeryToken="true"/>
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    @Html.HtmxAntiforgeryScript()
+
     <script defer
             src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 

@@ -11,12 +11,13 @@
         {
             <form action="/signin"
                   method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden"
                        name="Provider"
-                       value="@scheme.Name" />
+                       value="@scheme.Name"/>
                 <input type="hidden"
                        name="ReturnUrl"
-                       value="@ViewBag.ReturnUrl" />
+                       value="@ViewBag.ReturnUrl"/>
 
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-2"
                         type="submit">
