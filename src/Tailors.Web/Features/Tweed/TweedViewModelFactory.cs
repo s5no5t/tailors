@@ -1,18 +1,16 @@
 using System.Globalization;
 using Humanizer;
-using Tailors.Domain.TweedAggregate;
 using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserLikesAggregate;
-using Tailors.Web.Features.Tweed;
 
-namespace Tailors.Web.Helper;
+namespace Tailors.Web.Features.Tweed;
 
 public class TweedViewModelFactory(
     IUserLikesRepository userLikesRepository,
     LikeTweedUseCase likeTweedUseCase,
     IUserRepository userRepository)
 {
-    public async Task<TweedViewModel> Create(Tweed tweed, string currentUserId, bool isCurrent = false)
+    public async Task<TweedViewModel> Create(Domain.TweedAggregate.Tweed tweed, string currentUserId, bool isCurrent = false)
     {
         var humanizedCreatedAt = tweed.CreatedAt.Humanize(true, null, CultureInfo.InvariantCulture);
         var author = await userRepository.GetById(tweed.AuthorId);
@@ -34,7 +32,7 @@ public class TweedViewModelFactory(
         return viewModel;
     }
 
-    public async Task<List<TweedViewModel>> Create(List<Tweed> tweeds, string currentUserId,
+    public async Task<List<TweedViewModel>> Create(List<Domain.TweedAggregate.Tweed> tweeds, string currentUserId,
         string currentTweedId = "none")
     {
         List<TweedViewModel> tweedViewModels = [];

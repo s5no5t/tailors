@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tailors.Domain.TweedAggregate;
 using Tailors.Web.Features.Shared;
+using Tailors.Web.Features.Tweed;
 using Tailors.Web.Helper;
 
 namespace Tailors.Web.Features.Feed;

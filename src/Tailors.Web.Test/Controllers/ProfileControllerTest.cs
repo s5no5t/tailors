@@ -7,6 +7,7 @@ using Tailors.Domain.UserAggregate;
 using Tailors.Domain.UserFollowsAggregate;
 using Tailors.Domain.UserLikesAggregate;
 using Tailors.Web.Features.Profile;
+using Tailors.Web.Features.Tweed;
 using Tailors.Web.Helper;
 using Tailors.Web.Test.TestHelper;
 using Xunit;

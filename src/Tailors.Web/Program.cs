@@ -16,6 +16,7 @@ using Tailors.Infrastructure.TweedAggregate;
 using Tailors.Infrastructure.UserAggregate;
 using Tailors.Infrastructure.UserFollowsAggregate;
 using Tailors.Infrastructure.UserLikesAggregate;
+using Tailors.Web.Features.Tweed;
 using Tailors.Web.Filters;
 using Tailors.Web.Helper;
 
